@@ -17,10 +17,6 @@ import frc.robot.BreakerLib.position.movement.BreakerMovementState2d;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.BreakerLib.util.math.BreakerMath;
-/**
- * The generic arguments to this class define the size of the state, input and output vectors used in the underlying Unscented Kalman Filter. 
- * States must be equal to the module count + 3. Inputs must be equal to the module count + 3. Outputs must be equal to the module count + 1.
- */
 public class BreakerSwerveDrivePoseEstimator extends SubsystemBase implements BreakerGenericOdometer  {
     private BreakerGenericGyro gyro;
     private SwerveDrivePoseEstimator poseEstimator;

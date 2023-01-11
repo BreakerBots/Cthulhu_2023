@@ -14,7 +14,9 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.subsystems.Drive;
-import static frc.robot.Constants.*;
+import frc.robot.subsystems.Odometer;
+
+import static frc.robot.Constants.Misc.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -30,8 +32,8 @@ public class RobotContainer {
   private final BreakerXboxController controllerSys = new BreakerXboxController(0);
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
-  private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
-      drivetrainSys, controllerSys);
+  private final Odometer odometerSys = new Odometer(drivetrainSys);
+  private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(drivetrainSys, odometerSys, controllerSys);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.

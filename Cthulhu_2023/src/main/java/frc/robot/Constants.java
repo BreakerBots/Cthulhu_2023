@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
+import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -66,13 +68,27 @@ public final class Constants {
 
     }
 
+    public static final class Vision {
+        public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new BreakerPhotonCamera[] {
+            new BreakerPhotonCamera("frontApriltagCam", null)
+            // new BreakerPhotonCamera("leftApriltagCam", null),
+            // new BreakerPhotonCamera("rightApriltagCam", null),
+            // new BreakerPhotonCamera("backApriltagCam", null)
+        };
+
+        public static final BreakerFiducialPhotonTarget[] APRILTAGS = new BreakerFiducialPhotonTarget[] {
+            new BreakerFiducialPhotonTarget(1, null, APRILTAG_CAMERAS),
+            new BreakerFiducialPhotonTarget(2, null, APRILTAG_CAMERAS),
+            new BreakerFiducialPhotonTarget(3, null, APRILTAG_CAMERAS),
+            new BreakerFiducialPhotonTarget(4, null, APRILTAG_CAMERAS),
+            new BreakerFiducialPhotonTarget(5, null, APRILTAG_CAMERAS),
+            new BreakerFiducialPhotonTarget(6, null, APRILTAG_CAMERAS),
+            new BreakerFiducialPhotonTarget(7, null, APRILTAG_CAMERAS),
+            new BreakerFiducialPhotonTarget(8, null, APRILTAG_CAMERAS)
+        };
+    }
+
     public static final class Misc {
         public static final int IMU_ID = 5;
     }
-
-    
-
-   
-
-    public static final int IMU_ID = 5;
 }

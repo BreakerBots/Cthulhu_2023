@@ -15,7 +15,7 @@ import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionOdometer;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 
 /** Estimates swerve drive pose based on vision odometry. */
-public class BreakerSwerveDriveFiducialVisionPoseEstimator<States extends Num, Inputs extends Num, Outputs extends Num>
+public class BreakerSwerveDriveFiducialVisionPoseEstimator
         extends SubsystemBase implements BreakerGenericOdometer {
     private BreakerVisionOdometer vision;
     private BreakerSwerveDrivePoseEstimator poseEstimator;
