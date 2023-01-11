@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
-//import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
-//import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
 
 /** A higher level object for use in user susystems that makes BreakerLib's {@link SelfTest} functionality to implament for subsystem-scale classes */
 public class SystemDiagnostics extends BreakerSelfTestableBase {
     private List<BaseMotorController> ctreMotorControllers = new ArrayList<>();
     private List<BreakerSelfTestable> devices = new ArrayList<>();
-   // private List<CANSparkMax> sparks = new ArrayList<>();
+    private List<CANSparkMax> sparks = new ArrayList<>();
     private Supplier<DeviceHealth> deviceHealthSupplier;
     private Supplier<String> faultStringSupplier;
     private boolean usesSuppliers = false;
@@ -66,17 +66,17 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
         }
     }
 
-    // /** Adds a {@link CANSparkMax} (REV Motor controller) object to this SystemDiagnostic's testing queue */
-    // public void addSparkMax(CANSparkMax sparkMaxToAdd) {
-    //     sparks.add(sparkMaxToAdd);
-    // }
+    /** Adds a {@link CANSparkMax} (REV Motor controller) object to this SystemDiagnostic's testing queue */
+    public void addSparkMax(CANSparkMax sparkMaxToAdd) {
+        sparks.add(sparkMaxToAdd);
+    }
 
-    // /** Adds multipul {@link CANSparkMax} (REV Motor controller) objects to this SystemDiagnostic's testing queue */
-    // public void addSparkMaxs(CANSparkMax... sparkMaxsToAdd) {
-    //     for (CANSparkMax spk: sparkMaxsToAdd) {
-    //         addSparkMax(spk);
-    //     }
-    // }
+    /** Adds multipul {@link CANSparkMax} (REV Motor controller) objects to this SystemDiagnostic's testing queue */
+    public void addSparkMaxs(CANSparkMax... sparkMaxsToAdd) {
+        for (CANSparkMax spk: sparkMaxsToAdd) {
+            addSparkMax(spk);
+        }
+    }
 
     @Override
     public void runSelfTest() {
@@ -103,12 +103,12 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
             }
         }
 
-        // if (!sparks.isEmpty()) {
-        //     for (CANSparkMax spk: sparks) {
-        //         Pair<DeviceHealth, String> sparkState = BreakerREVUtil.getSparkMaxHealthAndFaults(spk.getFaults());
-        //         faultStr += " / SparkMax Motor ID (" + spk.getDeviceId() + "): " + sparkState.getSecond();
-        //     }
-        // }
+        if (!sparks.isEmpty()) {
+            for (CANSparkMax spk: sparks) {
+                Pair<DeviceHealth, String> sparkState = BreakerREVUtil.getSparkMaxHealthAndFaults(spk.getFaults());
+                faultStr += " / SparkMax Motor ID (" + spk.getDeviceId() + "): " + sparkState.getSecond();
+            }
+        }
 
         if (usesSuppliers) {
             faultStr += " / Supplied Faults: " + faultStringSupplier.get();

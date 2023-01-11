@@ -14,6 +14,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.subsystems.Drive;
+import static frc.robot.Constants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -27,7 +28,7 @@ import frc.robot.subsystems.Drive;
 public class RobotContainer {
 
   private final BreakerXboxController controllerSys = new BreakerXboxController(0);
-  private final BreakerPigeon2 imuSys = new BreakerPigeon2(5);
+  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys);
@@ -57,8 +58,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
-    controllerSys.getButtonX()
-        .onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
+    controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
   }
 
   private void robotManagerSetup() {

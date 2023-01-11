@@ -159,8 +159,8 @@ public class SelfTest extends SubsystemBase {
    * Method that runs this robots Self Check cycle, pereodicly called by this
    * classes pereodic method
    */
-  public static void runSelfCheck() {
-    StringBuilder work = new StringBuilder("\n RUNNING SELF CHECK: \n");
+  public static void runSelfTest() {
+    StringBuilder work = new StringBuilder("\n RUNNING SELF TEST: \n");
     List<BreakerSelfTestable> faultDevices = new ArrayList<BreakerSelfTestable>();
     for (BreakerSelfTestable device : devices) {
       device.runSelfTest();
@@ -169,14 +169,14 @@ public class SelfTest extends SubsystemBase {
       }
     }
     if (!faultDevices.isEmpty()) {
-      work.append(" SELF CHECK FAILED - FAULTS FOUND: \n");
+      work.append(" SELF TEST FAILED - FAULTS FOUND: \n");
       lastCheckPassed = false;
       for (BreakerSelfTestable faultDiv : faultDevices) {
         work.append(" | " + faultDiv.getDeviceName() + "-" + faultDiv.getFaults() + " | ");
       }
       runAlarm();
     } else {
-      work.append(" SELF CHECK PASSED ");
+      work.append(" SELF TEST PASSED ");
       lastCheckPassed = true;
     }
     lastSystemCheck = work.toString();
@@ -186,7 +186,7 @@ public class SelfTest extends SubsystemBase {
   @Override
   public void periodic() {
     if ((cycleCount++ % cyclesbetweenPerSelfCecks == 0) && selfTestEnabled) {
-      runSelfCheck();
+      runSelfTest();
     }
   }
 }

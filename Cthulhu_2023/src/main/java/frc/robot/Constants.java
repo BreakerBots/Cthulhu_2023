@@ -19,7 +19,7 @@ public final class Constants {
     /**
      * Static class containing necessary functions for driving.
      */
-    public static final class DRIVE {
+    public static final class Drive {
 
         public static final double MAX_FORWARD_VELOCITY = 4.1148;
         public static final double MAX_SIDEWAYS_VELOCITY = 4.1148;
@@ -35,11 +35,11 @@ public final class Constants {
         public static final double MODULE_WHEEL_SPEED_DEADBAND = 0.001;
         public static final double MAX_ATTAINABLE_MODULE_WHEEL_SPEED = 4.1148;
 
-        public static final double STATIC_FRICTION_COEFFICIENT = 2.75;
-        public static final double VELOCITY_COEFFICIENT = 1.0;
+        public static final double FF_STATIC_FRICTION_COEFFICIENT = 2.75;
+        public static final double FF_VELOCITY_COEFFICIENT = 1.0;
 
-        public static final double LINEAR_MULTIPLIER = 0.5;
-        public static final double TURN_MULTIPLIER = 0.5;
+        public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.5;
+        public static final double SLOW_MODE_TURN_MULTIPLIER = 0.5;
 
 
 
@@ -64,6 +64,10 @@ public final class Constants {
         public static final Translation2d BL_TRANSLATION = new Translation2d(-0.187325, 0.187325);
         public static final Translation2d BR_TRANSLATION = new Translation2d(-0.187325, -0.187325);
 
+    }
+
+    public static final class Misc {
+        public static final int IMU_ID = 5;
     }
 
     
