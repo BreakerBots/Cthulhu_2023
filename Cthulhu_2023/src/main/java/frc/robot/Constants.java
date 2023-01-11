@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import org.opencv.core.Rect2d;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
+import frc.robot.BreakerLib.position.geometry.BreakerRobotGeometry2d;
+
+import java.awt.geom.Rectangle2D;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -69,23 +74,34 @@ public final class Constants {
     }
 
     public static final class Vision {
-        public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new BreakerPhotonCamera[] {
-            new BreakerPhotonCamera("frontApriltagCam", null)
-            // new BreakerPhotonCamera("leftApriltagCam", null),
-            // new BreakerPhotonCamera("rightApriltagCam", null),
-            // new BreakerPhotonCamera("backApriltagCam", null)
-        };
+        public static final class AprilTag {
+            public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new BreakerPhotonCamera[] {
+                new BreakerPhotonCamera("frontApriltagCam", null)
+                // new BreakerPhotonCamera("leftApriltagCam", null),
+                // new BreakerPhotonCamera("rightApriltagCam", null),
+                // new BreakerPhotonCamera("backApriltagCam", null)
+            };
+    
+            public static final BreakerFiducialPhotonTarget[] APRILTAGS = new BreakerFiducialPhotonTarget[] {
+                new BreakerFiducialPhotonTarget(1, null, APRILTAG_CAMERAS),
+                new BreakerFiducialPhotonTarget(2, null, APRILTAG_CAMERAS),
+                new BreakerFiducialPhotonTarget(3, null, APRILTAG_CAMERAS),
+                new BreakerFiducialPhotonTarget(4, null, APRILTAG_CAMERAS),
+                new BreakerFiducialPhotonTarget(5, null, APRILTAG_CAMERAS),
+                new BreakerFiducialPhotonTarget(6, null, APRILTAG_CAMERAS),
+                new BreakerFiducialPhotonTarget(7, null, APRILTAG_CAMERAS),
+                new BreakerFiducialPhotonTarget(8, null, APRILTAG_CAMERAS)
+            };
+        }
+    }
 
-        public static final BreakerFiducialPhotonTarget[] APRILTAGS = new BreakerFiducialPhotonTarget[] {
-            new BreakerFiducialPhotonTarget(1, null, APRILTAG_CAMERAS),
-            new BreakerFiducialPhotonTarget(2, null, APRILTAG_CAMERAS),
-            new BreakerFiducialPhotonTarget(3, null, APRILTAG_CAMERAS),
-            new BreakerFiducialPhotonTarget(4, null, APRILTAG_CAMERAS),
-            new BreakerFiducialPhotonTarget(5, null, APRILTAG_CAMERAS),
-            new BreakerFiducialPhotonTarget(6, null, APRILTAG_CAMERAS),
-            new BreakerFiducialPhotonTarget(7, null, APRILTAG_CAMERAS),
-            new BreakerFiducialPhotonTarget(8, null, APRILTAG_CAMERAS)
-        };
+    public static final class Field {
+        public static final java.awt.geom.Rectangle2D BLUE_CHARGEING_STATION = new  Rectangle2D.Double(0, 0, 0, 0);
+        public static final java.awt.geom.Rectangle2D RED_CHARGEING_STATION = new   Rectangle2D.Double(0, 0, 0, 0);
+    }
+
+    public static final class RobotGeometry {
+        public static final BreakerRobotGeometry2d ROBOT_GEOMETRY = new BreakerRobotGeometry2d(null);
     }
 
     public static final class Misc {

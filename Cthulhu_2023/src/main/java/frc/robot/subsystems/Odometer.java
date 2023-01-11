@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants;
 import frc.robot.BreakerLib.position.odometry.swerve.BreakerSwerveDriveFiducialVisionPoseEstimator;
 import frc.robot.BreakerLib.position.odometry.swerve.BreakerSwerveDrivePoseEstimator;
 import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionOdometer;
 import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilter;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
-import static frc.robot.Constants.Vision.*;
+import java.awt.geom.Rectangle2D.*;
+import static frc.robot.Constants.Vision.AprilTag.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -29,6 +31,10 @@ public class Odometer extends BreakerSwerveDriveFiducialVisionPoseEstimator {
                 null, 
                 null
             );
+    }
+
+    public java.awt.geom.Rectangle2D getRobotHitbox() {
+        return Constants.RobotGeometry.ROBOT_GEOMETRY.getTranslatedHitbox(getOdometryPoseMeters());
     }
 
 }
