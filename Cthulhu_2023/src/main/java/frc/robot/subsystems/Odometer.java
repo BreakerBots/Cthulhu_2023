@@ -41,7 +41,7 @@ public class Odometer extends BreakerSwerveDriveFiducialVisionPoseEstimator {
 
     /** corrects for ddiffrent expeced angle zero points based on aliance, updates for FMS connection changes */
     private void checkAllianceTransposition() {
-        setOdometryRotation(DriverStation.getAlliance() == Alliance.Red ? getOdometryPoseMeters().getRotation() : getOdometryPoseMeters().getRotation().minus(Rotation2d.fromDegrees(180)));
+        setOdometryRotation(DriverStation.getAlliance() == Alliance.Blue ? getOdometryPoseMeters().getRotation().minus(Rotation2d.fromDegrees(180)) : getOdometryPoseMeters().getRotation());
     }
 
     public java.awt.geom.Rectangle2D getRobotHitbox() {
