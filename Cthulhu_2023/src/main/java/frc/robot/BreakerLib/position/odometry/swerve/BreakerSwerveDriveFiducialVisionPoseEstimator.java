@@ -32,6 +32,20 @@ public class BreakerSwerveDriveFiducialVisionPoseEstimator
                 stateStanderdDeveation, visionStanderdDeveation);
     }
 
+    public BreakerSwerveDriveFiducialVisionPoseEstimator(
+            BreakerSwerveDrive drivetrain,
+            BreakerVisionOdometer vision,
+            Pose2d initialPose,
+            double[] stateStanderdDeveation,
+            double[] gyroAndEncoderStandardDeveation,
+            double[] visionStanderdDeveation) {
+        this.vision = vision;
+        vision.setOdometryPosition(initialPose);
+        poseEstimator = new BreakerSwerveDrivePoseEstimator(
+                drivetrain, initialPose,
+                stateStanderdDeveation, visionStanderdDeveation);
+    }
+
     @Override
     public void setOdometryPosition(Pose2d newPose) {
         vision.setOdometryPosition(newPose);

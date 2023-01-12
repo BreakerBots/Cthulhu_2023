@@ -49,6 +49,8 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
       curMovementState = new BreakerMovementState2d();
   private double prevOdometryUpdateTimestamp = 0;
 
+  private Rotation2d fieldRelativeMovementOffset = new Rotation2d();
+
   /**
    * Constructs a new swerve based drivetrain.
    * 
@@ -199,7 +201,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
         forwardVelMetersPerSec,
         horizontalVelMetersPerSec, 
         radPerSec, 
-        getOdometryPoseMeters().getRotation());
+        getOdometryPoseMeters().getRotation().plus(fieldRelativeMovementOffset));
     move(robotRelSpeeds);
   }
 
@@ -217,7 +219,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
         forwardVelMetersPerSec,
         horizontalVelMetersPerSec, 
         radPerSec,
-        odometer.getOdometryPoseMeters().getRotation());
+        odometer.getOdometryPoseMeters().getRotation().plus(fieldRelativeMovementOffset));
     move(robotRelSpeeds);
   }
 
@@ -355,6 +357,14 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   public ChassisSpeeds getFieldRelativeChassisSpeeds(BreakerGenericOdometer odometer) {
     return BreakerMath.fromRobotRelativeSpeeds(getRobotRelativeChassisSpeeds(),
         odometer.getOdometryPoseMeters().getRotation());
+  }
+
+  public void setFieldRelativeMovementOffsetAngle(Rotation2d fieldRelativeMovementOffset) {
+    this.fieldRelativeMovementOffset = fieldRelativeMovementOffset;
+  }
+
+  public Rotation2d getFieldRelativeMovementOffsetAngle() {
+      return fieldRelativeMovementOffset;
   }
 
   @Override

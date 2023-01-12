@@ -13,6 +13,11 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive
 import java.awt.geom.Rectangle2D.*;
 import static frc.robot.Constants.Vision.AprilTag.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
@@ -31,6 +36,12 @@ public class Odometer extends BreakerSwerveDriveFiducialVisionPoseEstimator {
                 null, 
                 null
             );
+            CommandScheduler.getInstance().schedule(new RunCommand(this::checkAllianceTransposition));
+    }
+
+    /** corrects for ddiffrent expeced angle zero points based on aliance, updates for FMS connection changes */
+    private void checkAllianceTransposition() {
+        setOdometryRotation(DriverStation.getAlliance() == Alliance.Red ? getOdometryPoseMeters().getRotation() : getOdometryPoseMeters().getRotation().minus(Rotation2d.fromDegrees(180)));
     }
 
     public java.awt.geom.Rectangle2D getRobotHitbox() {
