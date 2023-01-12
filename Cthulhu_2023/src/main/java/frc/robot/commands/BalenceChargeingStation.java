@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
+import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Odometer;
 
 public class BalenceChargeingStation extends CommandBase {
@@ -17,12 +19,15 @@ public class BalenceChargeingStation extends CommandBase {
   private BreakerPigeon2 imu;
   private PIDController balencePID;
   private Odometer odometer;
-  public BalenceChargeingStation(BreakerPigeon2 imu, Odometer odometer) {
+  private Drive drivetrain;
+  public BalenceChargeingStation(Drive drivetrain, BreakerPigeon2 imu, Odometer odometer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.imu = imu;
     this.odometer = odometer;
+    this.drivetrain = drivetrain;
     balencePID = new PIDController(0, 0, 0);
     balencePID.setTolerance(0, 0);
+    addRequirements(drivetrain);
   }
  
   // Called when the command is initially scheduled.
@@ -34,11 +39,22 @@ public class BalenceChargeingStation extends CommandBase {
   @Override
   public void execute() {
     balencePID.calculate(imu.getPitchDegrees(), 0.0);
+    if (!outOfWorkingBounds()) {
+      drivetrain.moveRelativeToField(0, 0, 0);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
+
+  private boolean outOfWorkingBounds() {
+    if (DriverStation.getAlliance() == Alliance.Red) {
+      return !Constants.Field.RED_CHARGEING_STATION_WORKING_BOUNDS.contains(odometer.getRobotHitbox());
+    } else {
+      return !Constants.Field.BLUE_CHARGEING_STATION_WORKING_BOUNDS.contains(odometer.getRobotHitbox());
+    }
+  }
 
   private boolean outOfBounds() {
     if (DriverStation.getAlliance() == Alliance.Red) {

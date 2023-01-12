@@ -97,7 +97,9 @@ public final class Constants {
 
     public static final class Field {
         public static final java.awt.geom.Rectangle2D BLUE_CHARGEING_STATION = new  Rectangle2D.Double(0, 0, 0, 0);
+        public static final java.awt.geom.Rectangle2D BLUE_CHARGEING_STATION_WORKING_BOUNDS = new Rectangle2D.Double(0, 0, 0, 0);
         public static final java.awt.geom.Rectangle2D RED_CHARGEING_STATION = new   Rectangle2D.Double(0, 0, 0, 0);
+        public static final java.awt.geom.Rectangle2D RED_CHARGEING_STATION_WORKING_BOUNDS = new Rectangle2D.Double(0, 0, 0, 0);
     }
 
     public static final class RobotGeometry {
