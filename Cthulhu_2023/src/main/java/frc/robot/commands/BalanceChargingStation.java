@@ -11,17 +11,17 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Odometer;
 
-public class BalenceChargeingStation extends CommandBase {
-  /** Creates a new BalenceChargeingStation. */
+public class BalanceChargingStation extends CommandBase {
+  /** Creates a new BalanceChargingStation. */
   private BreakerPigeon2 imu;
   private PIDController balencePID;
   private Odometer odometer;
   private Drive drivetrain;
-  public BalenceChargeingStation(Drive drivetrain, BreakerPigeon2 imu, Odometer odometer) {
+  
+  public BalanceChargingStation(Drive drivetrain, BreakerPigeon2 imu, Odometer odometer) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.imu = imu;
     this.odometer = odometer;
@@ -52,9 +52,9 @@ public class BalenceChargeingStation extends CommandBase {
 
   private boolean outOfWorkingBounds() {
     if (DriverStation.getAlliance() == Alliance.Blue) {
-      return !Constants.Field.BLUE_CHARGEING_STATION_WORKING_BOUNDS.contains(odometer.getRobotHitbox());
+      return !Constants.Field.BLUE_CHARGING_STATION_WORKING_BOUNDS.contains(odometer.getRobotHitbox());
     } else {
-      return !Constants.Field.RED_CHARGEING_STATION_WORKING_BOUNDS.contains(odometer.getRobotHitbox());
+      return !Constants.Field.RED_CHARGING_STATION_WORKING_BOUNDS.contains(odometer.getRobotHitbox());
     }
   }
 
@@ -64,13 +64,13 @@ public class BalenceChargeingStation extends CommandBase {
     double fwdRobotBound = 0.0;
     double revRobotBound = 0.0;
     if (DriverStation.getAlliance() == Alliance.Blue) {
-      fwdBound = Constants.Field.BLUE_CHARGEING_STATION_WORKING_BOUNDS.getMaxY();
-      revBound = Constants.Field.BLUE_CHARGEING_STATION_WORKING_BOUNDS.getMinY();
+      fwdBound = Constants.Field.BLUE_CHARGING_STATION_WORKING_BOUNDS.getMaxY();
+      revBound = Constants.Field.BLUE_CHARGING_STATION_WORKING_BOUNDS.getMinY();
       fwdRobotBound = odometer.getRobotHitbox().getMaxY();
       revRobotBound = odometer.getRobotHitbox().getMinY();
     } else {
-      fwdBound = Constants.Field.BLUE_CHARGEING_STATION_WORKING_BOUNDS.getMinY();
-      revBound = Constants.Field.BLUE_CHARGEING_STATION_WORKING_BOUNDS.getMaxY();
+      fwdBound = Constants.Field.BLUE_CHARGING_STATION_WORKING_BOUNDS.getMinY();
+      revBound = Constants.Field.BLUE_CHARGING_STATION_WORKING_BOUNDS.getMaxY();
       fwdRobotBound = odometer.getRobotHitbox().getMinY();
       revRobotBound = odometer.getRobotHitbox().getMaxY();
     } 
@@ -85,9 +85,9 @@ public class BalenceChargeingStation extends CommandBase {
 
   private boolean outOfBounds() {
     if (DriverStation.getAlliance() == Alliance.Blue) {
-      return !Constants.Field.BLUE_CHARGEING_STATION.contains(odometer.getRobotHitbox());
+      return !Constants.Field.BLUE_CHARGING_STATION.contains(odometer.getRobotHitbox());
     } else {
-      return !Constants.Field.RED_CHARGEING_STATION.contains(odometer.getRobotHitbox());
+      return !Constants.Field.RED_CHARGING_STATION.contains(odometer.getRobotHitbox());
     }
   }
 

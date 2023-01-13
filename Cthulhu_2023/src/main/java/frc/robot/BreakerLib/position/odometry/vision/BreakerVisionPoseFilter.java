@@ -17,7 +17,7 @@ import frc.robot.BreakerLib.util.math.averages.BreakerWeightedAverage;
 public class BreakerVisionPoseFilter {
     private BreakerFiducialPhotonTarget[] positioningTargets;
     private BreakerAverage avgLatency;
-    private double trustCoef, maxUncertanty;
+    private double trustCoef, maxUncertainty;
 
     /**
      * Fiters all predcted poses from visable Fiducial targets through a weaighted
@@ -26,15 +26,15 @@ public class BreakerVisionPoseFilter {
      * 
      * @param trustCoef          - Higher values mean more uncertain values are
      *                           trusted less.
-     * @param maxUncertanty      - The highest uncertainty value (0-1) that will
+     * @param maxUncertainty      - The highest uncertainty value (0-1) that will
      *                           still be considered in the pose calculation.
      * @param positioningTargets - The fiducial targets for positioning.
      */
-    public BreakerVisionPoseFilter(double trustCoef, double maxUncertanty,
+    public BreakerVisionPoseFilter(double trustCoef, double maxUncertainty,
             BreakerFiducialPhotonTarget... positioningTargets) {
         this.positioningTargets = positioningTargets;
         this.trustCoef = MathUtil.clamp(trustCoef, 1, Double.MAX_VALUE);
-        this.maxUncertanty = maxUncertanty;
+        this.maxUncertainty = maxUncertainty;
         avgLatency = new BreakerAverage();
     }
 
@@ -50,7 +50,7 @@ public class BreakerVisionPoseFilter {
         for (int i = 0; i < positioningTargets.length; i++) {
             BreakerFiducialPhotonTarget tgt = positioningTargets[i];
             if (tgt.isAssignedTargetVisible()) {
-                if (tgt.getPoseAmbiguity() <= maxUncertanty) {
+                if (tgt.getPoseAmbiguity() <= maxUncertainty) {
                     double weight = MathUtil.clamp(Math.pow(trustCoef, (-trustCoef) * tgt.getPoseAmbiguity()), 0.0,
                             1.0);
                     Pose3d pose = tgt.getRobotPose3d();
@@ -85,7 +85,7 @@ public class BreakerVisionPoseFilter {
         for (int i = 0; i < positioningTargets.length; i++) {
             BreakerFiducialPhotonTarget tgt = positioningTargets[i];
             if (tgt.isAssignedTargetVisible()) {
-                if (tgt.getPoseAmbiguity() <= maxUncertanty) {
+                if (tgt.getPoseAmbiguity() <= maxUncertainty) {
                     double weight = MathUtil.clamp(Math.pow(trustCoef, (-trustCoef) * tgt.getPoseAmbiguity()), 0.0,
                             1.0);
                     Pose2d pose = tgt.getRobotPose();

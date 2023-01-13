@@ -4,8 +4,6 @@
 
 package frc.robot.BreakerLib.position.odometry.swerve;
 
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.Num;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,14 +34,14 @@ public class BreakerSwerveDriveFiducialVisionPoseEstimator
             BreakerSwerveDrive drivetrain,
             BreakerVisionOdometer vision,
             Pose2d initialPose,
-            double[] stateStanderdDeveation,
-            double[] gyroAndEncoderStandardDeveation,
-            double[] visionStanderdDeveation) {
+            double[] stateStandardDeviation,
+            double[] gyroAndEncoderStandardDeviation,
+            double[] visionStandardDeviation) {
         this.vision = vision;
         vision.setOdometryPosition(initialPose);
         poseEstimator = new BreakerSwerveDrivePoseEstimator(
                 drivetrain, initialPose,
-                stateStanderdDeveation, visionStanderdDeveation);
+                stateStandardDeviation, visionStandardDeviation);
     }
 
     @Override
