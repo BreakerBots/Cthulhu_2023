@@ -40,6 +40,9 @@ public class BalanceChargingStation extends CommandBase {
   @Override
   public void execute() {
     double corSpeed = balencePID.calculate(imu.getPitchDegrees(), 0.0);
+    if (DriverStation.getAlliance() == Alliance.Red) {
+      corSpeed *= -1.0;
+    }
     if (outOfWorkingBounds()) {
       corSpeed = outOfWorkingBoundsSpeedClamp(corSpeed);
     }

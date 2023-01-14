@@ -2,6 +2,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -35,7 +36,7 @@ public class RobotContainer {
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
   // private final Odometer odometerSys = new Odometer(drivetrainSys);
-  private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.25, 0.75), new Translation2d(0.75, 0.25));
+  private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.914, 0.322), new Translation2d(0.86, 0.291));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
 
