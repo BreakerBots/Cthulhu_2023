@@ -19,7 +19,6 @@ import frc.robot.BreakerLib.auto.trajectory.management.BreakerTrajectoryPath;
 import frc.robot.BreakerLib.auto.trajectory.swerve.standard.BreakerSwerveAutoPathFollower;
 import frc.robot.BreakerLib.auto.trajectory.swerve.standard.BreakerSwerveAutoPathFollowerConfig;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.subsystems.Drive;
 

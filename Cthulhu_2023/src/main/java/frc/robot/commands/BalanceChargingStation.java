@@ -4,20 +4,15 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Odometer;
 
 public class BalanceChargingStation extends CommandBase {
   /** Creates a new BalanceChargingStation. */
   private BreakerPigeon2 imu;
-  private PIDController balencePID;
+  private PIDController balancePID;
   //private Odometer odometer;
   private Drive drivetrain;
   
@@ -26,8 +21,8 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    balencePID = new PIDController(0.001, 0, 0);
-    balencePID.setTolerance(2.0, 0.05);
+    balancePID = new PIDController(0.001, 0, 0);
+    balancePID.setTolerance(2.0, 0.05);
     addRequirements(drivetrain);
   }
  
@@ -39,7 +34,7 @@ public class BalanceChargingStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double corSpeed = balencePID.calculate(imu.getPitchDegrees(), 0.0);
+    double corSpeed = balancePID.calculate(imu.getPitchDegrees(), 0.0);
     // if (DriverStation.getAlliance() == Alliance.Red) {
     //   corSpeed *= -1.0;
     // }
@@ -97,6 +92,6 @@ public class BalanceChargingStation extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return /*outOfBounds() ||*/ balencePID.atSetpoint();
+    return /*outOfBounds() ||*/ balancePID.atSetpoint();
   }
 }

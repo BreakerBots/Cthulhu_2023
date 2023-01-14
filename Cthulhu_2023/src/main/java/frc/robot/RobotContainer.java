@@ -2,7 +2,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
+import static frc.robot.Constants.Misc.IMU_ID;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -17,9 +18,6 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.subsystems.Drive;
-import static frc.robot.Constants.Misc.*;
-
-import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
