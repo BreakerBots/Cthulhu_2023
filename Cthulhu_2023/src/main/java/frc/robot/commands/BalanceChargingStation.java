@@ -22,7 +22,7 @@ public class BalanceChargingStation extends CommandBase {
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
     balancePID = new PIDController(0.001, 0, 0);
-    balancePID.setTolerance(2.0, 0.05);
+    balancePID.setTolerance(2.0, 0.25);
     addRequirements(drivetrain);
   }
  
