@@ -47,11 +47,11 @@ public final class Constants {
         public static final double MODULE_WHEEL_SPEED_DEADBAND = 0.001;
         public static final double MAX_ATTAINABLE_MODULE_WHEEL_SPEED = 4.1148;
 
-        public static final double FF_STATIC_FRICTION_COEFFICIENT = 2.75;
+        public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.;
         public static final double FF_VELOCITY_COEFFICIENT = 1.0;
 
-        public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.5;
-        public static final double SLOW_MODE_TURN_MULTIPLIER = 0.5;
+        public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.3;
+        public static final double SLOW_MODE_TURN_MULTIPLIER = 0.3;
 
         public static final int FL_WHEEL_ID = 10;
         public static final int FR_WHEEL_ID = 12;
@@ -69,10 +69,16 @@ public final class Constants {
         public static final int BR_ENCODER_ID = 23;
 
         // FL is pos/pos, FR is pos/neg, BL is neg/pos, BR is neg/neg
-        public static final Translation2d FL_TRANSLATION = new Translation2d(0.187325, 0.187325);
-        public static final Translation2d FR_TRANSLATION = new Translation2d(0.187325, -0.187325);
-        public static final Translation2d BL_TRANSLATION = new Translation2d(-0.187325, 0.187325);
-        public static final Translation2d BR_TRANSLATION = new Translation2d(-0.187325, -0.187325);
+        public static final Translation2d FL_TRANSLATION = new Translation2d(0.2635, 0.2635);
+        public static final Translation2d FR_TRANSLATION = new Translation2d(0.2635, -0.2635);
+        public static final Translation2d BL_TRANSLATION = new Translation2d(-0.2635, 0.2635);
+        public static final Translation2d BR_TRANSLATION = new Translation2d(-0.2635, -0.2635);
+
+        public static final double FL_ENCODER_OFFSET = -110.918;
+        public static final double FR_ENCODER_OFFSET = 146.074;
+        public static final double BL_ENCODER_OFFSET = 100.107;
+        public static final double BR_ENCODER_OFFSET = 111.182;
+
 
     }
 
