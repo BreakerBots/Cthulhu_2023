@@ -47,7 +47,7 @@ public final class Constants {
         public static final double MODULE_WHEEL_SPEED_DEADBAND = 0.001;
         public static final double MAX_ATTAINABLE_MODULE_WHEEL_SPEED = 4.1148;
 
-        public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.;
+        public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.1;
         public static final double FF_VELOCITY_COEFFICIENT = 1.0;
 
         public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.3;

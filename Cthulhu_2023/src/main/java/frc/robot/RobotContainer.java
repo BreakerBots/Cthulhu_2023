@@ -2,6 +2,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,11 +11,14 @@ import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerTeleopSwerveDriveController;
+import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.subsystems.Drive;
 import static frc.robot.Constants.Misc.*;
+
+import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -30,8 +34,10 @@ public class RobotContainer {
   private final BreakerXboxController controllerSys = new BreakerXboxController(0);
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
-  //private final Odometer odometerSys = new Odometer(drivetrainSys);
-  private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(drivetrainSys, controllerSys);
+  // private final Odometer odometerSys = new Odometer(drivetrainSys);
+  private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.25, 0.75), new Translation2d(0.75, 0.25));
+  private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
+      drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -64,7 +70,7 @@ public class RobotContainer {
   private void robotManagerSetup() {
     BreakerRobotConfig robotConfig = new BreakerRobotConfig(new BreakerRobotStartConfig(5104, "BreakerBots",
         "Cthulhu", 2023, "v1", "Yousif Alkhalaf, Roman Abrahamson, Sebastian Rueda"));
-    
+
     BreakerRobotManager.setup(drivetrainSys, robotConfig);
   }
 

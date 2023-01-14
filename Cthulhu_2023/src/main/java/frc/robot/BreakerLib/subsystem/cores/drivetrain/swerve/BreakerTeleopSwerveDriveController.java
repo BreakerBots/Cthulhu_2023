@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerGenericGamepad;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
@@ -231,6 +232,10 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     if (turnOverride) {
       turn = overrideTurnSupplier.getAsDouble();
     }
+
+    SmartDashboard.putString("Forward", "" + forward);
+    SmartDashboard.putString("Horizontal", "" + horizontal);
+    SmartDashboard.putString("Rotation", "" + turn);
 
     // Movement relative to field.
     if (usesExternalOdometer) {
