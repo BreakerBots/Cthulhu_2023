@@ -18,7 +18,10 @@ import frc.robot.BreakerLib.auto.trajectory.management.BreakerStartTrajectoryPat
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerTrajectoryPath;
 import frc.robot.BreakerLib.auto.trajectory.swerve.standard.BreakerSwerveAutoPathFollower;
 import frc.robot.BreakerLib.auto.trajectory.swerve.standard.BreakerSwerveAutoPathFollowerConfig;
+import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
+import frc.robot.commands.BalanceChargingStation;
+import frc.robot.subsystems.Drive;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -26,7 +29,7 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive
 public class TestTrajectoryAutoPath extends SequentialCommandGroup {
   
   /** Creates a new TestAutoPath. */
-  public TestTrajectoryAutoPath(BreakerSwerveDrive drivetrain) {
+  public TestTrajectoryAutoPath(Drive drivetrain, BreakerPigeon2 imu) {
     
     BreakerSwerveAutoPathFollowerConfig swerveFollowerConfig = new BreakerSwerveAutoPathFollowerConfig(drivetrain, 
         new HolonomicDriveController(new PIDController(2.0, 0.0, 0.1), new PIDController(2.0, 0.0, 0.1), new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0))));
@@ -34,15 +37,15 @@ public class TestTrajectoryAutoPath extends SequentialCommandGroup {
     BreakerTrajectoryPath traj1 = new BreakerTrajectoryPath(TrajectoryGenerator.generateTrajectory(
         BreakerTrajectoryUtil.toPoseWaypointList(
           new Pose2d(), 
-          new Pose2d(1.0, 0.0, new Rotation2d()),
-          new Pose2d(1.0, -1.0, new Rotation2d()
+          new Pose2d(1.5, 0.0, new Rotation2d()
           )),
         new TrajectoryConfig(0.5, 0.5)), true);
     
         
     addCommands(
       new BreakerStartTrajectoryPath(drivetrain, new Pose2d()),
-      new BreakerSwerveAutoPathFollower(swerveFollowerConfig, traj1)
+      new BreakerSwerveAutoPathFollower(swerveFollowerConfig, traj1),
+      new BalanceChargingStation(drivetrain, imu)
     );
   }
 }

@@ -26,7 +26,7 @@ public class Odometer extends BreakerSwerveDriveFiducialVisionPoseEstimator {
             new BreakerVisionOdometer(
                 new BreakerVisionPoseFilter(
                     0, 
-                    0, 
+                    0.5, 
                     APRILTAGS
                     )
                 ), 
