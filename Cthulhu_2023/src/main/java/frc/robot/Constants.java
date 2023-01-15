@@ -6,7 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
@@ -76,7 +78,7 @@ public final class Constants {
 
         public static final double FL_ENCODER_OFFSET = -110.918;
         public static final double FR_ENCODER_OFFSET = 146.074;
-        public static final double BL_ENCODER_OFFSET = 100.107;
+        public static final double BL_ENCODER_OFFSET = -79.893;
         public static final double BR_ENCODER_OFFSET = 111.182;
 
 
@@ -85,7 +87,7 @@ public final class Constants {
     public static final class Vision {
         public static final class AprilTag {
             public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new BreakerPhotonCamera[] {
-                    new BreakerPhotonCamera("frontApriltagCam", null)
+                    new BreakerPhotonCamera("April_Test_1", new Transform3d(new Translation3d(), new Rotation3d()))
                     // new BreakerPhotonCamera("leftApriltagCam", null),
                     // new BreakerPhotonCamera("rightApriltagCam", null),
                     // new BreakerPhotonCamera("backApriltagCam", null)

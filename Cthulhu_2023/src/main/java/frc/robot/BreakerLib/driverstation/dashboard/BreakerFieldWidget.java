@@ -8,11 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
 
 /** Static wrapper for Field2d dashboard field widget. */
-public class BreakerFieldWidget {
-
+public class BreakerFieldWidget extends SubsystemBase {
+    private static BreakerGenericOdometer odometer;
     private static Field2d field = new Field2d();
 
     /**
@@ -22,7 +23,7 @@ public class BreakerFieldWidget {
      */
     public BreakerFieldWidget(BreakerGenericOdometer odometer) {
         BreakerDashboard.getMainTab().add(field);
-        CommandScheduler.getInstance().schedule(new RunCommand(() -> field.setRobotPose(odometer.getOdometryPoseMeters())));
+        BreakerFieldWidget.odometer = odometer;
     }
 
     /** @return Robot object on field widget. */
@@ -53,5 +54,10 @@ public class BreakerFieldWidget {
     /** @return Field2d widget. */
     public static Field2d getBaseField() {
         return field;
+    }
+
+    @Override
+    public void periodic() {
+        field.setRobotPose(odometer.getOdometryPoseMeters());
     }
 }

@@ -17,6 +17,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
 import frc.robot.BreakerLib.util.math.BreakerUnits;
 
@@ -24,7 +25,7 @@ import frc.robot.BreakerLib.util.math.BreakerUnits;
  * 2d Photon camera target. Ideally used to target game pieces, etc. on the
  * field.
  */
-public class BreakerPhotonTarget2d {
+public class BreakerPhotonTarget2d extends SubsystemBase {
 
     private BreakerPhotonCamera camera;
     private BreakerGenericOdometer odometryProvider;
@@ -53,9 +54,6 @@ public class BreakerPhotonTarget2d {
         assignedTarget = assignedTargetSupplier.get();
         assignedTargetFound = (assignedTarget == null) ? false : true;
         this.targetHeightMeters = targetHeightMeters;
-
-        // Will continuously search for 2d target.
-        CommandScheduler.getInstance().schedule(new RunCommand(() -> this.findAssignedTarget()));
     }
 
     /** Logic used to find a target. */
@@ -125,5 +123,10 @@ public class BreakerPhotonTarget2d {
     public double getTargetDataAge() {
         double timediffsec = Timer.getFPGATimestamp() - targetFoundTimestamp;
         return Units.millisecondsToSeconds(camera.getPipelineLatancyMilliseconds()) + timediffsec;
+    }
+
+    @Override
+    public void periodic() {
+        findAssignedTarget();
     }
 }

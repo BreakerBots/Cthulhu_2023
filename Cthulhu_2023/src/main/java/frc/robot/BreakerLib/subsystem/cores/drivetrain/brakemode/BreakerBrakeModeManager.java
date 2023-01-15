@@ -6,6 +6,7 @@ package frc.robot.BreakerLib.subsystem.cores.drivetrain.brakemode;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain;
 import frc.robot.BreakerLib.util.BreakerRoboRIO;
 
@@ -13,7 +14,7 @@ import frc.robot.BreakerLib.util.BreakerRoboRIO;
  * Automatically handles brake mode switching for your drivetrain based on the
  * robot's current mode according to given config.
  */
-public class BreakerBrakeModeManager{
+public class BreakerBrakeModeManager extends SubsystemBase {
 
     private boolean brakeInAuto;
     private boolean brakeInTeleop;
@@ -32,8 +33,6 @@ public class BreakerBrakeModeManager{
         brakeInTest = config.getBreakInTest();
         brakeInDisabled = config.getBreakInDisabled();
         baseDrivetrain = config.getBaseDrivetrain();
-
-        CommandScheduler.getInstance().schedule(new RunCommand(() -> this.setAutomaticBreakMode()));
     }
 
     public void changeConfig(BreakerBrakeModeManagerConfig config) {
@@ -88,5 +87,10 @@ public class BreakerBrakeModeManager{
 
     public boolean getBrakeInTest() {
         return brakeInTest;
+    }
+
+    @Override
+    public void periodic() {
+        setAutomaticBreakMode();
     }
 }

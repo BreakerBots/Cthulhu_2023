@@ -5,6 +5,7 @@
 package frc.robot.BreakerLib.devices.vision.photon;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
@@ -16,9 +17,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Fiducial marker target. Use if using AprilTags w/ 3D calibrated camera. */
-public class BreakerFiducialPhotonTarget {
+public class BreakerFiducialPhotonTarget extends SubsystemBase {
     private PhotonTrackedTarget assignedTarget;
     private double lastDataUpdate = Timer.getFPGATimestamp();
 
@@ -40,9 +42,6 @@ public class BreakerFiducialPhotonTarget {
         this.targetPose = targetPose;
         this.fiducialID = fiducialID;
         this.cameras = cameras;
-
-        // Will continuously search for fiducial target. 
-        CommandScheduler.getInstance().schedule(new RunCommand(this::findAssignedFiducial));
     }
 
     /** Function for finding best assigned fiducial target. */
@@ -53,7 +52,7 @@ public class BreakerFiducialPhotonTarget {
         for (BreakerPhotonCamera cam: cameras) { // Loops through all cameras
             if (cam.hasTargets()) {
                 for (PhotonTrackedTarget prospTgt: cam.getAllRawTrackedTargets()) { // Goes through all targets found
-                    if (prospTgt.getFiducialId() == fiducialID) {
+                    if (!Objects.isNull(prospTgt) && prospTgt.getFiducialId() == fiducialID) {
                         assignedTargetFound = true;
                         if (!assignedTargetFoundInCycle) { // runs only if bestTgt has not been assigned this cycle
                             bestTgt = prospTgt;
@@ -166,5 +165,10 @@ public class BreakerFiducialPhotonTarget {
     /** @return Ambiguity of pose, from 0 to 1. 0 = most accurate, 1 = least accurate. Anything above 0.2 is likely inaccurate. */
     public double getPoseAmbiguity() {
         return assignedTarget.getPoseAmbiguity();
+    }
+
+    @Override
+    public void periodic() {
+        findAssignedFiducial();
     }
 }
