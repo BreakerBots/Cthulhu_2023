@@ -18,7 +18,7 @@ import frc.robot.BreakerLib.util.math.averages.BreakerAverage;
 import frc.robot.BreakerLib.util.test.suites.BreakerTestBase;
 import frc.robot.BreakerLib.util.test.suites.BreakerTestSuiteDataLogType;
 
-/** Tests the maximum achiveable free velocites of each swerve module's drive motors */
+/** Stress tests your drivetrain and reports any devations from commanded values */
 public class BreakerSwerveDriveStressTest extends BreakerTestBase {
     private Timer timer;
     private BreakerSwerveDrive drivetrain;

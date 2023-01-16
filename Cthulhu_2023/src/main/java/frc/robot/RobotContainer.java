@@ -79,6 +79,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return drivetrainSys.getTestSuite().stressTest(4.0, 4.0, 16.0);
+    return drivetrainSys.getTestSuite().stressTest(4.3, 4.3, 4.0);
   }
 }
