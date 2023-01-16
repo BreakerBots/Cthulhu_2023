@@ -57,7 +57,8 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
      * @param config      - The BreakerSwerveDriveConfig object that holds all
      *                    constants for your drivetrain
      */
-    public BreakerMK4iFalconSwerveModule(WPI_TalonFX driveMotor, WPI_TalonFX turnMotor, WPI_CANCoder turnEncoder,
+    public 
+    BreakerMK4iFalconSwerveModule(WPI_TalonFX driveMotor, WPI_TalonFX turnMotor, WPI_CANCoder turnEncoder,
             BreakerSwerveDriveConfig config, double encoderAbsoluteAngleOffsetDegrees, boolean invertDriveOutput, boolean invertTurnOutput) {
         this.config = config;
         this.turnMotor = turnMotor;

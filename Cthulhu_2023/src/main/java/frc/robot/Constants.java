@@ -76,10 +76,10 @@ public final class Constants {
         public static final Translation2d BL_TRANSLATION = new Translation2d(-0.2635, 0.2635);
         public static final Translation2d BR_TRANSLATION = new Translation2d(-0.2635, -0.2635);
 
-        public static final double FL_ENCODER_OFFSET = -110.918;
-        public static final double FR_ENCODER_OFFSET = 146.074;
-        public static final double BL_ENCODER_OFFSET = -79.893;
-        public static final double BR_ENCODER_OFFSET = 111.182;
+        public static final double FL_ENCODER_OFFSET = -111.270;
+        public static final double FR_ENCODER_OFFSET = -37;
+        public static final double BL_ENCODER_OFFSET = -71.543;
+        public static final double BR_ENCODER_OFFSET = 21.533;
 
 
     }

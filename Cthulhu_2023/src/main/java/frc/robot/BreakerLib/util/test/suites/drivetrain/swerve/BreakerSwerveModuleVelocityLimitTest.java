@@ -14,7 +14,7 @@ import frc.robot.BreakerLib.util.test.suites.BreakerTestSuiteDataLogType;
 /** Tests the maximum achiveable free velocites of each swerve module's drive motors */
 public class BreakerSwerveModuleVelocityLimitTest extends BreakerTestBase{
     private double maxVelocityToTest;
-    private Timer timer;
+    private final Timer timer = new Timer();
     private BreakerSwerveDrive drivetrain;
     private BreakerGenericSwerveModule[] swerveModules;
     private double[] maxVels;

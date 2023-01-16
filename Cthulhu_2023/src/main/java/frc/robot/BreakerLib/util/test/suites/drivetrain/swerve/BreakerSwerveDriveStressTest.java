@@ -20,24 +20,29 @@ import frc.robot.BreakerLib.util.test.suites.BreakerTestSuiteDataLogType;
 
 /** Stress tests your drivetrain and reports any devations from commanded values */
 public class BreakerSwerveDriveStressTest extends BreakerTestBase {
-    private Timer timer;
+    private final Timer timer = new Timer();
     private BreakerSwerveDrive drivetrain;
     private double timeoutSeconds;
     private BreakerAverage[] averageModuleAngleDeltas, averageModuleSpeedDeltas;
     private ArrayList<ArrayList<Pair<Rotation2d, Double>>> averageModuleDeltas;
     private ArrayList<Pair<ChassisSpeeds, Double>> speedsToTestAndStepTimeouts;
+    private ArrayList<Pair<ChassisSpeeds, Double>> speedsToTestAndStepTimeoutQueue;
     private BreakerGenericSwerveModule[] swerveModules;
     public BreakerSwerveDriveStressTest(BreakerSwerveDrive drivetrain, BreakerGenericSwerveModule[] swerveModules, BreakerTestSuiteDataLogType logType, ArrayList<Pair<ChassisSpeeds, Double>> speedsToTestAndStepTimeouts) {
         super(logType, " Swerve_Drive_Stress_Test ", " Test Steps And Timeouts: " + speedsToTestAndStepTimeouts.toString());
         this.drivetrain = drivetrain;
         this.swerveModules = swerveModules;
-        speedsToTestAndStepTimeouts = new ArrayList<>(speedsToTestAndStepTimeouts); 
+        this.speedsToTestAndStepTimeouts = new ArrayList<>(speedsToTestAndStepTimeouts);
+        this.speedsToTestAndStepTimeoutQueue = new ArrayList<>(speedsToTestAndStepTimeouts);
         averageModuleAngleDeltas = new BreakerAverage[swerveModules.length];
         averageModuleSpeedDeltas = new BreakerAverage[swerveModules.length];
         averageModuleDeltas = new ArrayList<>();
         for (int i = 0; i < swerveModules.length; i++) {
            averageModuleAngleDeltas[i] = new BreakerAverage();
            averageModuleSpeedDeltas[i] = new BreakerAverage();
+        }
+        for (Pair<ChassisSpeeds, Double> step: speedsToTestAndStepTimeouts) {
+            timeoutSeconds += step.getSecond();
         }
         addRequirements(drivetrain);
     }
@@ -56,7 +61,7 @@ public class BreakerSwerveDriveStressTest extends BreakerTestBase {
   // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        ChassisSpeeds setSpeeds = speedsToTestAndStepTimeouts.get(0).getFirst();
+        ChassisSpeeds setSpeeds = speedsToTestAndStepTimeoutQueue.get(0).getFirst();
         drivetrain.move(setSpeeds, false);
         SwerveModuleState[] tgtStates = drivetrain.getTargetModuleStates();
         SwerveModuleState[] resultStates = drivetrain.getSwerveModuleStates();
@@ -64,7 +69,7 @@ public class BreakerSwerveDriveStressTest extends BreakerTestBase {
             averageModuleAngleDeltas[i].addValue(tgtStates[i].angle.getRadians() - resultStates[i].angle.getRadians());
             averageModuleSpeedDeltas[i].addValue(tgtStates[i].speedMetersPerSecond - resultStates[i].speedMetersPerSecond);
         }
-        if (timer.get() > speedsToTestAndStepTimeouts.get(0).getSecond()) {
+        if (timer.get() > speedsToTestAndStepTimeoutQueue.get(0).getSecond()) {
             ArrayList<Pair<Rotation2d, Double>> pairList = new ArrayList<>();
             for (int i = 0; i < swerveModules.length; i++) {
                pairList.add(new Pair<Rotation2d, Double>(new Rotation2d(averageModuleAngleDeltas[i].getAverage()), averageModuleSpeedDeltas[i].getAverage()));
@@ -72,7 +77,7 @@ public class BreakerSwerveDriveStressTest extends BreakerTestBase {
                averageModuleSpeedDeltas[i].clear();
             }
             averageModuleDeltas.add(pairList);
-            speedsToTestAndStepTimeouts.remove(0);
+            speedsToTestAndStepTimeoutQueue.remove(0);
             timer.reset();
         }
         periodicLog(String.format("Set Speeds: %s | Target Module States: %s | Resultant Module States %s", setSpeeds.toString(), Arrays.toString(tgtStates), Arrays.toString(resultStates)));
@@ -87,7 +92,7 @@ public class BreakerSwerveDriveStressTest extends BreakerTestBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.get() >= timeoutSeconds;
+    return timer.get() >= timeoutSeconds || speedsToTestAndStepTimeoutQueue.isEmpty();
   }
 
   public static class BreakerSwerveDriveStressTestResult {
@@ -115,7 +120,7 @@ public class BreakerSwerveDriveStressTest extends BreakerTestBase {
             work.append(String.format("(Target Chassis Speeds: %s, Runtime: %s):\n",speedsToTestAndStepTimeouts.get(i).getFirst().toString(), speedsToTestAndStepTimeouts.get(i).getSecond().toString()));
             for (int j = 0; j < swerveModules.length; j++) {
                 Pair<Rotation2d, Double> pair = averageModuleDeltas.get(i).get(j);
-                work.append(String.format("\t(Module Name: %s) - (Angle Delta: %s) (Speed Delta: %s)\n", swerveModules[i].getDeviceName(), averageModuleDeltas.get(i), pair.getFirst().toString(), pair.getSecond().toString()));
+                work.append(String.format("\t(Module Name: %s) - (Angle Delta: %s) (Speed Delta: %s)\n", swerveModules[j].getDeviceName(), pair.getFirst().toString(), pair.getSecond().toString()));
             }
         }
         return work.toString();

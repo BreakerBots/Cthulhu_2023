@@ -88,7 +88,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
       if (Math.abs(targetModuleStates[i].speedMetersPerSecond) < config.getModuleWheelSpeedDeadband()) {
 
         swerveModules[i].stop();
-        //swerveModules[i].setModuleTarget(new SwerveModuleState());
+        
         this.targetModuleStates[i] = swerveModules[i].getModuleTargetState();
 
       } else {
