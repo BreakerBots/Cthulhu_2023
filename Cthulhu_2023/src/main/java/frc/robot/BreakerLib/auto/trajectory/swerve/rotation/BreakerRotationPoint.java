@@ -7,6 +7,7 @@ package frc.robot.BreakerLib.auto.trajectory.swerve.rotation;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /** Rotation with time value. */
+@Deprecated
 public class BreakerRotationPoint {
 
     private Rotation2d rotation;

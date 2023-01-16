@@ -10,6 +10,7 @@ import java.util.function.IntSupplier;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /** A {@link BreakerGenericSwerveRotationSupplier} that can switch between multipul {@link BreakerGenericSwerveRotationSupplier} instances */
+@Deprecated
 public class BreakerSwitchableSwerveRotationSupplier implements BreakerGenericSwerveRotationSupplier {
     private BooleanSupplier boolSwitcher;
     private IntSupplier intSwicher;

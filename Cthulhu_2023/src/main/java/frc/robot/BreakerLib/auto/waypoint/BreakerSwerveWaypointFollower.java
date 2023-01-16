@@ -6,6 +6,7 @@ package frc.robot.BreakerLib.auto.waypoint;
 
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,7 +17,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.BreakerLib.auto.trajectory.swerve.rotation.BreakerSwerveRotationSupplier;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
@@ -28,7 +28,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
     private final Timer timer = new Timer();
     private HolonomicDriveController driveController;
     private BreakerWaypointPath waypointPath;
-    private BreakerSwerveRotationSupplier rotationSupplier;
+    private Supplier<Rotation2d> rotationSupplier;
     private Translation2d prevWp;
     private ArrayList<Translation2d> waypoints;
     private double totalDistance;
@@ -42,11 +42,11 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
         totalDistance = waypointPath.getTotalPathDistance() + waypoints.get(0).getDistance(prevWp);
         this.config = config;
         this.waypointPath = waypointPath;
-        this.rotationSupplier = new BreakerSwerveRotationSupplier(() -> (BreakerMath.getPointAngleRelativeToOtherPoint(prevWp, waypoints.get(0))));
+        rotationSupplier = () -> (BreakerMath.getPointAngleRelativeToOtherPoint(prevWp, waypoints.get(0)));
         driveController = config.getDriveController();
     }
 
-    public BreakerSwerveWaypointFollower(BreakerSwerveWaypointFollowerConfig config, BreakerWaypointPath waypointPath, BreakerSwerveRotationSupplier rotationSupplier) {
+    public BreakerSwerveWaypointFollower(BreakerSwerveWaypointFollowerConfig config, BreakerWaypointPath waypointPath, Supplier<Rotation2d> rotationSupplier) {
         addRequirements(config.getDrivetrain());
         waypoints = new ArrayList<>();
         for (Translation2d wp: waypointPath.getWaypoints()) {
@@ -86,7 +86,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
         double curVel = curVelVec.getMagnatude() * (curVelVec.getVectorRotation().getDegrees() >= 0 ? 1 : -1);
         TrapezoidProfile.State curState = new TrapezoidProfile.State(totalDistance - getTotalRemainingDistance(curPose), curVel);
         TrapezoidProfile profile = new TrapezoidProfile(waypointPath.getConstraints(), new TrapezoidProfile.State(totalDistance, 0), curState);
-        Rotation2d targetRot = rotationSupplier.getRotation(timer.get());
+        Rotation2d targetRot = rotationSupplier.get();
         ChassisSpeeds targetSpeeds = driveController.calculate(curPose, new Pose2d(waypoints.get(0), targetRot), profile.calculate(0.20).velocity, targetRot);
         config.getDrivetrain().move(ChassisSpeeds.fromFieldRelativeSpeeds(targetSpeeds, config.getOdometer().getOdometryPoseMeters().getRotation()), false);
         if (driveController.atReference()) {
@@ -110,6 +110,11 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
     }
     return totalDist;
   }
+
+    /** @return Elapsed path time in seconds. */
+    public double getElapsedTimeSeconds() {
+      return timer.get();
+    }
 
   // Called once the command ends or is interrupted.
   @Override

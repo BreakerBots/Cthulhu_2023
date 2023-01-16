@@ -7,6 +7,7 @@ package frc.robot.BreakerLib.auto.trajectory.swerve.rotation;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /** A base interface for all classes capabe of supplying live rotation setpoint information to a swerve trajectory follower */
+@Deprecated
 public interface BreakerGenericSwerveRotationSupplier {
     public abstract Rotation2d getRotation(double currentTime);
 }

@@ -16,6 +16,7 @@ import frc.robot.BreakerLib.util.math.interpolation.maps.BreakerInterpolatingTre
  * A class that supplies a swerve drive trajectory follower with live rotation
  * setpoint targets
  */
+@Deprecated
 public class BreakerSwerveRotationSupplier implements BreakerGenericSwerveRotationSupplier {
 
     private Function<Double, Rotation2d> externalFunction;

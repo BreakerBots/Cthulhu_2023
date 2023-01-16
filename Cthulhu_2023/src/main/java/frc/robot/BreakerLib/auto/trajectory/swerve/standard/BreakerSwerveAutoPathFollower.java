@@ -6,7 +6,9 @@ package frc.robot.BreakerLib.auto.trajectory.swerve.standard;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.function.Supplier;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 import edu.wpi.first.wpilibj.Timer;
@@ -14,8 +16,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.auto.trajectory.BreakerGenericAutoPathFollower;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerTrajectoryPath;
 import frc.robot.BreakerLib.auto.trajectory.management.conditionalcommand.BreakerConditionalEvent;
-import frc.robot.BreakerLib.auto.trajectory.swerve.rotation.BreakerGenericSwerveRotationSupplier;
-import frc.robot.BreakerLib.auto.trajectory.swerve.rotation.BreakerSwerveRotationSupplier;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 
 /**
@@ -27,7 +27,7 @@ public class BreakerSwerveAutoPathFollower extends CommandBase implements Breake
   private final Timer timer = new Timer();
   private BreakerSwerveAutoPathFollowerConfig config;
   private BreakerTrajectoryPath trajectoryPath;
-  private BreakerGenericSwerveRotationSupplier rotationSupplier;
+  private Supplier<Rotation2d> rotationSupplier;
   private ArrayList<BreakerConditionalEvent> remainingEvents;
 
   /**
@@ -48,7 +48,7 @@ public class BreakerSwerveAutoPathFollower extends CommandBase implements Breake
     addRequirements(config.getDrivetrain());
     this.config = config;
     this.trajectoryPath = trajectoryPath;
-    rotationSupplier = new BreakerSwerveRotationSupplier();
+    rotationSupplier = () -> (trajectoryPath.getBaseTrajectory().sample(timer.get()).poseMeters.getRotation());
     remainingEvents = new ArrayList<>(trajectoryPath.getAttachedConditionalEvents());
   }
 
@@ -66,7 +66,7 @@ public class BreakerSwerveAutoPathFollower extends CommandBase implements Breake
    *                         returns this path follower's rotation setpoint.
    */
   public BreakerSwerveAutoPathFollower(BreakerSwerveAutoPathFollowerConfig config, BreakerTrajectoryPath trajectoryPath,
-      BreakerGenericSwerveRotationSupplier rotationSupplier) {
+      Supplier<Rotation2d> rotationSupplier) {
     addRequirements(config.getDrivetrain());
     this.config = config;
     this.trajectoryPath = trajectoryPath;
@@ -87,7 +87,7 @@ public class BreakerSwerveAutoPathFollower extends CommandBase implements Breake
     State desiredState = trajectoryPath.getBaseTrajectory().sample(curTime);
 
     ChassisSpeeds targetChassisSpeeds = config.getDriveController()
-        .calculate(config.getOdometer().getOdometryPoseMeters(), desiredState, rotationSupplier.getRotation(curTime));
+        .calculate(config.getOdometer().getOdometryPoseMeters(), desiredState, rotationSupplier.get());
 
     config.getDrivetrain().move(targetChassisSpeeds, false);
 
