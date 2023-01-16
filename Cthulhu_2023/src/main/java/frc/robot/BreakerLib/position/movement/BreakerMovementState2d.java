@@ -10,13 +10,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.BreakerLib.physics.Breaker3AxisForces;
 
-/** Represents an object's 2D (linear: XY / Angular: Y) position (m & rad), velocity (m & rad/s), acceleration(m & rad/s^2), and jerk (m & rad /s^3) at a given time. */
+/** Represents an object's 2D (linear: XY / Angular: Y) position (m & rad) 0th through nth derivitives at any given time. */
 public class BreakerMovementState2d {
     private Pose2d position;
     private Breaker3AxisForces[] positionDerivatives;
 
     /**
-     * Creates a new BreakerMovementState2d using a given position, velocity, acceleration, and jerk.
+     * Creates a new BreakerMovementState2d using a position and its 1st through nth derivitives.
      * 
      * @param position
      * @param velocity
