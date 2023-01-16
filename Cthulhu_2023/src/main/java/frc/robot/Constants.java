@@ -78,7 +78,7 @@ public final class Constants {
 
         public static final double FL_ENCODER_OFFSET = -111.270;
         public static final double FR_ENCODER_OFFSET = -37;
-        public static final double BL_ENCODER_OFFSET = -71.543;
+        public static final double BL_ENCODER_OFFSET = -71.191;
         public static final double BR_ENCODER_OFFSET = 21.533;
 
 
