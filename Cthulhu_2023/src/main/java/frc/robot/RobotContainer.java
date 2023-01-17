@@ -34,7 +34,7 @@ public class RobotContainer {
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
   // private final Odometer odometerSys = new Odometer(drivetrainSys);
-  private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.914, 0.322), new Translation2d(0.86, 0.291));
+  private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
 
