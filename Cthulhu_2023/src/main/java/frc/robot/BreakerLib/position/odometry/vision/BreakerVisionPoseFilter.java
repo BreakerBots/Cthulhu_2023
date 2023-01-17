@@ -17,16 +17,17 @@ import frc.robot.BreakerLib.util.math.averages.BreakerWeightedAverage;
 public class BreakerVisionPoseFilter {
     private BreakerFiducialPhotonTarget[] positioningTargets;
     private BreakerAverage avgLatency;
-    private double trustCoef, maxUncertainty;
+    private double trustCoef, maxUncertainty, distanceScailFactor, maxDistance;
+    private boolean usesDistanceScaleing = false;
 
     /**
      * Fiters all predcted poses from visable Fiducial targets through a weaighted
-     * average. Weaights calculated by:
+     * average (Without distance scaleing). Weaights calculated by:
      * trustCoef ^ ((-trustCoef) * poseUncertanty)
      * 
      * @param trustCoef          - Higher values mean more uncertain values are
      *                           trusted less.
-     * @param maxUncertainty      - The highest uncertainty value (0-1) that will
+     * @param maxUncertainty     - The highest uncertainty value (0-1) that will
      *                           still be considered in the pose calculation.
      * @param positioningTargets - The fiducial targets for positioning.
      */
@@ -36,7 +37,39 @@ public class BreakerVisionPoseFilter {
         this.trustCoef = MathUtil.clamp(trustCoef, 1, Double.MAX_VALUE);
         this.maxUncertainty = maxUncertainty;
         avgLatency = new BreakerAverage();
+        usesDistanceScaleing = false;
     }
+
+     /**
+     * Fiters all predcted poses from visable Fiducial targets through a weaighted
+     * average (With distance scaleing). Weaights calculated by:
+     * (trustCoef ^ ((-trustCoef) * poseUncertanty)) - ((targetDistance/maxDistance) * distanceScailFactor)
+     * 
+     * @param trustCoef           - Higher values mean more uncertain values are
+     *                           trusted less.
+     * @param maxUncertainty      - The highest uncertainty value (0-1) that will
+     *                           still be considered in the pose calculation.
+     * @param positioningTargets  - The fiducial targets for positioning.
+     * 
+     * @param distanceScailFactor - Scail factor (0-1) applyed to the targets distance from the camera as a percentage of max distance
+     * 
+     * @param maxDistance - The maximum acceptaible disance of a target from the camera
+     */
+    public BreakerVisionPoseFilter(
+            double trustCoef, double maxUncertainty, 
+            double distanceScailFactor, double maxDistance,
+            BreakerFiducialPhotonTarget... positioningTargets
+        ) {
+        this.positioningTargets = positioningTargets;
+        this.distanceScailFactor = MathUtil.clamp(distanceScailFactor, 1, Double.MAX_VALUE);
+        this.trustCoef = MathUtil.clamp(trustCoef, 1, Double.MAX_VALUE);
+        this.maxDistance = maxDistance;
+        this.maxUncertainty = maxUncertainty;
+        avgLatency = new BreakerAverage();
+        usesDistanceScaleing = true;
+    }
+
+    
 
     /** @return Robot pose with weighted average applied. */
     public Pose3d getFilteredRobotPose3d() {
@@ -50,9 +83,12 @@ public class BreakerVisionPoseFilter {
         for (int i = 0; i < positioningTargets.length; i++) {
             BreakerFiducialPhotonTarget tgt = positioningTargets[i];
             if (tgt.isAssignedTargetVisible()) {
-                if (tgt.getPoseAmbiguity() <= maxUncertainty) {
-                    double weight = MathUtil.clamp(Math.pow(trustCoef, (-trustCoef) * tgt.getPoseAmbiguity()), 0.0,
-                            1.0);
+                if (tgt.getPoseAmbiguity() <= maxUncertainty && (usesDistanceScaleing ? tgt.getDistance() <= maxDistance : true)) {
+                    double weight = Math.pow(trustCoef, (-trustCoef) * tgt.getPoseAmbiguity());
+                    if (usesDistanceScaleing) {
+                        weight -= MathUtil.clamp((tgt.getDistance()/maxDistance) * distanceScailFactor, 0.0, 1.0);
+                    }
+                    weight = MathUtil.clamp(weight, 0.0, 1.0);
                     Pose3d pose = tgt.getRobotPose3d();
                     xAverage.addValue(pose.getX(), weight);
                     yAverage.addValue(pose.getY(), weight);
@@ -85,9 +121,12 @@ public class BreakerVisionPoseFilter {
         for (int i = 0; i < positioningTargets.length; i++) {
             BreakerFiducialPhotonTarget tgt = positioningTargets[i];
             if (tgt.isAssignedTargetVisible()) {
-                if (tgt.getPoseAmbiguity() <= maxUncertainty) {
-                    double weight = MathUtil.clamp(Math.pow(trustCoef, (-trustCoef) * tgt.getPoseAmbiguity()), 0.0,
-                            1.0);
+                if (tgt.getPoseAmbiguity() <= maxUncertainty && (usesDistanceScaleing ? tgt.getDistance() <= maxDistance : true)) {
+                    double weight = Math.pow(trustCoef, (-trustCoef) * tgt.getPoseAmbiguity());
+                    if (usesDistanceScaleing) {
+                        weight -= MathUtil.clamp((tgt.getDistance()/maxDistance) * distanceScailFactor, 0.0, 1.0);
+                    }
+                    weight = MathUtil.clamp(weight, 0.0, 1.0);
                     Pose2d pose = tgt.getRobotPose();
                     xAverage.addValue(pose.getX(), weight);
                     yAverage.addValue(pose.getY(), weight);

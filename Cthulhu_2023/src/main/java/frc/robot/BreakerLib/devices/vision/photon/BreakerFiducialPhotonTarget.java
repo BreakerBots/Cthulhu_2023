@@ -152,7 +152,12 @@ public class BreakerFiducialPhotonTarget extends SubsystemBase {
         return assignedTargetFound && assignedTargetFoundInCycle;
     }
 
-    /** @return Distance from camera to target. */
+    /** @return Distance from camera to target along the floor. */
+    public double getDistance2D() {
+        return assignedTarget.getBestCameraToTarget().getTranslation().getNorm();
+    }
+
+    /** @return 3D Euclidian disance between the camera and the target. */
     public double getDistance() {
         return assignedTarget.getBestCameraToTarget().getTranslation().getNorm();
     }
