@@ -17,6 +17,7 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
+import frc.robot.commands.autos.TestTrajectoryAutoPath;
 import frc.robot.subsystems.Drive;
 
 /**
@@ -79,6 +80,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return drivetrainSys.getTestSuite().stressTest(4.3, 4.3, 4.0);
+    return new TestTrajectoryAutoPath(drivetrainSys, imuSys);
   }
 }

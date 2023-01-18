@@ -36,7 +36,7 @@ public class TestTrajectoryAutoPath extends SequentialCommandGroup {
     BreakerTrajectoryPath traj1 = new BreakerTrajectoryPath(TrajectoryGenerator.generateTrajectory(
         BreakerTrajectoryUtil.toPoseWaypointList(
           new Pose2d(), 
-          new Pose2d(1.5, 0.0, new Rotation2d()
+          new Pose2d(2.25, 0.0, new Rotation2d()
           )),
         new TrajectoryConfig(0.5, 0.5)), true);
     

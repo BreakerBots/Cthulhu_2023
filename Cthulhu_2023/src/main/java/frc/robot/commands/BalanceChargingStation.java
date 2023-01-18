@@ -21,8 +21,8 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    balancePID = new PIDController(0.001, 0, 0);
-    balancePID.setTolerance(2.0, 0.25);
+    balancePID = new PIDController(0.05, 0, 0);
+    balancePID.setTolerance(0.02, 0.05);
     addRequirements(drivetrain);
   }
  
@@ -42,6 +42,7 @@ public class BalanceChargingStation extends CommandBase {
     //   corSpeed = outOfWorkingBoundsSpeedClamp(corSpeed);
     // }
     drivetrain.moveRelativeToField(corSpeed, 0, 0);
+    System.out.printf("\nAngle: %.2f", imu.getPitchDegrees());
   }
 
   // Called once the command ends or is interrupted.
