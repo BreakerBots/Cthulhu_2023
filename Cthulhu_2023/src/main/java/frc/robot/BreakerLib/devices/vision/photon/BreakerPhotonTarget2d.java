@@ -5,6 +5,7 @@
 package frc.robot.BreakerLib.devices.vision.photon;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.photonvision.PhotonUtils;
@@ -52,7 +53,7 @@ public class BreakerPhotonTarget2d extends SubsystemBase {
         this.odometryProvider = odometryProvider;
         this.assignedTargetSupplier = assignedTargetSupplier;
         assignedTarget = assignedTargetSupplier.get();
-        assignedTargetFound = (assignedTarget == null) ? false : true;
+        assignedTargetFound = Objects.isNull(assignedTarget);
         this.targetHeightMeters = targetHeightMeters;
     }
 
@@ -60,7 +61,7 @@ public class BreakerPhotonTarget2d extends SubsystemBase {
     private void findAssignedTarget() {
         if (camera.hasTargets()) {
             assignedTarget = assignedTargetSupplier.get();
-            assignedTargetFound = (assignedTarget == null) ? false : true;
+            assignedTargetFound = Objects.isNull(assignedTarget);
             if (assignedTargetFound) {
                 targetFoundTimestamp = Timer.getFPGATimestamp();
             }
