@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
@@ -34,7 +35,7 @@ public class BalanceChargingStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double corSpeed = balancePID.calculate(imu.getPitchDegrees(), 0.0);
+    double corSpeed = MathUtil.clamp(balancePID.calculate(imu.getPitchDegrees(), 0.0), -0.02, 0.02);
     // if (DriverStation.getAlliance() == Alliance.Red) {
     //   corSpeed *= -1.0;
     // }
