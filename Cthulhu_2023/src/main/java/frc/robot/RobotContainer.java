@@ -17,6 +17,7 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
+import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.autos.TestTrajectoryAutoPath;
 import frc.robot.subsystems.Drive;
 
@@ -65,6 +66,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
     controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
+    controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
   }
 
   private void robotManagerSetup() {

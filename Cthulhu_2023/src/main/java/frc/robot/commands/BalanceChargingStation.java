@@ -22,8 +22,8 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    balancePID = new PIDController(0.05, 0, 0);
-    balancePID.setTolerance(0.02, 0.05);
+    balancePID = new PIDController(0.03, 0.0, 0.0);
+    balancePID.setTolerance(0.2, 0.05);
     addRequirements(drivetrain);
   }
  
@@ -35,7 +35,7 @@ public class BalanceChargingStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double corSpeed = MathUtil.clamp(balancePID.calculate(imu.getPitchDegrees(), 0.0), -0.02, 0.02);
+    double corSpeed = MathUtil.clamp(balancePID.calculate(imu.getPitchDegrees(), 0.0), -0.15, 0.15);
     // if (DriverStation.getAlliance() == Alliance.Red) {
     //   corSpeed *= -1.0;
     // }
