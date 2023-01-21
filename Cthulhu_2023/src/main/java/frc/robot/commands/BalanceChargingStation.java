@@ -40,8 +40,8 @@ public class BalanceChargingStation extends CommandBase {
   @Override
   public void execute() {
     BreakerVector3 vec = imu.getGravityVector();
-    double xSpeed = MathUtil.clamp(xPID.calculate(vec.getMagnatudeX(), 0.0), -0.15, 0.15);
-    double ySpeed = MathUtil.clamp(yPID.calculate(vec.getMagnatudeY(), 0.0), -0.15, 0.15);
+    double xSpeed = MathUtil.clamp(xPID.calculate(vec.getMagnitudeX(), 0.0), -0.15, 0.15);
+    double ySpeed = MathUtil.clamp(yPID.calculate(vec.getMagnitudeY(), 0.0), -0.15, 0.15);
     // if (DriverStation.getAlliance() == Alliance.Red) {
     //   corSpeed *= -1.0;
     // }
@@ -49,7 +49,7 @@ public class BalanceChargingStation extends CommandBase {
     //   corSpeed = outOfWorkingBoundsSpeedClamp(corSpeed);
     // }
     drivetrain.moveRelativeToField(-ySpeed, -xSpeed, 0);
-    System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", vec.getMagnatudeY(), xSpeed, ySpeed);
+    System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", vec.getMagnitudeY(), xSpeed, ySpeed);
   }
 
   // Called once the command ends or is interrupted.

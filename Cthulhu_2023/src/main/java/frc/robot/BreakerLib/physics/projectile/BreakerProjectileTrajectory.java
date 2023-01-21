@@ -41,8 +41,8 @@ public class BreakerProjectileTrajectory {
 
     /** 2D position of target at given time, in seconds (TBD) */
     public Translation2d get2dTranslationAtGivenTime(double time) {
-        double x = getHorizontalDistInGivenAxisAtGivenTime(time, initialVels.getMagnatudeX());
-        double y = getHorizontalDistInGivenAxisAtGivenTime(time, initialVels.getMagnatudeY());
+        double x = getHorizontalDistInGivenAxisAtGivenTime(time, initialVels.getMagnitudeX());
+        double y = getHorizontalDistInGivenAxisAtGivenTime(time, initialVels.getMagnitudeY());
         return new Translation2d(x, y).plus(launchPoint.toTranslation2d());
     }
 
@@ -62,7 +62,7 @@ public class BreakerProjectileTrajectory {
 
     public double getTimeOfFightToTarget(Translation2d targedLocation) {
         return getTimeAtGivenDistance(targedLocation.getDistance(launchPoint.toTranslation2d()),
-                Math.hypot(initialVels.getMagnatudeX(), initialVels.getMagnatudeY()));
+                Math.hypot(initialVels.getMagnitudeX(), initialVels.getMagnitudeY()));
     }
 
     private double getVelInGivenAxisAtGivenTime(double time, double initialForce) {
@@ -71,8 +71,8 @@ public class BreakerProjectileTrajectory {
     }
 
     public BreakerVector3 getForceVectorAtGivenTime(double time) {
-        double x = getVelInGivenAxisAtGivenTime(time, initialVels.getMagnatudeX());
-        double y = getVelInGivenAxisAtGivenTime(time, initialVels.getMagnatudeY());
+        double x = getVelInGivenAxisAtGivenTime(time, initialVels.getMagnitudeX());
+        double y = getVelInGivenAxisAtGivenTime(time, initialVels.getMagnitudeY());
         double z = getVelInGivenAxisAtGivenTime(time, initialVels.getMagnatudeZ());
         return new BreakerVector3(x, y, z);
     }
@@ -81,8 +81,8 @@ public class BreakerProjectileTrajectory {
     public Translation2d getMovingLaunchCorrectionAsNewTargetLocation(ChassisSpeeds fieldRelativeSpeeds,
             Translation2d targetLocation) {
         BreakerProjectileTrajectory trajectory = new BreakerProjectileTrajectory(projectile,
-                new BreakerVector3(initialVels.getMagnatudeX() + fieldRelativeSpeeds.vxMetersPerSecond,
-                        initialVels.getMagnatudeY() + fieldRelativeSpeeds.vyMetersPerSecond, initialVels.getMagnatudeZ()),
+                new BreakerVector3(initialVels.getMagnitudeX() + fieldRelativeSpeeds.vxMetersPerSecond,
+                        initialVels.getMagnitudeY() + fieldRelativeSpeeds.vyMetersPerSecond, initialVels.getMagnatudeZ()),
                 launchPoint);
         Translation2d correctedLocation = targetLocation
                 .minus(trajectory.get2dTranslationAtGivenTime(getTimeOfFightToTarget(targetLocation)));
@@ -93,8 +93,8 @@ public class BreakerProjectileTrajectory {
     public BreakerVector3 getMovingLaunchCorrectionAsNewLaunchForces(ChassisSpeeds fieldRelativeSpeeds,
             Translation2d targetLocation) {
         BreakerProjectileTrajectory trajectory = new BreakerProjectileTrajectory(projectile,
-                new BreakerVector3(initialVels.getMagnatudeX() + fieldRelativeSpeeds.vxMetersPerSecond,
-                        initialVels.getMagnatudeY() + fieldRelativeSpeeds.vyMetersPerSecond, initialVels.getMagnatudeZ()),
+                new BreakerVector3(initialVels.getMagnitudeX() + fieldRelativeSpeeds.vxMetersPerSecond,
+                        initialVels.getMagnitudeY() + fieldRelativeSpeeds.vyMetersPerSecond, initialVels.getMagnatudeZ()),
                 launchPoint);
         double baseExpectedImpactTime = getTimeOfFightToTarget(targetLocation);
         BreakerVector3 baseExpectedImpactVec = getForceVectorAtGivenTime(baseExpectedImpactTime);
