@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import frc.robot.BreakerLib.devices.sensors.BreakerGenericMagnetometer;
 import frc.robot.BreakerLib.devices.sensors.imu.BreakerGenericIMU;
+import frc.robot.BreakerLib.physics.vector.BreakerVector3;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
@@ -188,6 +189,12 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
   public int getPigeonUpTime() {
 
     return pigeon.getUpTime();
+  }
+
+  public BreakerVector3 getGravityVector() {
+    double[] gravVec = new double[3];
+    pigeon.getGravityVector(gravVec);
+    return new BreakerVector3(gravVec[0], gravVec[1], gravVec[2]);
   }
 
   @Override

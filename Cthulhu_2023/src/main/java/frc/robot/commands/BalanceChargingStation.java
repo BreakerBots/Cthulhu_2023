@@ -8,6 +8,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
+import frc.robot.BreakerLib.physics.vector.BreakerVector2;
+import frc.robot.BreakerLib.physics.vector.BreakerVector3;
 import frc.robot.subsystems.Drive;
 
 public class BalanceChargingStation extends CommandBase {
@@ -22,8 +24,8 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    balancePID = new PIDController(0.03, 0.0, 0.0);
-    balancePID.setTolerance(0.2, 0.05);
+    balancePID = new PIDController(0.4, 0.0, 0.0);
+    balancePID.setTolerance(0.02, 0.05);
     addRequirements(drivetrain);
   }
  
@@ -35,15 +37,17 @@ public class BalanceChargingStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double corSpeed = MathUtil.clamp(balancePID.calculate(imu.getPitchDegrees(), 0.0), -0.15, 0.15);
+    BreakerVector3 vec = imu.getGravityVector();
+    double corSpeed = MathUtil.clamp(balancePID.calculate(vec.getMagnatudeY(), 0.0), -0.15, 0.15);
     // if (DriverStation.getAlliance() == Alliance.Red) {
     //   corSpeed *= -1.0;
     // }
     // if (outOfWorkingBounds()) {
     //   corSpeed = outOfWorkingBoundsSpeedClamp(corSpeed);
     // }
-    drivetrain.moveRelativeToField(corSpeed, 0, 0);
-    System.out.printf("\nAngle: %.2f", imu.getPitchDegrees());
+    drivetrain.moveRelativeToField(-corSpeed, 0, 0);
+    System.out.printf("\nAcc: %.2f, Spd: %.2f", vec.getMagnatudeY(), corSpeed);
+    System.out.println();
   }
 
   // Called once the command ends or is interrupted.
@@ -94,6 +98,6 @@ public class BalanceChargingStation extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return /*outOfBounds() ||*/ balancePID.atSetpoint();
+    return /*outOfBounds() ||balancePID.atSetpoint() */ false;
   }
 }
