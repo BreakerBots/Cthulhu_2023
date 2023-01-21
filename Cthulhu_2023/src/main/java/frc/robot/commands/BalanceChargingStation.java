@@ -15,7 +15,7 @@ import frc.robot.subsystems.Drive;
 public class BalanceChargingStation extends CommandBase {
   /** Creates a new BalanceChargingStation. */
   private BreakerPigeon2 imu;
-  private PIDController balancePID;
+  private PIDController xPID , yPID;
   //private Odometer odometer;
   private Drive drivetrain;
   
@@ -24,8 +24,10 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    balancePID = new PIDController(0.4, 0.0, 0.0);
-    balancePID.setTolerance(0.02, 0.05);
+    xPID = new PIDController(0.4, 0.0, 0.0);
+    yPID = new PIDController(0.4, 0.0, 0.0);
+    xPID.setTolerance(0.02, 0.05);
+    yPID.setTolerance(0.02, 0.05);
     addRequirements(drivetrain);
   }
  
@@ -38,16 +40,16 @@ public class BalanceChargingStation extends CommandBase {
   @Override
   public void execute() {
     BreakerVector3 vec = imu.getGravityVector();
-    double corSpeed = MathUtil.clamp(balancePID.calculate(vec.getMagnatudeY(), 0.0), -0.15, 0.15);
+    double xSpeed = MathUtil.clamp(xPID.calculate(vec.getMagnatudeX(), 0.0), -0.15, 0.15);
+    double ySpeed = MathUtil.clamp(yPID.calculate(vec.getMagnatudeY(), 0.0), -0.15, 0.15);
     // if (DriverStation.getAlliance() == Alliance.Red) {
     //   corSpeed *= -1.0;
     // }
     // if (outOfWorkingBounds()) {
     //   corSpeed = outOfWorkingBoundsSpeedClamp(corSpeed);
     // }
-    drivetrain.moveRelativeToField(-corSpeed, 0, 0);
-    System.out.printf("\nAcc: %.2f, Spd: %.2f", vec.getMagnatudeY(), corSpeed);
-    System.out.println();
+    drivetrain.moveRelativeToField(-ySpeed, -xSpeed, 0);
+    System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", vec.getMagnatudeY(), xSpeed, ySpeed);
   }
 
   // Called once the command ends or is interrupted.
