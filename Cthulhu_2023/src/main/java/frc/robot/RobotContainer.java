@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
+import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilter;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerTeleopSwerveDriveController;
 import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
@@ -20,6 +21,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.autos.TestTrajectoryAutoPath;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Odometer;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,7 +37,7 @@ public class RobotContainer {
   private final BreakerXboxController controllerSys = new BreakerXboxController(0);
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
-  // private final Odometer odometerSys = new Odometer(drivetrainSys);
+  //private final Odometer odometerSys = new Odometer(drivetrainSys, new BreakerVisionPoseFilter(5.0, 0.35, Constants.Vision.AprilTag.APRILTAGS));
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
