@@ -4,10 +4,47 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+
 /** Add your docs here. */
 public class Arm {
+    private WPI_TalonFX sholderMotor, elbowMotor; 
+    private PIDController shoulderPID, elbowPID;
+    private ArmFeedforward shoulderFF, elbowFF;
+    private ArmState targetState;
     
-    public Arm() {
+    public enum ArmState {
+        PLACE_HIGH_CONE(0.0, 0.0),
+        PLACE_HIGH_CUBE(0.0, 0.0),
+        PLACE_MEDIUM_CONE(0.0, 0.0),
+        PLACE_MEDIUM_CUBE(0.0, 0.0),
+        PLACE_LOW(0.0, 0.0),
+        PICKUP_HIGH(0.0, 0.0),
+        PICKUP_LOW(0.0, 0.0),
+        BASE_CARRY(0.0, 0.0),
+        STOW_ARM(0.0, 0.0);
 
+        ArmState(double shoulderAngle, double elbowAngle) {
+            this.shoulderAngle = shoulderAngle;
+            this.elbowAngle = elbowAngle;
+        }
+
+        public double shoulderAngle, elbowAngle;
+    }
+    public Arm() {
+        sholderMotor = new WPI_TalonFX(0);
+        elbowMotor = new WPI_TalonFX(0);
+        shoulderPID = new PIDController(0, 0, 0);
+        shoulderFF = new ArmFeedforward(0, 0, 0);
+        shoulderFF = new ArmFeedforward(0, 0, 0);
+        elbowPID = new PIDController(0, 0, 0);
+    }
+
+    public void setTargetState(ArmState targetState) {
+        
     }
 }

@@ -5,7 +5,6 @@
 package frc.robot.BreakerLib.auto.waypoint;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -16,8 +15,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.math.BreakerMath;
@@ -89,6 +86,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
         Rotation2d targetRot = rotationSupplier.get();
         ChassisSpeeds targetSpeeds = driveController.calculate(curPose, new Pose2d(waypoints.get(0), targetRot), profile.calculate(0.20).velocity, targetRot);
         config.getDrivetrain().move(ChassisSpeeds.fromFieldRelativeSpeeds(targetSpeeds, config.getOdometer().getOdometryPoseMeters().getRotation()), false);
+        System.out.println(profile.calculate(0.20).velocity);
         if (driveController.atReference()) {
             prevWp = waypoints.remove(0);
         }

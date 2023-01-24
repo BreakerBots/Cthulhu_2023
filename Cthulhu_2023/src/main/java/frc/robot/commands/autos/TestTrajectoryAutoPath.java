@@ -9,9 +9,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.BreakerLib.auto.trajectory.BreakerTrajectoryUtil;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerStartTrajectoryPath;
@@ -34,11 +36,12 @@ public class TestTrajectoryAutoPath extends SequentialCommandGroup {
         new HolonomicDriveController(new PIDController(2.0, 0.0, 0.1), new PIDController(2.0, 0.0, 0.1), new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0))));
 
     BreakerTrajectoryPath traj1 = new BreakerTrajectoryPath(TrajectoryGenerator.generateTrajectory(
-        BreakerTrajectoryUtil.toPoseWaypointList(
-          new Pose2d(), 
-          new Pose2d(2.25, 0.0, new Rotation2d()
-          )),
-        new TrajectoryConfig(0.5, 0.5)), true);
+        new Pose2d(),
+        BreakerTrajectoryUtil.toTranslationWaypointList(
+          new Translation2d(0, Units.feetToMeters(4)),
+          new Translation2d(Units.feetToMeters(14), Units.feetToMeters(4))),
+          new Pose2d(new Translation2d(Units.feetToMeters(14), Units.feetToMeters(0)), Rotation2d.fromDegrees(-90)),
+        new TrajectoryConfig(0.25, 0.5)), true);
     
         
     addCommands(

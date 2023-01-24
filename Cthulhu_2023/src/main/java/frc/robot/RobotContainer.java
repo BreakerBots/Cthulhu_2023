@@ -20,10 +20,11 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.autos.GetToTheChargingStation;
 import frc.robot.commands.autos.TestTrajectoryAutoPath;
 import frc.robot.subsystems.Drive;
 //import frc.robot.subsystems.Odometer;
-import frc.robot.subsystems.VisionTest;
+//import frc.robot.subsystems.VisionTest;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -43,7 +44,7 @@ public class RobotContainer {
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-  private VisionTest vt = new VisionTest();
+  //private VisionTest vt = new VisionTest();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
