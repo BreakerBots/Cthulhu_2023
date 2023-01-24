@@ -9,11 +9,11 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
-public class Arm {
+public class Arm extends SubsystemBase {
     private WPI_TalonFX sholderMotor, elbowMotor; 
-    private PIDController shoulderPID, elbowPID;
     private ArmFeedforward shoulderFF, elbowFF;
     private ArmState targetState;
     
@@ -35,16 +35,20 @@ public class Arm {
 
         public double shoulderAngle, elbowAngle;
     }
+
     public Arm() {
         sholderMotor = new WPI_TalonFX(0);
         elbowMotor = new WPI_TalonFX(0);
-        shoulderPID = new PIDController(0, 0, 0);
         shoulderFF = new ArmFeedforward(0, 0, 0);
         shoulderFF = new ArmFeedforward(0, 0, 0);
-        elbowPID = new PIDController(0, 0, 0);
     }
 
     public void setTargetState(ArmState targetState) {
+        this.targetState = targetState;
+    }
+
+    @Override
+    public void periodic() {
         
     }
 }

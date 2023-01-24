@@ -7,6 +7,7 @@ package frc.robot.BreakerLib.auto.waypoint;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -84,7 +85,9 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
         TrapezoidProfile.State curState = new TrapezoidProfile.State(totalDistance - getTotalRemainingDistance(curPose), curVel);
         TrapezoidProfile profile = new TrapezoidProfile(waypointPath.getConstraints(), new TrapezoidProfile.State(totalDistance, 0), curState);
         Rotation2d targetRot = rotationSupplier.get();
-        ChassisSpeeds targetSpeeds = driveController.calculate(curPose, new Pose2d(waypoints.get(0), targetRot), profile.calculate(0.20).velocity, targetRot);
+        double profiledVel = profile.calculate(0.20).velocity;
+        ChassisSpeeds targetSpeeds = driveController.calculate(curPose, new Pose2d(waypoints.get(0), targetRot), profiledVel, targetRot);
+        targetSpeeds = new ChassisSpeeds(MathUtil.clamp(targetSpeeds.vxMetersPerSecond, -profiledVel, profiledVel), MathUtil.clamp(targetSpeeds.vyMetersPerSecond, -profiledVel, profiledVel), targetSpeeds.omegaRadiansPerSecond);
         config.getDrivetrain().move(ChassisSpeeds.fromFieldRelativeSpeeds(targetSpeeds, config.getOdometer().getOdometryPoseMeters().getRotation()), false);
         System.out.println(profile.calculate(0.20).velocity);
         if (driveController.atReference()) {
