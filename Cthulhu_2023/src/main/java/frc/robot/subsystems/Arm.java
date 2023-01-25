@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
-    private WPI_TalonFX sholderMotor, elbowMotor; 
+    private WPI_TalonFX shoulderMotor, elbowMotor; 
     private ArmFeedforward shoulderFF, elbowFF;
     private ArmState targetState;
     
@@ -37,7 +37,7 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        sholderMotor = new WPI_TalonFX(0);
+        shoulderMotor = new WPI_TalonFX(0);
         elbowMotor = new WPI_TalonFX(0);
         shoulderFF = new ArmFeedforward(0, 0, 0);
         shoulderFF = new ArmFeedforward(0, 0, 0);
