@@ -41,7 +41,7 @@ public class BreakerTurretController {
         Rotation2d azAng = BreakerMath.getPointAngleRelativeToOtherPoint(projectileLaunchPointRelativeToField.toTranslation2d(), targetPointRelativeToField.toTranslation2d());
         Rotation2d altAng = firingSolution.getVectorRotation();
 
-       return new BreakerTurretState(azAng, altAng, firingSolution.getMagnatude());
+       return new BreakerTurretState(azAng, altAng, firingSolution.getMagnitude());
     }
 
     

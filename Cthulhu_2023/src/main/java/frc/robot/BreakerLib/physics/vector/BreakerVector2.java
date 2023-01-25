@@ -64,7 +64,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
     /** 
      * @return double
      */
-    public double getMagnatude() {
+    public double getMagnitude() {
         return magnatude;
     }
 
