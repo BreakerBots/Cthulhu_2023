@@ -24,8 +24,8 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    xPID = new PIDController(0.4, 0.0, 0.0);
-    yPID = new PIDController(0.4, 0.0, 0.0);
+    xPID = new PIDController(0.3, 0.0, 0.0);
+    yPID = new PIDController(0.3, 0.0, 0.0);
     xPID.setTolerance(0.02, 0.05);
     yPID.setTolerance(0.02, 0.05);
     addRequirements(drivetrain);

@@ -28,26 +28,28 @@ import frc.robot.subsystems.Drive;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TestTrajectoryAutoPath extends SequentialCommandGroup {
-  
+
   /** Creates a new TestAutoPath. */
   public TestTrajectoryAutoPath(Drive drivetrain, BreakerPigeon2 imu) {
-    
-    BreakerSwerveAutoPathFollowerConfig swerveFollowerConfig = new BreakerSwerveAutoPathFollowerConfig(drivetrain, 
-        new HolonomicDriveController(new PIDController(2.0, 0.0, 0.1), new PIDController(2.0, 0.0, 0.1), new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0))));
+
+    BreakerSwerveAutoPathFollowerConfig swerveFollowerConfig = new BreakerSwerveAutoPathFollowerConfig(drivetrain,
+        new HolonomicDriveController(new PIDController(2.0, 0.0, 0.1), new PIDController(2.0, 0.0, 0.1),
+            new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0))));
 
     BreakerTrajectoryPath traj1 = new BreakerTrajectoryPath(TrajectoryGenerator.generateTrajectory(
         new Pose2d(),
         BreakerTrajectoryUtil.toTranslationWaypointList(
-          new Translation2d(0, Units.feetToMeters(4)),
-          new Translation2d(Units.feetToMeters(14), Units.feetToMeters(4))),
-          new Pose2d(new Translation2d(Units.feetToMeters(14), Units.feetToMeters(0)), Rotation2d.fromDegrees(-90)),
-        new TrajectoryConfig(0.25, 0.5)), true);
-    
-        
+            new Translation2d(0, Units.feetToMeters(4)),
+            new Translation2d(Units.feetToMeters(14), Units.feetToMeters(4)),
+            new Translation2d(Units.feetToMeters(14), Units.feetToMeters(0)),
+            new Translation2d(Units.feetToMeters(10), Units.feetToMeters(0))
+            ),
+            new Pose2d(new Translation2d(Units.feetToMeters(7), Units.feetToMeters(0)), Rotation2d.fromDegrees(-180)),
+        new TrajectoryConfig(1.0, .75)), true);
+
     addCommands(
-      new BreakerStartTrajectoryPath(drivetrain, new Pose2d()),
-      new BreakerSwerveAutoPathFollower(swerveFollowerConfig, traj1),
-      new BalanceChargingStation(drivetrain, imu)
-    );
+        new BreakerStartTrajectoryPath(drivetrain, new Pose2d()),
+        new BreakerSwerveAutoPathFollower(swerveFollowerConfig, traj1),
+        new BalanceChargingStation(drivetrain, imu));
   }
 }

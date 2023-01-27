@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerGenericGamepad;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
+import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
 import frc.robot.BreakerLib.util.math.functions.BreakerGenericMathFunction;
 
@@ -213,8 +214,10 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
 
     // Speed curves are applied if overrides are not active.
     if (usesCurves) {
-      forward = linearSpeedCurve.getSignRelativeValueAtX(forward);
-      horizontal = linearSpeedCurve.getSignRelativeValueAtX(horizontal);
+      BreakerVector2 vec = new BreakerVector2(horizontal, forward);
+      BreakerVector2 corVec = BreakerVector2.fromForceAndRotation(vec.getVectorRotation(),  linearSpeedCurve.getSignRelativeValueAtX(vec.getMagnitude()));
+      forward = corVec.getMagnitudeY();
+      horizontal = corVec.getMagnitudeX();
       turn = turnSpeedCurve.getSignRelativeValueAtX(turn);
     }
 

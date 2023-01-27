@@ -41,12 +41,12 @@ public class BreakerMovementState2d {
     }
 
     public Pose2d estimateFuturePose(double deltaTimeSeconds) {
-        double prevDirX = positionDerivatives[positionDerivatives.length - 1].getLinearForces().getMagnatudeX();
-        double prevDirY = positionDerivatives[positionDerivatives.length - 1].getLinearForces().getMagnatudeY();
+        double prevDirX = positionDerivatives[positionDerivatives.length - 1].getLinearForces().getMagnitudeX();
+        double prevDirY = positionDerivatives[positionDerivatives.length - 1].getLinearForces().getMagnitudeY();
         double prevDirT = positionDerivatives[positionDerivatives.length - 1].getAngularForce();
         for (int i = positionDerivatives.length - 1; i >= 0; i++) {
-            prevDirX = positionDerivatives[i].getLinearForces().getMagnatudeX() + (prevDirX * deltaTimeSeconds);
-            prevDirY = positionDerivatives[i].getLinearForces().getMagnatudeY() + (prevDirY * deltaTimeSeconds);
+            prevDirX = positionDerivatives[i].getLinearForces().getMagnitudeX() + (prevDirX * deltaTimeSeconds);
+            prevDirY = positionDerivatives[i].getLinearForces().getMagnitudeY() + (prevDirY * deltaTimeSeconds);
             prevDirT = positionDerivatives[i].getAngularForce() + (prevDirT * deltaTimeSeconds);
         }
         double x = position.getX() + (prevDirX * deltaTimeSeconds);
