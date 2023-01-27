@@ -44,6 +44,7 @@ public class GetToTheChargingStation extends SequentialCommandGroup {
         BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
         addRequirements(drive);
         addCommands(
+            // Start at (0, 0) with current angle
                 new BreakerStartAutoPath(drive, new Pose2d(new Translation2d(), drive.getOdometryPoseMeters().getRotation())),
                 new BreakerSwerveWaypointFollower(config, wpp)
                 );
