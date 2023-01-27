@@ -21,9 +21,10 @@ import frc.robot.subsystems.Drive;
 public class TestWaypointAutoPath extends SequentialCommandGroup {
   /** Creates a new TestWaypointAutoPath. */
   public TestWaypointAutoPath(Drive drive) {
-    HolonomicDriveController driveController = new HolonomicDriveController(new PIDController(2.0, 0.0, 0.1),
-        new PIDController(2.0, 0.0, 0.1),
-        new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0)));
+    ProfiledPIDController anglePID = new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0));
+    PIDController drivePID = new PIDController(2, 0, 0.1);
+    HolonomicDriveController driveController = new HolonomicDriveController(drivePID, drivePID, anglePID);
+    
     BreakerWaypointPath wpp = new BreakerWaypointPath(new TrapezoidProfile.Constraints(0, 0), new Translation2d(0, 0),
         new Translation2d(1, 0), new Translation2d(0, 0.5));
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
