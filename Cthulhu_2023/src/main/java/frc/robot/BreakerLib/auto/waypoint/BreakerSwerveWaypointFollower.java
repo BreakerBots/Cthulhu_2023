@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -31,6 +32,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
   private ArrayList<Translation2d> waypoints;
   private double totalDistance;
   private int curTargetWaypointIndex = 0;
+  private PIDController con = new PIDController(2.0, 0.0, 0.0);
 
   /**
    * Create a BreakerSwerveWaypointFollower with no rotation supplier.
@@ -102,33 +104,28 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
   public void execute() {
     // Current values
     Pose2d curPose = config.getOdometer().getOdometryPoseMeters();
-    BreakerVector2 curVelVec = config.getOdometer().getMovementState().getDerivativefromIndex(0).getLinearForces(); // 2d velocity vector
-    double curVel = curVelVec.getMagnitude() * (curVelVec.getVectorRotation().getDegrees() >= 0 ? 1 : -1); // Current velocity in m/s
-    TrapezoidProfile.State curState = new TrapezoidProfile.State(totalDistance - getTotalRemainingDistance(curPose),
-        curVel);
+    // BreakerVector2 curVelVec = config.getOdometer().getMovementState().getDerivativefromIndex(0).getLinearForces(); // 2d velocity vector
+    // double curVel = curVelVec.getMagnitude() * (curVelVec.getVectorRotation().getDegrees() >= 0 ? 1 : -1); // Current velocity in m/s
+    // TrapezoidProfile.State curState = new TrapezoidProfile.State(totalDistance - getTotalRemainingDistance(curPose),
+    //     curVel);
 
     // Next chassis speeds are generated from updated trapezoid profile
-    TrapezoidProfile profile = new TrapezoidProfile(waypointPath.getConstraints(),
-        new TrapezoidProfile.State(totalDistance, 0), curState);
     Rotation2d targetRot = rotationSupplier.get();
-    double profiledVel = profile.calculate(0.20).velocity;
-    ChassisSpeeds targetSpeeds = driveController.calculate(curPose, new Pose2d(waypoints.get(curTargetWaypointIndex), targetRot),
-        profiledVel, targetRot);
-    targetSpeeds = new ChassisSpeeds(
-        MathUtil.clamp(targetSpeeds.vxMetersPerSecond, -waypointPath.getConstraints().maxVelocity,
-            waypointPath.getConstraints().maxVelocity),
-        MathUtil.clamp(targetSpeeds.vyMetersPerSecond, -waypointPath.getConstraints().maxVelocity,
-            waypointPath.getConstraints().maxVelocity),
-        targetSpeeds.omegaRadiansPerSecond);
+    // ChassisSpeeds targetSpeeds = driveController.calculate(curPose, new Pose2d(waypoints.get(curTargetWaypointIndex), targetRot),
+    //     0, targetRot);
+    Translation2d errTrans = waypoints.get(curTargetWaypointIndex).minus(curPose.getTranslation());
+    double tgtVel = -con.calculate(errTrans.getNorm(), 0);
+    BreakerVector2 vec = BreakerVector2.fromTranslation(errTrans).getUnitVector().times(MathUtil.clamp(tgtVel, -waypointPath.getConstraints().maxVelocity, waypointPath.getConstraints().maxVelocity));
+    ChassisSpeeds targetSpeeds = new ChassisSpeeds(vec.getMagnitudeX(), vec.getMagnitudeY(),0);
 
     // Robot is moved
     config.getDrivetrain().move(
         ChassisSpeeds.fromFieldRelativeSpeeds(targetSpeeds, config.getOdometer().getOdometryPoseMeters().getRotation()),
         false);
-    System.out.println("\n\n" +targetSpeeds + " | \n" + waypoints );
+    System.out.println("\n\n" +targetSpeeds + " | \n" + waypoints + " | \n" + curPose);
 
     // Previous waypoint is updated.
-    if (driveController.atReference()) {
+    if (errTrans.getNorm() <= 0.05 ) {
       prevWp = waypoints.get(curTargetWaypointIndex);
       curTargetWaypointIndex++;
       System.out.println("WP PASSED");
@@ -164,6 +161,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     BreakerLog.logBreakerLibEvent("A BreakerSwerveWaypointFollower instance has ended");
+    config.getDrivetrain().stop();
   }
 
   // Returns true when the command should end.
