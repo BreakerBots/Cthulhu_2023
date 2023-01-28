@@ -34,17 +34,16 @@ public class TestTrajectoryAutoPath extends SequentialCommandGroup {
 
     BreakerSwerveAutoPathFollowerConfig swerveFollowerConfig = new BreakerSwerveAutoPathFollowerConfig(drivetrain,
         new HolonomicDriveController(new PIDController(2.0, 0.0, 0.1), new PIDController(2.0, 0.0, 0.1),
-            new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0))));
+        new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0))));
 
     BreakerTrajectoryPath traj1 = new BreakerTrajectoryPath(TrajectoryGenerator.generateTrajectory(
-        new Pose2d(),
+        new Pose2d(), // (0, 0). Start at left Tag 3 grid
         BreakerTrajectoryUtil.toTranslationWaypointList(
-            new Translation2d(0, Units.feetToMeters(4)),
-            new Translation2d(Units.feetToMeters(14), Units.feetToMeters(4)),
             new Translation2d(Units.feetToMeters(14), Units.feetToMeters(0)),
-            new Translation2d(Units.feetToMeters(10), Units.feetToMeters(0))
+            new Translation2d(Units.feetToMeters(1.5), Units.feetToMeters(0)),
+            new Translation2d(Units.feetToMeters(1.5), Units.feetToMeters(4))
             ),
-            new Pose2d(new Translation2d(Units.feetToMeters(7), Units.feetToMeters(0)), Rotation2d.fromDegrees(-180)),
+            new Pose2d(new Translation2d(Units.feetToMeters(7), Units.feetToMeters(0)), Rotation2d.fromDegrees(0)),
         new TrajectoryConfig(1.0, .75)), true);
 
     addCommands(

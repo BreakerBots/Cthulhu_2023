@@ -22,6 +22,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.autos.GetToTheChargingStation;
 import frc.robot.commands.autos.TestTrajectoryAutoPath;
+import frc.robot.commands.autos.TestWaypointAutoPath;
 import frc.robot.subsystems.Drive;
 //import frc.robot.subsystems.Odometer;
 //import frc.robot.subsystems.VisionTest;
@@ -89,6 +90,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new TestTrajectoryAutoPath(drivetrainSys, imuSys);
+    return new TestWaypointAutoPath(drivetrainSys);
   }
 }
