@@ -5,27 +5,27 @@
 package frc.robot.BreakerLib.auto.waypoint;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
-
+import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 
 /** Add your docs here. */
 public class BreakerSwerveWaypointFollowerConfig {
-    private HolonomicDriveController driveController;
+    private BreakerHolonomicDriveController driveController;
     private BreakerSwerveDrive drivetrain;
     private BreakerGenericOdometer odometer;
 
-    public BreakerSwerveWaypointFollowerConfig(BreakerSwerveDrive drivetrain, HolonomicDriveController driveController) {
+    public BreakerSwerveWaypointFollowerConfig(BreakerSwerveDrive drivetrain, BreakerHolonomicDriveController driveController) {
         this(drivetrain, drivetrain, driveController);
     }
 
-    public BreakerSwerveWaypointFollowerConfig(BreakerSwerveDrive drivetrain, BreakerGenericOdometer odometer, HolonomicDriveController driveController) {
+    public BreakerSwerveWaypointFollowerConfig(BreakerSwerveDrive drivetrain, BreakerGenericOdometer odometer, BreakerHolonomicDriveController driveController) {
         this.driveController = driveController;
         this.drivetrain = drivetrain;
         this.odometer = odometer;
     }
 
-    public HolonomicDriveController getDriveController() {
+    public BreakerHolonomicDriveController getDriveController() {
         return driveController;
     }
 

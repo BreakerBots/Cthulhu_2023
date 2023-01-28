@@ -13,12 +13,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public class BreakerWaypointPath {
     private final double maxVelocity;
-    private final boolean stopAtEnd;
     private final Translation2d[] waypoints;
 
-    public BreakerWaypointPath(double maxVelocity, boolean stopAtEnd, Translation2d... waypoints) {
+    public BreakerWaypointPath(double maxVelocity, Translation2d... waypoints) {
         this.maxVelocity = maxVelocity;
-        this.stopAtEnd = stopAtEnd;
         this.waypoints = waypoints;
     }
 
@@ -31,9 +29,9 @@ public class BreakerWaypointPath {
         return dist;
     }
 
-    /** @return Max vel and accel constraints from trapezoid profile. */
+    /** @return Max vel constraint of path. */
     public double getMaxVelocity() {
-        return cons;
+        return maxVelocity;
     }
 
     /** @return Array of 2d waypoints. */
@@ -56,9 +54,7 @@ public class BreakerWaypointPath {
             }
         }
         return new BreakerWaypointPath(
-                new TrapezoidProfile.Constraints(
-                        (constraints.maxVelocity + other.constraints.maxVelocity) / 2.0,
-                        (constraints.maxAcceleration + other.constraints.maxAcceleration) / 2.0),
-                newWaypoints);
+            (maxVelocity + other.maxVelocity) / 2.0,
+            newWaypoints);
     }
 }

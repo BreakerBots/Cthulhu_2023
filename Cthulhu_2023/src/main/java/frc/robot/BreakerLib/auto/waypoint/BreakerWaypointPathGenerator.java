@@ -27,7 +27,7 @@ public class BreakerWaypointPathGenerator {
      * @param waypoints
      * @return
      */
-    public static BreakerWaypointPath generateWaypointPath(double maxVelocity, double maxAcceleration, double interpolationResolution, Translation2d... waypoints) {
+    public static BreakerWaypointPath generateWaypointPath(double maxVelocity, double interpolationResolution, Translation2d... waypoints) {
         BreakerLegrangeInterpolateingTreeMap<Double, BreakerInterpolatableDoubleArray>  interMap = new BreakerLegrangeInterpolateingTreeMap<>();
         ArrayList<Translation2d> newWaypoints = new ArrayList<>();
         double dt = 1.0/interpolationResolution;
@@ -41,24 +41,24 @@ public class BreakerWaypointPathGenerator {
             newWaypoints.add(new Translation2d(interArr[0], interArr[1]));
         }
 
-        return new BreakerWaypointPath(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration), newWaypoints.toArray(new Translation2d[newWaypoints.size()]));
+        return new BreakerWaypointPath(maxVelocity, newWaypoints.toArray(new Translation2d[newWaypoints.size()]));
     }
 
-    public static BreakerWaypointPath findWaypointPath(double pathSearchTimeoutSeconds, double maxVelocity, double maxAcceleration, Translation2d startPoint, Translation2d endPoint, BreakerPathfinderNodeGrid nodeGrid) throws Exception {
+    public static BreakerWaypointPath findWaypointPath(double pathSearchTimeoutSeconds, double maxVelocity, Translation2d startPoint, Translation2d endPoint, BreakerPathfinderNodeGrid nodeGrid) throws Exception {
         try {
-            BreakerPathfinder pathfinder = new BreakerPathfinder(maxAcceleration, nodeGrid.getInstance(nodeGrid.getNodeFromPosition(startPoint), nodeGrid.getNodeFromPosition(startPoint)));
+            BreakerPathfinder pathfinder = new BreakerPathfinder(pathSearchTimeoutSeconds, nodeGrid.getInstance(nodeGrid.getNodeFromPosition(startPoint), nodeGrid.getNodeFromPosition(startPoint)));
             BreakerPathfinderPath pfPath = pathfinder.calculatePath();
-            return pfPath.getAsWaypointPath(new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration), startPoint, endPoint);
+            return pfPath.getAsWaypointPath(maxVelocity, startPoint, endPoint);
         } catch (Exception e) {
             throw e;
         }
     }
 
-    public static BreakerWaypointPath findWaypointPath(double pathSearchTimeoutSeconds, double maxVelocity, double maxAcceleration, BreakerPathfinderNodeGrid nodeGrid, Translation2d... pathPoints) throws Exception {
+    public static BreakerWaypointPath findWaypointPath(double pathSearchTimeoutSeconds, double maxVelocity, BreakerPathfinderNodeGrid nodeGrid, Translation2d... pathPoints) throws Exception {
         BreakerWaypointPath[] wpPaths = new BreakerWaypointPath[pathPoints.length - 1];
         double sTimeout = pathSearchTimeoutSeconds / (pathPoints.length - 1);
         for (int i = 0; i < pathPoints.length - 1; i++) {
-            wpPaths[i] = findWaypointPath(sTimeout, maxVelocity, maxAcceleration, pathPoints[i], pathPoints[i+1], nodeGrid);
+            wpPaths[i] = findWaypointPath(sTimeout, maxVelocity, pathPoints[i], pathPoints[i+1], nodeGrid);
         }
         BreakerWaypointPath path = wpPaths[0];
         for (int i = 1; i < wpPaths.length; i++) {

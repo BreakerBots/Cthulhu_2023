@@ -20,7 +20,6 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
-import frc.robot.commands.autos.GetToTheChargingStation;
 import frc.robot.commands.autos.TestTrajectoryAutoPath;
 import frc.robot.commands.autos.TestWaypointAutoPath;
 import frc.robot.subsystems.Drive;

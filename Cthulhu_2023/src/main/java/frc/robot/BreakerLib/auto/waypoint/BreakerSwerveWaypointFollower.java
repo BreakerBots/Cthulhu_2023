@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.math.BreakerMath;
@@ -25,11 +26,12 @@ import frc.robot.BreakerLib.util.math.BreakerMath;
 public class BreakerSwerveWaypointFollower extends CommandBase {
   private BreakerSwerveWaypointFollowerConfig config;
   private final Timer timer = new Timer();
-  private HolonomicDriveController driveController;
+  private BreakerHolonomicDriveController driveController;
   private BreakerWaypointPath waypointPath;
   private Supplier<Rotation2d> rotationSupplier;
   private Translation2d prevWp;
   private ArrayList<Translation2d> waypoints;
+  private boolean stopAtPathEnd;
   private double totalDistance;
   private int curTargetWaypointIndex = 0;
   private PIDController con = new PIDController(2.0, 0.0, 0.0);
@@ -40,7 +42,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
    * @param config Config for the follower.
    * @param waypointPath Path to follow.
    */
-  public BreakerSwerveWaypointFollower(BreakerSwerveWaypointFollowerConfig config, BreakerWaypointPath waypointPath) {
+  public BreakerSwerveWaypointFollower(BreakerSwerveWaypointFollowerConfig config, boolean stopAtPathEnd, BreakerWaypointPath waypointPath) {
     addRequirements(config.getDrivetrain());
     waypoints = new ArrayList<>();
     for (Translation2d wp : waypointPath.getWaypoints()) {
@@ -50,6 +52,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
     totalDistance = waypointPath.getTotalPathDistance() + waypoints.get(curTargetWaypointIndex).getDistance(prevWp);
     this.config = config;
     this.waypointPath = waypointPath;
+    this.stopAtPathEnd = stopAtPathEnd;
     rotationSupplier = () -> (BreakerMath.getPointAngleRelativeToOtherPoint(prevWp, waypoints.get(curTargetWaypointIndex)));
     driveController = config.getDriveController();
   }
@@ -61,7 +64,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
    * @param waypointPath Path to follow.
    * @param rotationSupplier Supplier of swerve rotation. Useful for CV target tracking et al.
    */
-  public BreakerSwerveWaypointFollower(BreakerSwerveWaypointFollowerConfig config, BreakerWaypointPath waypointPath,
+  public BreakerSwerveWaypointFollower(BreakerSwerveWaypointFollowerConfig config, boolean stopAtPathEnd, BreakerWaypointPath waypointPath,
       Supplier<Rotation2d> rotationSupplier) {
     addRequirements(config.getDrivetrain());
     waypoints = new ArrayList<>();
@@ -73,6 +76,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
     this.config = config;
     this.waypointPath = waypointPath;
     this.rotationSupplier = rotationSupplier;
+    this.stopAtPathEnd = stopAtPathEnd;
     driveController = config.getDriveController();
   }
 
@@ -104,20 +108,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
   public void execute() {
     // Current values
     Pose2d curPose = config.getOdometer().getOdometryPoseMeters();
-    // BreakerVector2 curVelVec = config.getOdometer().getMovementState().getDerivativefromIndex(0).getLinearForces(); // 2d velocity vector
-    // double curVel = curVelVec.getMagnitude() * (curVelVec.getVectorRotation().getDegrees() >= 0 ? 1 : -1); // Current velocity in m/s
-    // TrapezoidProfile.State curState = new TrapezoidProfile.State(totalDistance - getTotalRemainingDistance(curPose),
-    //     curVel);
-
-    // Next chassis speeds are generated from updated trapezoid profile
-    Rotation2d targetRot = rotationSupplier.get();
-    // ChassisSpeeds targetSpeeds = driveController.calculate(curPose, new Pose2d(waypoints.get(curTargetWaypointIndex), targetRot),
-    //     0, targetRot);
-    Translation2d errTrans = waypoints.get(curTargetWaypointIndex).minus(curPose.getTranslation());
-    double tgtVel = -con.calculate(errTrans.getNorm(), 0);
-    BreakerVector2 vec = BreakerVector2.fromTranslation(errTrans).getUnitVector().times(MathUtil.clamp(tgtVel, -waypointPath.getConstraints().maxVelocity, waypointPath.getConstraints().maxVelocity));
-    ChassisSpeeds targetSpeeds = new ChassisSpeeds(vec.getMagnitudeX(), vec.getMagnitudeY(),0);
-
+    ChassisSpeeds targetSpeeds = driveController.calculate(curPose, new Pose2d(waypoints.get(curTargetWaypointIndex), rotationSupplier.get()), waypointPath.getMaxVelocity());
     // Robot is moved
     config.getDrivetrain().move(
         ChassisSpeeds.fromFieldRelativeSpeeds(targetSpeeds, config.getOdometer().getOdometryPoseMeters().getRotation()),
@@ -125,7 +116,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
     System.out.println("\n\n" +targetSpeeds + " | \n" + waypoints + " | \n" + curPose);
 
     // Previous waypoint is updated.
-    if (errTrans.getNorm() <= 0.05 ) {
+    if (driveController.atTargetPose()) {
       prevWp = waypoints.get(curTargetWaypointIndex);
       curTargetWaypointIndex++;
       System.out.println("WP PASSED");
@@ -161,7 +152,9 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     BreakerLog.logBreakerLibEvent("A BreakerSwerveWaypointFollower instance has ended");
-    config.getDrivetrain().stop();
+    if (stopAtPathEnd) {
+      config.getDrivetrain().stop();
+    }
   }
 
   // Returns true when the command should end.

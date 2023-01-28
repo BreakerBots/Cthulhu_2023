@@ -18,6 +18,7 @@ import frc.robot.BreakerLib.auto.trajectory.management.BreakerStartTrajectoryPat
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollower;
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollowerConfig;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
+import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.subsystems.Drive;
@@ -29,40 +30,39 @@ public class TestWaypointAutoPath extends SequentialCommandGroup {
   /** Creates a new TestWaypointAutoPath. */
   public TestWaypointAutoPath(Drive drive, BreakerPigeon2 imu) {
     ProfiledPIDController anglePID = new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0));
-    PIDController xDrivePID = new PIDController(.25, 0, 0.0);
-    PIDController yDrivePID = new PIDController(.25, 0, 0.0);
-    HolonomicDriveController driveController = new HolonomicDriveController(xDrivePID, yDrivePID, anglePID);
-    driveController.setTolerance(new Pose2d(0.25, 0.25, Rotation2d.fromDegrees(180)));
+    PIDController drivePID = new PIDController(2.0, 0, 0.0);
+    BreakerHolonomicDriveController driveController = new BreakerHolonomicDriveController(drivePID, anglePID);
+    driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)));
     
     BreakerWaypointPath wpp = new BreakerWaypointPath(
-        new TrapezoidProfile.Constraints(0.5, 0.1), 
+        0.5, 
         new Translation2d(Units.feetToMeters(14), Units.feetToMeters(0))
         );
 
         BreakerWaypointPath wpp2 = new BreakerWaypointPath(
-          new TrapezoidProfile.Constraints(0.25, 0.1), 
+          0.25,
           new Translation2d(Units.feetToMeters(0.75), Units.feetToMeters(0))
         );
 
         BreakerWaypointPath wpp3 = new BreakerWaypointPath(
-          new TrapezoidProfile.Constraints(0.5, 0.1), 
+          0.5, 
           new Translation2d(Units.feetToMeters(0.75), Units.feetToMeters(6.5))
         );
 
         BreakerWaypointPath wpp4 = new BreakerWaypointPath(
-          new TrapezoidProfile.Constraints(1.0, 0.1), 
+          1.0,
           new Translation2d(Units.feetToMeters(5.5), Units.feetToMeters(6.5))
         );
 
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
     addCommands(
         new BreakerStartTrajectoryPath(drive, new Pose2d()),
-        new BreakerSwerveWaypointFollower(config, wpp),
+        new BreakerSwerveWaypointFollower(config, true, wpp),
         new WaitCommand(1.5),
-        new BreakerSwerveWaypointFollower(config, wpp2),
+        new BreakerSwerveWaypointFollower(config, true, wpp2),
         new WaitCommand(1.5),
-        new BreakerSwerveWaypointFollower(config, wpp3),
-        new BreakerSwerveWaypointFollower(config, wpp4),
+        new BreakerSwerveWaypointFollower(config, true, wpp3),
+        new BreakerSwerveWaypointFollower(config, true, wpp4),
         new BalanceChargingStation(drive, imu)
         );
   }

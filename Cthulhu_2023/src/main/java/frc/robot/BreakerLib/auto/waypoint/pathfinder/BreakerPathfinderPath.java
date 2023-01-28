@@ -23,7 +23,7 @@ public class BreakerPathfinderPath {
         return new ArrayList<BreakerPathfinderNode>(pathNodes);
     }
 
-    public BreakerWaypointPath getAsWaypointPath(TrapezoidProfile.Constraints constraints) {
+    public BreakerWaypointPath getAsWaypointPath(double maxVelocity) {
         Translation2d[] waypoints = new Translation2d[pathNodes.size()];
         for (int i = 0; i < waypoints.length; i++) {
             BreakerPathfinderNode node = pathNodes.get(i);
@@ -32,10 +32,10 @@ public class BreakerPathfinderPath {
 
             waypoints[i] = new Translation2d(x, y);
         }
-        return new BreakerWaypointPath(constraints, waypoints);
+        return new BreakerWaypointPath(maxVelocity, waypoints);
     }
 
-    public BreakerWaypointPath getAsWaypointPath(TrapezoidProfile.Constraints constraints, Translation2d startPoint, Translation2d endPoint) {
+    public BreakerWaypointPath getAsWaypointPath(double maxVelocity, Translation2d startPoint, Translation2d endPoint) {
         Translation2d[] waypoints = new Translation2d[pathNodes.size()];
         for (int i = 1; i < waypoints.length - 1; i++) {
             BreakerPathfinderNode node = pathNodes.get(i);
@@ -46,6 +46,6 @@ public class BreakerPathfinderPath {
         }
         waypoints[0] = startPoint;
         waypoints[waypoints.length-1] = endPoint;
-        return new BreakerWaypointPath(constraints, waypoints);
+        return new BreakerWaypointPath(maxVelocity, waypoints);
     }
 }
