@@ -41,7 +41,7 @@ public class AprilTagTracker extends SubsystemBase {
   @Override
   public void periodic() {
     if (aprilTag3.getAssignedTargetFound() && ((i++)%25==0)) {
-      System.out.println(aprilTag3.getRobotPose() + " DATA AGE: " + aprilTag3.getTargetDataAge());
+      //System.out.println(aprilTag3.getRobotPose() + " DATA AGE: " + aprilTag3.getTargetDataAge());
     }
 
   }

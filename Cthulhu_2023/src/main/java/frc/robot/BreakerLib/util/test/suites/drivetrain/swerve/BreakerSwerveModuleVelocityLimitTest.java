@@ -97,9 +97,9 @@ public class BreakerSwerveModuleVelocityLimitTest extends BreakerTestBase{
     public String toString() {
         StringBuilder work = new StringBuilder();
         for (int i = 0; i < maxSpeeds.length; i++) {
-            work.append(String.format(" (Module Name: %s, Max Speed: %d) ", swerveModules[i].getDeviceName(), maxSpeeds[i]));
+            work.append(String.format(" (Module Name: %s, Max Speed: %.2f) ", swerveModules[i].getDeviceName(), maxSpeeds[i]));
         }
-        return String.format("Target Speed: %d | Test Timeout Seconds: %s | Max Speeds: %s", targetSpeed, testTimeout, work.toString());
+        return String.format("Target Speed: %.2f | Test Timeout Seconds: %s | Max Speeds: %s", targetSpeed, testTimeout, work.toString());
     }
   }
 

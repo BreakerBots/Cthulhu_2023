@@ -32,7 +32,7 @@ public class BreakerTestBase extends CommandBase {
 
     public void periodicLog(String message) {
         if (logType == BreakerTestSuiteDataLogType.LIVE_AUTOLOG) {
-            BreakerLog.log(message);
+            System.out.println(message);
         }
     }
 

@@ -99,7 +99,7 @@ public class BreakerSwerveDriveTestSuite {
     }
 
     public BreakerSwerveDriveStressTest stressTest(ArrayList<Pair<ChassisSpeeds, Double>> chassisSpeedsAndCutoffTimes) {
-        ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
+        ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>(chassisSpeedsAndCutoffTimes);
         BreakerSwerveDriveStressTest test = new BreakerSwerveDriveStressTest(drivetrain, modules, logType, speedList);
         return test;
     }

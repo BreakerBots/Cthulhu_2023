@@ -4,9 +4,13 @@ package frc.robot;
 
 import static frc.robot.Constants.Misc.IMU_ID;
 
+import java.util.ArrayList;
+
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,6 +23,7 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
+import frc.robot.BreakerLib.util.test.suites.BreakerTestSuiteDataLogType;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.autos.ApriltagTestPath;
 import frc.robot.commands.autos.TestWaypointAutoPath;
@@ -91,6 +96,9 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new ApriltagTestPath(drivetrainSys, att, imuSys);
+    //drivetrainSys.getTestSuite().setLogType(BreakerTestSuiteDataLogType.LIVE_AUTOLOG);
+    // ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
+    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 3.0));
+    return drivetrainSys.getTestSuite().moduleVelocityLimitTest(5, 5.0);
   }
 }
