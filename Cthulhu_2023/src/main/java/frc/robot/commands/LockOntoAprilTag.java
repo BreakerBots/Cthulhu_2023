@@ -7,19 +7,29 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.position.odometry.swerve.BreakerSwerveDriveFiducialVisionPoseEstimator;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
+import frc.robot.subsystems.AprilTagTracker;
 
 public class LockOntoAprilTag extends CommandBase {
+  private BreakerSwerveDrive drive;
+  //private AprilTagTracker aprilTagTracker;
 
-  public LockOntoAprilTag(BreakerSwerveDrive drive, BreakerSwerveDriveFiducialVisionPoseEstimator visionCam) {
+  public LockOntoAprilTag(BreakerSwerveDrive drive) {
+    this.drive = drive;
+    //this.aprilTagTracker = aprilTagTracker;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    drive.move(0, 0, Math.PI/6);
+    System.out.println(drive.getBaseGyro().getRawYawRate());
+  }
 
   // Called once the command ends or is interrupted.
   @Override

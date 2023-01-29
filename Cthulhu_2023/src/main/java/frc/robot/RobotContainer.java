@@ -4,7 +4,8 @@ package frc.robot;
 
 import static frc.robot.Constants.Misc.IMU_ID;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import org.photonvision.PhotonCamera;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,15 +14,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
-import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilter;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerTeleopSwerveDriveController;
 import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
-import frc.robot.commands.autos.TestTrajectoryAutoPath;
+import frc.robot.commands.autos.ApriltagTestPath;
 import frc.robot.commands.autos.TestWaypointAutoPath;
+import frc.robot.subsystems.AprilTagTracker;
 import frc.robot.subsystems.Drive;
 //import frc.robot.subsystems.Odometer;
 //import frc.robot.subsystems.VisionTest;
@@ -44,12 +45,13 @@ public class RobotContainer {
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-  //private VisionTest vt = new VisionTest();
+  private final AprilTagTracker att = new AprilTagTracker();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    PhotonCamera.setVersionCheckEnabled(false);
 
     robotManagerSetup();
 
@@ -89,6 +91,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new TestWaypointAutoPath(drivetrainSys, imuSys);
+    return new ApriltagTestPath(drivetrainSys, att, imuSys);
   }
 }

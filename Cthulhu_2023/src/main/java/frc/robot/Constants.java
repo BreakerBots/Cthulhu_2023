@@ -86,12 +86,12 @@ public final class Constants {
 
     public static final class Vision {
         public static final class AprilTag {
-            public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new BreakerPhotonCamera[] {
-                    new BreakerPhotonCamera("April_Test_1", new Transform3d(new Translation3d(), new Rotation3d()))
+            // public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new BreakerPhotonCamera[] {
+                    // new BreakerPhotonCamera("April_Test_1", new Transform3d(new Translation3d(), new Rotation3d()))
                     // new BreakerPhotonCamera("leftApriltagCam", null),
                     // new BreakerPhotonCamera("rightApriltagCam", null),
                     // new BreakerPhotonCamera("backApriltagCam", null)
-            };
+            // };
 
         //     public static BreakerFiducialPhotonTarget[] APRILTAGS = new BreakerFiducialPhotonTarget[] {
         //         new BreakerFiducialPhotonTarget(2,
