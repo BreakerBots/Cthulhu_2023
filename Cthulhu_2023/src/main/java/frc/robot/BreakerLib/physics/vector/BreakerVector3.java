@@ -174,6 +174,10 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
         return new Translation3d(magnatudeX, magnatudeY, magnatudeZ);
     }
 
+    public BreakerVector2 toBreakerVector2() {
+        return new BreakerVector2(magnatudeX, magnatudeY);
+    }
+
     
     /** 
      * @return BreakerVector3
@@ -181,6 +185,8 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
     public BreakerVector3 getUnitVector() {
         return BreakerVector3.fromMagnitudeAndvectorRotation(1, vectorRotation);
     }
+
+
 
     
     /** 

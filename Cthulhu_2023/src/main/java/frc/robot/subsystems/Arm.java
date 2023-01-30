@@ -38,6 +38,7 @@ public class Arm extends SubsystemBase {
 
     public Arm() {
         shoulderMotor = new WPI_TalonFX(0);
+        
         elbowMotor = new WPI_TalonFX(0);
         shoulderFF = new ArmFeedforward(0, 0, 0);
         shoulderFF = new ArmFeedforward(0, 0, 0);
