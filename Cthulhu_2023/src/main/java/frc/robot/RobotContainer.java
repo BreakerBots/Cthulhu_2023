@@ -97,8 +97,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     //drivetrainSys.getTestSuite().setLogType(BreakerTestSuiteDataLogType.LIVE_AUTOLOG);
-    // ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
-    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 3.0));
-    return drivetrainSys.getTestSuite().moduleVelocityLimitTest(5, 5.0);
+    ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
+    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 3.0));
+    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(1.0, 0, 0), 3.0));
+    return drivetrainSys.getTestSuite().stressTest(speedList);
   }
 }
