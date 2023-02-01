@@ -66,8 +66,7 @@ public class RobotContainer {
 
     configureButtonBindings();
     drivetrainSys.setDefaultCommand(manualDriveCommand);
-
-  }
+    }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be

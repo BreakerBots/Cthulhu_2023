@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
@@ -79,6 +80,11 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
 
   public Rotation2d getJointAngle() {
     return Rotation2d.fromDegrees(encoder.getAbsolutePosition()).plus(angleOffsetSupplier.get());
+  }
+
+  /** rad/sec */
+  public double getJointVel() {
+    return Math.toDegrees(encoder.getVelocity()) * 10;
   }
 
   private double radiansToCANCoderNativeUnits(double angleRad) {
