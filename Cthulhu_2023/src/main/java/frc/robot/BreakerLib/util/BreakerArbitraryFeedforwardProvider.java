@@ -92,7 +92,7 @@ public class BreakerArbitraryFeedforwardProvider {
         if (curSpeed != 0.0) {
             switch (ffType) {
                 case COEFFICIENTS:
-                    feedForward = (velocityCoefficient * curSpeed + (staticFrictionCoefficient * Math.signum(curSpeed))
+                    feedForward = ((velocityCoefficient * curSpeed + (staticFrictionCoefficient * Math.signum(curSpeed)))
                             / RobotController.getBatteryVoltage());
                     break;
                 case MAP_SUP:

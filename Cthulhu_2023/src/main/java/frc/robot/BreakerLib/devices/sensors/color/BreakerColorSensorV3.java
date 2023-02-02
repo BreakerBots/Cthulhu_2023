@@ -34,12 +34,6 @@ public class BreakerColorSensorV3 extends BreakerGenericColorSensor {
   }
 
   @Override
-  /** Compare target color to detected color. */
-  public boolean compareColor(Color comparisionColor) {
-    return (comparisionColor == colorSensor.getColor());
-  }
-
-  @Override
   /** Delivers RGB values plus IR value. */
   public int[] getRawColorsADC() {
     int[] colorVals = new int[4];

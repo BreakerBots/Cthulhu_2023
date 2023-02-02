@@ -38,19 +38,19 @@ public final class Constants {
         public static final double MAX_FORWARD_VELOCITY = 4.1148;
         public static final double MAX_SIDEWAYS_VELOCITY = 4.1148;
         public static final double MAX_ANGLE_VELOCITY = 16.114;
-        public static final double MODULE_ANGLE_KP = 1.25;
+        public static final double MODULE_ANGLE_KP = 0.3;
         public static final double MODULE_ANGLE_KI = 0.0;
-        public static final double MODULE_ANGLE_KD = 0.05;
-        public static final double MODULE_VELOCITY_KP = 0.38;
+        public static final double MODULE_ANGLE_KD = 0.0;
+        public static final double MODULE_VELOCITY_KP = 0.01;
         public static final double MODULE_VELOCITY_KI = 0.0;
-        public static final double MODULE_VELOCITY_KD = 0.5;
+        public static final double MODULE_VELOCITY_KD = 0.0;
         public static final double DRIVE_MOTOR_GEAR_RATIO_TO_ONE = 8.14;
         public static final double WHEEL_DIAMETER = 4.0;
         public static final double MODULE_WHEEL_SPEED_DEADBAND = 0.001;
         public static final double MAX_ATTAINABLE_MODULE_WHEEL_SPEED = 4.2;
 
-        public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.047;
-        public static final double FF_VELOCITY_COEFFICIENT = 1;
+        public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.5;
+        public static final double FF_VELOCITY_COEFFICIENT = 2.25;
 
         public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.3;
         public static final double SLOW_MODE_TURN_MULTIPLIER = 0.3;
