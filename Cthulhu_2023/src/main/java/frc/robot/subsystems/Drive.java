@@ -43,14 +43,15 @@ public class Drive extends BreakerSwerveDrive {
             FL_TRANSLATION, FR_TRANSLATION, BL_TRANSLATION, BR_TRANSLATION)
             .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
 
+            // FL IS WRONG WAY!
     private static BreakerMK4iFalconSwerveModule frontLeftModule = new BreakerMK4iFalconSwerveModule(driveFL, turnFL,
             encoderFL, config, FL_ENCODER_OFFSET, true, true);
     private static BreakerMK4iFalconSwerveModule frontRightModule = new BreakerMK4iFalconSwerveModule(driveFR, turnFR,
-            encoderFR, config, FR_ENCODER_OFFSET, false, false);
+            encoderFR, config, FR_ENCODER_OFFSET, false, true);
     private static BreakerMK4iFalconSwerveModule backLeftModule = new BreakerMK4iFalconSwerveModule(driveBL, turnBL,
-            encoderBL, config, BL_ENCODER_OFFSET, true, true);
+            encoderBL, config, BL_ENCODER_OFFSET, false, true);
     private static BreakerMK4iFalconSwerveModule backRightModule = new BreakerMK4iFalconSwerveModule(driveBR, turnBR,
-            encoderBR, config, BR_ENCODER_OFFSET, false, false);
+            encoderBR, config, BR_ENCODER_OFFSET, false, true);
 
     public Drive(BreakerPigeon2 imu) {
         super(config, imu, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
