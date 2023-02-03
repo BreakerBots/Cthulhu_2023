@@ -38,10 +38,10 @@ public final class Constants {
         public static final double MAX_FORWARD_VELOCITY = 4.1148;
         public static final double MAX_SIDEWAYS_VELOCITY = 4.1148;
         public static final double MAX_ANGLE_VELOCITY = 16.114;
-        public static final double MODULE_ANGLE_KP = 0.3;
+        public static final double MODULE_ANGLE_KP = 0.5;
         public static final double MODULE_ANGLE_KI = 0.0;
-        public static final double MODULE_ANGLE_KD = 0.0;
-        public static final double MODULE_VELOCITY_KP = 0.01;
+        public static final double MODULE_ANGLE_KD = 0.01;
+        public static final double MODULE_VELOCITY_KP = 0.05; // 0.01
         public static final double MODULE_VELOCITY_KI = 0.0;
         public static final double MODULE_VELOCITY_KD = 0.0;
         public static final double DRIVE_MOTOR_GEAR_RATIO_TO_ONE = 8.14;
@@ -49,8 +49,8 @@ public final class Constants {
         public static final double MODULE_WHEEL_SPEED_DEADBAND = 0.001;
         public static final double MAX_ATTAINABLE_MODULE_WHEEL_SPEED = 4.2;
 
-        public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.5;
-        public static final double FF_VELOCITY_COEFFICIENT = 2.25;
+        public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.3;
+        public static final double FF_VELOCITY_COEFFICIENT = 2.8;
 
         public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.3;
         public static final double SLOW_MODE_TURN_MULTIPLIER = 0.3;
@@ -76,10 +76,10 @@ public final class Constants {
         public static final Translation2d BL_TRANSLATION = new Translation2d(-0.2635, 0.2635);
         public static final Translation2d BR_TRANSLATION = new Translation2d(-0.2635, -0.2635);
 
-        public static final double FL_ENCODER_OFFSET = -111.270;
-        public static final double FR_ENCODER_OFFSET = -37;
-        public static final double BL_ENCODER_OFFSET = -71.191;
-        public static final double BR_ENCODER_OFFSET = 21.533;
+        public static final double FL_ENCODER_OFFSET = -112.500;
+        public static final double FR_ENCODER_OFFSET = 141.152;
+        public static final double BL_ENCODER_OFFSET = 117.246;
+        public static final double BR_ENCODER_OFFSET = -155.918;
 
 
     }

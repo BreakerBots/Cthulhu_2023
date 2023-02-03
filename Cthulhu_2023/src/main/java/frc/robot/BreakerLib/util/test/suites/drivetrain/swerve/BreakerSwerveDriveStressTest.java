@@ -80,7 +80,6 @@ public class BreakerSwerveDriveStressTest extends BreakerTestBase {
             speedsToTestAndStepTimeoutQueue.remove(0);
             timer.reset();
         }
-        System.out.println(String.format("Set Speeds: %s | Target Module States: %s | Resultant Module States %s", setSpeeds.toString(), Arrays.toString(tgtStates), Arrays.toString(resultStates)));
     }
 
   // Called once the command ends or is interrupted.

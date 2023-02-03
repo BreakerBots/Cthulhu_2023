@@ -60,7 +60,8 @@ public class RobotContainer {
 
     robotManagerSetup();
 
-    controllerSys.configDeadbands(new BreakerGamepadAnalogDeadbandConfig(0.06, 0.06, 0.06, 0.06));
+    // 0.06 is normal, 0.1 is for testing with bad controller
+    controllerSys.configDeadbands(new BreakerGamepadAnalogDeadbandConfig(0.1, 0.1, 0.1, 0.1));
 
     drivetrainSys.resetOdometryPosition();
 
@@ -97,8 +98,10 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     //drivetrainSys.getTestSuite().setLogType(BreakerTestSuiteDataLogType.LIVE_AUTOLOG);
     ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
-    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 3.0));
-    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(1.0, 0, 0), 3.0));
+    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 3.0));
+    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(4.1, 0, 0), 3.0));
+    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, Math.PI), 3.0));
+    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 3, 0), 3.0));
     return drivetrainSys.getTestSuite().stressTest(speedList);
   }
 }
