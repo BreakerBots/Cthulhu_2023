@@ -25,7 +25,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.BreakerLib.util.test.suites.BreakerTestSuiteDataLogType;
 import frc.robot.commands.BalanceChargingStation;
-import frc.robot.commands.autos.ApriltagTestPath;
+import frc.robot.commands.autos.AprilTagTestPath;
 import frc.robot.commands.autos.TestWaypointAutoPath;
 import frc.robot.subsystems.AprilTagTracker;
 import frc.robot.subsystems.Drive;
