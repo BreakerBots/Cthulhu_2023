@@ -22,6 +22,8 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
@@ -34,7 +36,7 @@ import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 /** Swerve Drive Specialties' MK4i swerve module driven by Falcon 500 motors. */
-public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule {
+public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule, Sendable{
 
     private BreakerArbitraryFeedforwardProvider ffProvider;
     private BreakerSwerveDriveConfig config;
@@ -330,5 +332,13 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
     @Override
     public String toString() {
         return BreakerGenericSwerveModule.getModuleAsString("SDS_MK4I(Falcon)", this);
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Target Velocity", () -> this.targetModuleState.speedMetersPerSecond, null);
+        builder.addDoubleProperty("Target Angle", () -> this.targetModuleState.angle.getDegrees(), null); 
+        builder.addDoubleProperty("Actual Velocity", () -> this.getModuleVelMetersPerSec(), null);
+        builder.addDoubleProperty("Actual Angle", () -> this.getModuleRelativeAngle(), null); 
     }
 }
