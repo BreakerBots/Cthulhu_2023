@@ -56,4 +56,16 @@ public class BreakerWaypointPath {
             (maxVelocity + other.maxVelocity) / 2.0,
             newWaypoints);
     }
+
+    // dimensions: 16.27m
+    public BreakerWaypointPath mirror() {
+        double sym = 16.27 / 2;
+
+        Translation2d[] result = new Translation2d [waypoints.length];
+        for (int i = 0; i < waypoints.length; i++) {
+            double distance = sym - waypoints[i].getX();
+            result[i] = new Translation2d(sym + distance, waypoints[i].getY());
+        }
+        return new BreakerWaypointPath(maxVelocity, result);
+    }
 }

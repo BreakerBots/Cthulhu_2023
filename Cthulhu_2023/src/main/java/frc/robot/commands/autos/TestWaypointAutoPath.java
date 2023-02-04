@@ -34,7 +34,7 @@ public class TestWaypointAutoPath extends SequentialCommandGroup {
     BreakerHolonomicDriveController driveController = new BreakerHolonomicDriveController(drivePID, anglePID);
     driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)));
     
-    BreakerWaypointPath wpp = new BreakerWaypointPath(
+      BreakerWaypointPath wpp = new BreakerWaypointPath(
         0.5, 
         new Translation2d(Units.feetToMeters(14), Units.feetToMeters(0))
         );

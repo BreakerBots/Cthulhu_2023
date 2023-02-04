@@ -41,9 +41,16 @@ public class ApriltagTestPath extends SequentialCommandGroup {
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
     BreakerWaypointPath wpp = new BreakerWaypointPath(
         0.5, 
-        new Translation2d(Units.feetToMeters(8), Units.feetToMeters(3.5)),
-        new Translation2d(Units.feetToMeters(12), Units.feetToMeters(4))
+        new Translation2d(5.7, 0.91)
         );
+    BreakerWaypointPath wpp2 = new BreakerWaypointPath(
+          0.5, 
+          new Translation2d(1.4, 1.07)
+          );
+    BreakerWaypointPath wpp3 = new BreakerWaypointPath(
+            2.0, 
+            new Translation2d(1.68, 2.74)
+            );
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
@@ -52,6 +59,10 @@ public class ApriltagTestPath extends SequentialCommandGroup {
         new BreakerStartTrajectoryPath(drive, att.getRobotPose()),
         new WaitCommand(1.0),
         new BreakerSwerveWaypointFollower(config, true, wpp),
+        new WaitCommand(1.0),
+        new BreakerSwerveWaypointFollower(config, true, wpp2),
+        new WaitCommand(1.0),
+        new BreakerSwerveWaypointFollower(config, true, wpp3),
         new BalanceChargingStation(drive, imu)
     );
   }

@@ -189,19 +189,19 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     );
   }
 
-  /**
+   /**
    * Movement with velocity values relative to field.
    * 
    * @param forwardVelMetersPerSec Forward velocity relative to field (m/s).
    * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
    * @param radPerSec Rotation velocity relative to field (rad/sec).
    */
-  public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec) {
+  public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec, boolean useFieldRelativeMovementAngleOffset) {
     ChassisSpeeds robotRelSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         forwardVelMetersPerSec,
         horizontalVelMetersPerSec, 
         radPerSec, 
-        getOdometryPoseMeters().getRotation().plus(fieldRelativeMovementOffset));
+        getOdometryPoseMeters().getRotation().plus(useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
     move(robotRelSpeeds);
   }
 
@@ -214,13 +214,37 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
    * @param odometer {@link BreakerGenericOdometer} to determine field relative position.
    */
   public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec,
-      BreakerGenericOdometer odometer) {
+      BreakerGenericOdometer odometer, boolean useFieldRelativeMovementAngleOffset) {
     ChassisSpeeds robotRelSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         forwardVelMetersPerSec,
         horizontalVelMetersPerSec, 
         radPerSec,
-        odometer.getOdometryPoseMeters().getRotation().plus(fieldRelativeMovementOffset));
+        getOdometryPoseMeters().getRotation().plus(useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
     move(robotRelSpeeds);
+  }
+
+  /**
+   * Movement with velocity values relative to field.
+   * 
+   * @param forwardVelMetersPerSec Forward velocity relative to field (m/s).
+   * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
+   * @param radPerSec Rotation velocity relative to field (rad/sec).
+   */
+  public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec) {
+    moveRelativeToField(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec, true);
+  }
+
+  /**
+   * Movement with velocities relative to field. Use if using a separate odometry source.
+   * 
+   * @param forwardVelMetersPerSec Forward velocity relative to field (m/s).
+   * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
+   * @param radPerSec Rotation velocity relative to field (rad/sec).
+   * @param odometer {@link BreakerGenericOdometer} to determine field relative position.
+   */
+  public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec,
+      BreakerGenericOdometer odometer) {
+        moveRelativeToField(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec, odometer, true);
   }
 
   /**

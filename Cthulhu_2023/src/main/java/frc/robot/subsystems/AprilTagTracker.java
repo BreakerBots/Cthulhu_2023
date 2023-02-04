@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -13,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
+import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilter;
 
 public class AprilTagTracker extends SubsystemBase {
 
@@ -21,26 +24,60 @@ public class AprilTagTracker extends SubsystemBase {
   private Rotation3d cam1Rotation = new Rotation3d(); // 0 degrees in all angles
   private BreakerPhotonCamera cam1 = new BreakerPhotonCamera("April_Test_1",
       new Transform3d(cam1Translation, cam1Rotation));
+  private BreakerFiducialPhotonTarget aprilTag1;
+  private BreakerFiducialPhotonTarget aprilTag2;
   private BreakerFiducialPhotonTarget aprilTag3;
+  //private BreakerVisionPoseFilter poseFilter;
   private int i;
 
+  private ArrayList<BreakerFiducialPhotonTarget> aprilList = new ArrayList<>();
+  
   public AprilTagTracker() {
-    Rotation3d aprilTag3Rotation = new Rotation3d(0, 0, Math.toRadians(0));
-    Pose3d aprilTag3Pose = new Pose3d(0, 0, Units.inchesToMeters(18.22), aprilTag3Rotation);
+
+    // Pose3d aprilTag3Pose = new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(174.19), Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180)));
+    // Pose3d aprilTag2Pose = new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(108.19), Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180)));
+    // Pose3d aprilTag1Pose = new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(174.19), Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180)));
+    
+    Pose3d aprilTag3Pose = new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(174.19),
+                                 Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0));
+    Pose3d aprilTag2Pose = new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(108.19),
+                                 Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0));
+    Pose3d aprilTag1Pose = new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(42.19),
+                                 Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0));
+    
     aprilTag3 = new BreakerFiducialPhotonTarget(3, aprilTag3Pose, cam1);
+    aprilTag2 = new BreakerFiducialPhotonTarget(2, aprilTag2Pose, cam1);
+    aprilTag1 = new BreakerFiducialPhotonTarget(1, aprilTag1Pose, cam1);
+    aprilList.add(aprilTag1);
+    aprilList.add(aprilTag2);
+    aprilList.add(aprilTag3);
+
+    //poseFilter = new BreakerVisionPoseFilter(2.0, 0.6, aprilTag1, aprilTag2, aprilTag3);
   }
 
   public boolean tgtFound() {
-    return aprilTag3.getAssignedTargetFound();
+    return aprilTag1.getAssignedTargetFound() || aprilTag2.getAssignedTargetFound() || aprilTag3.getAssignedTargetFound();
   }
 
   public Pose2d getRobotPose() {
-    return aprilTag3.getRobotPose();
+    double lowestUncertainty = -1.0;
+    int indexOfBest = 0;
+    for (int i = 0; i < aprilList.size(); i++) {
+      var aprilTag = aprilList.get(i);
+      if (aprilTag.getAssignedTargetFound()) {
+        double uncertainty = aprilTag.getPoseAmbiguity();
+        if (lowestUncertainty == -1.0 || uncertainty < lowestUncertainty) {
+          lowestUncertainty = uncertainty;
+          indexOfBest = i;
+        }
+      }
+    }
+    return aprilList.get(indexOfBest).getRobotPose();
   }
 
   @Override
   public void periodic() {
-    if (aprilTag3.getAssignedTargetFound() && ((i++)%25==0)) {
+    if (aprilTag2.getAssignedTargetFound() && ((i++)%25==0)) {
       //System.out.println(aprilTag3.getRobotPose() + " DATA AGE: " + aprilTag3.getTargetDataAge());
     }
 

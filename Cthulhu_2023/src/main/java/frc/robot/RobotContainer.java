@@ -100,10 +100,10 @@ public class RobotContainer {
     //drivetrainSys.getTestSuite().setLogType(BreakerTestSuiteDataLogType.LIVE_AUTOLOG);
     ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 3.0));
-    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 15.0));
+    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0.5, 0, 0.0), 5.0));
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, Math.PI), 3.0));
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 3, 0), 3.0));
 
-    return new LockOntoAprilTag(drivetrainSys);
+    return new ApriltagTestPath(drivetrainSys, att, imuSys);
   }
 }
