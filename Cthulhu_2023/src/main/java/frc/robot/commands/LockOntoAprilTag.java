@@ -14,6 +14,7 @@ public class LockOntoAprilTag extends CommandBase {
   //private AprilTagTracker aprilTagTracker;
 
   public LockOntoAprilTag(BreakerSwerveDrive drive) {
+    addRequirements(drive);
     this.drive = drive;
     //this.aprilTagTracker = aprilTagTracker;
   }
@@ -27,8 +28,8 @@ public class LockOntoAprilTag extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.move(0, 0, Math.PI/6);
-    System.out.println(drive.getBaseGyro().getRawYawRate());
+    drive.move(0, 0, 0.3);
+    System.out.println(Math.toRadians(drive.getBaseGyro().getRawYawRate()));
   }
 
   // Called once the command ends or is interrupted.

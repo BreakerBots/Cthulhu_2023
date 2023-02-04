@@ -25,7 +25,8 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.BreakerLib.util.test.suites.BreakerTestSuiteDataLogType;
 import frc.robot.commands.BalanceChargingStation;
-import frc.robot.commands.autos.AprilTagTestPath;
+import frc.robot.commands.LockOntoAprilTag;
+import frc.robot.commands.autos.ApriltagTestPath;
 import frc.robot.commands.autos.TestWaypointAutoPath;
 import frc.robot.subsystems.AprilTagTracker;
 import frc.robot.subsystems.Drive;
@@ -99,9 +100,10 @@ public class RobotContainer {
     //drivetrainSys.getTestSuite().setLogType(BreakerTestSuiteDataLogType.LIVE_AUTOLOG);
     ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 3.0));
-    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(4.1, 0, 0), 3.0));
+    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 15.0));
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, Math.PI), 3.0));
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 3, 0), 3.0));
-    return drivetrainSys.getTestSuite().stressTest(speedList);
+
+    return new LockOntoAprilTag(drivetrainSys);
   }
 }

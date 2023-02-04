@@ -47,11 +47,11 @@ public class Drive extends BreakerSwerveDrive {
     private static BreakerMK4iFalconSwerveModule frontLeftModule = new BreakerMK4iFalconSwerveModule(driveFL, turnFL,
             encoderFL, config, FL_ENCODER_OFFSET, true, true);
     private static BreakerMK4iFalconSwerveModule frontRightModule = new BreakerMK4iFalconSwerveModule(driveFR, turnFR,
-            encoderFR, config, FR_ENCODER_OFFSET, false, true);
+            encoderFR, config, FR_ENCODER_OFFSET, true, true);
     private static BreakerMK4iFalconSwerveModule backLeftModule = new BreakerMK4iFalconSwerveModule(driveBL, turnBL,
-            encoderBL, config, BL_ENCODER_OFFSET, false, true);
+            encoderBL, config, BL_ENCODER_OFFSET, true, true);
     private static BreakerMK4iFalconSwerveModule backRightModule = new BreakerMK4iFalconSwerveModule(driveBR, turnBR,
-            encoderBR, config, BR_ENCODER_OFFSET, false, true);
+            encoderBR, config, BR_ENCODER_OFFSET, true, true);
 
     public Drive(BreakerPigeon2 imu) {
         super(config, imu, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
