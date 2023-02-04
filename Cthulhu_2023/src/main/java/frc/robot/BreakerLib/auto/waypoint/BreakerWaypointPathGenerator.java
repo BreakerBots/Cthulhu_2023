@@ -7,8 +7,6 @@ package frc.robot.BreakerLib.auto.waypoint;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinder;
 import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinderNodeGrid;
 import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinderPath;

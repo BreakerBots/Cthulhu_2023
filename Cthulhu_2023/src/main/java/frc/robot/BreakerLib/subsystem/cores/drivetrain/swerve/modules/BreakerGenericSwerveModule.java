@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
+import edu.wpi.first.util.sendable.Sendable;
 
 /**
  * Interface for all Swerve Modules to allow for easy interchangeablity, this

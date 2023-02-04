@@ -5,7 +5,6 @@
 package frc.robot.BreakerLib.auto.waypoint;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 /**
  * A path of positional waypoints. Rotation must be affected separately with a
