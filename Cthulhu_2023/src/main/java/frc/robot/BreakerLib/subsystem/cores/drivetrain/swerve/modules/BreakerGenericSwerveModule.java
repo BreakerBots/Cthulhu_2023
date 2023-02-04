@@ -10,13 +10,14 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 
 /**
  * Interface for all Swerve Modules to allow for easy interchangeablity, this
  * class is meant to serve as an intermedairy between your swerve hardware and
  * the BreakerSwerveDrive class
  */
-public interface BreakerGenericSwerveModule extends BreakerGenericDevice {
+public interface BreakerGenericSwerveModule extends BreakerGenericDevice, Sendable{
 
     /**
      * default method for setting a swerve module to a given target state,
@@ -99,5 +100,12 @@ public interface BreakerGenericSwerveModule extends BreakerGenericDevice {
 
     public static String getModuleAsString(String moduleType, BreakerGenericSwerveModule module) {
         return String.format("%s(Name: %s, Overall_Device_Health: %s, Set_State: %s, Current_State: %s)", moduleType, module.getDeviceName(), module.getHealth().toString(), module.getModuleTargetState().toString(), module.getModuleState().toString());
+    }
+
+    public default void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("Target Velocity", () -> this.getModuleTargetState().speedMetersPerSecond, null);
+        builder.addDoubleProperty("Target Angle", () -> this.getModuleTargetState().angle.getDegrees(), null); 
+        builder.addDoubleProperty("Actual Velocity", () -> this.getModuleVelMetersPerSec(), null);
+        builder.addDoubleProperty("Actual Angle", () -> this.getModuleRelativeAngle(), null); 
     }
 }

@@ -333,12 +333,4 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
     public String toString() {
         return BreakerGenericSwerveModule.getModuleAsString("SDS_MK4I(Falcon)", this);
     }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Target Velocity", () -> this.targetModuleState.speedMetersPerSecond, null);
-        builder.addDoubleProperty("Target Angle", () -> this.targetModuleState.angle.getDegrees(), null); 
-        builder.addDoubleProperty("Actual Velocity", () -> this.getModuleVelMetersPerSec(), null);
-        builder.addDoubleProperty("Actual Angle", () -> this.getModuleRelativeAngle(), null); 
-    }
 }
