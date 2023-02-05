@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
+import frc.robot.BreakerLib.util.math.BreakerMath;
 
 /** Add your docs here. */
 public class BreakerHolonomicDriveController {
@@ -39,9 +40,9 @@ public class BreakerHolonomicDriveController {
     }
 
     public boolean atTargetPose() {
-        return  Math.abs(tgtPose.getX() - curPose.getX()) <= tolerences.getX() &&
-                Math.abs(tgtPose.getY() - curPose.getY()) <= tolerences.getY() &&
-                Math.abs(tgtPose.getRotation().getRadians() - curPose.getRotation().getRadians()) <= tolerences.getRotation().getRadians() &&
+        return  BreakerMath.lambdaEquals(tgtPose.getX(), curPose.getX(), tolerences.getX()) &&
+                BreakerMath.lambdaEquals(tgtPose.getY(), curPose.getY(), tolerences.getY()) &&
+                BreakerMath.lambdaEquals(tgtPose.getRotation().getRadians(), curPose.getRotation().getRadians(), tolerences.getRotation().getRadians()) &&
                 calculateHasBeenRun;
     }
 
