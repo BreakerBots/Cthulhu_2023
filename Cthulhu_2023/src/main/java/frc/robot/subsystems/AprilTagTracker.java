@@ -56,7 +56,12 @@ public class AprilTagTracker extends SubsystemBase {
     aprilTag3 = new BreakerFiducialPhotonTarget(3, aprilTag3Pose, cam1);
     aprilTag2 = new BreakerFiducialPhotonTarget(2, aprilTag2Pose, cam1);
     aprilTag1 = new BreakerFiducialPhotonTarget(1, aprilTag1Pose, cam1);
+    aprilList.add(aprilTag1);
+    aprilList.add(aprilTag2);
     aprilList.add(aprilTag3);
+    aprilList.add(aprilTag6);
+    aprilList.add(aprilTag7);
+    aprilList.add(aprilTag8);
 
     //poseFilter = new BreakerVisionPoseFilter(2.0, 0.6, aprilTag1, aprilTag2, aprilTag3);
   }

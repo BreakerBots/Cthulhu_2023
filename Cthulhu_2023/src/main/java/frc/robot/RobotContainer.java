@@ -105,8 +105,8 @@ public class RobotContainer {
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, Math.PI), 3.0));
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 3, 0), 3.0));
 
-   //return new ApriltagTestPath(drivetrainSys, att, imuSys);
+   return new ApriltagTestPath(drivetrainSys, att, imuSys);
    //return drivetrainSys.getTestSuite().stressTest(speedList);
-   return new Pickup1_Place2_Balence_6_3(drivetrainSys, att, imuSys);
+   //return new Pickup1_Place2_Balence_6_3(drivetrainSys, att, imuSys);
   }
 }

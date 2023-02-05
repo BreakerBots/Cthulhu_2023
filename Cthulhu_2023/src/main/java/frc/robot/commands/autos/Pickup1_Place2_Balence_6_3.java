@@ -37,25 +37,25 @@ public class Pickup1_Place2_Balence_6_3 extends SequentialCommandGroup {
   public Pickup1_Place2_Balence_6_3(Drive drive, AprilTagTracker att, BreakerPigeon2 imu) {
     
     ProfiledPIDController anglePID = new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0));
-    PIDController drivePID = new PIDController(8.0, 0, 0.0);
+    PIDController drivePID = new PIDController(2.0, 0, 0.0);
     BreakerHolonomicDriveController driveController = new BreakerHolonomicDriveController(drivePID, anglePID);
 
-    driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(360)));
+    driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)));
 
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
     BreakerWaypointPath wpp = new BreakerWaypointPath(
-        0.5, 
-        new Translation2d(5.7, 4.4)
+        1.0, 
+        new Translation2d(5.7, 4.0)
         );
     BreakerWaypointPath wpp2 = new BreakerWaypointPath(
-          0.5, 
-          new Translation2d(1.4, 4.4)//0.91
+          1.0, 
+          new Translation2d(1.4, 4.0)//0.91
           );
     BreakerWaypointPath wpp3 = new BreakerWaypointPath(
-            2.0, 
-            new Translation2d(2.5, 2.74),
-            new Translation2d(3.6, 2.74)
-            );
+          2.0, 
+          new Translation2d(2.5, 2.74),
+          new Translation2d(3.6, 2.74)
+          );
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

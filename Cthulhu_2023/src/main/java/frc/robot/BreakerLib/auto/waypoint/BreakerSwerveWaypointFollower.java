@@ -30,7 +30,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
   private boolean stopAtPathEnd;
   private double totalDistance;
   private int curTargetWaypointIndex = 0;
-  private PIDController con = new PIDController(2.0, 0.0, 0.0);
+  private int i = 0;
 
   /**
    * Create a BreakerSwerveWaypointFollower with no rotation supplier.
@@ -49,7 +49,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
     this.config = config;
     this.waypointPath = waypointPath;
     this.stopAtPathEnd = stopAtPathEnd;
-    rotationSupplier = () -> (BreakerMath.getPointAngleRelativeToOtherPoint(prevWp, waypoints.get(curTargetWaypointIndex)));
+    rotationSupplier = () -> (config.getOdometer().getOdometryPoseMeters().getRotation());
     driveController = config.getDriveController();
   }
 
@@ -109,7 +109,11 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
     config.getDrivetrain().move(
         ChassisSpeeds.fromFieldRelativeSpeeds(targetSpeeds, config.getOdometer().getOdometryPoseMeters().getRotation()),
         false);
-    //System.out.println("\n\n" +targetSpeeds + " | \n" + waypoints + " | \n" + curPose + " \n\n");
+    
+    if (i++%50==0) {
+      System.out.println("\n\n" +targetSpeeds + " | \n" + waypoints + " | \n" + curPose + " \n\n");
+    }
+    
 
     // Previous waypoint is updated.
     if (driveController.atTargetPose()) {
