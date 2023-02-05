@@ -109,7 +109,7 @@ public class BreakerSwerveWaypointFollower extends CommandBase {
     config.getDrivetrain().move(
         ChassisSpeeds.fromFieldRelativeSpeeds(targetSpeeds, config.getOdometer().getOdometryPoseMeters().getRotation()),
         false);
-    System.out.println("\n\n" +targetSpeeds + " | \n" + waypoints + " | \n" + curPose);
+    //System.out.println("\n\n" +targetSpeeds + " | \n" + waypoints + " | \n" + curPose + " \n\n");
 
     // Previous waypoint is updated.
     if (driveController.atTargetPose()) {

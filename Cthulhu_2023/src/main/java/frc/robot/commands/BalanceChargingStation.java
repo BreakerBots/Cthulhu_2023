@@ -24,8 +24,8 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    xPID = new PIDController(0.3, 0.0, 0.0);
-    yPID = new PIDController(0.3, 0.0, 0.0);
+    xPID = new PIDController(1.2, 0.0, 0.2);
+    yPID = new PIDController(1.2, 0.0, 0.2);
     xPID.setTolerance(0.02, 0.05);
     yPID.setTolerance(0.02, 0.05);
     addRequirements(drivetrain);
@@ -40,8 +40,8 @@ public class BalanceChargingStation extends CommandBase {
   @Override
   public void execute() {
     BreakerVector3 vec = imu.getGravityVector();
-    double xSpeed = MathUtil.clamp(xPID.calculate(vec.getMagnitudeY(), 0.0), -0.15, 0.15);
-    double ySpeed = MathUtil.clamp(yPID.calculate(vec.getMagnitudeX(), 0.0), -0.15, 0.15);
+    double xSpeed = MathUtil.clamp(xPID.calculate(vec.getMagnitudeY(), 0.0), -0.2, 0.2);
+    double ySpeed = MathUtil.clamp(yPID.calculate(vec.getMagnitudeX(), 0.0), -0.2, 0.2);
     // if (DriverStation.getAlliance() == Alliance.Red) {
     //   corSpeed *= -1.0;
     // }

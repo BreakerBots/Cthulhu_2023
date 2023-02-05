@@ -7,6 +7,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
@@ -59,5 +62,12 @@ public class Drive extends BreakerSwerveDrive {
         frontRightModule.setDeviceName(" FR_Module ");
         backLeftModule.setDeviceName(" BL_Module ");
         backRightModule.setDeviceName(" BR_Module ");
+    }
+
+    public static BreakerWaypointPath mirrorPathToAlliance(BreakerWaypointPath path) {
+        if ( DriverStation.getAlliance() == Alliance.Red) {
+                return path.mirror(16.54 / 2);
+        }
+        return path;
     }
 }
