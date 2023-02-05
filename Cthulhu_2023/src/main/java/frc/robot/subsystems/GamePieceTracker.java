@@ -10,6 +10,7 @@ import org.opencv.core.Rect2d;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
@@ -35,9 +36,14 @@ public class GamePieceTracker extends SubsystemBase {
     cubeCam = new BreakerPhotonCamera(DUMMY, DUMMY);
   }
 
-  public Rect2d makeBoundingBox(PhotonTrackedTarget target) {
+  public Pair<Double, Double> makeBoundingBox(PhotonTrackedTarget target) {
     var corners = target.getDetectedCorners();
     TargetCorner firstCorner = corners.remove(0);
+    for (TargetCorner tc: corners) {
+      if (tc.x != firstCorner.x && tc.y != firstCorner.y) {
+        return new Pair();
+      }
+    }
   }
 
   @Override
