@@ -94,11 +94,6 @@ public class BreakerMK4iNeoSwerveModule implements BreakerGenericSwerveModule {
                 CANSparkMax.ControlType.kVelocity, 0, ffProvider.getArbitraryFeedforwardValue(speedMetersPerSec),
                 ArbFFUnits.kPercentOut);
 
-        SmartDashboard.putNumber(deviceName + " ANGLE IN", tgtAngle.getDegrees());
-        SmartDashboard.putNumber(deviceName + " SPEED IN", speedMetersPerSec);
-        SmartDashboard.putNumber(deviceName + "ANGLE OUT", getModuleState().angle.getDegrees());
-        SmartDashboard.putNumber(deviceName + "SPEED OUT", getModuleState().speedMetersPerSecond);
-
         targetModuleState = new SwerveModuleState(speedMetersPerSec, tgtAngle);
     }
 

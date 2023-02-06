@@ -75,14 +75,25 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   }
 
   /**
+   * Directly exposes full module controll to the user, does not proform any automatic optimization or desaturation
+   * <p>
+   * NOTE: Not affected by slow mode, does not consider technical limits of modules or drivetrain,
+   */
+  public void setRawModuleStates(SwerveModuleState... targetModuleStates) {
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].setModuleTarget(targetModuleStates[i]);
+      this.targetModuleStates[i] = targetModuleStates[i];
+    }
+  }
+
+  /**
    * Sets each module to match a target module state in the order they were passed
    * in. Automaticly optimizes and desaturates wheelspeeds, stops module if set speed is below module speed deadband threshold
    * <p>
    * NOTE: Not affected by slow mode.
    */
-  public void setRawModuleStates(SwerveModuleState... targetModuleStates) {
+  public void setModuleStates(SwerveModuleState... targetModuleStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(targetModuleStates, config.getMaxAttainableModuleWheelSpeed());
-
     for (int i = 0; i < swerveModules.length; i++) {
 
       if (Math.abs(targetModuleStates[i].speedMetersPerSecond) < config.getModuleWheelSpeedDeadband()) {
@@ -121,7 +132,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
       robotRelativeVelocities.vyMetersPerSecond *= config.getSlowModeLinearMultiplier();
       robotRelativeVelocities.omegaRadiansPerSecond *= config.getSlowModeTurnMultiplier();
     }
-    setRawModuleStates(config.getKinematics().toSwerveModuleStates(robotRelativeVelocities));
+    setModuleStates(config.getKinematics().toSwerveModuleStates(robotRelativeVelocities));
   }
 
   /**
@@ -195,8 +206,10 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
    * @param forwardVelMetersPerSec Forward velocity relative to field (m/s).
    * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
    * @param radPerSec Rotation velocity relative to field (rad/sec).
+   * @param useFieldRelativeMovementAngleOffset weather or not to use the set angle offset for the field relative mobement forward angle zero point
    */
-  public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec, boolean useFieldRelativeMovementAngleOffset) {
+  public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec,
+      boolean useFieldRelativeMovementAngleOffset) {
     ChassisSpeeds robotRelSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         forwardVelMetersPerSec,
         horizontalVelMetersPerSec, 
@@ -212,6 +225,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
    * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
    * @param radPerSec Rotation velocity relative to field (rad/sec).
    * @param odometer {@link BreakerGenericOdometer} to determine field relative position.
+   * @param useFieldRelativeMovementAngleOffset weather or not to use the set angle offset for the field relative mobement forward angle zero point
    */
   public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec,
       BreakerGenericOdometer odometer, boolean useFieldRelativeMovementAngleOffset) {
@@ -245,6 +259,40 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec,
       BreakerGenericOdometer odometer) {
         moveRelativeToField(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec, odometer, true);
+  }
+
+
+  /**
+   * Movement with velocity percents relative to field. Swerve drive's own odometry is used.
+   * 
+   * @param forwardPercent Forward speed percent (-1 to 1).
+   * @param horizontalPercent Horizontal speed percent (-1 to 1).
+   * @param turnPercent Rotation speed percent (-1 to 1).
+   * @param useFieldRelativeMovementAngleOffset weather or not to use the set angle offset for the field relative mobement forward angle zero point
+   */
+  public void moveWithPercentInputRelativeToField(double forwardPercent, double horizontalPercent, double turnPercent, 
+      boolean useFieldRelativeMovementAngleOffset) {
+    double fwdV = forwardPercent * config.getMaxForwardVel();
+    double horzV = horizontalPercent * config.getMaxSidewaysVel();
+    double thetaV = turnPercent * config.getMaxAngleVel();
+    moveRelativeToField(fwdV, horzV, thetaV, useFieldRelativeMovementAngleOffset);
+  }
+
+  /**
+   * Movement with velocity percents relative to field. Use if using a separate odometry source.
+   * 
+   * @param forwardPercent Forward speed percent (-1 to 1).
+   * @param horizontalPercent Horizontal speed percent (-1 to 1).
+   * @param turnPercent Rotation speed percent (-1 to 1).
+   * @param odometer {@link BreakerGenericOdometer} to determine field relative position.
+   * @param useFieldRelativeMovementAngleOffset weather or not to use the set angle offset for the field relative mobement forward angle zero point
+   */
+  public void moveWithPercentInputRelativeToField(double forwardPercent, double horizontalPercent, double turnPercent,
+      BreakerGenericOdometer odometer,  boolean useFieldRelativeMovementAngleOffset) {
+    double fwdV = forwardPercent * config.getMaxForwardVel();
+    double horzV = horizontalPercent * config.getMaxSidewaysVel();
+    double thetaV = turnPercent * config.getMaxAngleVel();
+    moveRelativeToField(fwdV, horzV, thetaV, odometer, useFieldRelativeMovementAngleOffset);
   }
 
   /**

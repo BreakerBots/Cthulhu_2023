@@ -55,11 +55,11 @@ public abstract class BreakerDiffDrive extends BreakerGenericDrivetrain {
     /** Creates a new instance of the BreakerDiffDrive backround infestructure
      * 
      * @param leftMotors An array of all MotorController objects that controll the left drivetrain's movement
-     * @param leftTickSupplier A Double (double obj wrapper) supplier that provides the current number of ticks observed by the drive's left side encoder
+     * @param leftRotationSupplier A Double (double obj wrapper) supplier that provides the current number of rotations that have been observed by the drive's left side encoder
      * @param leftRPMSupplier A Double (double obj wrapper) supplier that provides the current velocity in RPM observed by the drives left side
      * @param invertL A boolean value representing weter or not to invert the motor outputs and sensor phases of the left side motors and encoder
      * @param rightMotors An array of all MotorController objects that controll the right drivetrain's movement
-     * @param rightTickSupplier A Double (double obj wrapper) supplier that provides the current number of ticks observed by the drive's right side encoder
+     * @param rightRotationSupplier A Double (double obj wrapper) supplier that provides the current number of rotations that have been observed by the drive's right side encoder
      * @param rightRPMSupplier A Double (double obj wrapper) supplier that provides the current velocity in RPM observed by the drives right side
      * @param invertR A boolean value representing weter or not to invert the motor outputs and sensor phases of the right side motors and encoder
      * @param gyro A {@link BreakerGenericGyro} representing a single axis gyro, mostly used for auto functionality

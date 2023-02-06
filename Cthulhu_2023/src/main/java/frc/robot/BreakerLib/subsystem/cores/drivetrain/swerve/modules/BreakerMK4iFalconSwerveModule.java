@@ -120,11 +120,6 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
         driveMotor.set(TalonFXControlMode.Velocity, getMetersPerSecToNativeVelUnits(speedMetersPerSec),
                 DemandType.ArbitraryFeedForward, ffProvider.getArbitraryFeedforwardValue(speedMetersPerSec));
 
-        SmartDashboard.putNumber(deviceName + " ANGLE IN", tgtAngle.getDegrees());
-        SmartDashboard.putNumber(deviceName +" SPEED IN", speedMetersPerSec);
-        SmartDashboard.putNumber(deviceName + " ANGLE OUT", getModuleState().angle.getDegrees());
-        SmartDashboard.putNumber(deviceName + " SPEED OUT", getModuleState().speedMetersPerSecond);
-
         targetModuleState = new SwerveModuleState(speedMetersPerSec, tgtAngle);
     }
 
