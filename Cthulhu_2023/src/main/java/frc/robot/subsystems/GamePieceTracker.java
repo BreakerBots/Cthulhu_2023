@@ -8,21 +8,36 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import org.opencv.core.Rect2d;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
+import edu.wpi.first.math.ComputerVisionUtil;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonTarget2d;
 
 enum GamePieceType {
-  CONE_UPRIGHT,
-  CONE_TOPPLED,
-  CUBE,
-  NONE
+  CONE_UPRIGHT(Units.inchesToMeters(12.8125)),
+  CONE_TOPPLED(Units.inchesToMeters(8.375)),
+  CUBE(Units.inchesToMeters(9.5));
+ 
+  private double hightMeters;
+  private GamePieceType(double hightMeters) {
+    this.hightMeters = hightMeters;
+  }
+
+  public double getHightMeters() {
+      return hightMeters;
+  }
+
 }
 
 public class GamePieceTracker extends SubsystemBase {
@@ -73,12 +88,12 @@ public class GamePieceTracker extends SubsystemBase {
     trackedGamePieces.clear();
     if (coneCam.hasTargets()) {
       for (PhotonTrackedTarget target: coneCam.getAllRawTrackedTargets()) {
-        trackedGamePieces.add(new TrackedGamePiece(isConeUpright(makeBoundingBox(target)) ?  GamePieceType.CONE_UPRIGHT : GamePieceType.CONE_TOPPLED, target));
+        trackedGamePieces.add(new TrackedGamePiece(isConeUpright(makeBoundingBox(target)) ?  GamePieceType.CONE_UPRIGHT : GamePieceType.CONE_TOPPLED, coneCam.get3dCamPositionRelativeToRobot(), target));
       }
     }
     if (cubeCam.hasTargets()) {
       for (PhotonTrackedTarget target: cubeCam.getAllRawTrackedTargets()) {
-        trackedGamePieces.add(new TrackedGamePiece(GamePieceType.CUBE, target));
+        trackedGamePieces.add(new TrackedGamePiece(GamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(), target));
       }
     }
     if (!trackedGamePieces.isEmpty()) {
@@ -87,12 +102,23 @@ public class GamePieceTracker extends SubsystemBase {
   }
 
   public static class TrackedGamePiece implements Comparable<TrackedGamePiece> {
-    private final double CAMERA_FOV_PITCH = 0;
+    private final double CAMERA_FOV_PITCH_RAD = 0;
+
+    private Transform3d cameraTransform;
     private GamePieceType type;
     private PhotonTrackedTarget target;
-    public TrackedGamePiece(GamePieceType type, PhotonTrackedTarget target) {
+    public TrackedGamePiece(GamePieceType type, Transform3d cameraTransform, PhotonTrackedTarget target) {
       this.target = target;
       this.type = type;
+      this.cameraTransform = cameraTransform;
+    }
+
+    public Translation2d getRobotToTargetTranslation() {
+      return PhotonUtils.estimateCameraToTargetTranslation(getDistance(), Rotation2d.fromDegrees(target.getYaw())).plus(cameraTransform.getTranslation().toTranslation2d());
+    }
+
+    public double getDistance() {
+      return PhotonUtils.calculateDistanceToTargetMeters(cameraTransform.getZ(), type.getHightMeters(), cameraTransform.getRotation().getY(), Math.toRadians(target.getPitch()));
     }
 
     public PhotonTrackedTarget getTarget() {
@@ -106,8 +132,8 @@ public class GamePieceTracker extends SubsystemBase {
     @Override
     public int compareTo(TrackedGamePiece arg0) {
 
-      double otherDist = Math.hypot(arg0.target.getYaw(), Math.abs(arg0.target.getPitch() + (CAMERA_FOV_PITCH/2)));
-      double dist = Math.hypot(target.getYaw(), Math.abs(target.getPitch() + (CAMERA_FOV_PITCH/2)));
+      double otherDist = Math.hypot(arg0.target.getYaw(), Math.abs(arg0.target.getPitch() + (CAMERA_FOV_PITCH_RAD/2)));
+      double dist = Math.hypot(target.getYaw(), Math.abs(target.getPitch() + (CAMERA_FOV_PITCH_RAD/2)));
       if (dist < otherDist) {
         return 1;
       } else if (dist > otherDist) {

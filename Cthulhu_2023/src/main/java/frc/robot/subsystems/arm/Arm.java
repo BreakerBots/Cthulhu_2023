@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.util.math.BreakerMath;
-import frc.robot.commands.SetArmState;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {

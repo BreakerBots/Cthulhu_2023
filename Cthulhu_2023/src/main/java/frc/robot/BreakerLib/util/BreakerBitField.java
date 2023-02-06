@@ -14,7 +14,7 @@ import java.util.Iterator;
 import com.fasterxml.jackson.databind.util.ArrayIterator;
 
 /** A class that represents a modifiable bit field for user convienance */
-public class BreakerBitField implements java.lang.Iterable<Boolean>, java.lang.Cloneable {
+public final class BreakerBitField implements java.lang.Iterable<Boolean>, java.lang.Cloneable {
     public Boolean[] bools;
 
     public BreakerBitField(boolean... bools) {
@@ -148,6 +148,10 @@ public class BreakerBitField implements java.lang.Iterable<Boolean>, java.lang.C
 
     public boolean get(int index) {
         return bools[index];
+    }
+
+    public int length() {
+        return bools.length;
     }
 
     public BreakerBitField truncate(int startIndex, int endIndex) {
