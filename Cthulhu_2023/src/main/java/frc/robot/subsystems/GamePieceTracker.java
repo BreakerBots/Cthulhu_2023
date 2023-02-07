@@ -7,22 +7,16 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.opencv.core.Rect2d;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
-import edu.wpi.first.math.ComputerVisionUtil;
-import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
-import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonTarget2d;
 
 enum GamePieceType {
   CONE_UPRIGHT(Units.inchesToMeters(12.8125)),
@@ -88,24 +82,6 @@ class TrackedGamePiece implements Comparable<TrackedGamePiece> {
   }
 }
 
-class VisionBoundingBox {
-  private double width, height;
-
-  public VisionBoundingBox(double width, double height) {
-    this.width = width;
-    this.height = height;
-  }
-
-  public double getHeight() {
-    return height;
-  }
-
-  public double getWidth() {
-    return width;
-  }
-
-}
-
 public class GamePieceTracker extends SubsystemBase {
 
   private BreakerPhotonCamera coneCam, cubeCam;
@@ -119,11 +95,12 @@ public class GamePieceTracker extends SubsystemBase {
     trackedGamePieces = new ArrayList<>();
   }
 
-  private boolean isConeUpright(VisionBoundingBox coneBound) {
-    return coneBound.getHeight() / coneBound.getWidth() >= uprightConeBoundRatioThreshold;
+  private boolean isConeUpright(double coneBoxWidth, double coneBoxHeight) {
+    return coneBoxHeight / coneBoxWidth >= uprightConeBoundRatioThreshold;
   }
 
-  private VisionBoundingBox makeBoundingBox(PhotonTrackedTarget target) {
+  /** @return Array of 2 with width in slot 0 and height in slot 1 */
+  private double[] makeBoundingBox(PhotonTrackedTarget target) {
     var corners = target.getMinAreaRectCorners();
     TargetCorner firstCorner = corners.remove(0);
     TargetCorner opposingCorner = firstCorner;
@@ -134,41 +111,56 @@ public class GamePieceTracker extends SubsystemBase {
       }
     }
 
-    return new VisionBoundingBox(Math.abs(opposingCorner.x - firstCorner.x),
-        Math.abs(opposingCorner.y - firstCorner.y));
+    double width = Math.abs(opposingCorner.x - firstCorner.x);
+    double height = Math.abs(opposingCorner.y - firstCorner.y);
+
+    return new double[] {width, height};
   }
 
-  public boolean hasTargets() {
+  /** @return If any targets have been successfully found. */
+  public boolean targetsFound() {
     return !trackedGamePieces.isEmpty();
   }
 
+  /** @return Best overall target. */
   public TrackedGamePiece getBestTrackedGamePiece() {
     return trackedGamePieces.get(0);
   }
 
+  /** @return Clone of tracked game pieces list. */
   public ArrayList<TrackedGamePiece> getTrackedGamePieces() {
     return new ArrayList<>(trackedGamePieces);
   }
 
-  @Override
-  public void periodic() {
+  public void generateGamePieceList() {
     trackedGamePieces.clear();
+    // Checks cones
     if (coneCam.hasTargets()) {
       for (PhotonTrackedTarget target : coneCam.getAllRawTrackedTargets()) {
-        trackedGamePieces.add(new TrackedGamePiece(
-            isConeUpright(makeBoundingBox(target)) ? GamePieceType.CONE_UPRIGHT : GamePieceType.CONE_TOPPLED,
-            coneCam.get3dCamPositionRelativeToRobot(), target));
+        double[] boundingBox = makeBoundingBox(target);
+        GamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ? GamePieceType.CONE_UPRIGHT
+            : GamePieceType.CONE_TOPPLED;
+        TrackedGamePiece cone = new TrackedGamePiece(coneType, coneCam.get3dCamPositionRelativeToRobot(), target);
+        trackedGamePieces.add(cone);
       }
     }
+    // Checks cubes
     if (cubeCam.hasTargets()) {
       for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
-        trackedGamePieces
-            .add(new TrackedGamePiece(GamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(), target));
+        TrackedGamePiece cube = new TrackedGamePiece(GamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(),
+            target);
+        trackedGamePieces.add(cube);
       }
     }
+    // Sorts the non-empty list
     if (!trackedGamePieces.isEmpty()) {
       Collections.sort(trackedGamePieces);
     }
+  }
+
+  @Override
+  public void periodic() {
+    generateGamePieceList();
   }
 
 }
