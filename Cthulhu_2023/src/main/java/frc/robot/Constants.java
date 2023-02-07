@@ -4,17 +4,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
-import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
-import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
-import frc.robot.BreakerLib.position.geometry.BreakerRobotGeometry2d;
-
 import java.awt.geom.Rectangle2D;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.BreakerLib.position.geometry.BreakerRobotGeometry2d;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
