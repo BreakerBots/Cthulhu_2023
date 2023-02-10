@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -45,7 +46,7 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
         Rotation2d.fromDegrees(config.encoder.getAbsolutePosition()).plus(angleOffsetSupplier.get()).getRadians()
         );
         ff = new ArmFeedforward(config.kS, config.kG, config.kV, config.kA);
-        motor = config.motor;
+        motor = config.motors[0];
         encoder = config.encoder;
         this.angleOffsetSupplier = angleOffsetSupplier;
         TalonFXConfiguration motorConfig = new TalonFXConfiguration();
@@ -63,6 +64,9 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
         BreakerCTREUtil.checkError(motor.configAllSettings(motorConfig),
                 " Failed to arm joint motor ");
         motor.selectProfileSlot(0, 0);
+        for (int i = 1; i < config.motors.length; i++) {
+          config.motors[i].follow(motor);
+        }
   
   }
 
@@ -94,12 +98,12 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
   public static class ArmJointConfig {
     public final double kP, kI, kD, kS, kG, kV, kA;
     public final TrapezoidProfile.Constraints constraints;
-    public final WPI_TalonFX motor;
+    public final WPI_TalonFX[] motors;
     public final WPI_CANCoder encoder;
-    public ArmJointConfig(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder, TrapezoidProfile.Constraints constraints, double kP, double kI, double kD, double kS, double kG, double kV, double kA) {
+    public ArmJointConfig(WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder, TrapezoidProfile.Constraints constraints, double kP, double kI, double kD, double kS, double kG, double kV, double kA, WPI_TalonFX... motors) {
         BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition, 
         AbsoluteSensorRange.Signed_PlusMinus180, encoderOffsetDegrees, invertEncoder);
-        this.motor = motor;
+        this.motors = motors;
         this.encoder = encoder;
         this.kP = kP;
         this.kI = kI;

@@ -22,6 +22,18 @@ public class Gripper {
         
     }
 
+    public void intake(GamePieceType type) {
+
+    }
+
+    public void dropGamePiece() {
+        
+    }
+
+    public void ejectGamePiece() {
+
+    }
+
     public Color getColorSensorDetectedColor() {
         return colorSensor.getColor();
     }

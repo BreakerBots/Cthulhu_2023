@@ -31,7 +31,7 @@ public final class Constants {
         public static final double MAX_FORWARD_VELOCITY = 4.1148;
         public static final double MAX_SIDEWAYS_VELOCITY = 4.1148;
         public static final double MAX_ANGLE_VELOCITY = 16.114;
-        public static final double MODULE_ANGLE_KP = 0.45;
+        public static final double MODULE_ANGLE_KP = 0.85;
         public static final double MODULE_ANGLE_KI = 0.0;
         public static final double MODULE_ANGLE_KD = 0.0;
         public static final double MODULE_VELOCITY_KP = -0.045; // 0.01

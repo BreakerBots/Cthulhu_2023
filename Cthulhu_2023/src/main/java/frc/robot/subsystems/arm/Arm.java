@@ -36,7 +36,7 @@ public class Arm extends SubsystemBase {
         PLACE_HIGH_CUBE(0.0, 0.0),
         PLACE_MEDIUM_CONE(0.0, 0.0),
         PLACE_MEDIUM_CUBE(0.0, 0.0),
-        PLACE_LOW(0.0, 0.0),
+        PLACE_HYBRID(0.0, 0.0),
         PICKUP_HIGH(0.0, 0.0),
         PICKUP_LOW(0.0, 0.0),
         CARRY(0.0, 0.0),
@@ -89,20 +89,20 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        ArmJoint.ArmJointConfig shoulderConfig = new ArmJoint.ArmJointConfig(
-            new WPI_TalonFX(0), 
+        ArmJoint.ArmJointConfig shoulderConfig = new ArmJoint.ArmJointConfig( 
             new WPI_CANCoder(0), 0, false, 
             new TrapezoidProfile.Constraints(0,0), 
             0, 0, 0, 
-            0, 0, 0, 0
+            0, 0, 0, 0,
+            new WPI_TalonFX(0), new WPI_TalonFX(0)
         );
 
         ArmJoint.ArmJointConfig elbowConfig = new ArmJoint.ArmJointConfig(
-            new WPI_TalonFX(0), 
             new WPI_CANCoder(0), 0, false, 
             new TrapezoidProfile.Constraints(0,0), 
             0, 0, 0, 
-            0, 0, 0, 0
+            0, 0, 0, 0,
+            new WPI_TalonFX(0)
         );
         shoulderJoint = new ArmJoint(() -> {return new Rotation2d();}, shoulderConfig);
         elbowJoint = new ArmJoint(shoulderJoint::getJointAngle, elbowConfig);

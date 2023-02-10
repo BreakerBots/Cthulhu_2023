@@ -4,26 +4,39 @@
 
 package frc.robot.commands.score;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.NodeLevel;
+import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.Arm.MoveToState;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PlaceCube extends SequentialCommandGroup {
-  /** Creates a new PlaceHighCube. */
-  public PlaceCube(NodeLevel level) {
+  /** Creates a new PlaceHighCone. */
+  public PlaceCube(NodeLevel level, Arm arm, Gripper gripper) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     switch(level) {
       case HIGH:
-        addCommands();
-        break;
-      case LOW:
-        addCommands();
+        addCommands(
+          arm.new MoveToState(Arm.ArmState.PLACE_HIGH_CUBE),
+          new InstantCommand(gripper::ejectGamePiece)
+        );
         break;
       case MIDDLE:
-        addCommands();
+        addCommands(
+          arm.new MoveToState(Arm.ArmState.PLACE_MEDIUM_CUBE),
+          new InstantCommand(gripper::ejectGamePiece)
+        );
+        break;
+      case HYBRID:
+        addCommands(
+          arm.new MoveToState(Arm.ArmState.PLACE_HYBRID),
+          new InstantCommand(gripper::ejectGamePiece)
+        );
         break;
     }
   }

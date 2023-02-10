@@ -8,5 +8,5 @@ package frc.robot;
 public enum NodeLevel {
     HIGH,
     MIDDLE,
-    LOW
+    HYBRID
 }
