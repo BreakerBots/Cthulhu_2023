@@ -6,7 +6,7 @@ package frc.robot.commands.score;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.NodeLevel;
+import frc.robot.Node.NodeLevel;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.MoveToState;
