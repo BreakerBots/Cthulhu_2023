@@ -23,10 +23,14 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
+import frc.robot.commands.AllignToGamePiece;
 import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.MoveToGamePiece;
+import frc.robot.commands.MoveToGamePieceGroup;
 import frc.robot.commands.autos.ApriltagTestPath;
 import frc.robot.subsystems.AprilTagTracker;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.GamePieceTracker;
 //import frc.robot.subsystems.Odometer;
 //import frc.robot.subsystems.VisionTest;
 
@@ -48,7 +52,8 @@ public class RobotContainer {
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-  private final AprilTagTracker att = new AprilTagTracker();
+  //private final AprilTagTracker att = new AprilTagTracker();
+  private final GamePieceTracker gpt = new GamePieceTracker();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -65,7 +70,6 @@ public class RobotContainer {
 
     configureButtonBindings();
     drivetrainSys.setDefaultCommand(manualDriveCommand);
-    drivetrainSys.setSlowMode(true);
     }
 
   /**
@@ -77,9 +81,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
+    controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
     controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    //controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
+    //controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
+    controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
+    controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
   }
 
   private void robotManagerSetup() {
@@ -102,8 +108,9 @@ public class RobotContainer {
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, Math.PI), 3.0));
     // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 3, 0), 3.0));
 
-   return new ApriltagTestPath(drivetrainSys, att, imuSys);
+   //return new ApriltagTestPath(drivetrainSys, att, imuSys);
    //return drivetrainSys.getTestSuite().stressTest(speedList);
    //return new Pickup1_Place2_Balence_6_3(drivetrainSys, att, imuSys);
+   return null;
   }
 }

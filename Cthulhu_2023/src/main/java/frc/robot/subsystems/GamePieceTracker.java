@@ -6,14 +6,17 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
@@ -35,63 +38,19 @@ enum GamePieceType {
 
 }
 
-class TrackedGamePiece implements Comparable<TrackedGamePiece> {
-  private final double CAMERA_FOV_PITCH_RAD = 0;
-
-  private Transform3d cameraTransform;
-  private GamePieceType type;
-  private PhotonTrackedTarget target;
-
-  public TrackedGamePiece(GamePieceType type, Transform3d cameraTransform, PhotonTrackedTarget target) {
-    this.target = target;
-    this.type = type;
-    this.cameraTransform = cameraTransform;
-  }
-
-  public Translation2d getRobotToTargetTranslation() {
-    return PhotonUtils.estimateCameraToTargetTranslation(getDistance(), Rotation2d.fromDegrees(target.getYaw()))
-        .plus(cameraTransform.getTranslation().toTranslation2d());
-  }
-
-  public double getDistance() {
-    return PhotonUtils.calculateDistanceToTargetMeters(cameraTransform.getZ(), type.getHeightMeters(),
-        cameraTransform.getRotation().getY(), Math.toRadians(target.getPitch()));
-  }
-
-  public PhotonTrackedTarget getTarget() {
-    return target;
-  }
-
-  public GamePieceType getType() {
-    return type;
-  }
-
-  @Override
-  public int compareTo(TrackedGamePiece arg0) {
-
-    double otherDist = Math.hypot(arg0.target.getYaw(),
-        Math.abs(arg0.target.getPitch() + (CAMERA_FOV_PITCH_RAD / 2)));
-    double dist = Math.hypot(target.getYaw(), Math.abs(target.getPitch() + (CAMERA_FOV_PITCH_RAD / 2)));
-    if (dist < otherDist) {
-      return 1;
-    } else if (dist > otherDist) {
-      return -1;
-    } else {
-      return 0;
-    }
-  }
-}
-
 public class GamePieceTracker extends SubsystemBase {
 
-  private BreakerPhotonCamera coneCam, cubeCam;
+  private BreakerPhotonCamera /*coneCam,*/ cubeCam;
   private double uprightConeBoundRatioThreshold = 1.2;
   private ArrayList<TrackedGamePiece> trackedGamePieces;
 
   /** Creates a new GamePieceTracker. */
   public GamePieceTracker() {
-    coneCam = new BreakerPhotonCamera("CONE_CAM_1", new Transform3d());
-    cubeCam = new BreakerPhotonCamera("CUBE_CAM_1", new Transform3d());
+   // coneCam = new BreakerPhotonCamera("CONE_CAM_1", new Transform3d());
+    //cubeCam = new BreakerPhotonCamera("CUBE_CAM_1", new Transform3d());
+    cubeCam = new BreakerPhotonCamera("April_Test_1",
+    new Transform3d(new Translation3d(Units.inchesToMeters(12.75), Units.inchesToMeters(2.25),
+    Units.inchesToMeters(13.0)), new Rotation3d()));
     trackedGamePieces = new ArrayList<>();
   }
 
@@ -118,7 +77,7 @@ public class GamePieceTracker extends SubsystemBase {
   }
 
   /** @return If any targets have been successfully found. */
-  public boolean targetsFound() {
+  public boolean hasTargets() {
     return !trackedGamePieces.isEmpty();
   }
 
@@ -135,21 +94,25 @@ public class GamePieceTracker extends SubsystemBase {
   public void generateGamePieceList() {
     trackedGamePieces.clear();
     // Checks cones
-    if (coneCam.hasTargets()) {
-      for (PhotonTrackedTarget target : coneCam.getAllRawTrackedTargets()) {
-        double[] boundingBox = makeBoundingBox(target);
-        GamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ? GamePieceType.CONE_UPRIGHT
-            : GamePieceType.CONE_TOPPLED;
-        TrackedGamePiece cone = new TrackedGamePiece(coneType, coneCam.get3dCamPositionRelativeToRobot(), target);
-        trackedGamePieces.add(cone);
-      }
-    }
+    // if (coneCam.hasTargets()) {
+    //   for (PhotonTrackedTarget target : coneCam.getAllRawTrackedTargets()) {
+    //     if (!Objects.isNull(target)) {
+      //     double[] boundingBox = makeBoundingBox(target);
+      //     GamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ? GamePieceType.CONE_UPRIGHT
+      //         : GamePieceType.CONE_TOPPLED;
+      //     TrackedGamePiece cone = new TrackedGamePiece(coneType, coneCam.get3dCamPositionRelativeToRobot(), target);
+      //     trackedGamePieces.add(cone);
+      //   }
+    //   }
+    // }
     // Checks cubes
     if (cubeCam.hasTargets()) {
       for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
-        TrackedGamePiece cube = new TrackedGamePiece(GamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(),
+        if (!Objects.isNull(target)) {
+          TrackedGamePiece cube = new TrackedGamePiece(GamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(),
             target);
-        trackedGamePieces.add(cube);
+          trackedGamePieces.add(cube);
+        }
       }
     }
     // Sorts the non-empty list
@@ -161,6 +124,53 @@ public class GamePieceTracker extends SubsystemBase {
   @Override
   public void periodic() {
     generateGamePieceList();
+  }
+
+  public static class TrackedGamePiece implements Comparable<TrackedGamePiece> {
+    private final double CAMERA_FOV_PITCH_RAD = 0;
+  
+    private Transform3d cameraTransform;
+    private GamePieceType type;
+    private PhotonTrackedTarget target;
+  
+    private TrackedGamePiece(GamePieceType type, Transform3d cameraTransform, PhotonTrackedTarget target) {
+      this.target = target;
+      this.type = type;
+      this.cameraTransform = cameraTransform;
+    }
+  
+    public Translation2d getRobotToTargetTranslation() {
+      return PhotonUtils.estimateCameraToTargetTranslation(getDistance(), Rotation2d.fromDegrees(target.getYaw()))
+          .plus(cameraTransform.getTranslation().toTranslation2d());
+    }
+  
+    public double getDistance() {
+      return PhotonUtils.calculateDistanceToTargetMeters(cameraTransform.getZ(), type.getHeightMeters()/2,
+          cameraTransform.getRotation().getY(), Math.toRadians(target.getPitch()));
+    }
+  
+    public PhotonTrackedTarget getTarget() {
+      return target;
+    }
+  
+    public GamePieceType getType() {
+      return type;
+    }
+  
+    @Override
+    public int compareTo(TrackedGamePiece arg0) {
+  
+      double otherDist = Math.hypot(arg0.target.getYaw(),
+          Math.abs(arg0.target.getPitch() + (CAMERA_FOV_PITCH_RAD / 2)));
+      double dist = Math.hypot(target.getYaw(), Math.abs(target.getPitch() + (CAMERA_FOV_PITCH_RAD / 2)));
+      if (dist < otherDist) {
+        return 1;
+      } else if (dist > otherDist) {
+        return -1;
+      } else {
+        return 0;
+      }
+    }
   }
 
 }
