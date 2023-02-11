@@ -45,8 +45,8 @@ public final class Constants {
         public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.3;
         public static final double FF_VELOCITY_COEFFICIENT = 2.82;
 
-        public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.3;
-        public static final double SLOW_MODE_TURN_MULTIPLIER = 0.3;
+        public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.65;
+        public static final double SLOW_MODE_TURN_MULTIPLIER = 0.65;
 
         public static final int FL_WHEEL_ID = 10;
         public static final int FR_WHEEL_ID = 12;

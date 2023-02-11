@@ -65,6 +65,7 @@ public class RobotContainer {
 
     configureButtonBindings();
     drivetrainSys.setDefaultCommand(manualDriveCommand);
+    drivetrainSys.setSlowMode(true);
     }
 
   /**
@@ -76,9 +77,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
+    //controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
     controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
+    //controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
   }
 
   private void robotManagerSetup() {
