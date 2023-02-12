@@ -57,9 +57,9 @@ public class MoveToGamePiece extends CommandBase {
       TrackedGamePiece piece = tracker.getBestTrackedGamePiece();
       Translation2d tgtTrans = piece.getRobotToTargetTranslation();
       tgtTrans = new Translation2d(tgtTrans.getNorm() - 0.25, tgtTrans.getAngle());
-      if (tgtTrans.getNorm() < 0.5) {
-        useRot = false;
-      }
+      // if (tgtTrans.getNorm() < 0.5) {
+      //   useRot = false;
+      // }
       tgtPose = new Pose2d(tgtTrans, new Rotation2d());
 
       Pose2d corPose = new Pose2d(new Translation2d(), useRot ? Rotation2d.fromDegrees(piece.getTarget().getYaw()) : new Rotation2d());
