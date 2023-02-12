@@ -23,16 +23,18 @@ public class MoveToGamePiece extends CommandBase {
   private GamePieceTracker tracker;
   private BreakerHolonomicDriveController driveController;
   private boolean hasRun = false;
+  private boolean useRot;
   private int ind = 0;
   private Pose2d tgtPose;
   public MoveToGamePiece(Drive drive, GamePieceTracker tracker) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
     this.tracker = tracker;
-    ProfiledPIDController anglePID = new ProfiledPIDController(1.25, 0.0, 0.0, new TrapezoidProfile.Constraints(9.0, 9.0));
+    ProfiledPIDController anglePID = new ProfiledPIDController(2.25, 0.0, 0.0, new TrapezoidProfile.Constraints(9.0, 9.0));
     PIDController drivePID = new PIDController(1.0, 0, 0.0);
     driveController = new BreakerHolonomicDriveController(drivePID, anglePID);
-    driveController.setTolerances(new Pose2d(0.03, 0.03, Rotation2d.fromDegrees(2)));
+    driveController.setTolerances(new Pose2d(0.5, 0.5, Rotation2d.fromDegrees(2)));
+    useRot = true;
     addRequirements(drive);
   }
 
@@ -53,11 +55,16 @@ public class MoveToGamePiece extends CommandBase {
     if (tracker.hasTargets()) {
       hasRun = true;
       TrackedGamePiece piece = tracker.getBestTrackedGamePiece();
-      Pose2d corPose = new Pose2d(drive.getOdometryPoseMeters().getTranslation(), Rotation2d.fromDegrees(piece.getTarget().getYaw()));
-
       Translation2d tgtTrans = piece.getRobotToTargetTranslation();
+      tgtTrans = new Translation2d(tgtTrans.getNorm() - 0.25, tgtTrans.getAngle());
+      if (tgtTrans.getNorm() < 0.5) {
+        useRot = false;
+      }
+      tgtPose = new Pose2d(tgtTrans, new Rotation2d());
 
-      tgtPose = new Pose2d(new Translation2d(tgtTrans.getNorm() - 0.05, tgtTrans.getAngle()).plus(drive.getOdometryPoseMeters().getTranslation()), new Rotation2d());
+      Pose2d corPose = new Pose2d(new Translation2d(), useRot ? Rotation2d.fromDegrees(piece.getTarget().getYaw()) : new Rotation2d());
+
+    
 
       ChassisSpeeds spd = driveController.calculate(corPose, tgtPose, 0.5);
       drive.move(spd.vxMetersPerSecond, spd.vyMetersPerSecond, spd.omegaRadiansPerSecond);

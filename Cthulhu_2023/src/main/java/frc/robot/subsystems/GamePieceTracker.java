@@ -43,6 +43,7 @@ public class GamePieceTracker extends SubsystemBase {
   private BreakerPhotonCamera /*coneCam,*/ cubeCam;
   private double uprightConeBoundRatioThreshold = 1.2;
   private ArrayList<TrackedGamePiece> trackedGamePieces;
+  private boolean useConePipeline = true;
 
   /** Creates a new GamePieceTracker. */
   public GamePieceTracker() {
@@ -105,7 +106,7 @@ public class GamePieceTracker extends SubsystemBase {
       //   }
     //   }
     // }
-    // Checks cubes
+    //Checks cubes
     if (cubeCam.hasTargets()) {
       for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
         if (!Objects.isNull(target)) {
@@ -127,7 +128,7 @@ public class GamePieceTracker extends SubsystemBase {
   }
 
   public static class TrackedGamePiece implements Comparable<TrackedGamePiece> {
-    private final double CAMERA_FOV_PITCH_RAD = 0;
+    private final double CAMERA_FOV_PITCH_RAD = 1.1;
   
     private Transform3d cameraTransform;
     private GamePieceType type;
