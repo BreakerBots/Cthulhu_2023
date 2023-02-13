@@ -21,14 +21,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
 
-enum GamePieceType {
+enum TrackedGamePieceType {
   CONE_UPRIGHT(Units.inchesToMeters(12.8125)),
   CONE_TOPPLED(Units.inchesToMeters(8.375)),
   CUBE(Units.inchesToMeters(9.5));
 
   private double heightMeters;
 
-  private GamePieceType(double hightMeters) {
+  private TrackedGamePieceType(double hightMeters) {
     this.heightMeters = hightMeters;
   }
 
@@ -110,7 +110,7 @@ public class GamePieceTracker extends SubsystemBase {
     if (cubeCam.hasTargets()) {
       for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
         if (!Objects.isNull(target)) {
-          TrackedGamePiece cube = new TrackedGamePiece(GamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(),
+          TrackedGamePiece cube = new TrackedGamePiece(TrackedGamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(),
             target);
           trackedGamePieces.add(cube);
         }
@@ -131,10 +131,10 @@ public class GamePieceTracker extends SubsystemBase {
     private final double CAMERA_FOV_PITCH_RAD = 1.1;
   
     private Transform3d cameraTransform;
-    private GamePieceType type;
+    private TrackedGamePieceType type;
     private PhotonTrackedTarget target;
   
-    private TrackedGamePiece(GamePieceType type, Transform3d cameraTransform, PhotonTrackedTarget target) {
+    private TrackedGamePiece(TrackedGamePieceType type, Transform3d cameraTransform, PhotonTrackedTarget target) {
       this.target = target;
       this.type = type;
       this.cameraTransform = cameraTransform;
@@ -154,7 +154,7 @@ public class GamePieceTracker extends SubsystemBase {
       return target;
     }
   
-    public GamePieceType getType() {
+    public TrackedGamePieceType getType() {
       return type;
     }
   

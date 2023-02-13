@@ -34,7 +34,7 @@ public class Gripper {
         return colorSensor.getColor();
     }
 
-    public GamePieceType getControlledGamePiece() {
+    public GamePieceType getControlledGamePieceType() {
         if (colorSensor.getProximity() >= colorSensorProxMin) {
             if (isColorInRange(getColorSensorDetectedColor(), coneColorRangeMin, coneColorRangeMax)) {
                 return GamePieceType.CONE;
