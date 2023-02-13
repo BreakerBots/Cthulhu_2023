@@ -30,10 +30,6 @@ public class Gripper {
         
     }
 
-    public void ejectGamePiece() {
-
-    }
-
     public Color getColorSensorDetectedColor() {
         return colorSensor.getColor();
     }

@@ -57,7 +57,6 @@ public class BreakerWaypointPath {
             newWaypoints);
     }
 
-    // dimensions: 16.27m
     public BreakerWaypointPath mirror(double axisOfSymetry) {
         Translation2d[] result = new Translation2d [waypoints.length];
         for (int i = 0; i < waypoints.length; i++) {
