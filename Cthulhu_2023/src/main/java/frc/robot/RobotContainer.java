@@ -23,12 +23,8 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
-import frc.robot.commands.AllignToGamePiece;
 import frc.robot.commands.BalanceChargingStation;
-import frc.robot.commands.MoveToGamePiece;
-import frc.robot.commands.MoveToGamePieceGroup;
-import frc.robot.commands.autos.ApriltagTestPath;
-import frc.robot.subsystems.AprilTagTracker;
+import frc.robot.commands.AlignToGamePiece;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.GamePieceTracker;
 //import frc.robot.subsystems.Odometer;
@@ -84,7 +80,7 @@ public class RobotContainer {
     controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
     controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     //controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
-    controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
+    controllerSys.getButtonA().onTrue(new AlignToGamePiece(drivetrainSys, gpt));
     controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
   }
 

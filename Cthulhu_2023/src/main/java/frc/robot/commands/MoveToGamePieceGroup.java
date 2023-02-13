@@ -17,7 +17,7 @@ public class MoveToGamePieceGroup extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new AllignToGamePiece(drive, tracker),
+      new AlignToGamePiece(drive, tracker),
       new DriveForwardToGamePiece(drive, tracker)
     );
   }
