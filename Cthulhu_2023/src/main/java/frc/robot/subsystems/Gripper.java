@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.GamePieceType;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerColorSensorV3;
+import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.Constants;
 
 /** Add your docs here. */
@@ -23,6 +24,7 @@ public class Gripper {
     private CANSparkMax spark;
     private SparkMaxPIDController pid;
     private RelativeEncoder encoder;
+    private SystemDiagnostics diagnostics;
     public Gripper() {
         spark = new CANSparkMax(0, MotorType.kBrushless);
         spark.setSmartCurrentLimit(20);
@@ -33,6 +35,8 @@ public class Gripper {
         pid.setP(0);
         pid.setI(0);
         pid.setD(0);
+        diagnostics = new SystemDiagnostics("Gripper");
+        diagnostics.addSparkMax(spark);
     }
 
     public double getGripperPosition() {

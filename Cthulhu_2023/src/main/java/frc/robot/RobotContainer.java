@@ -41,7 +41,7 @@ import frc.robot.subsystems.GamePieceTracker;
  */
 public class RobotContainer {
 
-  private final BreakerXboxController controllerSys = new BreakerXboxController(0);
+  private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
  // private final Odometer odometerSys = new Odometer(drivetrainSys, new BreakerVisionPoseFilter(5.0, 0.35, Constants.Vision.AprilTag.APRILTAGS));
@@ -81,7 +81,6 @@ public class RobotContainer {
     controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
     controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
-    controllerSys.
   }
 
   private void robotManagerSetup() {
@@ -89,6 +88,10 @@ public class RobotContainer {
         "Cthulhu", 2023, "v1", "Yousif Alkhalaf, Roman Abrahamson, Sebastian Rueda"));
 
     BreakerRobotManager.setup(drivetrainSys, robotConfig);
+  }
+
+  public static boolean isGlobalManualOverride() {
+    return controllerSys.getStartButton().getAsBoolean();
   }
 
   /**

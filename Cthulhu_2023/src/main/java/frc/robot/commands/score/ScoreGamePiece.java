@@ -4,30 +4,22 @@
 
 package frc.robot.commands.score;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Node;
+import frc.robot.Node.NodeType;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.arm.Arm;
 
-public class ScoreGamePiece extends CommandBase {
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class ScoreGamePiece extends SequentialCommandGroup {
   /** Creates a new ScoreGamePiece. */
-  public ScoreGamePiece(Drive drive) {
-    
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+  public ScoreGamePiece(Drive drive, Arm arm, Gripper gripper, Node targetNode) {
+    addCommands(
+      new AlignToScore(targetNode.getColumn(), drive),
+      (targetNode.getNodeType() == NodeType.CONE ? new PlaceCone(targetNode.getLevel(), arm, gripper) : new PlaceCube(targetNode.getLevel(), arm, gripper))
+    );
   }
 }

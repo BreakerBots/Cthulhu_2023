@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.util.math.BreakerMath;
+import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
+import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
@@ -29,6 +31,11 @@ public class Arm extends SubsystemBase {
     private ArmState prevState = ArmState.MANUAL;
     private ArmPose targetPose;
     private MoveToState activeMoveCommand;
+    private WPI_CANCoder shoulderEncoder, elbowEncoder;
+    private WPI_TalonFX shoulderMotor, elbowMotor;
+    private SystemDiagnostics shoulderDiagnostics, elbowDiagnostics;
+
+
 
     
     public enum ArmState {
@@ -89,14 +96,18 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
+        shoulderEncoder = new WPI_CANCoder(0);
+        shoulderMotor = new WPI_TalonFX(0);
         ArmJoint.ArmJointConfig shoulderConfig = new ArmJoint.ArmJointConfig( 
             new WPI_CANCoder(0), 0, false, 
             new TrapezoidProfile.Constraints(0,0), 
             0, 0, 0, 
             0, 0, 0, 0,
-            new WPI_TalonFX(0), new WPI_TalonFX(0)
+            new WPI_TalonFX(0)
         );
 
+        elbowEncoder = new WPI_CANCoder(0);
+        elbowMotor = new WPI_TalonFX(0);
         ArmJoint.ArmJointConfig elbowConfig = new ArmJoint.ArmJointConfig(
             new WPI_CANCoder(0), 0, false, 
             new TrapezoidProfile.Constraints(0,0), 
@@ -106,6 +117,13 @@ public class Arm extends SubsystemBase {
         );
         shoulderJoint = new ArmJoint(() -> {return new Rotation2d();}, shoulderConfig);
         elbowJoint = new ArmJoint(shoulderJoint::getJointAngle, elbowConfig);
+
+        shoulderDiagnostics = new SystemDiagnostics("Proximal_Arm");
+        shoulderDiagnostics.addCTREMotorController(shoulderMotor);
+        shoulderDiagnostics.addSuppliers(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(shoulderEncoder).getFirst(), () -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(shoulderEncoder).getSecond());
+        elbowDiagnostics = new SystemDiagnostics("Distal_Arm");
+        elbowDiagnostics.addCTREMotorController(elbowMotor);
+        elbowDiagnostics.addSuppliers(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(elbowEncoder).getFirst(), () -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(elbowEncoder).getSecond());
         targetPose = new ArmPose(shoulderJoint.getJointAngle(), elbowJoint.getJointAngle());
     }
 
