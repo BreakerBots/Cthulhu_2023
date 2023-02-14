@@ -65,7 +65,7 @@ public abstract class BreakerGenericFlywheel extends BreakerGenericLoopedDevice 
      * @return boolean
      */
     public boolean flywheelIsAtTargetVel() {
-        return BreakerMath.lambdaEquals(flywheelTargetRPM, getFlywheelRPM(), velTol) && BreakerMath.lambdaEquals(accel, 0, accelTol);
+        return BreakerMath.epsilonEquals(flywheelTargetRPM, getFlywheelRPM(), velTol) && BreakerMath.epsilonEquals(accel, 0, accelTol);
     }
 
     @Override

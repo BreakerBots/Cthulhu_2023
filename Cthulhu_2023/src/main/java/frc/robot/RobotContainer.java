@@ -2,7 +2,7 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.Misc.IMU_ID;
+import static frc.robot.Constants.MiscConstants.IMU_ID;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
-import frc.robot.commands.AlignToGamePiece;
+import frc.robot.commands.MoveToGamePiece;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.GamePieceTracker;
 //import frc.robot.subsystems.Odometer;
@@ -79,9 +79,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
     controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    //controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
-    controllerSys.getButtonA().onTrue(new AlignToGamePiece(drivetrainSys, gpt));
+    controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
     controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
+    controllerSys.
   }
 
   private void robotManagerSetup() {

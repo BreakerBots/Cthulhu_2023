@@ -83,8 +83,8 @@ public class Arm extends SubsystemBase {
         @Override
         public boolean equals(Object obj) {
             ArmPose outher = (ArmPose) obj;
-            return BreakerMath.lambdaEquals(shoulderAngle.getDegrees(), outher.shoulderAngle.getDegrees(), 1.5) &&
-            BreakerMath.lambdaEquals(elbowAngle.getDegrees(), outher.elbowAngle.getDegrees(), 1.5);
+            return BreakerMath.epsilonEquals(shoulderAngle.getDegrees(), outher.shoulderAngle.getDegrees(), 1.5) &&
+            BreakerMath.epsilonEquals(elbowAngle.getDegrees(), outher.elbowAngle.getDegrees(), 1.5);
         }
     }
 

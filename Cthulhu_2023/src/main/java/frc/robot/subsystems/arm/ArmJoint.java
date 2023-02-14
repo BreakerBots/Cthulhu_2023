@@ -64,10 +64,11 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
         BreakerCTREUtil.checkError(motor.configAllSettings(motorConfig),
                 " Failed to arm joint motor ");
         motor.selectProfileSlot(0, 0);
-        for (int i = 1; i < config.motors.length; i++) {
-          config.motors[i].follow(motor);
+        if (config.motors.length > 0) {
+          for (int i = 1; i < config.motors.length; i++) {
+            config.motors[i].follow(motor);
+          }
         }
-  
   }
 
   @Override

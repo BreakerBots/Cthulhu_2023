@@ -40,9 +40,9 @@ public class BreakerHolonomicDriveController {
     }
 
     public boolean atTargetPose() {
-        return  BreakerMath.lambdaEquals(tgtPose.getX(), curPose.getX(), tolerences.getX()) &&
-                BreakerMath.lambdaEquals(tgtPose.getY(), curPose.getY(), tolerences.getY()) &&
-                BreakerMath.lambdaEquals(tgtPose.getRotation().getRadians(), curPose.getRotation().getRadians(), tolerences.getRotation().getRadians()) &&
+        return  BreakerMath.epsilonEquals(tgtPose.getX(), curPose.getX(), tolerences.getX()) &&
+                BreakerMath.epsilonEquals(tgtPose.getY(), curPose.getY(), tolerences.getY()) &&
+                BreakerMath.epsilonEquals(tgtPose.getRotation().getRadians(), curPose.getRotation().getRadians(), tolerences.getRotation().getRadians()) &&
                 calculateHasBeenRun;
     }
 

@@ -23,19 +23,19 @@ public class PlaceCube extends SequentialCommandGroup {
       case HIGH:
         addCommands(
           arm.new MoveToState(Arm.ArmState.PLACE_HIGH_CUBE),
-          new InstantCommand(gripper::dropGamePiece)
+          new InstantCommand(gripper::open)
         );
         break;
       case MIDDLE:
         addCommands(
           arm.new MoveToState(Arm.ArmState.PLACE_MEDIUM_CUBE),
-          new InstantCommand(gripper::dropGamePiece)
+          new InstantCommand(gripper::open)
         );
         break;
       case LOW:
         addCommands(
           arm.new MoveToState(Arm.ArmState.PLACE_HYBRID),
-          new InstantCommand(gripper::dropGamePiece)
+          new InstantCommand(gripper::open)
         );
         break;
     }

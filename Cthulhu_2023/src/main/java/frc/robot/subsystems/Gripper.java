@@ -4,53 +4,69 @@
 
 package frc.robot.subsystems;
 
+import javax.management.relation.RelationService;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.GamePieceType;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerColorSensorV3;
+import frc.robot.Constants;
 
 /** Add your docs here. */
 public class Gripper {
-    private BreakerColorSensorV3 colorSensor;  //Todo: look into I2C lockup issue
-    private float[] coneColorRangeMin = new float[]{0,0,0}; //Each val checked seprately
-    private float[] coneColorRangeMax = new float[]{0,0,0}; //Each val checked seprately
-    private float[] cubeColorRangeMin = new float[]{0,0,0}; //Each val checked seprately
-    private float[] cubeColorRangeMax = new float[]{0,0,0}; //Each val checked seprately
-    private double colorSensorProxMin = 0.5;
+    private CANSparkMax spark;
+    private SparkMaxPIDController pid;
+    private RelativeEncoder encoder;
     public Gripper() {
-        colorSensor = new BreakerColorSensorV3(null);
-        
+        spark = new CANSparkMax(0, MotorType.kBrushless);
+        spark.setSmartCurrentLimit(20);
+        pid = spark.getPIDController();
+        encoder = spark.getEncoder();
+        encoder.setPosition(0);
+        pid.setFeedbackDevice(encoder);
+        pid.setP(0);
+        pid.setI(0);
+        pid.setD(0);
     }
 
-    public void intake(GamePieceType type) {
-
+    public double getGripperPosition() {
+       return encoder.getPosition() * Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM;
     }
 
-    public void dropGamePiece() {
-        
+    private void setGripperPosition(double position) {
+        pid.setReference(position / Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM, ControlType.kPosition);
+    }
+
+    public void close(GamePieceType type) {
+        switch (type) {
+            case CONE:
+                setGripperPosition(Constants.GripperConstants.CONE_GRIP_POSITION);
+                break;
+            case CUBE:
+                setGripperPosition(Constants.GripperConstants.CUBE_GRIP_POSITION);
+                break;
+            case NONE:
+                setGripperPosition(0);
+                break;     
+        }
+    }
+
+    public void open() {
+        setGripperPosition(Constants.GripperConstants.OPEN_GRIP_POSITION);
     }
 
     public Color getColorSensorDetectedColor() {
-        return colorSensor.getColor();
+        return null;
     }
 
-    public GamePieceType getControlledGamePieceType() {
-        if (colorSensor.getProximity() >= colorSensorProxMin) {
-            if (isColorInRange(getColorSensorDetectedColor(), coneColorRangeMin, coneColorRangeMax)) {
-                return GamePieceType.CONE;
-            } else if (isColorInRange(getColorSensorDetectedColor(), cubeColorRangeMin, cubeColorRangeMax)) {
-                return GamePieceType.CUBE;
-            }
-        }
-        return GamePieceType.NONE;
-    }
-
-    private boolean isColorInRange(Color color, float[] minHSB, float[] maxHSB) {
-        Color8Bit color8B = new Color8Bit(color);
-        float[] colorHSB = java.awt.Color.RGBtoHSB(color8B.red, color8B.green, color8B.blue, new float[3]);
-        return  (minHSB[0] <= colorHSB[0] && colorHSB[0] <= maxHSB[0]) && 
-                (minHSB[1] <= colorHSB[1] && colorHSB[1] <= maxHSB[1]) && 
-                (minHSB[2] <= colorHSB[2] && colorHSB[2] <= maxHSB[2]);
+    public GamePieceType getControlledGamePieceType() {  
+        return null;
     }
 
     

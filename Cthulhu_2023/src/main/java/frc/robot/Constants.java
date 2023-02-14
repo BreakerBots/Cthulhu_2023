@@ -26,7 +26,7 @@ public final class Constants {
     /**
      * Static class containing necessary functions for driving.
      */
-    public static final class Drive {
+    public static final class DriveConstants {
 
         public static final double MAX_FORWARD_VELOCITY = 4.1148;
         public static final double MAX_SIDEWAYS_VELOCITY = 4.1148;
@@ -82,8 +82,8 @@ public final class Constants {
 
     }
 
-    public static final class Vision {
-        public static final class AprilTag {
+    public static final class VisionConstants {
+        public static final class AprilTagConstants {
             // public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new BreakerPhotonCamera[] {
                     // new BreakerPhotonCamera("April_Test_1", new Transform3d(new Translation3d(), new Rotation3d()))
                     // new BreakerPhotonCamera("leftApriltagCam", null),
@@ -128,7 +128,14 @@ public final class Constants {
         }
     }
 
-    public static final class Field {
+    public static final class GripperConstants {
+        public static final double CONE_GRIP_POSITION = 0.0;
+        public static final double CUBE_GRIP_POSITION = 0.0;
+        public static final double OPEN_GRIP_POSITION = 0.0;
+        public static final double MOTOR_ROT_TO_GRIP_POS_CM = 0.0;
+    }
+
+    public static final class FieldConstants {
         public static final java.awt.geom.Rectangle2D BLUE_CHARGING_STATION = new Rectangle2D.Double(0, 0, 0, 0);
         public static final java.awt.geom.Rectangle2D BLUE_CHARGING_STATION_WORKING_BOUNDS = new Rectangle2D.Double(0,
                 0, 0, 0);
@@ -137,11 +144,11 @@ public final class Constants {
                 0, 0, 0);
     }
 
-    public static final class RobotGeometry {
+    public static final class RobotGeometryConstants {
         public static final BreakerRobotGeometry2d ROBOT_GEOMETRY = new BreakerRobotGeometry2d(null);
     }
 
-    public static final class Misc {
+    public static final class MiscConstants {
         public static final int IMU_ID = 5;
     }
 }

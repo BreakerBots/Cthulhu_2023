@@ -74,11 +74,6 @@ public class BreakerMath {
         return diffTime;
     }
 
-    // Not necessary. Also misspelled smh
-    // public static double getCircumferenceFromRadus(double radius) {
-    // return (2 * radius) * Math.PI;
-    // }
-
     public static double getCircumferenceFromDiameter(double diameter) {
         return diameter * Math.PI;
     }
@@ -168,7 +163,7 @@ public class BreakerMath {
      * 
      * @return true if within deviation, false otherwise.
      */
-    public static boolean lambdaEquals(double val1, double val2, double maxDeviation) {
+    public static boolean epsilonEquals(double val1, double val2, double maxDeviation) {
         return ((val1 <= (val2 + maxDeviation)) && (val1 >= (val2 - maxDeviation)));
     }
 
