@@ -120,10 +120,10 @@ public class Arm extends SubsystemBase {
 
         shoulderDiagnostics = new SystemDiagnostics("Proximal_Arm");
         shoulderDiagnostics.addCTREMotorController(shoulderMotor);
-        shoulderDiagnostics.addSuppliers(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(shoulderEncoder).getFirst(), () -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(shoulderEncoder).getSecond());
+        shoulderDiagnostics.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(shoulderEncoder));
         elbowDiagnostics = new SystemDiagnostics("Distal_Arm");
         elbowDiagnostics.addCTREMotorController(elbowMotor);
-        elbowDiagnostics.addSuppliers(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(elbowEncoder).getFirst(), () -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(elbowEncoder).getSecond());
+        elbowDiagnostics.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(elbowEncoder));
         targetPose = new ArmPose(shoulderJoint.getJointAngle(), elbowJoint.getJointAngle());
     }
 

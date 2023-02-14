@@ -42,6 +42,16 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
         usesSuppliers = true;
     }
 
+    /** Adds new {@link DeviceHealth} and String suppliers in the form of a pair supplier to this diagnostics device, overwrites any exisiting suppliers you have allready added
+     * @param deviceHealthSupplier The {@link DeviceHealth} supplier to use (result considered with outher added factors)
+     * @param faultStringSupplier The String supplier to use (result added to overall fault string)
+     */
+    public void addSupplier(Supplier<Pair<DeviceHealth, String>> supplier) {
+        this.deviceHealthSupplier = () -> supplier.get().getFirst();
+        this.faultStringSupplier = () -> supplier.get().getSecond();
+        usesSuppliers = true;
+    }
+
     /** Adds a {@link BreakerSelfTestable} enabled object to this SystemDiagnostic's testing queue */
     public void addBreakerDevice(BreakerSelfTestable deviceToAdd) {
         devices.add(deviceToAdd);
