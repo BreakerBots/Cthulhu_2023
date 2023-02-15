@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Node.NodeLevel;
+import frc.robot.commands.intake.OpenGripper;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.MoveToState;
@@ -24,22 +25,19 @@ public class PlaceCone extends SequentialCommandGroup {
       case HIGH:
         addCommands(
           arm.new MoveToState(Arm.ArmState.PLACE_HIGH_CONE),
-          new InstantCommand(gripper::open),
-          new WaitCommand(0.5)
+          new OpenGripper(gripper)
         );
         break;
       case MIDDLE:
         addCommands(
           arm.new MoveToState(Arm.ArmState.PLACE_MEDIUM_CONE),
-          new InstantCommand(gripper::open),
-          new WaitCommand(0.5)
+          new OpenGripper(gripper)
         );
         break;
       case LOW:
         addCommands(
           arm.new MoveToState(Arm.ArmState.PLACE_HYBRID),
-          new InstantCommand(gripper::open),
-          new WaitCommand(0.5)
+          new OpenGripper(gripper)
         );
         break;
     }

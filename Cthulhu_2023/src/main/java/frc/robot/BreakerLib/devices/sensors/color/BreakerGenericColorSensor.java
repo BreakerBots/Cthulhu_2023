@@ -4,6 +4,8 @@
 
 package frc.robot.BreakerLib.devices.sensors.color;
 
+import com.revrobotics.ColorMatchResult;
+
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.BreakerLib.devices.BreakerGenericDeviceBase;
 
