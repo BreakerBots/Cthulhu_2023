@@ -47,7 +47,6 @@ public class Gripper extends SubsystemBase {
         limit.enableLimitSwitch(true);
         pid = spark.getPIDController();
         encoder = spark.getEncoder();
-        encoder.setPosition(0);
         pid.setFeedbackDevice(encoder);
         pid.setP(0);
         pid.setI(0);
@@ -56,11 +55,12 @@ public class Gripper extends SubsystemBase {
         diagnostics.addSparkMax(spark);
         setGripperPosition(getGripperPosition());
 
-        colorSensor = new BreakerPicoColorSensor().createSensor0();
+        colorSensor = new BreakerPicoColorSensor().getSensor0();
         colorMatch = new ColorMatch();
         colorMatch.setConfidenceThreshold(Constants.GripperConstants.COLOR_MATCH_CONFIDENCE_THRESHOLD);
         colorMatch.addColorMatch(Constants.GripperConstants.CONE_COLOR);
         colorMatch.addColorMatch(Constants.GripperConstants.CUBE_COLOR);
+        diagnostics.addBreakerDevice(colorSensor);
     }
 
     public double getGripperPosition() {
@@ -72,6 +72,10 @@ public class Gripper extends SubsystemBase {
         pid.setReference(position / Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM, ControlType.kPosition);
     }
 
+    public void setClosedGrip() {
+        setClosedGrip(getControlledGamePieceType());
+    }
+
     public void setClosedGrip(GamePieceType type) {
             switch (type) {
                 case CONE:
@@ -81,7 +85,7 @@ public class Gripper extends SubsystemBase {
                     setGripperPosition(Constants.GripperConstants.CUBE_GRIP_POSITION);
                     break;
                 case NONE:
-                    setGripperPosition(Constants.GripperConstants.ClOSED_GRIP_POSITION);
+                    setOpenGrip();
                     break;
             }
     }
@@ -107,7 +111,7 @@ public class Gripper extends SubsystemBase {
         return limit.isPressed();
     }
 
-    public Color getColorSensorDetectedColor() {
+    public Color getDetectedColor() {
         return colorSensor.getColor();
     }
 

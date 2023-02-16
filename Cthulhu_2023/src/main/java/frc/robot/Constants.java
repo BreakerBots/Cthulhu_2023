@@ -138,6 +138,8 @@ public final class Constants {
         public static final Color CONE_COLOR = new Color(0, 0, 0);
         public static final Color CUBE_COLOR = new Color(0, 0, 0);
         public static final double COLOR_MATCH_CONFIDENCE_THRESHOLD = 95.0;
+        public static final double GAME_PIECE_PROX_THRESHOLD = 0.0;
+        public static final double AUTO_CLOSE_DELAY_SEC = 0.5;
     }
 
     public static final class FieldConstants {

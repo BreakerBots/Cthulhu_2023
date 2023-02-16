@@ -18,7 +18,7 @@ public class CloseGripper extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    gripper.setClosedGrip(gripper.getControlledGamePieceType());
+    gripper.setClosedGrip();
   }
 
   // Returns true when the command should end.

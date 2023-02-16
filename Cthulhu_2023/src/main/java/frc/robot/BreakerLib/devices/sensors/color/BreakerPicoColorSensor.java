@@ -4,6 +4,8 @@
 
 package frc.robot.BreakerLib.devices.sensors.color;
 
+import java.util.Objects;
+
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
 
@@ -18,6 +20,7 @@ import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 public class BreakerPicoColorSensor {
 
   private BreakerPicoColorSensorLowLevel pico;
+  private BreakerPicoColorSensorInstance sensor0, sensor1;
 
   /**
    * Create a new BreakerColorSensor.
@@ -26,12 +29,18 @@ public class BreakerPicoColorSensor {
     pico = new BreakerPicoColorSensorLowLevel();
   }
 
-  public BreakerPicoColorSensorInstance createSensor0() {
-    return new BreakerPicoColorSensorInstance(pico, true);
+  public BreakerPicoColorSensorInstance getSensor0() {
+    if (Objects.isNull(sensor0)) {
+      sensor0 = new BreakerPicoColorSensorInstance(pico, true);
+    }
+    return sensor0;
   }
 
-  public BreakerPicoColorSensorInstance createSensor1() {
-    return new BreakerPicoColorSensorInstance(pico, false);
+  public BreakerPicoColorSensorInstance getSensor1() {
+    if (Objects.isNull(sensor1)) {
+      sensor1 = new BreakerPicoColorSensorInstance(pico, false);
+    }
+    return sensor1;
   }
 
   public static class BreakerPicoColorSensorInstance extends BreakerGenericColorSensor {
@@ -40,6 +49,7 @@ public class BreakerPicoColorSensor {
     private BreakerPicoColorSensorInstance(BreakerPicoColorSensorLowLevel pico, boolean isSensor0) {
       this.pico = pico;
       this.isSensor0 = isSensor0;
+      deviceName = isSensor0 ? "Pico_Color_Sensor_0" : "Pico_Color_Sensor_1";
     }
 
     public RawColor getRawColor() {
