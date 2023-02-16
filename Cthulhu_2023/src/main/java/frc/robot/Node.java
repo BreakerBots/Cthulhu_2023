@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.arm.Arm.ArmState;
 
 /** Add your docs here. */
 public final class Node {
@@ -25,33 +26,33 @@ public final class Node {
     };
 
     public static final Node[] NODES = new Node[] {
-        new Node(NodeLevel.HIGH, COLUMNS[0], NodeType.CONE),
-        new Node(NodeLevel.HIGH, COLUMNS[1], NodeType.CUBE),
-        new Node(NodeLevel.HIGH, COLUMNS[2], NodeType.CONE),
-        new Node(NodeLevel.HIGH, COLUMNS[3], NodeType.CONE),
-        new Node(NodeLevel.HIGH, COLUMNS[4], NodeType.CUBE),
-        new Node(NodeLevel.HIGH, COLUMNS[5], NodeType.CONE),
-        new Node(NodeLevel.HIGH, COLUMNS[6], NodeType.CONE),
-        new Node(NodeLevel.HIGH, COLUMNS[7], NodeType.CUBE),
-        new Node(NodeLevel.HIGH, COLUMNS[8], NodeType.CONE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[0], NodeType.CONE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[1], NodeType.CUBE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[2], NodeType.CONE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[3], NodeType.CONE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[4], NodeType.CUBE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[5], NodeType.CONE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[6], NodeType.CONE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[7], NodeType.CUBE),
-        new Node(NodeLevel.MIDDLE, COLUMNS[8], NodeType.CONE),
-        new Node(NodeLevel.LOW, COLUMNS[0], NodeType.HYBRID),
-        new Node(NodeLevel.LOW, COLUMNS[1], NodeType.HYBRID),
-        new Node(NodeLevel.LOW, COLUMNS[2], NodeType.HYBRID),
-        new Node(NodeLevel.LOW, COLUMNS[3], NodeType.HYBRID),
-        new Node(NodeLevel.LOW, COLUMNS[4], NodeType.HYBRID),
-        new Node(NodeLevel.LOW, COLUMNS[5], NodeType.HYBRID),
-        new Node(NodeLevel.LOW, COLUMNS[6], NodeType.HYBRID),
-        new Node(NodeLevel.LOW, COLUMNS[7], NodeType.HYBRID),
-        new Node(NodeLevel.LOW, COLUMNS[8], NodeType.HYBRID),
+        new Node(NodeLevel.HIGH, COLUMNS[0], NodeType.CONE, ArmState.PLACE_HIGH_CONE),
+        new Node(NodeLevel.HIGH, COLUMNS[1], NodeType.CUBE, ArmState.PLACE_HIGH_CUBE),
+        new Node(NodeLevel.HIGH, COLUMNS[2], NodeType.CONE, ArmState.PLACE_HIGH_CONE),
+        new Node(NodeLevel.HIGH, COLUMNS[3], NodeType.CONE, ArmState.PLACE_HIGH_CONE),
+        new Node(NodeLevel.HIGH, COLUMNS[4], NodeType.CUBE, ArmState.PLACE_HIGH_CUBE),
+        new Node(NodeLevel.HIGH, COLUMNS[5], NodeType.CONE, ArmState.PLACE_HIGH_CONE),
+        new Node(NodeLevel.HIGH, COLUMNS[6], NodeType.CONE, ArmState.PLACE_HIGH_CONE),
+        new Node(NodeLevel.HIGH, COLUMNS[7], NodeType.CUBE, ArmState.PLACE_HIGH_CUBE),
+        new Node(NodeLevel.HIGH, COLUMNS[8], NodeType.CONE, ArmState.PLACE_HIGH_CONE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[0], NodeType.CONE, ArmState.PLACE_MEDIUM_CONE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[1], NodeType.CUBE, ArmState.PLACE_MEDIUM_CUBE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[2], NodeType.CONE, ArmState.PLACE_MEDIUM_CONE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[3], NodeType.CONE, ArmState.PLACE_MEDIUM_CONE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[4], NodeType.CUBE, ArmState.PLACE_MEDIUM_CUBE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[5], NodeType.CONE, ArmState.PLACE_MEDIUM_CONE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[6], NodeType.CONE, ArmState.PLACE_MEDIUM_CONE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[7], NodeType.CUBE, ArmState.PLACE_MEDIUM_CUBE),
+        new Node(NodeLevel.MIDDLE, COLUMNS[8], NodeType.CONE, ArmState.PLACE_MEDIUM_CONE),
+        new Node(NodeLevel.LOW, COLUMNS[0], NodeType.HYBRID, ArmState.PLACE_HYBRID),
+        new Node(NodeLevel.LOW, COLUMNS[1], NodeType.HYBRID, ArmState.PLACE_HYBRID),
+        new Node(NodeLevel.LOW, COLUMNS[2], NodeType.HYBRID, ArmState.PLACE_HYBRID),
+        new Node(NodeLevel.LOW, COLUMNS[3], NodeType.HYBRID, ArmState.PLACE_HYBRID),
+        new Node(NodeLevel.LOW, COLUMNS[4], NodeType.HYBRID, ArmState.PLACE_HYBRID),
+        new Node(NodeLevel.LOW, COLUMNS[5], NodeType.HYBRID, ArmState.PLACE_HYBRID),
+        new Node(NodeLevel.LOW, COLUMNS[6], NodeType.HYBRID, ArmState.PLACE_HYBRID),
+        new Node(NodeLevel.LOW, COLUMNS[7], NodeType.HYBRID, ArmState.PLACE_HYBRID),
+        new Node(NodeLevel.LOW, COLUMNS[8], NodeType.HYBRID, ArmState.PLACE_HYBRID),
 
     };
 
@@ -105,11 +106,13 @@ public final class Node {
     private NodeColumn column;
     private NodeLevel level;
     private NodeType type;
+    private ArmState placementState;
 
-    private Node(NodeLevel level, NodeColumn column, NodeType type) {
+    private Node(NodeLevel level, NodeColumn column, NodeType type, ArmState placementState) {
         this.column = column;
         this.level = level;
         this.type = type;
+        this.placementState = placementState;
     }
 
     public NodeColumn getColumn() {
@@ -122,6 +125,10 @@ public final class Node {
 
     public NodeType getNodeType() {
         return type;
+    }
+
+    public ArmState getPlacementState() {
+        return placementState;
     }
 
     public static Node fromGroups(NodeGroup group, NodeGroup subGroup) {
