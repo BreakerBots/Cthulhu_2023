@@ -29,31 +29,28 @@ public class ManuallyControlArm extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     controller.getLeftBumper().onTrue(new InstantCommand(() -> isProximal = !isProximal));
     double input = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
-    double desiredDelta = input * 2.0 / 50.0;
+    Rotation2d desiredDelta = Rotation2d.fromDegrees(input * 2.0 / 50.0);
     ArmPose armPose = arm.getArmPose();
     if (isProximal) {
-      arm.setManualTargetPose(
-          new ArmPose(armPose.getShoulderAngle().plus(Rotation2d.fromDegrees(desiredDelta)), 
-          armPose.getElbowAngle().plus(Rotation2d.fromDegrees(desiredDelta)))
-        );
+      arm.setManualTargetPose(new ArmPose(armPose.getShoulderAngle().plus(desiredDelta), armPose.getElbowAngle()));
     } else {
-      arm.setManualTargetPose(
-          new ArmPose(armPose.getShoulderAngle().plus(Rotation2d.fromDegrees(desiredDelta)), armPose.getElbowAngle())
-        );
+      arm.setManualTargetPose(new ArmPose(armPose.getShoulderAngle(), armPose.getElbowAngle().plus(desiredDelta)));
     }
-    
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
@@ -61,4 +58,3 @@ public class ManuallyControlArm extends CommandBase {
     return RobotContainer.isGlobalManualOverride();
   }
 }
-
