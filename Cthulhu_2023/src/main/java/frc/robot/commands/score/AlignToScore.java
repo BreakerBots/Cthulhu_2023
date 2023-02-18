@@ -16,7 +16,6 @@ import frc.robot.Node.NodeGroup;
 import frc.robot.subsystems.Drive;
 
 public class AlignToScore extends CommandBase {
-  /** Creates a new AlignToScore. */
   private NodeColumn column;
   private Pose2d tgtPose;
   private BreakerHolonomicDriveController driveController;

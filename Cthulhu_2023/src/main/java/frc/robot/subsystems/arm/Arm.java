@@ -29,9 +29,6 @@ public class Arm extends SubsystemBase {
     private WPI_CANCoder shoulderEncoder, elbowEncoder;
     private WPI_TalonFX shoulderMotor, elbowMotor;
     private SystemDiagnostics shoulderDiagnostics, elbowDiagnostics;
-
-
-
     
     public enum ArmState {
         PLACE_HIGH_CONE(0.0, 0.0),
