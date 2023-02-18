@@ -1,36 +1,27 @@
 package frc.robot.subsystems.arm;
 
 
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
-import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 /** A robot arm subsystem that moves with a motion profile. */

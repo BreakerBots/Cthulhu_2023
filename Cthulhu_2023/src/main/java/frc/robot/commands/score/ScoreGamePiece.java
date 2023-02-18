@@ -5,18 +5,16 @@
 package frc.robot.commands.score;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.GamePieceType;
 import frc.robot.Node;
-import frc.robot.Robot;
+import frc.robot.Node.NodeColumn;
+import frc.robot.Node.NodeLevel;
+import frc.robot.Node.NodeType;
 import frc.robot.RobotContainer;
 import frc.robot.BreakerLib.driverstation.gamepad.BreakerGamepadTimedRumbleCommand;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerDPad;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
-import frc.robot.Node.NodeColumn;
-import frc.robot.Node.NodeLevel;
-import frc.robot.Node.NodeType;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.arm.Arm;

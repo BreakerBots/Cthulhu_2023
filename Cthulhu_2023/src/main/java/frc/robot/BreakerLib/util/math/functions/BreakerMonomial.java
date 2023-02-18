@@ -21,7 +21,7 @@ public class BreakerMonomial extends BreakerMathFunction {
         this.degree = degree;
     }
 
-    public double getCoeficent() {
+    public double getCoefficent() {
         return coeficent;
     }
 

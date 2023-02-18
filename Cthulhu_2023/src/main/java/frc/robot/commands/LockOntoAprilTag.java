@@ -4,16 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
-import frc.robot.BreakerLib.position.odometry.swerve.BreakerSwerveDriveFiducialVisionPoseEstimator;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
-import frc.robot.subsystems.AprilTagTracker;
 
 public class LockOntoAprilTag extends CommandBase {
   private BreakerSwerveDrive drive;

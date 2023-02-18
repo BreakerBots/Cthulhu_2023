@@ -4,15 +4,11 @@
 
 package frc.robot.commands.score;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Node;
-import frc.robot.Node.NodeLevel;
 import frc.robot.commands.intake.OpenGripper;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.Arm.MoveToState;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:

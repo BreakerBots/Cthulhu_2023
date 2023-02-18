@@ -12,7 +12,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.Node.NodeColumn;
-import frc.robot.Node.NodeGroup;
 import frc.robot.subsystems.Drive;
 
 public class AlignToScore extends CommandBase {

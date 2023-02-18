@@ -19,7 +19,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.GamePieceType;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
 
 enum TrackedGamePieceType {
