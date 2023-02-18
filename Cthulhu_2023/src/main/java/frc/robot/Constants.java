@@ -46,8 +46,8 @@ public final class Constants {
         public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.3;
         public static final double FF_VELOCITY_COEFFICIENT = 2.82;
 
-        public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.3;
-        public static final double SLOW_MODE_TURN_MULTIPLIER = 0.3;
+        public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.5;
+        public static final double SLOW_MODE_TURN_MULTIPLIER = 0.5;
 
         public static final int FL_WHEEL_ID = 10;
         public static final int FR_WHEEL_ID = 12;
@@ -72,7 +72,7 @@ public final class Constants {
 
         public static final double FL_ENCODER_OFFSET = -111.270;
         public static final double FR_ENCODER_OFFSET = -37.266;
-        public static final double BL_ENCODER_OFFSET = -68.818;
+        public static final double BL_ENCODER_OFFSET = 159.258;
         public static final double BR_ENCODER_OFFSET = 22.5;
 
         // public static final double FL_ENCODER_OFFSET = -112.500;
