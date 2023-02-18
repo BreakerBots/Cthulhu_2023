@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.subsystems.Drive;
@@ -56,7 +57,7 @@ public class MoveToGamePiece extends CommandBase {
       hasRun = true;
       TrackedGamePiece piece = tracker.getBestTrackedGamePiece();
       Translation2d tgtTrans = piece.getRobotToTargetTranslation();
-      tgtTrans = new Translation2d(tgtTrans.getNorm() - 0.25, tgtTrans.getAngle());
+      tgtTrans = new Translation2d(tgtTrans.getNorm() - 1.0, tgtTrans.getAngle());
       // if (tgtTrans.getNorm() < 0.5) {
       //   useRot = false;
       // }
@@ -69,7 +70,7 @@ public class MoveToGamePiece extends CommandBase {
       ChassisSpeeds spd = driveController.calculate(corPose, tgtPose, 0.5);
       drive.move(spd.vxMetersPerSecond, spd.vyMetersPerSecond, spd.omegaRadiansPerSecond);
       if (ind++%25==0) {
-       //System.out.println("DISTANCE: " + tgtPose.getTranslation().getNorm());
+        System.out.println("DISTANCE: " + tgtPose.getTranslation().getNorm());
       }
     }
   }

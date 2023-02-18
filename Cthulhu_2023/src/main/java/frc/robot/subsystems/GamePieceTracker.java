@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.GamePieceType;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
 
 enum TrackedGamePieceType {
@@ -94,31 +95,32 @@ public class GamePieceTracker extends SubsystemBase {
 
   public void generateGamePieceList() {
     trackedGamePieces.clear();
-    // Checks cones
-    // if (coneCam.hasTargets()) {
-    //   for (PhotonTrackedTarget target : coneCam.getAllRawTrackedTargets()) {
-    //     if (!Objects.isNull(target)) {
-      //     double[] boundingBox = makeBoundingBox(target);
-      //     GamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ? GamePieceType.CONE_UPRIGHT
-      //         : GamePieceType.CONE_TOPPLED;
-      //     TrackedGamePiece cone = new TrackedGamePiece(coneType, coneCam.get3dCamPositionRelativeToRobot(), target);
-      //     trackedGamePieces.add(cone);
-      //   }
-    //   }
-    // }
-    //Checks cubes
+    //Checks cones
     if (cubeCam.hasTargets()) {
       for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
         if (!Objects.isNull(target)) {
-          TrackedGamePiece cube = new TrackedGamePiece(TrackedGamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(),
-            target);
-          trackedGamePieces.add(cube);
+          // double[] boundingBox = makeBoundingBox(target);
+          // GamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ? GamePieceType.CONE_UPRIGHT
+          //     : TrackedGamePieceType.CONE_TOPPLED;
+          TrackedGamePiece cone = new TrackedGamePiece(TrackedGamePieceType.CONE_UPRIGHT, cubeCam.get3dCamPositionRelativeToRobot(), target);
+          trackedGamePieces.add(cone);
         }
       }
     }
+    //Checks cubes
+    // if (cubeCam.hasTargets()) {
+    //   for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
+    //     if (!Objects.isNull(target)) {
+    //       TrackedGamePiece cube = new TrackedGamePiece(TrackedGamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(),
+    //         target);
+    //       trackedGamePieces.add(cube);
+    //     }
+    //   }
+    // }
     // Sorts the non-empty list
     if (!trackedGamePieces.isEmpty()) {
       Collections.sort(trackedGamePieces);
+      //System.out.println(trackedGamePieces);
     }
   }
 
@@ -146,7 +148,7 @@ public class GamePieceTracker extends SubsystemBase {
     }
   
     public double getDistance() {
-      return PhotonUtils.calculateDistanceToTargetMeters(cameraTransform.getZ(), type.getHeightMeters()/2,
+      return PhotonUtils.calculateDistanceToTargetMeters(cameraTransform.getZ(), type.getHeightMeters()/2.0,
           cameraTransform.getRotation().getY(), Math.toRadians(target.getPitch()));
     }
   
@@ -157,6 +159,12 @@ public class GamePieceTracker extends SubsystemBase {
     public TrackedGamePieceType getType() {
       return type;
     }
+
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return "Dist: " + getDistance();
+    }
   
     @Override
     public int compareTo(TrackedGamePiece arg0) {
@@ -164,9 +172,11 @@ public class GamePieceTracker extends SubsystemBase {
       double otherDist = Math.hypot(arg0.target.getYaw(),
           Math.abs(arg0.target.getPitch() + (CAMERA_FOV_PITCH_RAD / 2)));
       double dist = Math.hypot(target.getYaw(), Math.abs(target.getPitch() + (CAMERA_FOV_PITCH_RAD / 2)));
-      if (dist < otherDist) {
+      //double otherDist = arg0.getDistance();// + Math.abs(arg0.target.getYaw());
+      //double dist = getDistance();// + Math.abs(target.getYaw());
+      if (dist > otherDist) {
         return 1;
-      } else if (dist > otherDist) {
+      } else if (dist < otherDist) {
         return -1;
       } else {
         return 0;
