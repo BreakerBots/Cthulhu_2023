@@ -6,28 +6,24 @@ package frc.robot.subsystems;
 
 import java.util.Objects;
 
-import javax.management.relation.RelationService;
-
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.GamePieceType;
-import frc.robot.BreakerLib.devices.sensors.color.BreakerColorSensorV3;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor.BreakerPicoColorSensorInstance;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
-import frc.robot.Constants;
 
 /** Add your docs here. */
 public class Gripper extends SubsystemBase {
