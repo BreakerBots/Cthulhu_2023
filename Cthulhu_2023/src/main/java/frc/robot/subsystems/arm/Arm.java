@@ -41,22 +41,20 @@ public class Arm extends SubsystemBase {
         CARRY(0.0, 0.0),
         STOW_ARM(0.0, 0.0),
         MANUAL(0.0, 0.0);
+        
+        private final ArmPose statePose;
+        private final ArrayList<ArmPose> intermediaryPoses;
 
         ArmState(double shoulderAngleDeg, double elbowAngleDeg, ArmPose... intermedairyPoses) {
             statePose = new ArmPose(Rotation2d.fromDegrees(shoulderAngleDeg), Rotation2d.fromDegrees(elbowAngleDeg));
-            this.intermedairyPoses = new ArrayList<>();
+            this.intermediaryPoses = new ArrayList<>();
             for (ArmPose ap: intermedairyPoses) {
-                this.intermedairyPoses.add(ap);
+                this.intermediaryPoses.add(ap);
             }
         }
 
-        
-
-        private final ArmPose statePose;
-        private final ArrayList<ArmPose> intermedairyPoses;
-
-        public ArrayList<ArmPose> getIntermedairyPoses() {
-            return new ArrayList<>(intermedairyPoses);
+        public ArrayList<ArmPose> getIntermediaryPoses() {
+            return new ArrayList<>(intermediaryPoses);
         }
 
         public ArmPose getStatePose() {
@@ -198,15 +196,15 @@ public class Arm extends SubsystemBase {
             if (newState != ArmState.MANUAL) {
                 if (startState != newState) {
                     if (startState != ArmState.CARRY) {
-                        if (startState.intermedairyPoses.size() != 0) {
-                            ArrayList<ArmPose> ip = startState.getIntermedairyPoses();
+                        if (startState.intermediaryPoses.size() != 0) {
+                            ArrayList<ArmPose> ip = startState.getIntermediaryPoses();
                             Collections.reverse(ip);
                             path.addAll(ip);
                         }
                         path.add(ArmState.CARRY.statePose);
                     }
-                    if (newState.intermedairyPoses.size() != 0) {
-                        path.addAll( newState.getIntermedairyPoses());
+                    if (newState.intermediaryPoses.size() != 0) {
+                        path.addAll( newState.getIntermediaryPoses());
                     }
                 }
                 path.add(newState.statePose);
