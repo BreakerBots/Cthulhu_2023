@@ -36,6 +36,7 @@ public class Gripper extends SubsystemBase {
     private double setPosition;
     private boolean isCalibrated = false;
     private ColorMatch colorMatch;
+
     public Gripper() {
         spark = new CANSparkMax(0, MotorType.kBrushless);
         spark.setIdleMode(IdleMode.kBrake);
@@ -60,7 +61,7 @@ public class Gripper extends SubsystemBase {
     }
 
     public double getGripperPosition() {
-       return encoder.getPosition() * Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM;
+        return encoder.getPosition() * Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM;
     }
 
     public void setGripperPosition(double position) {
@@ -73,17 +74,17 @@ public class Gripper extends SubsystemBase {
     }
 
     public void setClosedGrip(GamePieceType type) {
-            switch (type) {
-                case CONE:
-                    setGripperPosition(Constants.GripperConstants.CONE_GRIP_POSITION);
-                    break;
-                case CUBE:
-                    setGripperPosition(Constants.GripperConstants.CUBE_GRIP_POSITION);
-                    break;
-                case NONE:
-                    setOpenGrip();
-                    break;
-            }
+        switch (type) {
+            case CONE:
+                setGripperPosition(Constants.GripperConstants.CONE_GRIP_POSITION);
+                break;
+            case CUBE:
+                setGripperPosition(Constants.GripperConstants.CUBE_GRIP_POSITION);
+                break;
+            case NONE:
+                setOpenGrip();
+                break;
+        }
     }
 
     public boolean isCalibrated() {
@@ -111,9 +112,10 @@ public class Gripper extends SubsystemBase {
         return colorSensor.getColor();
     }
 
-    public GamePieceType getControlledGamePieceType() { 
+    public GamePieceType getControlledGamePieceType() {
         ColorMatchResult match = colorMatch.matchColor(colorSensor.getColor());
-        if (Objects.nonNull(match) && colorSensor.getProximity() <= Constants.GripperConstants.GAME_PIECE_PROX_THRESHOLD) {
+        if (Objects.nonNull(match)
+                && colorSensor.getProximity() <= Constants.GripperConstants.GAME_PIECE_PROX_THRESHOLD) {
             if (match.color.equals(Constants.GripperConstants.CONE_COLOR)) {
                 return GamePieceType.CONE;
             } else {
@@ -121,7 +123,7 @@ public class Gripper extends SubsystemBase {
             }
         }
         return GamePieceType.NONE;
-    }    
+    }
 
     @Override
     public void periodic() {
