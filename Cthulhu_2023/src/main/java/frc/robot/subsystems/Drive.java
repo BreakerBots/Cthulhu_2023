@@ -11,11 +11,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
-import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerMK4iFalconSwerveModule;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
+import io.github.oblarg.oblog.annotations.Log;
+
 import static frc.robot.Constants.DriveConstants.*;
 
 /** Add your docs here. */
@@ -47,6 +48,7 @@ public class Drive extends BreakerSwerveDrive {
             FL_TRANSLATION, FR_TRANSLATION, BL_TRANSLATION, BR_TRANSLATION)
             .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
 
+            @Log
     private static BreakerMK4iFalconSwerveModule frontLeftModule = new BreakerMK4iFalconSwerveModule(driveFL, turnFL,
             encoderFL, config, FL_ENCODER_OFFSET, true, true);
     private static BreakerMK4iFalconSwerveModule frontRightModule = new BreakerMK4iFalconSwerveModule(driveFR, turnFR,
@@ -62,10 +64,10 @@ public class Drive extends BreakerSwerveDrive {
         frontRightModule.setDeviceName(" FR_Module ");
         backLeftModule.setDeviceName(" BL_Module ");
         backRightModule.setDeviceName(" BR_Module ");
-        BreakerDashboard.getDiagnosticsTab().add("FL Module", frontLeftModule);
-        BreakerDashboard.getDiagnosticsTab().add("FR Module", frontRightModule);
-        BreakerDashboard.getDiagnosticsTab().add("BL Module", backLeftModule);
-        BreakerDashboard.getDiagnosticsTab().add("BR Module", backRightModule);
+        // BreakerDashboard.getDiagnosticsTab().add("FL Module", frontLeftModule);
+        // BreakerDashboard.getDiagnosticsTab().add("FR Module", frontRightModule);
+        // BreakerDashboard.getDiagnosticsTab().add("BL Module", backLeftModule);
+        // BreakerDashboard.getDiagnosticsTab().add("BR Module", backRightModule);
     }
 
     public static BreakerWaypointPath mirrorPathToAlliance(BreakerWaypointPath path) {

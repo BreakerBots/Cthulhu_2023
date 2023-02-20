@@ -22,9 +22,6 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
@@ -34,9 +31,10 @@ import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import io.github.oblarg.oblog.Loggable;
 
 /** Swerve Drive Specialties' MK4i swerve module driven by Falcon 500 motors. */
-public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule{
+public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule, Loggable {
 
     private BreakerArbitraryFeedforwardProvider ffProvider;
     private BreakerSwerveDriveConfig config;
@@ -51,7 +49,8 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
      * Constructs a new Swerve Drive Specialties MK4i (inverted) swerve drive
      * module, implements the {@link BreakerGenericSwerveModule} interface
      * 
-     * @param driveMotor  - The TalonFX motor that moves the module's wheel linearly.
+     * @param driveMotor  - The TalonFX motor that moves the module's wheel
+     *                    linearly.
      * @param turnMotor   - The TalonFX motor that actuates module's wheel angle and
      *                    changes the direction it is facing.
      * @param turnEncoder - The CTRE CANcoder magnetic encoder that the module uses
@@ -60,14 +59,15 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
      *                    constants for your drivetrain
      */
     public BreakerMK4iFalconSwerveModule(WPI_TalonFX driveMotor, WPI_TalonFX turnMotor, WPI_CANCoder turnEncoder,
-            BreakerSwerveDriveConfig config, double encoderAbsoluteAngleOffsetDegrees, boolean invertDriveOutput, boolean invertTurnOutput) {
+            BreakerSwerveDriveConfig config, double encoderAbsoluteAngleOffsetDegrees, boolean invertDriveOutput,
+            boolean invertTurnOutput) {
         this.config = config;
         this.turnMotor = turnMotor;
         this.driveMotor = driveMotor;
         this.turnEncoder = turnEncoder;
 
-        BreakerCANCoderFactory.configExistingCANCoder(turnEncoder, SensorInitializationStrategy.BootToAbsolutePosition, 
-            AbsoluteSensorRange.Signed_PlusMinus180, encoderAbsoluteAngleOffsetDegrees, false);
+        BreakerCANCoderFactory.configExistingCANCoder(turnEncoder, SensorInitializationStrategy.BootToAbsolutePosition,
+                AbsoluteSensorRange.Signed_PlusMinus180, encoderAbsoluteAngleOffsetDegrees, false);
 
         TalonFXConfiguration turnConfig = new TalonFXConfiguration();
         turnConfig.remoteFilter0.remoteSensorDeviceID = turnEncoder.getDeviceID();
@@ -114,7 +114,8 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
 
     @Override
     public void setModuleTarget(Rotation2d tgtAngle, double speedMetersPerSec) {
-        double relTgtAng = BreakerMath.absoluteAngleToContinuousRelativeAngleDegrees(getModuleRelativeAngle(), Rotation2d.fromDegrees(getModuleAbsoluteAngle()), tgtAngle);
+        double relTgtAng = BreakerMath.absoluteAngleToContinuousRelativeAngleDegrees(getModuleRelativeAngle(),
+                Rotation2d.fromDegrees(getModuleAbsoluteAngle()), tgtAngle);
 
         turnMotor.set(TalonFXControlMode.Position, BreakerUnits.degreesToCANCoderNativeUnits(relTgtAng));
         driveMotor.set(TalonFXControlMode.Velocity, getMetersPerSecToNativeVelUnits(speedMetersPerSec),
@@ -180,7 +181,7 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
     @Override
     public double getModuleDriveDistanceMeters() {
         return Units.inchesToMeters(BreakerMath.ticksToInches(driveMotor.getSelectedSensorPosition(),
-        BreakerMath.getTicksPerInch(2048, config.getDriveMotorGearRatioToOne(), config.getWheelDiameter())));
+                BreakerMath.getTicksPerInch(2048, config.getDriveMotorGearRatioToOne(), config.getWheelDiameter())));
     }
 
     @Override
@@ -197,7 +198,7 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
         turnEncoder.getFaults(curEncoderFaults);
         boolean driveMotNotConnected = driveMotor.getFirmwareVersion() == -1;
         boolean turnMotNotConnected = turnMotor.getFirmwareVersion() == -1;
-        boolean turnEncoderNotConnected =turnEncoder.getFirmwareVersion() == -1;
+        boolean turnEncoderNotConnected = turnEncoder.getFirmwareVersion() == -1;
 
         if (curDriveFaults.HardwareFailure) {
             driveMotorHealth = DeviceHealth.INOPERABLE;

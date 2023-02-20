@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.arm.yousif;
 
-import org.opencv.core.RotatedRect;
-
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;

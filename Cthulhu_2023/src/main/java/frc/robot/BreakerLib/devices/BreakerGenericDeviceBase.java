@@ -4,7 +4,6 @@
 
 package frc.robot.BreakerLib.devices;
 
-import frc.robot.BreakerLib.util.logging.BreakerGenericTelemetryProvider;
 import frc.robot.BreakerLib.util.power.BreakerPowerManageable;
 import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestableBase;
 import frc.robot.BreakerLib.util.test.selftest.SelfTest;
