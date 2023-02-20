@@ -31,16 +31,16 @@ public class Arm extends SubsystemBase {
     private SystemDiagnostics shoulderDiagnostics, elbowDiagnostics;
     
     public enum ArmState {
-        PLACE_HIGH_CONE(0.0, 0.0),
-        PLACE_HIGH_CUBE(0.0, 0.0),
-        PLACE_MEDIUM_CONE(0.0, 0.0),
-        PLACE_MEDIUM_CUBE(0.0, 0.0),
-        PLACE_HYBRID(0.0, 0.0),
-        PICKUP_HIGH(0.0, 0.0),
-        PICKUP_LOW(0.0, 0.0),
-        CARRY(0.0, 0.0),
-        STOW_ARM(0.0, 0.0),
-        MANUAL(0.0, 0.0);
+        PLACE_HIGH_CONE(12.0, 74.0),
+        PLACE_HIGH_CUBE(15.0, 83.0),
+        PLACE_MEDIUM_CONE(-9.0, 97.5),
+        PLACE_MEDIUM_CUBE(0.0, 128.0),
+        PLACE_HYBRID(18.0, 150.0),
+        PICKUP_HIGH(15.0, 78.0),
+        PICKUP_LOW(18.0, 150.0),
+        CARRY(0.0, 170.0),
+        STOW_ARM(-15.0, 170.0),
+        MANUAL(0.0, 0.0); // Always zero
         
         private final ArmPose statePose;
         private final ArrayList<ArmPose> intermediaryPoses;
