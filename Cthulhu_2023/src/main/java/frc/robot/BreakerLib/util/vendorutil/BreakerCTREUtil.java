@@ -34,6 +34,10 @@ public class BreakerCTREUtil {
     }
   }
 
+  public static double radiansToCANCoderNativeUnits(double radians) {
+    return (radians / (2 * Math.PI)) * 4096.0;
+  }
+
   /**
    * Logs an error to BreakerLog if designated error is discovered.
    * 
@@ -96,8 +100,7 @@ public class BreakerCTREUtil {
     return BreakerVendorUtil.getDeviceHealthAndFaults(motorFaults.toBitfield(), map);
   }
 
-  
-  /** 
+  /**
    * @param motor
    * @return Pair<DeviceHealth, String>
    */
@@ -127,8 +130,7 @@ public class BreakerCTREUtil {
     return BreakerVendorUtil.getDeviceHealthAndFaults(encoderFaults.toBitfield(), map);
   }
 
-  
-  /** 
+  /**
    * @param canCoder
    * @return Pair<DeviceHealth, String>
    */
@@ -162,11 +164,12 @@ public class BreakerCTREUtil {
   }
 
   /**
-   * Gets CANdle faults as a String. 
+   * Gets CANdle faults as a String.
    * 
    * @param faults CANdle faults.
-   * @return All faults found as string. If no faults are found, "none" is returned.
-  */
+   * @return All faults found as string. If no faults are found, "none" is
+   *         returned.
+   */
   public static String getCANdleFaultsAsString(CANdleFaults faults) {
     HashMap<Integer, String> map = new HashMap<Integer, String>();
     map.put(0, " short_circut ");
