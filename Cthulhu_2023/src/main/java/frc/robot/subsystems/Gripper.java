@@ -27,7 +27,7 @@ import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 /** Add your docs here. */
 public class Gripper extends SubsystemBase {
 
-    enum GrippedPieceType {
+    enum GrippedGamePieceType {
         CONE,
         CUBE,
         NONE
@@ -66,20 +66,24 @@ public class Gripper extends SubsystemBase {
         diagnostics.addBreakerDevice(colorSensor);
     }
 
+    /** @return Gripper position in cm. Larger = more closed. */
     public double getGripperPosition() {
         return encoder.getPosition() * Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM;
     }
 
+    /** Moves gripper to set centimeter position. */
     public void setGripperPosition(double position) {
         setPosition = position;
         pid.setReference(position / Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM, ControlType.kPosition);
     }
 
+    /** Automatically closes grip based on detected game piece type. */
     public void setClosedGrip() {
         setClosedGrip(getControlledGamePieceType());
     }
 
-    public void setClosedGrip(GrippedPieceType type) {
+    /** Closes grip based on given game piece type. */
+    public void setClosedGrip(GrippedGamePieceType type) {
         switch (type) {
             case CONE:
                 setGripperPosition(Constants.GripperConstants.CONE_GRIP_POSITION);
@@ -93,42 +97,49 @@ public class Gripper extends SubsystemBase {
         }
     }
 
+    /** @return Whether the SPARK MAX encoder has been properly calibrated with the limit switch. */
     public boolean isCalibrated() {
         return isCalibrated;
     }
 
+    /** Moves the gripper out until it hits a limit switch. */
     public void setOpenGrip() {
         setGripperSpeed(Constants.GripperConstants.GRIP_OPEN_SPD);
     }
 
-    public void setGripperSpeed(double precentSpeed) {
+    /** Moves gripper at given percent speed. */
+    public void setGripperSpeed(double percentSpeed) {
         setPosition = 0;
-        spark.set(precentSpeed);
+        spark.set(percentSpeed);
     }
 
+    /** @return If the gripper is around its target position or is open and at position 0. */
     public boolean atTargetPosition() {
         return BreakerMath.epsilonEquals(getGripperPosition(), setPosition, 0.2) || (setPosition == 0 && isOpen());
     }
 
+    /** @return If the limit switch is pressed. */
     public boolean isOpen() {
         return limit.isPressed();
     }
 
+    /** @return Detected game piece color from color sensor. */
     public Color getDetectedColor() {
         return colorSensor.getColor();
     }
 
-    public GrippedPieceType getControlledGamePieceType() {
+    /** @return The type of the game piece picked up by the color sensor. */
+    public GrippedGamePieceType getControlledGamePieceType() {
         ColorMatchResult match = colorMatch.matchColor(colorSensor.getColor());
         if (Objects.nonNull(match)
                 && colorSensor.getProximity() <= Constants.GripperConstants.GAME_PIECE_PROX_THRESHOLD) {
             if (match.color.equals(Constants.GripperConstants.CONE_COLOR)) {
-                return GrippedPieceType.CONE;
+                return GrippedGamePieceType.CONE;
             } else {
-                return GrippedPieceType.CUBE;
+                return GrippedGamePieceType.CUBE;
             }
         }
-        return GrippedPieceType.NONE;
+        return GrippedGamePieceType.NONE;
     }
 
     @Override
