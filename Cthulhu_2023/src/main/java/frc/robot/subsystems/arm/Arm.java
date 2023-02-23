@@ -29,7 +29,8 @@ public class Arm extends SubsystemBase {
     private WPI_CANCoder shoulderEncoder, elbowEncoder;
     private WPI_TalonFX shoulderMotor, elbowMotor;
     private SystemDiagnostics shoulderDiagnostics, elbowDiagnostics;
-    
+
+    // WARNING! NOT TESTED! VALUES WILL CHANGE!
     public enum ArmState {
         PLACE_HIGH_CONE(12.0, 74.0),
         PLACE_HIGH_CUBE(15.0, 83.0),
@@ -41,14 +42,14 @@ public class Arm extends SubsystemBase {
         CARRY(0.0, 170.0),
         STOW_ARM(-15.0, 170.0),
         MANUAL(0.0, 0.0); // Always zero
-        
+
         private final ArmPose statePose;
         private final ArrayList<ArmPose> intermediaryPoses;
 
         ArmState(double shoulderAngleDeg, double elbowAngleDeg, ArmPose... intermedairyPoses) {
             statePose = new ArmPose(Rotation2d.fromDegrees(shoulderAngleDeg), Rotation2d.fromDegrees(elbowAngleDeg));
             this.intermediaryPoses = new ArrayList<>();
-            for (ArmPose ap: intermedairyPoses) {
+            for (ArmPose ap : intermedairyPoses) {
                 this.intermediaryPoses.add(ap);
             }
         }
@@ -64,6 +65,7 @@ public class Arm extends SubsystemBase {
 
     public static class ArmPose {
         private Rotation2d shoulderAngle, elbowAngle;
+
         public ArmPose(Rotation2d shoulderAngle, Rotation2d elbowAngle) {
             this.shoulderAngle = shoulderAngle;
             this.elbowAngle = elbowAngle;
@@ -81,31 +83,31 @@ public class Arm extends SubsystemBase {
         public boolean equals(Object obj) {
             ArmPose other = (ArmPose) obj;
             return BreakerMath.epsilonEquals(shoulderAngle.getDegrees(), other.shoulderAngle.getDegrees(), 1.5) &&
-            BreakerMath.epsilonEquals(elbowAngle.getDegrees(), other.elbowAngle.getDegrees(), 1.5);
+                    BreakerMath.epsilonEquals(elbowAngle.getDegrees(), other.elbowAngle.getDegrees(), 1.5);
         }
     }
 
     public Arm() {
         shoulderEncoder = new WPI_CANCoder(0);
         shoulderMotor = new WPI_TalonFX(0);
-        ArmJoint.ArmJointConfig shoulderConfig = new ArmJoint.ArmJointConfig( 
-            new WPI_CANCoder(0), 0, false, 
-            new TrapezoidProfile.Constraints(0,0), 
-            0, 0, 0, 
-            0, 0, 0, 0,
-            new WPI_TalonFX(0)
-        );
+        ArmJoint.ArmJointConfig shoulderConfig = new ArmJoint.ArmJointConfig(
+                new WPI_CANCoder(0), 0, false,
+                new TrapezoidProfile.Constraints(0, 0),
+                0, 0, 0,
+                0, 0, 0, 0,
+                new WPI_TalonFX(0));
 
         elbowEncoder = new WPI_CANCoder(0);
         elbowMotor = new WPI_TalonFX(0);
         ArmJoint.ArmJointConfig elbowConfig = new ArmJoint.ArmJointConfig(
-            new WPI_CANCoder(0), 0, false, 
-            new TrapezoidProfile.Constraints(0,0), 
-            0, 0, 0, 
-            0, 0, 0, 0,
-            new WPI_TalonFX(0)
-        );
-        shoulderJoint = new ArmJoint(() -> {return new Rotation2d();}, shoulderConfig);
+                new WPI_CANCoder(0), 0, false,
+                new TrapezoidProfile.Constraints(0, 0),
+                0, 0, 0,
+                0, 0, 0, 0,
+                new WPI_TalonFX(0));
+        shoulderJoint = new ArmJoint(() -> {
+            return new Rotation2d();
+        }, shoulderConfig);
         elbowJoint = new ArmJoint(shoulderJoint::getJointAngle, elbowConfig);
 
         shoulderDiagnostics = new SystemDiagnostics("Proximal_Arm");
@@ -151,22 +153,24 @@ public class Arm extends SubsystemBase {
 
     public boolean atTargetState() {
         ArmPose curPose = getArmPose();
-        return  targetState.statePose.equals(curPose) && elbowJoint.getJointVel() < Math.toRadians(2) && shoulderJoint.getJointVel() < Math.toRadians(2);
+        return targetState.statePose.equals(curPose) && elbowJoint.getJointVel() < Math.toRadians(2)
+                && shoulderJoint.getJointVel() < Math.toRadians(2);
     }
 
     public boolean atTargetPoseExact() {
         ArmPose curPose = getArmPose();
-        return  targetPose.equals(curPose) && elbowJoint.getJointVel() < Math.toRadians(2) && shoulderJoint.getJointVel() < Math.toRadians(2);
+        return targetPose.equals(curPose) && elbowJoint.getJointVel() < Math.toRadians(2)
+                && shoulderJoint.getJointVel() < Math.toRadians(2);
     }
 
     public boolean atTargetPose() {
         ArmPose curPose = getArmPose();
-        return  targetPose.equals(curPose);
+        return targetPose.equals(curPose);
     }
 
     @Override
     public void periodic() {
-       
+
     }
 
     private void regesterMoveCommand(MoveToState com) {
@@ -176,12 +180,14 @@ public class Arm extends SubsystemBase {
         activeMoveCommand = com;
     }
 
-    //In class command enable use of private set methods inteded to be abstracted away from normal dev
+    // In class command enable use of private set methods inteded to be abstracted
+    // away from normal dev
     public class MoveToState extends CommandBase {
         /** Creates a new SetArmState. */
         private ArmState newState, startState;
         private ArrayList<ArmPose> path;
         private int pathIndex = 0;
+
         public MoveToState(ArmState targetState) {
             regesterMoveCommand(this);
             setTargetState(targetState);
@@ -189,7 +195,7 @@ public class Arm extends SubsystemBase {
             newState = targetState;
             startState = getPrevState();
         }
-      
+
         // Called when the command is initially scheduled.
         @Override
         public void initialize() {
@@ -204,14 +210,14 @@ public class Arm extends SubsystemBase {
                         path.add(ArmState.CARRY.statePose);
                     }
                     if (newState.intermediaryPoses.size() != 0) {
-                        path.addAll( newState.getIntermediaryPoses());
+                        path.addAll(newState.getIntermediaryPoses());
                     }
                 }
                 path.add(newState.statePose);
                 setTargetPose(path.get(pathIndex));
             }
-         }
-      
+        }
+
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute() {
@@ -220,15 +226,16 @@ public class Arm extends SubsystemBase {
                 setTargetPose(path.get(pathIndex));
             }
         }
-      
+
         // Called once the command ends or is interrupted.
         @Override
-        public void end(boolean interrupted) {}
-      
+        public void end(boolean interrupted) {
+        }
+
         // Returns true when the command should end.
         @Override
         public boolean isFinished() {
-          return atTargetState() || newState == ArmState.MANUAL;
+            return atTargetState() || newState == ArmState.MANUAL;
         }
-      }
+    }
 }

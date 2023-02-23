@@ -1,6 +1,5 @@
 package frc.robot.subsystems.arm;
 
-
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -35,32 +34,31 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
   public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, ArmJointConfig config) {
     super(
         config.constraints,
-        Rotation2d.fromDegrees(config.encoder.getAbsolutePosition()).plus(angleOffsetSupplier.get()).getRadians()
-        );
-        ff = new ArmFeedforward(config.kS, config.kG, config.kV, config.kA);
-        motor = config.motors[0];
-        encoder = config.encoder;
-        this.angleOffsetSupplier = angleOffsetSupplier;
-        TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-        motorConfig.remoteFilter0.remoteSensorDeviceID = config.encoder.getDeviceID();
-        motorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
-        motorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-        motorConfig.slot0.kP = config.kP;
-        motorConfig.slot0.kI = config.kI;
-        motorConfig.slot0.kD = config.kD;
-        motorConfig.slot0.closedLoopPeakOutput = 1.0;
-        motorConfig.peakOutputForward = 1.0;
-        motorConfig.peakOutputReverse = -1.0;
-        motorConfig.voltageCompSaturation = 12.0;
-        motorConfig.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 80.0, 80.0, 1.5);
-        BreakerCTREUtil.checkError(motor.configAllSettings(motorConfig),
-                " Failed to arm joint motor ");
-        motor.selectProfileSlot(0, 0);
-        if (config.motors.length > 0) {
-          for (int i = 1; i < config.motors.length; i++) {
-            config.motors[i].follow(motor);
-          }
-        }
+        Rotation2d.fromDegrees(config.encoder.getAbsolutePosition()).plus(angleOffsetSupplier.get()).getRadians());
+    ff = new ArmFeedforward(config.kS, config.kG, config.kV, config.kA);
+    motor = config.motors[0];
+    encoder = config.encoder;
+    this.angleOffsetSupplier = angleOffsetSupplier;
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    motorConfig.remoteFilter0.remoteSensorDeviceID = config.encoder.getDeviceID();
+    motorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
+    motorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
+    motorConfig.slot0.kP = config.kP;
+    motorConfig.slot0.kI = config.kI;
+    motorConfig.slot0.kD = config.kD;
+    motorConfig.slot0.closedLoopPeakOutput = 1.0;
+    motorConfig.peakOutputForward = 1.0;
+    motorConfig.peakOutputReverse = -1.0;
+    motorConfig.voltageCompSaturation = 12.0;
+    motorConfig.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 80.0, 80.0, 1.5);
+    BreakerCTREUtil.checkError(motor.configAllSettings(motorConfig),
+        " Failed to arm joint motor ");
+    motor.selectProfileSlot(0, 0);
+    if (config.motors.length > 0) {
+      for (int i = 1; i < config.motors.length; i++) {
+        config.motors[i].follow(motor);
+      }
+    }
   }
 
   @Override
@@ -68,7 +66,9 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
     // Calculate the feedforward from the sepoint
     double feedforward = ff.calculate(setpoint.position, setpoint.velocity);
     // Add the feedforward to the PID output to get the motor output
-    motor.set(TalonFXControlMode.Position, radiansToCANCoderNativeUnits(new Rotation2d(setpoint.position).minus(getJointAngle()).getRadians()), DemandType.ArbitraryFeedForward, feedforward / RobotController.getBatteryVoltage());
+    motor.set(TalonFXControlMode.Position,
+        radiansToCANCoderNativeUnits(new Rotation2d(setpoint.position).minus(getJointAngle()).getRadians()),
+        DemandType.ArbitraryFeedForward, feedforward / RobotController.getBatteryVoltage());
   }
 
   public Command setArmGoalCommand(double kArmOffsetRads) {
@@ -85,7 +85,7 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
   }
 
   private double radiansToCANCoderNativeUnits(double angleRad) {
-    return (angleRad / (2*Math.PI)) * 4096.0;
+    return (angleRad / (2 * Math.PI)) * 4096.0;
   }
 
   public static class ArmJointConfig {
@@ -93,19 +93,22 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
     public final TrapezoidProfile.Constraints constraints;
     public final WPI_TalonFX[] motors;
     public final WPI_CANCoder encoder;
-    public ArmJointConfig(WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder, TrapezoidProfile.Constraints constraints, double kP, double kI, double kD, double kS, double kG, double kV, double kA, WPI_TalonFX... motors) {
-        BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition, 
-        AbsoluteSensorRange.Signed_PlusMinus180, encoderOffsetDegrees, invertEncoder);
-        this.motors = motors;
-        this.encoder = encoder;
-        this.kP = kP;
-        this.kI = kI;
-        this.kD = kD;
-        this.kS = kS;
-        this.kG = kG;
-        this.kV = kV;
-        this.kA = kA;
-        this.constraints = constraints;
+
+    public ArmJointConfig(WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder,
+        TrapezoidProfile.Constraints constraints, double kP, double kI, double kD, double kS, double kG, double kV,
+        double kA, WPI_TalonFX... motors) {
+      BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
+          AbsoluteSensorRange.Signed_PlusMinus180, encoderOffsetDegrees, invertEncoder);
+      this.motors = motors;
+      this.encoder = encoder;
+      this.kP = kP;
+      this.kI = kI;
+      this.kD = kD;
+      this.kS = kS;
+      this.kG = kG;
+      this.kV = kV;
+      this.kA = kA;
+      this.constraints = constraints;
     }
   }
 }
