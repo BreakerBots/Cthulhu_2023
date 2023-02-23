@@ -152,6 +152,7 @@ public final class Constants {
     }
 
     public static final class RobotGeometryConstants {
+        // TODO: Define this!
         public static final BreakerRobotGeometry2d ROBOT_GEOMETRY = new BreakerRobotGeometry2d(null);
     }
 

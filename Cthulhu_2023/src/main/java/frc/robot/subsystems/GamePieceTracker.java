@@ -21,6 +21,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerPhotonCamera;
 
+/** Upright cone, toppeld cone, or cube, each given a predefined height. */
 enum TrackedGamePieceType {
   CONE_UPRIGHT(Units.inchesToMeters(12.8125)),
   CONE_TOPPLED(Units.inchesToMeters(8.375)),
@@ -28,8 +29,8 @@ enum TrackedGamePieceType {
 
   private double heightMeters;
 
-  private TrackedGamePieceType(double hightMeters) {
-    this.heightMeters = hightMeters;
+  private TrackedGamePieceType(double heightMeters) {
+    this.heightMeters = heightMeters;
   }
 
   public double getHeightMeters() {
@@ -40,18 +41,17 @@ enum TrackedGamePieceType {
 
 public class GamePieceTracker extends SubsystemBase {
 
-  private BreakerPhotonCamera /*coneCam,*/ cubeCam;
-  private double uprightConeBoundRatioThreshold = 1.2;
+  private BreakerPhotonCamera /* coneCam, */ cubeCam;
+  private double uprightConeBoundRatioThreshold = 1.2; // H:W threshold between upright and toppled cones.
   private ArrayList<TrackedGamePiece> trackedGamePieces;
-  private boolean useConePipeline = true;
 
   /** Creates a new GamePieceTracker. */
   public GamePieceTracker() {
-   // coneCam = new BreakerPhotonCamera("CONE_CAM_1", new Transform3d());
-    //cubeCam = new BreakerPhotonCamera("CUBE_CAM_1", new Transform3d());
+    // coneCam = new BreakerPhotonCamera("CONE_CAM_1", new Transform3d());
+    // cubeCam = new BreakerPhotonCamera("CUBE_CAM_1", new Transform3d());
     cubeCam = new BreakerPhotonCamera("April_Test_1",
-    new Transform3d(new Translation3d(Units.inchesToMeters(12.75), Units.inchesToMeters(2.25),
-    Units.inchesToMeters(13.0)), new Rotation3d()));
+        new Transform3d(new Translation3d(Units.inchesToMeters(12.75), Units.inchesToMeters(2.25),
+            Units.inchesToMeters(13.0)), new Rotation3d()));
     trackedGamePieces = new ArrayList<>();
   }
 
@@ -59,7 +59,11 @@ public class GamePieceTracker extends SubsystemBase {
     return coneBoxHeight / coneBoxWidth >= uprightConeBoundRatioThreshold;
   }
 
-  /** @return Array of 2 with width in slot 0 and height in slot 1 */
+  /**
+   * @param target Target to be given a bounding box.
+   * 
+   * @return Array of 2 with width in slot 0 and height in slot 1
+   */
   private double[] makeBoundingBox(PhotonTrackedTarget target) {
     var corners = target.getMinAreaRectCorners();
     TargetCorner firstCorner = corners.remove(0);
@@ -74,7 +78,7 @@ public class GamePieceTracker extends SubsystemBase {
     double width = Math.abs(opposingCorner.x - firstCorner.x);
     double height = Math.abs(opposingCorner.y - firstCorner.y);
 
-    return new double[] {width, height};
+    return new double[] { width, height };
   }
 
   /** @return If any targets have been successfully found. */
@@ -94,32 +98,34 @@ public class GamePieceTracker extends SubsystemBase {
 
   public void generateGamePieceList() {
     trackedGamePieces.clear();
-    //Checks cones
-    if (cubeCam.hasTargets()) {
-      for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
-        if (!Objects.isNull(target)) {
-          // double[] boundingBox = makeBoundingBox(target);
-          // GamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ? GamePieceType.CONE_UPRIGHT
-          //     : TrackedGamePieceType.CONE_TOPPLED;
-          TrackedGamePiece cone = new TrackedGamePiece(TrackedGamePieceType.CONE_UPRIGHT, cubeCam.get3dCamPositionRelativeToRobot(), target);
-          trackedGamePieces.add(cone);
-        }
-      }
-    }
-    //Checks cubes
-    // if (cubeCam.hasTargets()) {
+    // Checks cones
+    // if (coneCam.hasTargets()) {
     //   for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
     //     if (!Objects.isNull(target)) {
-    //       TrackedGamePiece cube = new TrackedGamePiece(TrackedGamePieceType.CUBE, cubeCam.get3dCamPositionRelativeToRobot(),
-    //         target);
-    //       trackedGamePieces.add(cube);
+    //       // double[] boundingBox = makeBoundingBox(target);
+    //       // GamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ?
+    //       // GamePieceType.CONE_UPRIGHT
+    //       // : TrackedGamePieceType.CONE_TOPPLED;
+    //       TrackedGamePiece cone = new TrackedGamePiece(TrackedGamePieceType.CONE_UPRIGHT,
+    //           coneCam.get3dCamPositionRelativeToRobot(), target);
+    //       trackedGamePieces.add(cone);
     //     }
     //   }
     // }
+    // Checks cubes
+    if (cubeCam.hasTargets()) {
+      for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
+        if (!Objects.isNull(target)) {
+          TrackedGamePiece cube = new TrackedGamePiece(TrackedGamePieceType.CUBE,
+              cubeCam.get3dCamPositionRelativeToRobot(), target);
+          trackedGamePieces.add(cube);
+        }
+      }
+    }
     // Sorts the non-empty list
     if (!trackedGamePieces.isEmpty()) {
       Collections.sort(trackedGamePieces);
-      //System.out.println(trackedGamePieces);
+      // System.out.println(trackedGamePieces);
     }
   }
 
@@ -130,49 +136,63 @@ public class GamePieceTracker extends SubsystemBase {
 
   public static class TrackedGamePiece implements Comparable<TrackedGamePiece> {
     private final double CAMERA_FOV_PITCH_RAD = 1.1;
-  
+
     private Transform3d cameraTransform;
     private TrackedGamePieceType type;
     private PhotonTrackedTarget target;
-  
+
+    /**
+     * Makes a trackable game piece instance which can be compared.
+     * 
+     * @param type Target's type
+     * @param cameraTransform Camera transform relative to robot's bottom center.
+     * @param target PhotonTrackedTarget from a camera to perform operations on.
+     */
     private TrackedGamePiece(TrackedGamePieceType type, Transform3d cameraTransform, PhotonTrackedTarget target) {
       this.target = target;
       this.type = type;
       this.cameraTransform = cameraTransform;
     }
-  
+
+    /** @return 2d translation from robot to target. */
     public Translation2d getRobotToTargetTranslation() {
       return PhotonUtils.estimateCameraToTargetTranslation(getDistance(), Rotation2d.fromDegrees(target.getYaw()))
           .plus(cameraTransform.getTranslation().toTranslation2d());
     }
-  
+
+    /** Calculates distance based upon the relative heights and pitches of the camera and target.
+     * 
+     * @return Distance magnitude from robot to target in meters.
+    */
     public double getDistance() {
-      return PhotonUtils.calculateDistanceToTargetMeters(cameraTransform.getZ(), type.getHeightMeters()/2.0,
+      // TODO Why do we divide the type's height by 2?
+      return PhotonUtils.calculateDistanceToTargetMeters(cameraTransform.getZ(), type.getHeightMeters() / 2.0,
           cameraTransform.getRotation().getY(), Math.toRadians(target.getPitch()));
     }
-  
+
+    
     public PhotonTrackedTarget getTarget() {
       return target;
     }
-  
+
     public TrackedGamePieceType getType() {
       return type;
     }
 
     @Override
     public String toString() {
-        // TODO Auto-generated method stub
-        return "Dist: " + getDistance();
+      // TODO Auto-generated method stub
+      return "Dist: " + getDistance();
     }
-  
+
     @Override
     public int compareTo(TrackedGamePiece arg0) {
-  
+
       double otherDist = Math.hypot(arg0.target.getYaw(),
           Math.abs(arg0.target.getPitch() + (CAMERA_FOV_PITCH_RAD / 2)));
       double dist = Math.hypot(target.getYaw(), Math.abs(target.getPitch() + (CAMERA_FOV_PITCH_RAD / 2)));
-      //double otherDist = arg0.getDistance();// + Math.abs(arg0.target.getYaw());
-      //double dist = getDistance();// + Math.abs(target.getYaw());
+      // double otherDist = arg0.getDistance();// + Math.abs(arg0.target.getYaw());
+      // double dist = getDistance();// + Math.abs(target.getYaw());
       if (dist > otherDist) {
         return 1;
       } else if (dist < otherDist) {

@@ -15,6 +15,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class BreakerRobotGeometry2d {
     private Area robotArea;
 
+    /**
+     * Makes a 2d representation of robot geometry.
+     * 
+     * @param robotArea Java AWT area 
+     */
     public BreakerRobotGeometry2d(Area robotArea) {
         this.robotArea = robotArea;
     }
