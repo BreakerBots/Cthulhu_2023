@@ -102,10 +102,9 @@ public class GamePieceTracker extends SubsystemBase {
     // if (coneCam.hasTargets()) {
     //   for (PhotonTrackedTarget target : cubeCam.getAllRawTrackedTargets()) {
     //     if (!Objects.isNull(target)) {
-    //       // double[] boundingBox = makeBoundingBox(target);
-    //       // GamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ?
-    //       // GamePieceType.CONE_UPRIGHT
-    //       // : TrackedGamePieceType.CONE_TOPPLED;
+    //       double[] boundingBox = makeBoundingBox(target);
+    //       TrackedGamePieceType coneType = isConeUpright(boundingBox[0], boundingBox[1]) ? TrackedGamePieceType.CONE_UPRIGHT
+    //           : TrackedGamePieceType.CONE_TOPPLED;
     //       TrackedGamePiece cone = new TrackedGamePiece(TrackedGamePieceType.CONE_UPRIGHT,
     //           coneCam.get3dCamPositionRelativeToRobot(), target);
     //       trackedGamePieces.add(cone);
@@ -144,9 +143,10 @@ public class GamePieceTracker extends SubsystemBase {
     /**
      * Makes a trackable game piece instance which can be compared.
      * 
-     * @param type Target's type
+     * @param type            Target's type
      * @param cameraTransform Camera transform relative to robot's bottom center.
-     * @param target PhotonTrackedTarget from a camera to perform operations on.
+     * @param target          PhotonTrackedTarget from a camera to perform
+     *                        operations on.
      */
     private TrackedGamePiece(TrackedGamePieceType type, Transform3d cameraTransform, PhotonTrackedTarget target) {
       this.target = target;
@@ -160,17 +160,18 @@ public class GamePieceTracker extends SubsystemBase {
           .plus(cameraTransform.getTranslation().toTranslation2d());
     }
 
-    /** Calculates distance based upon the relative heights and pitches of the camera and target.
+    /**
+     * Calculates distance based upon the relative heights and pitches of the camera
+     * and target.
      * 
      * @return Distance magnitude from robot to target in meters.
-    */
+     */
     public double getDistance() {
       // TODO Why do we divide the type's height by 2?
       return PhotonUtils.calculateDistanceToTargetMeters(cameraTransform.getZ(), type.getHeightMeters() / 2.0,
           cameraTransform.getRotation().getY(), Math.toRadians(target.getPitch()));
     }
 
-    
     public PhotonTrackedTarget getTarget() {
       return target;
     }
