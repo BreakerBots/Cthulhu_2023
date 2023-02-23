@@ -14,8 +14,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.GamePieceTracker;
-import frc.robot.subsystems.GamePieceTracker.TrackedGamePiece;
+import frc.robot.subsystems.gamepiece.GamePieceTracker;
+import frc.robot.subsystems.gamepiece.GamePieceTracker.TrackedGamePiece;
 
 public class MoveToGamePiece extends CommandBase {
   /** Creates a new MoveToGamePiece. */

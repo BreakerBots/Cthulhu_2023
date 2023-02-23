@@ -23,15 +23,12 @@ import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor.BreakerPicoColorSensorInstance;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
+import frc.robot.subsystems.gamepiece.GamePieceType;
+import static frc.robot.subsystems.gamepiece.GamePieceType.*;
+import static frc.robot.Constants.GripperConstants.*;
 
 /** Add your docs here. */
 public class Gripper extends SubsystemBase {
-
-    enum GrippedGamePieceType {
-        CONE,
-        CUBE,
-        NONE
-    }
 
     private BreakerPicoColorSensorInstance colorSensor;
     private CANSparkMax spark;
@@ -60,21 +57,21 @@ public class Gripper extends SubsystemBase {
 
         colorSensor = new BreakerPicoColorSensor().getSensor0();
         colorMatch = new ColorMatch();
-        colorMatch.setConfidenceThreshold(Constants.GripperConstants.COLOR_MATCH_CONFIDENCE_THRESHOLD);
-        colorMatch.addColorMatch(Constants.GripperConstants.CONE_COLOR);
-        colorMatch.addColorMatch(Constants.GripperConstants.CUBE_COLOR);
+        colorMatch.setConfidenceThreshold(COLOR_MATCH_CONFIDENCE_THRESHOLD);
+        colorMatch.addColorMatch(CONE_COLOR);
+        colorMatch.addColorMatch(CUBE_COLOR);
         diagnostics.addBreakerDevice(colorSensor);
     }
 
     /** @return Gripper position in cm. Larger = more closed. */
     public double getGripperPosition() {
-        return encoder.getPosition() * Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM;
+        return encoder.getPosition() * MOTOR_ROT_TO_GRIP_POS_CM;
     }
 
     /** Moves gripper to set centimeter position. */
     public void setGripperPosition(double position) {
         setPosition = position;
-        pid.setReference(position / Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM, ControlType.kPosition);
+        pid.setReference(position / MOTOR_ROT_TO_GRIP_POS_CM, ControlType.kPosition);
     }
 
     /** Automatically closes grip based on detected game piece type. */
@@ -83,13 +80,13 @@ public class Gripper extends SubsystemBase {
     }
 
     /** Closes grip based on given game piece type. */
-    public void setClosedGrip(GrippedGamePieceType type) {
+    public void setClosedGrip(GamePieceType type) {
         switch (type) {
             case CONE:
-                setGripperPosition(Constants.GripperConstants.CONE_GRIP_POSITION);
+                setGripperPosition(CONE_GRIP_POSITION);
                 break;
             case CUBE:
-                setGripperPosition(Constants.GripperConstants.CUBE_GRIP_POSITION);
+                setGripperPosition(CUBE_GRIP_POSITION);
                 break;
             case NONE:
                 setOpenGrip();
@@ -104,7 +101,7 @@ public class Gripper extends SubsystemBase {
 
     /** Moves the gripper out until it hits a limit switch. */
     public void setOpenGrip() {
-        setGripperSpeed(Constants.GripperConstants.GRIP_OPEN_SPD);
+        setGripperSpeed(GRIP_OPEN_SPD);
     }
 
     /** Moves gripper at given percent speed. */
@@ -129,17 +126,17 @@ public class Gripper extends SubsystemBase {
     }
 
     /** @return The type of the game piece picked up by the color sensor. */
-    public GrippedGamePieceType getControlledGamePieceType() {
+    public GamePieceType getControlledGamePieceType() {
         ColorMatchResult match = colorMatch.matchColor(colorSensor.getColor());
         if (Objects.nonNull(match)
-                && colorSensor.getProximity() <= Constants.GripperConstants.GAME_PIECE_PROX_THRESHOLD) {
-            if (match.color.equals(Constants.GripperConstants.CONE_COLOR)) {
-                return GrippedGamePieceType.CONE;
+                && colorSensor.getProximity() <= GAME_PIECE_PROX_THRESHOLD) {
+            if (match.color.equals(CONE_COLOR)) {
+                return CONE;
             } else {
-                return GrippedGamePieceType.CUBE;
+                return CUBE;
             }
         }
-        return GrippedGamePieceType.NONE;
+        return NONE;
     }
 
     @Override

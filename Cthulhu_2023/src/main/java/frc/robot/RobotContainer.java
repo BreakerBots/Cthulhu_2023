@@ -26,9 +26,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.MoveToGamePiece;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.GamePieceTracker;
-//import frc.robot.subsystems.Odometer;
-//import frc.robot.subsystems.VisionTest;
+import frc.robot.subsystems.gamepiece.GamePieceTracker;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

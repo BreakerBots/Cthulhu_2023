@@ -6,7 +6,6 @@ package frc.robot.commands.score;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.GamePieceType;
 import frc.robot.Node;
 import frc.robot.Node.NodeColumn;
 import frc.robot.Node.NodeLevel;
@@ -18,7 +17,9 @@ import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxControl
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.gamepiece.GamePieceType;
 
+/** Command to score the given game piece into the desired goal. */
 public class ScoreGamePiece extends CommandBase {
   /** Creates a new InitScore. */
   private Drive drive;
@@ -31,6 +32,7 @@ public class ScoreGamePiece extends CommandBase {
   private AlignToScore alignCom;
   private Node targetNode;
   private GamePieceType pieceType;
+  
   public ScoreGamePiece(Drive drive, Arm arm, Gripper gripper, BreakerXboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
