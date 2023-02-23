@@ -19,7 +19,6 @@ import com.revrobotics.SparkMaxPIDController;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.GamePieceType;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor.BreakerPicoColorSensorInstance;
 import frc.robot.BreakerLib.util.math.BreakerMath;
@@ -27,6 +26,13 @@ import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 
 /** Add your docs here. */
 public class Gripper extends SubsystemBase {
+
+    enum GrippedPieceType {
+        CONE,
+        CUBE,
+        NONE
+    }
+
     private BreakerPicoColorSensorInstance colorSensor;
     private CANSparkMax spark;
     private SparkMaxPIDController pid;
@@ -73,7 +79,7 @@ public class Gripper extends SubsystemBase {
         setClosedGrip(getControlledGamePieceType());
     }
 
-    public void setClosedGrip(GamePieceType type) {
+    public void setClosedGrip(GrippedPieceType type) {
         switch (type) {
             case CONE:
                 setGripperPosition(Constants.GripperConstants.CONE_GRIP_POSITION);
@@ -112,17 +118,17 @@ public class Gripper extends SubsystemBase {
         return colorSensor.getColor();
     }
 
-    public GamePieceType getControlledGamePieceType() {
+    public GrippedPieceType getControlledGamePieceType() {
         ColorMatchResult match = colorMatch.matchColor(colorSensor.getColor());
         if (Objects.nonNull(match)
                 && colorSensor.getProximity() <= Constants.GripperConstants.GAME_PIECE_PROX_THRESHOLD) {
             if (match.color.equals(Constants.GripperConstants.CONE_COLOR)) {
-                return GamePieceType.CONE;
+                return GrippedPieceType.CONE;
             } else {
-                return GamePieceType.CUBE;
+                return GrippedPieceType.CUBE;
             }
         }
-        return GamePieceType.NONE;
+        return GrippedPieceType.NONE;
     }
 
     @Override
