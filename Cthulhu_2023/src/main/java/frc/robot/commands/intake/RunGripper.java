@@ -9,7 +9,7 @@ import org.opencv.aruco.GridBoard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.GamePieceType;
+import frc.robot.subsystems.gamepiece.GamePieceType;
 import frc.robot.subsystems.Gripper;
 
 

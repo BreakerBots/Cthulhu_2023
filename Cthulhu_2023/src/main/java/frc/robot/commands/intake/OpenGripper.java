@@ -5,7 +5,7 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.GamePieceType;
+import frc.robot.subsystems.gamepiece.GamePieceType;
 import frc.robot.subsystems.Gripper;
 
 public class OpenGripper extends CommandBase {
