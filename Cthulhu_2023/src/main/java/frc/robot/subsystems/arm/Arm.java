@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import static frc.robot.Constants.ArmConstants.*;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
@@ -88,8 +89,8 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        shoulderEncoder = new WPI_CANCoder(0);
-        shoulderMotor = new WPI_TalonFX(0);
+        shoulderEncoder = new WPI_CANCoder(SHOULDER_ENCODER_ID);
+        shoulderMotor = new WPI_TalonFX(SHOULDER_MOTOR_ID);
         ArmJoint.ArmJointConfig shoulderConfig = new ArmJoint.ArmJointConfig(
                 new WPI_CANCoder(0), 0, false,
                 new TrapezoidProfile.Constraints(0, 0),
@@ -97,8 +98,8 @@ public class Arm extends SubsystemBase {
                 0, 0, 0, 0,
                 new WPI_TalonFX(0));
 
-        elbowEncoder = new WPI_CANCoder(0);
-        elbowMotor = new WPI_TalonFX(0);
+        elbowEncoder = new WPI_CANCoder(ELBOW_ENCODER_ID);
+        elbowMotor = new WPI_TalonFX(ELBOW_MOTOR_ID);
         ArmJoint.ArmJointConfig elbowConfig = new ArmJoint.ArmJointConfig(
                 new WPI_CANCoder(0), 0, false,
                 new TrapezoidProfile.Constraints(0, 0),

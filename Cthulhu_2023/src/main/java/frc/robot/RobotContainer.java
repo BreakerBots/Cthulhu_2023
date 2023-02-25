@@ -26,6 +26,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.MoveToGamePiece;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.gamepiece.GamePieceTracker;
 
 /**
@@ -40,8 +41,10 @@ import frc.robot.subsystems.gamepiece.GamePieceTracker;
 public class RobotContainer {
 
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
+
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
+  private final Arm armSys = new Arm();
  // private final Odometer odometerSys = new Odometer(drivetrainSys, new BreakerVisionPoseFilter(5.0, 0.35, Constants.Vision.AprilTag.APRILTAGS));
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(

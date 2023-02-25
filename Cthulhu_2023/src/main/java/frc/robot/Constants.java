@@ -70,6 +70,7 @@ public final class Constants {
         public static final Translation2d BL_TRANSLATION = new Translation2d(-0.2635, 0.2635);
         public static final Translation2d BR_TRANSLATION = new Translation2d(-0.2635, -0.2635);
 
+        // All gears face to the left relative to the robot's front
         public static final double FL_ENCODER_OFFSET = -111.270;
         public static final double FR_ENCODER_OFFSET = -37.266;
         public static final double BL_ENCODER_OFFSET = 159.258;
@@ -130,6 +131,7 @@ public final class Constants {
     }
 
     public static final class GripperConstants {
+        public static final int GRIPPER_MOTOR_ID = 0;
         public static final double CONE_GRIP_POSITION = 0.0;
         public static final double CUBE_GRIP_POSITION = 0.0;
         public static final double ClOSED_GRIP_POSITION = 0.0;
@@ -140,6 +142,13 @@ public final class Constants {
         public static final double COLOR_MATCH_CONFIDENCE_THRESHOLD = 95.0;
         public static final double GAME_PIECE_PROX_THRESHOLD = 0.0;
         public static final double AUTO_CLOSE_DELAY_SEC = 0.5;
+    }
+
+    public static final class ArmConstants {
+        public static final int SHOULDER_MOTOR_ID = 0;
+        public static final int ELBOW_MOTOR_ID = 0;
+        public static final int SHOULDER_ENCODER_ID = 0;
+        public static final int ELBOW_ENCODER_ID = 0;
     }
 
     public static final class FieldConstants {
