@@ -149,11 +149,11 @@ public final class Constants {
     public static final class ArmConstants {
         public static final int PROXIMAL_MOTOR_ID = 30;
         public static final int PROXIMAL_ENCODER_ID = 24;
-        public static final double PROXIMAL_ENCODER_OFFSET = 0;
+        public static final double PROXIMAL_ENCODER_OFFSET = 105.883;
 
         public static final int DISTAL_MOTOR_ID = 31;
         public static final int DISTAL_ENCODER_ID = 25;
-        public static final double DISTAL_ENCODER_OFFSET = 0;
+        public static final double DISTAL_ENCODER_OFFSET = -194.6;
     }
 
     public static final class FieldConstants {
