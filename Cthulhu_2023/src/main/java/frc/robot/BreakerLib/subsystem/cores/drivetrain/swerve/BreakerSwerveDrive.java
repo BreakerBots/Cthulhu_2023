@@ -384,7 +384,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
         module.setDriveMotorBrakeMode(isEnabled);
         module.setTurnMotorBrakeMode(true);
       } else {
-        module.setTurnMotorBrakeMode(isEnabled);
+        module.setModuleBrakeMode(isEnabled);
       }
     }
   }

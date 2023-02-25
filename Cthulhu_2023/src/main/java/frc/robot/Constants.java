@@ -72,17 +72,17 @@ public final class Constants {
         public static final Translation2d BR_TRANSLATION = new Translation2d(-0.2635, -0.2635);
 
         // All gears face to the left relative to the robot's front
-        public static final double FL_ENCODER_OFFSET = -111.270;
-        public static final double FR_ENCODER_OFFSET = -37.266;
-        public static final double BL_ENCODER_OFFSET = 159.258;
-        public static final double BR_ENCODER_OFFSET = 22.5;
+        public static final double FL_ENCODER_OFFSET = -150.732;
+        public static final double FR_ENCODER_OFFSET = 38.5;
+        public static final double BL_ENCODER_OFFSET = -85.693;
+        public static final double BR_ENCODER_OFFSET = 122.113;
 
         // public static final double FL_ENCODER_OFFSET = -112.500;
         // public static final double FR_ENCODER_OFFSET = 141.152;
         // public static final double BL_ENCODER_OFFSET = 117.246;
         // public static final double BR_ENCODER_OFFSET = -155.918;
 
-
+        
     }
 
     public static final class VisionConstants {
