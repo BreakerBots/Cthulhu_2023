@@ -49,20 +49,21 @@ public final class Constants {
         public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.5;
         public static final double SLOW_MODE_TURN_MULTIPLIER = 0.5;
 
-        public static final int FL_WHEEL_ID = 10;
-        public static final int FR_WHEEL_ID = 12;
-        public static final int BL_WHEEL_ID = 14;
-        public static final int BR_WHEEL_ID = 16;
+        public static final int FL_DRIVE_ID = 10;
+        public static final int FR_DRIVE_ID = 12;
+        public static final int BL_DRIVE_ID = 14;
+        public static final int BR_DRIVE_ID = 16;
 
-        public static final int FL_ROTATION_ID = 11;
-        public static final int FR_ROTATION_ID = 13;
-        public static final int BL_ROTATION_ID = 15;
-        public static final int BR_ROTATION_ID = 17;
+        public static final int FL_TURN_ID = 11;
+        public static final int FR_TURN_ID = 13;
+        public static final int BL_TURN_ID = 15;
+        public static final int BR_TURN_ID = 17;
 
         public static final int FL_ENCODER_ID = 20;
         public static final int FR_ENCODER_ID = 21;
         public static final int BL_ENCODER_ID = 22;
         public static final int BR_ENCODER_ID = 23;
+
 
         // FL is pos/pos, FR is pos/neg, BL is neg/pos, BR is neg/neg
         public static final Translation2d FL_TRANSLATION = new Translation2d(0.2635, 0.2635);
