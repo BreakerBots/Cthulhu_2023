@@ -133,6 +133,7 @@ public final class Constants {
 
     public static final class GripperConstants {
         public static final int GRIPPER_MOTOR_ID = 0;
+        
         public static final double CONE_GRIP_POSITION = 0.0;
         public static final double CUBE_GRIP_POSITION = 0.0;
         public static final double ClOSED_GRIP_POSITION = 0.0;
@@ -147,8 +148,8 @@ public final class Constants {
 
     public static final class ArmConstants {
         public static final int SHOULDER_MOTOR_ID = 0;
-        public static final int ELBOW_MOTOR_ID = 0;
         public static final int SHOULDER_ENCODER_ID = 0;
+        public static final int ELBOW_MOTOR_ID = 0;
         public static final int ELBOW_ENCODER_ID = 0;
     }
 
