@@ -89,8 +89,8 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        shoulderEncoder = new WPI_CANCoder(SHOULDER_ENCODER_ID);
-        shoulderMotor = new WPI_TalonFX(SHOULDER_MOTOR_ID);
+        shoulderEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID);
+        shoulderMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID);
         ArmJoint.ArmJointConfig shoulderConfig = new ArmJoint.ArmJointConfig(
                 new WPI_CANCoder(0), 0, false,
                 new TrapezoidProfile.Constraints(0, 0),
@@ -98,8 +98,8 @@ public class Arm extends SubsystemBase {
                 0, 0, 0, 0,
                 new WPI_TalonFX(0));
 
-        elbowEncoder = new WPI_CANCoder(ELBOW_ENCODER_ID);
-        elbowMotor = new WPI_TalonFX(ELBOW_MOTOR_ID);
+        elbowEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID);
+        elbowMotor = new WPI_TalonFX(DISTAL_MOTOR_ID);
         ArmJoint.ArmJointConfig elbowConfig = new ArmJoint.ArmJointConfig(
                 new WPI_CANCoder(0), 0, false,
                 new TrapezoidProfile.Constraints(0, 0),

@@ -132,8 +132,8 @@ public final class Constants {
     }
 
     public static final class GripperConstants {
-        public static final int GRIPPER_MOTOR_ID = 0;
-        
+        public static final int GRIPPER_MOTOR_ID = 32;
+
         public static final double CONE_GRIP_POSITION = 0.0;
         public static final double CUBE_GRIP_POSITION = 0.0;
         public static final double ClOSED_GRIP_POSITION = 0.0;
@@ -147,10 +147,10 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        public static final int SHOULDER_MOTOR_ID = 0;
-        public static final int SHOULDER_ENCODER_ID = 0;
-        public static final int ELBOW_MOTOR_ID = 0;
-        public static final int ELBOW_ENCODER_ID = 0;
+        public static final int PROXIMAL_MOTOR_ID = 30;
+        public static final int PROXIMAL_ENCODER_ID = 24;
+        public static final int DISTAL_MOTOR_ID = 31;
+        public static final int DISTAL_ENCODER_ID = 25;
     }
 
     public static final class FieldConstants {
@@ -169,5 +169,6 @@ public final class Constants {
 
     public static final class MiscConstants {
         public static final int IMU_ID = 5;
+        public static final String CANIVORE_BUS_NAME = "CANivore_1";
     }
 }
