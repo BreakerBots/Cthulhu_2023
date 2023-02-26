@@ -15,34 +15,34 @@ import frc.robot.BreakerLib.util.math.interpolation.BreakerInterpolable;
  */
 public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
     private Rotation2d vectorRotation;
-    private double magnatude;
-    private double magnatudeX;
-    private double magnatudeY;
+    private double magnitude;
+    private double magnitudeX;
+    private double magnitudeY;
 
     /**
      * creates a new BreakerVector2 from the magnatudes of the vector's X and Y
      * components
      */
-    public BreakerVector2(double magnatudeX, double magnatudeY) {
-        this.magnatudeX = magnatudeX;
-        this.magnatudeY = magnatudeY;
-        vectorRotation = new Rotation2d(Math.atan2(magnatudeY, magnatudeX));
-        magnatude = Math.sqrt(Math.pow(magnatudeX, 2) + Math.pow(magnatudeY, 2));
+    public BreakerVector2(double magnitudeX, double magnitudeY) {
+        this.magnitudeX = magnitudeX;
+        this.magnitudeY = magnitudeY;
+        vectorRotation = new Rotation2d(Math.atan2(magnitudeY, magnitudeX));
+        magnitude = Math.sqrt(Math.pow(magnitudeX, 2) + Math.pow(magnitudeY, 2));
     }
 
-    private BreakerVector2(double magnatudeX, double magnatudeY, double magnatude, Rotation2d vectorRotation) {
-        this.magnatudeX = magnatudeX;
-        this.magnatudeY = magnatudeY;
-        this.magnatude = magnatude;
+    private BreakerVector2(double magnitudeX, double magnitudeY, double magnitude, Rotation2d vectorRotation) {
+        this.magnitudeX = magnitudeX;
+        this.magnitudeY = magnitudeY;
+        this.magnitude = magnitude;
         this.vectorRotation = vectorRotation;
     }
 
     /** creates an empty BreakerVector2 with 0's for all values */
     public BreakerVector2() {
-     magnatudeX = 0;
-        magnatudeY = 0;
+     magnitudeX = 0;
+        magnitudeY = 0;
         vectorRotation = Rotation2d.fromDegrees(0);
-        magnatude = 0;
+        magnitude = 0;
     }
 
     /**
@@ -65,7 +65,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return double
      */
     public double getMagnitude() {
-        return magnatude;
+        return magnitude;
     }
 
     
@@ -81,7 +81,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return double
      */
     public double getMagnitudeX() {
-        return magnatudeX;
+        return magnitudeX;
     }
 
     
@@ -89,7 +89,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return double
      */
     public double getMagnitudeY() {
-        return magnatudeY;
+        return magnitudeY;
     }
 
     
@@ -98,7 +98,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return BreakerVector2
      */
     public BreakerVector2 plus(BreakerVector2 outher) {
-        return new BreakerVector2(magnatudeX + outher.magnatudeX, magnatudeY + outher.magnatudeY);
+        return new BreakerVector2(magnitudeX + outher.magnitudeX, magnitudeY + outher.magnitudeY);
     }
 
     
@@ -107,7 +107,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return BreakerVector2
      */
     public BreakerVector2 minus(BreakerVector2 outher) {
-        return new BreakerVector2(magnatudeX - outher.magnatudeX, magnatudeY - outher.magnatudeY);
+        return new BreakerVector2(magnitudeX - outher.magnitudeX, magnitudeY - outher.magnitudeY);
     }
 
     
@@ -115,7 +115,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return BreakerVector2
      */
     public BreakerVector2 unaryMinus()  {
-        return new BreakerVector2(-magnatudeX, -magnatudeY);
+        return new BreakerVector2(-magnitudeX, -magnitudeY);
     }
 
     
@@ -124,7 +124,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return BreakerVector2
      */
     public BreakerVector2 times(double scalar) {
-        return new BreakerVector2(magnatudeX * scalar, magnatudeY * scalar);
+        return new BreakerVector2(magnitudeX * scalar, magnitudeY * scalar);
     }
 
     
@@ -133,7 +133,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return BreakerVector2
      */
     public BreakerVector2 div(double scalar) {
-        return new BreakerVector2(magnatudeX / scalar,  magnatudeY / scalar);
+        return new BreakerVector2(magnitudeX / scalar,  magnitudeY / scalar);
     }
     
     
@@ -141,7 +141,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return Translation2d
      */
     public Translation2d getAsTranslation() {
-        return new Translation2d(magnatudeX, magnatudeY);
+        return new Translation2d(magnitudeX, magnitudeY);
     }
 
     
@@ -152,7 +152,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
     public BreakerVector2 rotateBy(Rotation2d rotation) {
         double cos = Math.cos(rotation.getRadians());
         double sin = Math.sin(rotation.getRadians());
-        return new BreakerVector2((this.magnatudeX * cos) - (this.magnatudeY * sin), (this.magnatudeX * sin) + (this.magnatudeY * cos));
+        return new BreakerVector2((this.magnitudeX * cos) - (this.magnitudeY * sin), (this.magnitudeX * sin) + (this.magnitudeY * cos));
     }
 
     
@@ -170,8 +170,8 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      */
     @Override
     public boolean equals(Object obj) {
-        return (Math.abs(((BreakerVector2) obj).magnatudeX - magnatudeX) < 1E-9)
-                && (Math.abs(((BreakerVector2) obj).magnatudeY - magnatudeY) < 1E-9);
+        return (Math.abs(((BreakerVector2) obj).magnitudeX - magnitudeX) < 1E-9)
+                && (Math.abs(((BreakerVector2) obj).magnitudeY - magnitudeY) < 1E-9);
     }
 
     
@@ -182,15 +182,15 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      */
     @Override
     public BreakerVector2 interpolate(BreakerVector2 endValue, double t) {
-        double interX = MathUtil.interpolate(magnatudeX, endValue.getMagnitudeX(), t);
-        double interY = MathUtil.interpolate(magnatudeY, endValue.getMagnitudeY(), t);
+        double interX = MathUtil.interpolate(magnitudeX, endValue.getMagnitudeX(), t);
+        double interY = MathUtil.interpolate(magnitudeY, endValue.getMagnitudeY(), t);
         return new BreakerVector2(interX, interY);
     }
 
     /** [0] = X, [1] = Y */
     @Override
     public double[] getInterpolatableData() {
-        return new double[] { magnatudeX, magnatudeY };
+        return new double[] { magnitudeX, magnitudeY };
     }
 
     
@@ -209,7 +209,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      */
     @Override
     public String toString() {
-       return String.format("BreakerVector2(Vector_Magnatude: %.2f, X-Magnatude: %.2f, Y-Magnatude: %.2f,  Vector_Angle: %s)", magnatude, magnatudeX, magnatudeY, vectorRotation.toString());
+       return String.format("BreakerVector2(Vector_Magnatude: %.2f, X-Magnatude: %.2f, Y-Magnatude: %.2f,  Vector_Angle: %s)", magnitude, magnitudeX, magnitudeY, vectorRotation.toString());
     }
 
 }

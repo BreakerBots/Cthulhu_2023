@@ -22,14 +22,14 @@ import static frc.robot.Constants.ArmConstants.*;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
-    private ArmJoint shoulderJoint, elbowJoint;
+    private ArmJoint proximalJoint, distalJoint;
     private ArmState targetState = ArmState.MANUAL;
     private ArmState prevState = ArmState.MANUAL;
     private ArmPose targetPose;
     private MoveToState activeMoveCommand;
-    private WPI_CANCoder shoulderEncoder, elbowEncoder;
-    private WPI_TalonFX shoulderMotor, elbowMotor;
-    private SystemDiagnostics shoulderDiagnostics, elbowDiagnostics;
+    private WPI_CANCoder proximalEncoder, distalEncoder;
+    private WPI_TalonFX proximalMotor, distalMotor;
+    private SystemDiagnostics proximalArmDx, distalArmDx;
 
     // WARNING! NOT TESTED! VALUES WILL CHANGE!
     public enum ArmState {
@@ -65,59 +65,58 @@ public class Arm extends SubsystemBase {
     }
 
     public static class ArmPose {
-        private Rotation2d shoulderAngle, elbowAngle;
+        private Rotation2d proximalAngle, distalAngle;
 
         public ArmPose(Rotation2d shoulderAngle, Rotation2d elbowAngle) {
-            this.shoulderAngle = shoulderAngle;
-            this.elbowAngle = elbowAngle;
+            this.proximalAngle = shoulderAngle;
+            this.distalAngle = elbowAngle;
         }
 
-        public Rotation2d getElbowAngle() {
-            return elbowAngle;
+        public Rotation2d getDistalAngle() {
+            return distalAngle;
         }
 
-        public Rotation2d getShoulderAngle() {
-            return shoulderAngle;
+        public Rotation2d getProximalAngle() {
+            return proximalAngle;
         }
 
         @Override
         public boolean equals(Object obj) {
             ArmPose other = (ArmPose) obj;
-            return BreakerMath.epsilonEquals(shoulderAngle.getDegrees(), other.shoulderAngle.getDegrees(), 1.5) &&
-                    BreakerMath.epsilonEquals(elbowAngle.getDegrees(), other.elbowAngle.getDegrees(), 1.5);
+            return BreakerMath.epsilonEquals(proximalAngle.getDegrees(), other.proximalAngle.getDegrees(), 1.5) &&
+                    BreakerMath.epsilonEquals(distalAngle.getDegrees(), other.distalAngle.getDegrees(), 1.5);
         }
     }
 
     public Arm() {
-        shoulderEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID);
-        shoulderMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID);
-        ArmJoint.ArmJointConfig shoulderConfig = new ArmJoint.ArmJointConfig(
-                new WPI_CANCoder(0), 0, false,
+        proximalEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID);
+        proximalMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID);
+        ArmJoint.ArmJointConfig proximalConfig = new ArmJoint.ArmJointConfig(
+                proximalEncoder, PROXIMAL_ENCODER_OFFSET, false,
                 new TrapezoidProfile.Constraints(0, 0),
                 0, 0, 0,
                 0, 0, 0, 0,
-                new WPI_TalonFX(0));
+                proximalMotor);
 
-        elbowEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID);
-        elbowMotor = new WPI_TalonFX(DISTAL_MOTOR_ID);
-        ArmJoint.ArmJointConfig elbowConfig = new ArmJoint.ArmJointConfig(
-                new WPI_CANCoder(0), 0, false,
+        distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID);
+        distalMotor = new WPI_TalonFX(DISTAL_MOTOR_ID);
+        ArmJoint.ArmJointConfig distalConfig = new ArmJoint.ArmJointConfig(
+                distalEncoder, DISTAL_ENCODER_OFFSET, false,
                 new TrapezoidProfile.Constraints(0, 0),
                 0, 0, 0,
                 0, 0, 0, 0,
-                new WPI_TalonFX(0));
-        shoulderJoint = new ArmJoint(() -> {
-            return new Rotation2d();
-        }, shoulderConfig);
-        elbowJoint = new ArmJoint(shoulderJoint::getJointAngle, elbowConfig);
+                distalMotor);
+        proximalJoint = new ArmJoint(() -> {return new Rotation2d();}, 1.0, proximalConfig);
+        distalJoint = new ArmJoint(proximalJoint::getJointAngle, 0, distalConfig);
+        proximalJoint.setAttacedJointVecSupplier(distalJoint::getJointVector);
 
-        shoulderDiagnostics = new SystemDiagnostics("Proximal_Arm");
-        shoulderDiagnostics.addCTREMotorController(shoulderMotor);
-        shoulderDiagnostics.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(shoulderEncoder));
-        elbowDiagnostics = new SystemDiagnostics("Distal_Arm");
-        elbowDiagnostics.addCTREMotorController(elbowMotor);
-        elbowDiagnostics.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(elbowEncoder));
-        targetPose = new ArmPose(shoulderJoint.getJointAngle(), elbowJoint.getJointAngle());
+        proximalArmDx = new SystemDiagnostics("Proximal_Arm");
+        proximalArmDx.addCTREMotorController(proximalMotor);
+        proximalArmDx.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(proximalEncoder));
+        distalArmDx = new SystemDiagnostics("Distal_Arm");
+        distalArmDx.addCTREMotorController(distalMotor);
+        distalArmDx.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(distalEncoder));
+        targetPose = new ArmPose(proximalJoint.getJointAngle(), distalJoint.getJointAngle());
     }
 
     private void setTargetState(ArmState targetState) {
@@ -132,8 +131,8 @@ public class Arm extends SubsystemBase {
 
     private void setTargetPose(ArmPose targetPose) {
         this.targetPose = targetPose;
-        shoulderJoint.setGoal(targetPose.shoulderAngle.getRadians());
-        elbowJoint.setGoal(targetPose.elbowAngle.getRadians());
+        proximalJoint.setGoal(targetPose.proximalAngle.getRadians());
+        distalJoint.setGoal(targetPose.distalAngle.getRadians());
     }
 
     public ArmState getPrevState() {
@@ -149,19 +148,19 @@ public class Arm extends SubsystemBase {
     }
 
     public ArmPose getArmPose() {
-        return new ArmPose(shoulderJoint.getJointAngle(), elbowJoint.getJointAngle());
+        return new ArmPose(proximalJoint.getJointAngle(), distalJoint.getJointAngle());
     }
 
     public boolean atTargetState() {
         ArmPose curPose = getArmPose();
-        return targetState.statePose.equals(curPose) && elbowJoint.getJointVel() < Math.toRadians(2)
-                && shoulderJoint.getJointVel() < Math.toRadians(2);
+        return targetState.statePose.equals(curPose) && distalJoint.getJointVel() < Math.toRadians(2)
+                && proximalJoint.getJointVel() < Math.toRadians(2);
     }
 
     public boolean atTargetPoseExact() {
         ArmPose curPose = getArmPose();
-        return targetPose.equals(curPose) && elbowJoint.getJointVel() < Math.toRadians(2)
-                && shoulderJoint.getJointVel() < Math.toRadians(2);
+        return targetPose.equals(curPose) && distalJoint.getJointVel() < Math.toRadians(2)
+                && proximalJoint.getJointVel() < Math.toRadians(2);
     }
 
     public boolean atTargetPose() {

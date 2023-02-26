@@ -40,9 +40,9 @@ public class ManuallyControlArm extends CommandBase {
     Rotation2d desiredDelta = Rotation2d.fromDegrees(input * 2.0 / 50.0);
     ArmPose armPose = arm.getArmPose();
     if (isProximal) {
-      arm.setManualTargetPose(new ArmPose(armPose.getShoulderAngle().plus(desiredDelta), armPose.getElbowAngle()));
+      arm.setManualTargetPose(new ArmPose(armPose.getProximalAngle().plus(desiredDelta), armPose.getDistalAngle()));
     } else {
-      arm.setManualTargetPose(new ArmPose(armPose.getShoulderAngle(), armPose.getElbowAngle().plus(desiredDelta)));
+      arm.setManualTargetPose(new ArmPose(armPose.getProximalAngle(), armPose.getDistalAngle().plus(desiredDelta)));
     }
 
   }

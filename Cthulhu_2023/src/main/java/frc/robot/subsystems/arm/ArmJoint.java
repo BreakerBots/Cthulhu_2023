@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
+import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
@@ -29,9 +30,11 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
   private WPI_CANCoder encoder;
   private ArmFeedforward ff;
   private Supplier<Rotation2d> angleOffsetSupplier;
+  private Supplier<BreakerVector2> vec2Supplier;
+  private double armLengthMeters;
 
   /** Create a new ArmSubsystem. */
-  public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, ArmJointConfig config) {
+  public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, ArmJointConfig config) {
     super(
         config.constraints,
         Rotation2d.fromDegrees(config.encoder.getAbsolutePosition()).plus(angleOffsetSupplier.get()).getRadians());
@@ -39,6 +42,8 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
     motor = config.motors[0];
     encoder = config.encoder;
     this.angleOffsetSupplier = angleOffsetSupplier;
+    this.vec2Supplier = () -> {return new BreakerVector2();};
+    this.armLengthMeters = armLengthMeters;
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     motorConfig.remoteFilter0.remoteSensorDeviceID = config.encoder.getDeviceID();
     motorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
@@ -64,11 +69,19 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
   @Override
   public void useState(TrapezoidProfile.State setpoint) {
     // Calculate the feedforward from the sepoint
-    double feedforward = ff.calculate(setpoint.position, setpoint.velocity);
+    double feedforward = ff.calculate(vec2Supplier.get().plus(getJointVector()).getVectorRotation().getRadians(), setpoint.velocity);
     // Add the feedforward to the PID output to get the motor output
     motor.set(TalonFXControlMode.Position,
         radiansToCANCoderNativeUnits(new Rotation2d(setpoint.position).minus(getJointAngle()).getRadians()),
         DemandType.ArbitraryFeedForward, feedforward / RobotController.getBatteryVoltage());
+  }
+
+  public void setAttacedJointVecSupplier(Supplier<BreakerVector2>  vec2Supplier) {
+    this.vec2Supplier = vec2Supplier;
+  }
+
+  public BreakerVector2 getJointVector() {
+    return BreakerVector2.fromForceAndRotation(getJointAngle(), armLengthMeters);
   }
 
   public Command setArmGoalCommand(double kArmOffsetRads) {
