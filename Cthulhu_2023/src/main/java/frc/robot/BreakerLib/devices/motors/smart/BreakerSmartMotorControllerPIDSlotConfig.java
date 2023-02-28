@@ -5,6 +5,6 @@
 package frc.robot.BreakerLib.devices.motors.smart;
 
 /** Add your docs here. */
-public class BreakerSmartMotorControllerPIDConfig {
+public class BreakerSmartMotorControllerPIDSlotConfig {
     
 }
