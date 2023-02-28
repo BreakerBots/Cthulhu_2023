@@ -38,9 +38,9 @@ public class BalanceChargingStation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    BreakerVector3 vec = imu.getGravityVector();
-    double xSpeed = MathUtil.clamp(xPID.calculate(vec.getMagnitudeY(), 0.0), -0.2, 0.2);
-    double ySpeed = MathUtil.clamp(yPID.calculate(vec.getMagnitudeX(), 0.0), -0.2, 0.2);
+    BreakerVector3 gravity = imu.getGravityVector();
+    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.2, 0.2);
+    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.2, 0.2);
     // if (DriverStation.getAlliance() == Alliance.Red) {
     //   corSpeed *= -1.0;
     // }
@@ -48,7 +48,7 @@ public class BalanceChargingStation extends CommandBase {
     //   corSpeed = outOfWorkingBoundsSpeedClamp(corSpeed);
     // }
     drivetrain.move(-xSpeed, ySpeed, 0);
-    System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", vec.getMagnitudeY(), xSpeed, ySpeed);
+    System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", gravity.getMagnitudeY(), xSpeed, ySpeed);
   }
 
   // Called once the command ends or is interrupted.
