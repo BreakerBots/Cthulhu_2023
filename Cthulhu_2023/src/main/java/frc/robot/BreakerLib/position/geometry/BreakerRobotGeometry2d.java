@@ -9,7 +9,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.AffineTransform;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 
 /** Add your docs here. */
 public class BreakerRobotGeometry2d {

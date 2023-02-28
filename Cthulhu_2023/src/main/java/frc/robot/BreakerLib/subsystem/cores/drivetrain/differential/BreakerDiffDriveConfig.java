@@ -4,11 +4,8 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.differential;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import frc.robot.BreakerLib.util.math.BreakerMath;
-import frc.robot.BreakerLib.util.math.BreakerUnits;
 
 /** Configuration for {@link BreakerDiffDrive}. */
 public class BreakerDiffDriveConfig {

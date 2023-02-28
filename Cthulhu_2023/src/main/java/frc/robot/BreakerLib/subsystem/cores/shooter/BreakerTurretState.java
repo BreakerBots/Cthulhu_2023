@@ -6,7 +6,6 @@ package frc.robot.BreakerLib.subsystem.cores.shooter;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import frc.robot.BreakerLib.physics.vector.BreakerVector3;
 
 /** Add your docs here. */
 public class BreakerTurretState {

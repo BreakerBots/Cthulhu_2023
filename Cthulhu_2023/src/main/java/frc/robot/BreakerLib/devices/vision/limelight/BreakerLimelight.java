@@ -5,13 +5,10 @@
 package frc.robot.BreakerLib.devices.vision.limelight;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 import frc.robot.BreakerLib.devices.BreakerGenericDeviceBase;
-import frc.robot.BreakerLib.util.power.BreakerPowerChannel;
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.test.selftest.SelfTest;
 
 public class BreakerLimelight extends BreakerGenericDeviceBase {
   private double mountingAngle;

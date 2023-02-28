@@ -4,6 +4,18 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.GripperConstants.COLOR_MATCH_CONFIDENCE_THRESHOLD;
+import static frc.robot.Constants.GripperConstants.CONE_COLOR;
+import static frc.robot.Constants.GripperConstants.CONE_GRIP_POSITION;
+import static frc.robot.Constants.GripperConstants.CUBE_COLOR;
+import static frc.robot.Constants.GripperConstants.CUBE_GRIP_POSITION;
+import static frc.robot.Constants.GripperConstants.GAME_PIECE_PROX_THRESHOLD;
+import static frc.robot.Constants.GripperConstants.GRIP_OPEN_SPD;
+import static frc.robot.Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM;
+import static frc.robot.subsystems.gamepiece.GamePieceType.CONE;
+import static frc.robot.subsystems.gamepiece.GamePieceType.CUBE;
+import static frc.robot.subsystems.gamepiece.GamePieceType.NONE;
+
 import java.util.Objects;
 
 import com.revrobotics.CANSparkMax;
@@ -18,14 +30,11 @@ import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor.BreakerPicoColorSensorInstance;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.subsystems.gamepiece.GamePieceType;
-import static frc.robot.subsystems.gamepiece.GamePieceType.*;
-import static frc.robot.Constants.GripperConstants.*;
 
 /** Add your docs here. */
 public class Gripper extends SubsystemBase {

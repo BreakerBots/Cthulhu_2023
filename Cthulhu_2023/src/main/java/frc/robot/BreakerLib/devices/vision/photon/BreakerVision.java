@@ -4,8 +4,6 @@
 
 package frc.robot.BreakerLib.devices.vision.photon;
 
-import org.photonvision.RobotPoseEstimator.PoseStrategy;
-
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;

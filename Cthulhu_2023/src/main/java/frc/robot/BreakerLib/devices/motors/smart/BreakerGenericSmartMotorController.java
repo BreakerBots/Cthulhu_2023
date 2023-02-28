@@ -4,8 +4,6 @@
 
 package frc.robot.BreakerLib.devices.motors.smart;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.BreakerLib.devices.BreakerGenericDeviceBase;
 

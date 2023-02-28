@@ -6,10 +6,6 @@ package frc.robot.BreakerLib.devices.sensors.color;
 
 import java.util.Objects;
 
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorSensorV3;
-
-import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensorLowLevel.RawColor;
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;

@@ -4,11 +4,9 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.differential;
 
-import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.BreakerLib.devices.sensors.gyro.BreakerGenericGyro;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;

@@ -4,7 +4,6 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.differential;
 
-import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.math.Pair;

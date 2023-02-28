@@ -6,7 +6,6 @@ package frc.robot.BreakerLib.position.odometry.swerve;
 
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.Num;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
