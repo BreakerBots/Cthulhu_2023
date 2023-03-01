@@ -28,6 +28,7 @@ import frc.robot.commands.MoveToGamePiece;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.gamepiece.GamePieceTracker;
+import static frc.robot.Constants.MiscConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -42,7 +43,7 @@ public class RobotContainer {
 
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
 
-  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
+  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID, CANIVORE_2);
   private final Drive drivetrainSys = new Drive(imuSys);
   //private final Arm armSys = new Arm();
  // private final Odometer odometerSys = new Odometer(drivetrainSys, new BreakerVisionPoseFilter(5.0, 0.35, Constants.Vision.AprilTag.APRILTAGS));

@@ -19,6 +19,7 @@ import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import static frc.robot.Constants.ArmConstants.*;
+import static frc.robot.Constants.MiscConstants.*;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
@@ -89,8 +90,8 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        proximalEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID);
-        proximalMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID);
+        proximalEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID, CANIVORE_2);
+        proximalMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID, CANIVORE_2);
         ArmJoint.ArmJointConfig proximalConfig = new ArmJoint.ArmJointConfig(
                 proximalEncoder, PROXIMAL_ENCODER_OFFSET, false,
                 new TrapezoidProfile.Constraints(0, 0),

@@ -23,21 +23,21 @@ import static frc.robot.Constants.MiscConstants.*;
 /** Add your docs here. */
 public class Drive extends BreakerSwerveDrive {
 
-    private static WPI_TalonFX driveFL = new WPI_TalonFX(FL_DRIVE_ID, CANIVORE_BUS_NAME);
-    private static WPI_TalonFX turnFL = new WPI_TalonFX(FL_TURN_ID, CANIVORE_BUS_NAME);
-    private static WPI_CANCoder encoderFL = new WPI_CANCoder(FL_ENCODER_ID, CANIVORE_BUS_NAME);
+    private static WPI_TalonFX driveFL = new WPI_TalonFX(FL_DRIVE_ID, CANIVORE_1);
+    private static WPI_TalonFX turnFL = new WPI_TalonFX(FL_TURN_ID, CANIVORE_1);
+    private static WPI_CANCoder encoderFL = new WPI_CANCoder(FL_ENCODER_ID, CANIVORE_1);
 
-    private static WPI_TalonFX driveFR = new WPI_TalonFX(FR_DRIVE_ID, CANIVORE_BUS_NAME);
-    private static WPI_TalonFX turnFR = new WPI_TalonFX(FR_TURN_ID, CANIVORE_BUS_NAME);
-    private static WPI_CANCoder encoderFR = new WPI_CANCoder(FR_ENCODER_ID, CANIVORE_BUS_NAME);
+    private static WPI_TalonFX driveFR = new WPI_TalonFX(FR_DRIVE_ID, CANIVORE_1);
+    private static WPI_TalonFX turnFR = new WPI_TalonFX(FR_TURN_ID, CANIVORE_1);
+    private static WPI_CANCoder encoderFR = new WPI_CANCoder(FR_ENCODER_ID, CANIVORE_1);
 
-    private static WPI_TalonFX driveBL = new WPI_TalonFX(BL_DRIVE_ID, CANIVORE_BUS_NAME);
-    private static WPI_TalonFX turnBL = new WPI_TalonFX(BL_TURN_ID, CANIVORE_BUS_NAME);
-    private static WPI_CANCoder encoderBL = new WPI_CANCoder(BL_ENCODER_ID, CANIVORE_BUS_NAME);
+    private static WPI_TalonFX driveBL = new WPI_TalonFX(BL_DRIVE_ID, CANIVORE_1);
+    private static WPI_TalonFX turnBL = new WPI_TalonFX(BL_TURN_ID, CANIVORE_1);
+    private static WPI_CANCoder encoderBL = new WPI_CANCoder(BL_ENCODER_ID, CANIVORE_1);
 
-    private static WPI_TalonFX driveBR = new WPI_TalonFX(BR_DRIVE_ID, CANIVORE_BUS_NAME);
-    private static WPI_TalonFX turnBR = new WPI_TalonFX(BR_TURN_ID, CANIVORE_BUS_NAME);
-    private static WPI_CANCoder encoderBR = new WPI_CANCoder(BR_ENCODER_ID, CANIVORE_BUS_NAME);
+    private static WPI_TalonFX driveBR = new WPI_TalonFX(BR_DRIVE_ID, CANIVORE_1);
+    private static WPI_TalonFX turnBR = new WPI_TalonFX(BR_TURN_ID, CANIVORE_1);
+    private static WPI_CANCoder encoderBR = new WPI_CANCoder(BR_ENCODER_ID, CANIVORE_1);
 
     private static BreakerSwerveDriveConfig config = new BreakerSwerveDriveConfig(
             MAX_FORWARD_VELOCITY, MAX_SIDEWAYS_VELOCITY, MAX_ANGLE_VELOCITY,

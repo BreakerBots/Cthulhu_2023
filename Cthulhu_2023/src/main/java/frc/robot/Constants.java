@@ -174,6 +174,7 @@ public final class Constants {
 
     public static final class MiscConstants {
         public static final int IMU_ID = 5;
-        public static final String CANIVORE_BUS_NAME = "CANivore_1";
+        public static final String CANIVORE_1 = "CANivore_1";
+        public static final String CANIVORE_2 = "CANivore_2";
     }
 }
