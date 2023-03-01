@@ -7,6 +7,7 @@ package frc.robot;
 import java.awt.geom.Rectangle2D;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.BreakerLib.position.geometry.BreakerRobotGeometry2d;
 
@@ -137,7 +138,8 @@ public final class Constants {
         public static final double CONE_GRIP_POSITION = 0.0;
         public static final double CUBE_GRIP_POSITION = 0.0;
         public static final double ClOSED_GRIP_POSITION = 0.0;
-        public static final double MOTOR_ROT_TO_GRIP_POS_CM = 0.0;
+
+        public static final double MOTOR_ROT_TO_GRIP_POS_CM = Units.inchesToMeters(60) * 100;
         public static final double GRIP_OPEN_SPD = 0.5;
         public static final Color CONE_COLOR = new Color(0, 0, 0);
         public static final Color CUBE_COLOR = new Color(0, 0, 0);

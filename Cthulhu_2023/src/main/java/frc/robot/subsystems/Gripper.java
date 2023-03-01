@@ -21,6 +21,7 @@ import java.util.Objects;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
@@ -52,6 +53,8 @@ public class Gripper extends SubsystemBase {
     public Gripper() {
         spark = new CANSparkMax(0, MotorType.kBrushless);
         spark.setIdleMode(IdleMode.kBrake);
+        spark.setSoftLimit(SoftLimitDirection.kReverse, (float) 0.0);
+        spark.enableSoftLimit(SoftLimitDirection.kReverse, false);
         limit = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         limit.enableLimitSwitch(true);
         pid = spark.getPIDController();
@@ -152,6 +155,7 @@ public class Gripper extends SubsystemBase {
     public void periodic() {
         if (limit.isPressed()) {
             isCalibrated = true;
+            spark.enableSoftLimit(SoftLimitDirection.kReverse, true) ;
             encoder.setPosition(0.0);
         }
     }
