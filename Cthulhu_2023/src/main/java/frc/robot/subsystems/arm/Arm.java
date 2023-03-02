@@ -96,7 +96,7 @@ public class Arm extends SubsystemBase {
                 proximalEncoder, PROXIMAL_ENCODER_OFFSET, false,
                 new TrapezoidProfile.Constraints(0, 0),
                 0, 0, 0,
-                0, 0, 0, 0,
+                PROX_KS, PROX_KG, PROX_KV, PROX_KA,
                 proximalMotor);
 
         distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID);

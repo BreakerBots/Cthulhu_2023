@@ -156,6 +156,17 @@ public final class Constants {
         public static final int DISTAL_MOTOR_ID = 31;
         public static final int DISTAL_ENCODER_ID = 25;
         public static final double DISTAL_ENCODER_OFFSET = -194.6;
+
+        public static final double PROX_KS = 0;
+        public static final double PROX_KG = 0;
+        public static final double PROX_KV = 0;
+        public static final double PROX_KA = 0;
+
+        public static final double DIST_KS = 0;
+        public static final double DIST_KG = 0;
+        public static final double DIST_KV = 0;
+        public static final double DIST_KA = 0;
+
     }
 
     public static final class FieldConstants {
