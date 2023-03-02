@@ -48,8 +48,8 @@ public class Arm extends SubsystemBase {
         private final ArmPose statePose;
         private final ArrayList<ArmPose> intermediaryPoses;
 
-        ArmState(double shoulderAngleDeg, double elbowAngleDeg, ArmPose... intermedairyPoses) {
-            statePose = new ArmPose(Rotation2d.fromDegrees(shoulderAngleDeg), Rotation2d.fromDegrees(elbowAngleDeg));
+        ArmState(double proxAngleDeg, double distAngleDeg, ArmPose... intermedairyPoses) {
+            statePose = new ArmPose(Rotation2d.fromDegrees(proxAngleDeg), Rotation2d.fromDegrees(distAngleDeg));
             this.intermediaryPoses = new ArrayList<>();
             for (ArmPose ap : intermedairyPoses) {
                 this.intermediaryPoses.add(ap);
@@ -107,8 +107,8 @@ public class Arm extends SubsystemBase {
                 distalMotor);
         proximalJoint = new ArmJoint(() -> {
             return new Rotation2d();
-        }, 1.0, proximalConfig);
-        distalJoint = new ArmJoint(proximalJoint::getJointAngle, 0, distalConfig);
+        }, PROX_ARM_LENGTH_METERS, proximalConfig);
+        distalJoint = new ArmJoint(proximalJoint::getJointAngle, DIST_ARM_LENGTH_METERS, distalConfig);
         proximalJoint.setAttacedJointVecSupplier(distalJoint::getJointVector);
 
         proximalArmDx = new SystemDiagnostics("Proximal_Arm");
