@@ -95,8 +95,7 @@ public class Arm extends SubsystemBase {
         ArmJoint.ArmJointConfig proximalConfig = new ArmJoint.ArmJointConfig(
                 proximalEncoder, PROXIMAL_ENCODER_OFFSET, false,
                 new TrapezoidProfile.Constraints(0, 0),
-                0, 0, 0,
-                PROX_KS, PROX_KG, PROX_KV, PROX_KA,
+                PROX_KP, PROX_KI, PROX_KD, PROX_KS, PROX_KG, PROX_KV, PROX_KA,
                 proximalMotor);
 
         distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID);
@@ -104,10 +103,11 @@ public class Arm extends SubsystemBase {
         ArmJoint.ArmJointConfig distalConfig = new ArmJoint.ArmJointConfig(
                 distalEncoder, DISTAL_ENCODER_OFFSET, false,
                 new TrapezoidProfile.Constraints(0, 0),
-                0, 0, 0,
-                0, 0, 0, 0,
+                DIST_KP, DIST_KI, DIST_KD, DIST_KS, DIST_KG, DIST_KV, DIST_KA,
                 distalMotor);
-        proximalJoint = new ArmJoint(() -> {return new Rotation2d();}, 1.0, proximalConfig);
+        proximalJoint = new ArmJoint(() -> {
+            return new Rotation2d();
+        }, 1.0, proximalConfig);
         distalJoint = new ArmJoint(proximalJoint::getJointAngle, 0, distalConfig);
         proximalJoint.setAttacedJointVecSupplier(distalJoint::getJointVector);
 
