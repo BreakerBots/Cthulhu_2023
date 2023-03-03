@@ -5,6 +5,4 @@
 package frc.robot.BreakerLib.devices.motors.smart;
 
 /** Add your docs here. */
-public class BreakerSmartMotorControllerPIDSlotConfig {
-    
-}
+public class BreakerSparkMax {}
