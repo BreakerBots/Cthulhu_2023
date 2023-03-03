@@ -39,14 +39,8 @@ public class BalanceChargingStation extends CommandBase {
   @Override
   public void execute() {
     BreakerVector3 gravity = imu.getGravityVector();
-    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.2, 0.2);
-    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.2, 0.2);
-    // if (DriverStation.getAlliance() == Alliance.Red) {
-    //   corSpeed *= -1.0;
-    // }
-    // if (outOfWorkingBounds()) {
-    //   corSpeed = outOfWorkingBoundsSpeedClamp(corSpeed);
-    // }
+    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeX(), 0.0), -0.2, 0.2);
+    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeY(), 0.0), -0.2, 0.2);
     drivetrain.move(-xSpeed, ySpeed, 0);
     System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", gravity.getMagnitudeY(), xSpeed, ySpeed);
   }
