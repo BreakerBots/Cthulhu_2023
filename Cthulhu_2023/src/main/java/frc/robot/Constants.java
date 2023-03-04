@@ -151,15 +151,15 @@ public final class Constants {
     public static final class ArmConstants {
         public static final int PROXIMAL_MOTOR_ID = 30;
         public static final int PROXIMAL_ENCODER_ID = 24;
-        public static final double PROXIMAL_ENCODER_OFFSET = 105.883;
+        public static final double PROXIMAL_ENCODER_OFFSET = 107.6;
         public static final double PROX_ARM_LENGTH_METERS = 1;
 
         public static final int DISTAL_MOTOR_ID = 31;
         public static final int DISTAL_ENCODER_ID = 25;
-        public static final double DISTAL_ENCODER_OFFSET = -194.6;
+        public static final double DISTAL_ENCODER_OFFSET = -192.932;
         public static final double DIST_ARM_LENGTH_METERS = 1;
 
-        public static final double PROX_KP = 0;
+        public static final double PROX_KP = 0.45;
         public static final double PROX_KI = 0;
         public static final double PROX_KD = 0;
 
@@ -168,7 +168,7 @@ public final class Constants {
         public static final double PROX_KV = 0;
         public static final double PROX_KA = 0;
 
-        public static final double DIST_KP = 0;
+        public static final double DIST_KP = 0.45;
         public static final double DIST_KI = 0;
         public static final double DIST_KD = 0;
 

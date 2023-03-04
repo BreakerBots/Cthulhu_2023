@@ -17,15 +17,18 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
 /** A robot arm subsystem that moves with a motion profile. */
-public class ArmJoint extends TrapezoidProfileSubsystem {
+public class ArmJoint extends TrapezoidProfileSubsystem implements Loggable {
   private WPI_TalonFX motor;
   private WPI_CANCoder encoder;
   private ArmFeedforward ff;
@@ -58,6 +61,7 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
     motorConfig.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 80.0, 80.0, 1.5);
     BreakerCTREUtil.checkError(motor.configAllSettings(motorConfig),
         " Failed to arm joint motor ");
+        motor.setInverted(config.invertMotor);
     motor.selectProfileSlot(0, 0);
     if (config.motors.length > 0) {
       for (int i = 1; i < config.motors.length; i++) {
@@ -97,8 +101,17 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
     return Math.toDegrees(encoder.getVelocity()) * 10;
   }
 
+  public double getRawMotorOut() {
+    return motor.getMotorOutputPercent();
+  }
+
   private double radiansToCANCoderNativeUnits(double angleRad) {
     return (angleRad / (2 * Math.PI)) * 4096.0;
+  }
+
+  public void periodic() {
+    SmartDashboard.putNumber("MOTOR OUT", motor.get());
+    super.periodic();
   }
 
   public static class ArmJointConfig {
@@ -106,8 +119,9 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
     public final TrapezoidProfile.Constraints constraints;
     public final WPI_TalonFX[] motors;
     public final WPI_CANCoder encoder;
+    public final boolean invertMotor;
 
-    public ArmJointConfig(WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder,
+    public ArmJointConfig(WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder, boolean invertMotor,
         TrapezoidProfile.Constraints constraints, double kP, double kI, double kD, double kS, double kG, double kV,
         double kA, WPI_TalonFX... motors) {
       BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
@@ -122,6 +136,7 @@ public class ArmJoint extends TrapezoidProfileSubsystem {
       this.kV = kV;
       this.kA = kA;
       this.constraints = constraints;
+      this.invertMotor = invertMotor;
     }
   }
 }

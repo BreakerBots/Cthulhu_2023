@@ -13,8 +13,10 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
@@ -33,6 +35,8 @@ public class Arm extends SubsystemBase {
     private SystemDiagnostics proximalArmDx, distalArmDx;
 
     // WARNING! NOT TESTED! VALUES WILL CHANGE!
+
+    // CANCoder Angles of resting position: (-53.7 -> 126.3, -177.2)
     public enum ArmState {
         PLACE_HIGH_CONE(12.0, 74.0),
         PLACE_HIGH_CUBE(15.0, 83.0),
@@ -90,19 +94,19 @@ public class Arm extends SubsystemBase {
     }
 
     public Arm() {
-        proximalEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID, CANIVORE_2);
-        proximalMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID, CANIVORE_2);
+        proximalEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID);
+        proximalMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID);
         ArmJoint.ArmJointConfig proximalConfig = new ArmJoint.ArmJointConfig(
-                proximalEncoder, PROXIMAL_ENCODER_OFFSET, false,
-                new TrapezoidProfile.Constraints(0, 0),
+                proximalEncoder, PROXIMAL_ENCODER_OFFSET, false, true,
+                new TrapezoidProfile.Constraints(999, 999),
                 PROX_KP, PROX_KI, PROX_KD, PROX_KS, PROX_KG, PROX_KV, PROX_KA,
                 proximalMotor);
 
-        distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID);
+        distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID, CANIVORE_2);
         distalMotor = new WPI_TalonFX(DISTAL_MOTOR_ID);
         ArmJoint.ArmJointConfig distalConfig = new ArmJoint.ArmJointConfig(
-                distalEncoder, DISTAL_ENCODER_OFFSET, false,
-                new TrapezoidProfile.Constraints(0, 0),
+                distalEncoder, DISTAL_ENCODER_OFFSET, false, false,
+                new TrapezoidProfile.Constraints(999, 999),
                 DIST_KP, DIST_KI, DIST_KD, DIST_KS, DIST_KG, DIST_KV, DIST_KA,
                 distalMotor);
         proximalJoint = new ArmJoint(() -> {
@@ -171,7 +175,12 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        SmartDashboard.putNumber("PROX JOINT ANGLE", proximalJoint.getJointAngle().getDegrees());
+        SmartDashboard.putNumber("DIST JOINT ANGLE", distalJoint.getJointAngle().getDegrees());
+        SmartDashboard.putNumber("PROX MOTOR OUT", proximalJoint.getRawMotorOut());
+        SmartDashboard.putNumber("DIST MOTOR OUT", distalJoint.getRawMotorOut());
+        SmartDashboard.putNumber("PROX TGT", getTargetPose().proximalAngle.getDegrees());
+        SmartDashboard.putNumber("DIST TGT", getTargetPose().distalAngle.getDegrees());
     }
 
     private void regesterMoveCommand(MoveToState com) {
