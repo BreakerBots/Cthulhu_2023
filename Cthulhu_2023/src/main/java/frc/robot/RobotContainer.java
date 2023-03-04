@@ -2,6 +2,7 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MiscConstants.CANIVORE_2;
 import static frc.robot.Constants.MiscConstants.IMU_ID;
 
 import java.util.ArrayList;
@@ -26,9 +27,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.MoveToGamePiece;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.gamepiece.GamePieceTracker;
-import static frc.robot.Constants.MiscConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since

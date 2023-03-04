@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.BreakerLib.devices.BreakerGenericDevice;
-import frc.robot.BreakerLib.devices.BreakerGenericDeviceBase;
 
 /** Add your docs here. */
 public interface BreakerGenericSmartMotorController extends BreakerGenericDevice, MotorController {

@@ -6,8 +6,6 @@ package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve;
 
 import java.util.Arrays;
 
-import com.fasterxml.jackson.databind.deser.impl.SetterlessProperty;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
