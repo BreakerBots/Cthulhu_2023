@@ -55,6 +55,6 @@ public class BreakerAnalogTrigger {
 
     /** @return Trigger input with deadband. */
     public double get() {
-        return MathUtil.applyDeadband(port, deadband) * (invert ? -1 : 1);
+        return MathUtil.applyDeadband(getRaw(), deadband) * (invert ? -1 : 1);
     }
 }

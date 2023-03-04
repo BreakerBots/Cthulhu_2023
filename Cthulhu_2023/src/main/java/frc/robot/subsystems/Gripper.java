@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor.BreakerPicoColorSensorInstance;
+import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.subsystems.gamepiece.GamePieceType;
@@ -49,8 +50,9 @@ public class Gripper extends SubsystemBase {
     private double setPosition;
     private boolean isCalibrated = false;
     private ColorMatch colorMatch;
-
-    public Gripper() {
+    private BreakerXboxController con;
+    public Gripper(BreakerXboxController con) {
+        this.con = con;
         spark = new CANSparkMax(32, MotorType.kBrushless);
         spark.setIdleMode(IdleMode.kBrake);
         spark.setSoftLimit(SoftLimitDirection.kReverse, (float)  (6.0 * MOTOR_ROT_TO_GRIP_POS_CM));
@@ -65,7 +67,7 @@ public class Gripper extends SubsystemBase {
         pid.setD(0);
         diagnostics = new SystemDiagnostics("Gripper");
         diagnostics.addSparkMax(spark);
-        setGripperPosition(getGripperPosition());
+        //setGripperPosition(getGripperPosition());
 
         colorSensor = new BreakerPicoColorSensor().getSensor0();
         colorMatch = new ColorMatch();
@@ -159,5 +161,7 @@ public class Gripper extends SubsystemBase {
             spark.enableSoftLimit(SoftLimitDirection.kReverse, true) ;
             encoder.setPosition(0.0);
         }
+        System.out.println(con.getRightTrigger().get() - con.getLeftTrigger().get());
+        spark.set(con.getRightTrigger().get() - con.getLeftTrigger().get());
     }
 }
