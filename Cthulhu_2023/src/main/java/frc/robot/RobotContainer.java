@@ -2,6 +2,7 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MiscConstants.CANIVORE_2;
 import static frc.robot.Constants.MiscConstants.IMU_ID;
 
 import java.util.ArrayList;
