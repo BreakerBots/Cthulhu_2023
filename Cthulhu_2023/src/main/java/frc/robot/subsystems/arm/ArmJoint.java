@@ -35,6 +35,7 @@ public class ArmJoint extends TrapezoidProfileSubsystem implements Loggable {
   private Supplier<Rotation2d> angleOffsetSupplier;
   private Supplier<BreakerVector2> vec2Supplier;
   private double armLengthMeters;
+  public double maxAng, minAng;
 
   /** Create a new ArmSubsystem. */
   public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, ArmJointConfig config) {
@@ -75,6 +76,7 @@ public class ArmJoint extends TrapezoidProfileSubsystem implements Loggable {
     // Calculate the feedforward from the sepoint
     double feedforward = ff.calculate(vec2Supplier.get().plus(getJointVector()).getVectorRotation().getRadians(), setpoint.velocity);
     // Add the feedforward to the PID output to get the motor output
+    if (getUpLimit())
     motor.set(TalonFXControlMode.Position,
         radiansToCANCoderNativeUnits(new Rotation2d(setpoint.position).minus(getJointAngle()).getRadians()),
         DemandType.ArbitraryFeedForward, feedforward / RobotController.getBatteryVoltage());
@@ -107,6 +109,14 @@ public class ArmJoint extends TrapezoidProfileSubsystem implements Loggable {
 
   private double radiansToCANCoderNativeUnits(double angleRad) {
     return (angleRad / (2 * Math.PI)) * 4096.0;
+  }
+
+  public boolean getUpLimit() {
+    return getJointAngle().getDegrees() > maxAng;
+  }
+
+  public boolean getDownLimit() {
+    return getJointAngle().getDegrees() < minAng;
   }
 
   public void periodic() {

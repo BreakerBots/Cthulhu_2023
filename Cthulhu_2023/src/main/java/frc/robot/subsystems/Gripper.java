@@ -51,9 +51,9 @@ public class Gripper extends SubsystemBase {
     private ColorMatch colorMatch;
 
     public Gripper() {
-        spark = new CANSparkMax(0, MotorType.kBrushless);
+        spark = new CANSparkMax(32, MotorType.kBrushless);
         spark.setIdleMode(IdleMode.kBrake);
-        spark.setSoftLimit(SoftLimitDirection.kReverse, (float) 0.0);
+        spark.setSoftLimit(SoftLimitDirection.kReverse, (float)  (6.0 * MOTOR_ROT_TO_GRIP_POS_CM));
         spark.enableSoftLimit(SoftLimitDirection.kReverse, false);
         limit = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         limit.enableLimitSwitch(true);
@@ -73,6 +73,7 @@ public class Gripper extends SubsystemBase {
         colorMatch.addColorMatch(CONE_COLOR);
         colorMatch.addColorMatch(CUBE_COLOR);
         diagnostics.addBreakerDevice(colorSensor);
+        spark.burnFlash();
     }
 
     /** @return Gripper position in cm. Larger = more closed. */
