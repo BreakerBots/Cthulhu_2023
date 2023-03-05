@@ -72,7 +72,7 @@ public final class Constants {
         public static final Translation2d BL_TRANSLATION = new Translation2d(-0.2635, 0.2635);
         public static final Translation2d BR_TRANSLATION = new Translation2d(-0.2635, -0.2635);
 
-        // All gears face to the left relative to the robot's front
+        // Gears all face outward
         public static final double FL_ENCODER_OFFSET = -150.732;
         public static final double FR_ENCODER_OFFSET = 38.5;
         public static final double BL_ENCODER_OFFSET = -85.693;
@@ -169,7 +169,7 @@ public final class Constants {
         public static final double PROX_KA = 0;
 
         public static final double DIST_KP = 0.0;
-        public static final double DIST_KI = 0.00001;
+        public static final double DIST_KI = 0.0;
         public static final double DIST_KD = 0;
 
         public static final double DIST_KS = 0;

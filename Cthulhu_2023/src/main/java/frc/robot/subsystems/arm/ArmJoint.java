@@ -2,11 +2,7 @@ package frc.robot.subsystems.arm;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -17,18 +13,12 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
 
 /** A robot arm subsystem that moves with a motion profile. */
 public class ArmJoint extends SubsystemBase implements Loggable {
@@ -46,6 +36,7 @@ public class ArmJoint extends SubsystemBase implements Loggable {
   private Rotation2d target;
   public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, ArmJointConfig config) {
     pid = new PIDController(config.kP, config.kI,config.kD);
+    pid.setTolerance(2, Double.MAX_VALUE);
     ff = new ArmFeedforward(config.kS, config.kG, config.kV, config.kA);
     motor = config.motors[0];
     encoder = config.encoder;
@@ -117,10 +108,11 @@ public class ArmJoint extends SubsystemBase implements Loggable {
   public void periodic() {
     SmartDashboard.putNumber("MOTOR OUT", motor.get());
     SmartDashboard.putData(pid);
-    if (isEnabled()) {
-      motor.set(pid.calculate(getJointVel(), target.getDegrees()));
+    pid.calculate(getJointAngle().getDegrees(), target.getDegrees());
+    if (!pid.atSetpoint()) {
+      motor.set(-0.12);
     } else {
-      motor.set(0);
+      motor.set(-0.05);
     }
   }
 
