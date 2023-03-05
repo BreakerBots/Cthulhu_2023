@@ -14,12 +14,15 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
@@ -28,20 +31,21 @@ import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
 /** A robot arm subsystem that moves with a motion profile. */
-public class ArmJoint extends TrapezoidProfileSubsystem implements Loggable {
+public class ArmJoint extends SubsystemBase implements Loggable {
   private WPI_TalonFX motor;
   private WPI_CANCoder encoder;
   private ArmFeedforward ff;
+  private PIDController pid;
   private Supplier<Rotation2d> angleOffsetSupplier;
   private Supplier<BreakerVector2> vec2Supplier;
   private double armLengthMeters;
   public double maxAng, minAng;
+  private boolean enabled = true;
 
   /** Create a new ArmSubsystem. */
+  private Rotation2d target;
   public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, ArmJointConfig config) {
-    super(
-        config.constraints,
-        Rotation2d.fromDegrees(config.encoder.getAbsolutePosition()).plus(angleOffsetSupplier.get()).getRadians());
+    pid = new PIDController(config.kP, config.kI,config.kD);
     ff = new ArmFeedforward(config.kS, config.kG, config.kV, config.kA);
     motor = config.motors[0];
     encoder = config.encoder;
@@ -49,20 +53,14 @@ public class ArmJoint extends TrapezoidProfileSubsystem implements Loggable {
     this.vec2Supplier = () -> {return new BreakerVector2();};
     this.armLengthMeters = armLengthMeters;
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motorConfig.remoteFilter0.remoteSensorDeviceID = config.encoder.getDeviceID();
-    motorConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
-    motorConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-    motorConfig.slot0.kP = config.kP;
-    motorConfig.slot0.kI = config.kI;
-    motorConfig.slot0.kD = config.kD;
-    motorConfig.slot0.closedLoopPeakOutput = 1.0;
-    motorConfig.peakOutputForward = 1.0;
-    motorConfig.peakOutputReverse = -1.0;
+    motorConfig.peakOutputForward = 0.35;
+    motorConfig.peakOutputReverse = -0.35;
     motorConfig.voltageCompSaturation = 12.0;
     motorConfig.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 80.0, 80.0, 1.5);
     BreakerCTREUtil.checkError(motor.configAllSettings(motorConfig),
         " Failed to arm joint motor ");
         motor.setInverted(config.invertMotor);
+    target = getJointAngle();
     motor.selectProfileSlot(0, 0);
     if (config.motors.length > 0) {
       for (int i = 1; i < config.motors.length; i++) {
@@ -71,27 +69,12 @@ public class ArmJoint extends TrapezoidProfileSubsystem implements Loggable {
     }
   }
 
-  @Override
-  public void useState(TrapezoidProfile.State setpoint) {
-    // Calculate the feedforward from the sepoint
-    double feedforward = ff.calculate(vec2Supplier.get().plus(getJointVector()).getVectorRotation().getRadians(), setpoint.velocity);
-    // Add the feedforward to the PID output to get the motor output
-    if (getUpLimit())
-    motor.set(TalonFXControlMode.Position,
-        radiansToCANCoderNativeUnits(new Rotation2d(setpoint.position).minus(getJointAngle()).getRadians()),
-        DemandType.ArbitraryFeedForward, feedforward / RobotController.getBatteryVoltage());
-  }
-
   public void setAttacedJointVecSupplier(Supplier<BreakerVector2>  vec2Supplier) {
     this.vec2Supplier = vec2Supplier;
   }
 
   public BreakerVector2 getJointVector() {
     return BreakerVector2.fromForceAndRotation(getJointAngle(), armLengthMeters);
-  }
-
-  public Command setArmGoalCommand(double kArmOffsetRads) {
-    return Commands.runOnce(() -> setGoal(kArmOffsetRads), this);
   }
 
   public Rotation2d getJointAngle() {
@@ -119,9 +102,26 @@ public class ArmJoint extends TrapezoidProfileSubsystem implements Loggable {
     return getJointAngle().getDegrees() < minAng;
   }
 
+  public void setTarget(Rotation2d target) {
+    this.target = target;
+  }
+
+  public void setEnabled(boolean enabled) {
+      this.enabled = enabled;
+  }
+
+  public boolean isEnabled() {
+      return enabled;
+  }
+
   public void periodic() {
     SmartDashboard.putNumber("MOTOR OUT", motor.get());
-    super.periodic();
+    SmartDashboard.putData(pid);
+    if (isEnabled()) {
+      motor.set(pid.calculate(getJointVel(), target.getDegrees()));
+    } else {
+      motor.set(0);
+    }
   }
 
   public static class ArmJointConfig {

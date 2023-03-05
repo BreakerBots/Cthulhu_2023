@@ -48,7 +48,7 @@ public class RobotContainer {
 
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
-  //private final Arm armSys = new Arm();
+  private final Arm armSys = new Arm();
   private final Gripper gripperSys = new Gripper(controllerSys);
  // private final Odometer odometerSys = new Odometer(drivetrainSys, new BreakerVisionPoseFilter(5.0, 0.35, Constants.Vision.AprilTag.APRILTAGS));
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
@@ -87,7 +87,7 @@ public class RobotContainer {
     controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
     //controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
-    //controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setManualTargetPose(new ArmPose(Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(0)))));
+    controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setManualTargetPose(new ArmPose(Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(0)))));
   }
 
   private void robotManagerSetup() {

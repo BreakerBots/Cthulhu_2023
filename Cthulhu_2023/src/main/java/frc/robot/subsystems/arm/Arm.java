@@ -13,6 +13,7 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -97,12 +98,12 @@ public class Arm extends SubsystemBase {
         proximalEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID);
         proximalMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID);
         ArmJoint.ArmJointConfig proximalConfig = new ArmJoint.ArmJointConfig(
-                proximalEncoder, PROXIMAL_ENCODER_OFFSET, false, true,
+                proximalEncoder, PROXIMAL_ENCODER_OFFSET, false, false,
                 new TrapezoidProfile.Constraints(999, 999),
                 PROX_KP, PROX_KI, PROX_KD, PROX_KS, PROX_KG, PROX_KV, PROX_KA,
                 proximalMotor);
 
-        distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID, CANIVORE_2);
+        distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID);
         distalMotor = new WPI_TalonFX(DISTAL_MOTOR_ID);
         ArmJoint.ArmJointConfig distalConfig = new ArmJoint.ArmJointConfig(
                 distalEncoder, DISTAL_ENCODER_OFFSET, false, false,
@@ -122,6 +123,8 @@ public class Arm extends SubsystemBase {
         distalArmDx.addCTREMotorController(distalMotor);
         distalArmDx.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(distalEncoder));
         targetPose = new ArmPose(proximalJoint.getJointAngle(), distalJoint.getJointAngle());
+        proximalJoint.setEnabled(false);
+        setManualTargetPose(targetPose);
     }
 
     private void setTargetState(ArmState targetState) {
@@ -136,8 +139,8 @@ public class Arm extends SubsystemBase {
 
     private void setTargetPose(ArmPose targetPose) {
         this.targetPose = targetPose;
-        proximalJoint.setGoal(targetPose.proximalAngle.getRadians());
-        distalJoint.setGoal(targetPose.distalAngle.getRadians());
+        // proximalJoint.setGoal(targetPose.proximalAngle.getRadians());
+        distalJoint.setTarget(targetPose.distalAngle);
     }
 
     public ArmState getPrevState() {

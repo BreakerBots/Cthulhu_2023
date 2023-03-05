@@ -139,7 +139,7 @@ public final class Constants {
         public static final double CUBE_GRIP_POSITION = 0.0;
         public static final double ClOSED_GRIP_POSITION = 0.0;
 
-        public static final double MOTOR_ROT_TO_GRIP_POS_CM = Units.inchesToMeters(60) * 100;
+        public static final double MOTOR_ROT_TO_GRIP_POS_CM = -10.16;
         public static final double GRIP_OPEN_SPD = 0.5;
         public static final Color CONE_COLOR = new Color(0, 0, 0);
         public static final Color CUBE_COLOR = new Color(0, 0, 0);
@@ -161,15 +161,15 @@ public final class Constants {
 
         public static final double PROX_KP = 0.45;
         public static final double PROX_KI = 0;
-        public static final double PROX_KD = 0;
+        public static final double PROX_KD = 0.45;
 
         public static final double PROX_KS = 0;
         public static final double PROX_KG = 0;
         public static final double PROX_KV = 0;
         public static final double PROX_KA = 0;
 
-        public static final double DIST_KP = 0.45;
-        public static final double DIST_KI = 0;
+        public static final double DIST_KP = 0.0;
+        public static final double DIST_KI = 0.00001;
         public static final double DIST_KD = 0;
 
         public static final double DIST_KS = 0;
