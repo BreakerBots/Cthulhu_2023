@@ -53,7 +53,7 @@ public class Gripper extends SubsystemBase {
     private BreakerXboxController con;
     public Gripper(BreakerXboxController con) {
         this.con = con;
-        spark = new CANSparkMax(32, MotorType.kBrushless);
+        spark = new CANSparkMax(2, MotorType.kBrushless);
         spark.setIdleMode(IdleMode.kBrake);
         spark.setSoftLimit(SoftLimitDirection.kReverse, (float)  (6.0 * MOTOR_ROT_TO_GRIP_POS_CM));
         spark.enableSoftLimit(SoftLimitDirection.kReverse, false);
@@ -86,7 +86,9 @@ public class Gripper extends SubsystemBase {
     /** Moves gripper to set centimeter position. */
     public void setGripperPosition(double position) {
         setPosition = position;
-        pid.setReference(position / MOTOR_ROT_TO_GRIP_POS_CM, ControlType.kPosition);
+        spark.setSoftLimit(SoftLimitDirection.kReverse, (float) (position * MOTOR_ROT_TO_GRIP_POS_CM));
+        spark.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        spark.set(-1.0);
     }
 
     /** Automatically closes grip based on detected game piece type. */
@@ -161,7 +163,5 @@ public class Gripper extends SubsystemBase {
             spark.enableSoftLimit(SoftLimitDirection.kReverse, true) ;
             encoder.setPosition(0.0);
         }
-        System.out.println(con.getRightTrigger().get() - con.getLeftTrigger().get());
-        spark.set(con.getRightTrigger().get() - con.getLeftTrigger().get());
     }
 }

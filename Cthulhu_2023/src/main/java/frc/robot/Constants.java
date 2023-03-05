@@ -135,12 +135,12 @@ public final class Constants {
     public static final class GripperConstants {
         public static final int GRIPPER_MOTOR_ID = 32;
 
-        public static final double CONE_GRIP_POSITION = 0.0;
-        public static final double CUBE_GRIP_POSITION = 0.0;
+        public static final double CONE_GRIP_POSITION = 6.0;
+        public static final double CUBE_GRIP_POSITION = 6.0;
         public static final double ClOSED_GRIP_POSITION = 0.0;
 
         public static final double MOTOR_ROT_TO_GRIP_POS_CM = -10.16;
-        public static final double GRIP_OPEN_SPD = 0.5;
+        public static final double GRIP_OPEN_SPD = 1.0;
         public static final Color CONE_COLOR = new Color(0, 0, 0);
         public static final Color CUBE_COLOR = new Color(0, 0, 0);
         public static final double COLOR_MATCH_CONFIDENCE_THRESHOLD = 95.0;
@@ -158,6 +158,7 @@ public final class Constants {
         public static final int DISTAL_ENCODER_ID = 25;
         public static final double DISTAL_ENCODER_OFFSET = -192.932;
         public static final double DIST_ARM_LENGTH_METERS = 1;
+        public static final double DIST_BIAS_ANGLE = -10;
 
         public static final double PROX_KP = 0.45;
         public static final double PROX_KI = 0;

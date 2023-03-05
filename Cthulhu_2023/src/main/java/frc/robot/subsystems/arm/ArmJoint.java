@@ -69,12 +69,16 @@ public class ArmJoint extends SubsystemBase implements Loggable {
   }
 
   public Rotation2d getJointAngle() {
-    return Rotation2d.fromDegrees(encoder.getAbsolutePosition()).plus(angleOffsetSupplier.get());
+    return getRawJointAngle().plus(angleOffsetSupplier.get());
   }
 
   /** rad/sec */
   public double getJointVel() {
     return Math.toDegrees(encoder.getVelocity()) * 10;
+  }
+
+  public Rotation2d getRawJointAngle() {
+    return Rotation2d.fromDegrees(encoder.getAbsolutePosition());
   }
 
   public double getRawMotorOut() {
@@ -109,12 +113,19 @@ public class ArmJoint extends SubsystemBase implements Loggable {
     SmartDashboard.putNumber("MOTOR OUT", motor.get());
     SmartDashboard.putData(pid);
     pid.calculate(getJointAngle().getDegrees(), target.getDegrees());
-    if (!pid.atSetpoint()) {
-      motor.set(-0.12);
+    double err = pid.getPositionError();
+    if (isEnabled()) {
+      if (!pid.atSetpoint()) {
+        motor.set(Math.signum(err) * -0.12);
+      } else {
+        motor.set(-0.05);
+      }
     } else {
-      motor.set(-0.05);
+      motor.set(0);
     }
   }
+
+  
 
   public static class ArmJointConfig {
     public final double kP, kI, kD, kS, kG, kV, kA;

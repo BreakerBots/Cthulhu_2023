@@ -31,6 +31,7 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.ArmPose;
+import frc.robot.subsystems.arm.simplearm.SimpleArm;
 import frc.robot.subsystems.gamepiece.GamePieceTracker;
 
 /**
@@ -48,7 +49,7 @@ public class RobotContainer {
 
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
-  private final Arm armSys = new Arm();
+  //private final Arm armSys = new Arm();
   private final Gripper gripperSys = new Gripper(controllerSys);
  // private final Odometer odometerSys = new Odometer(drivetrainSys, new BreakerVisionPoseFilter(5.0, 0.35, Constants.Vision.AprilTag.APRILTAGS));
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
@@ -56,7 +57,8 @@ public class RobotContainer {
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
   //private final AprilTagTracker att = new AprilTagTracker();
   private final GamePieceTracker gpt = new GamePieceTracker();
-
+  private final BreakerXboxController controller2 = new BreakerXboxController(1);
+  private final SimpleArm simpleArmSys = new SimpleArm(controller2);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -67,6 +69,8 @@ public class RobotContainer {
 
     // 0.06 is normal, 0.1 is for testing with bad controller
     controllerSys.configDeadbands(new BreakerGamepadAnalogDeadbandConfig(0.1, 0.1, 0.1, 0.1));
+
+    controller2.configDeadbands(new BreakerGamepadAnalogDeadbandConfig(0.1, 0.1, 0.1, 0.1));
 
     drivetrainSys.resetOdometryPosition();
 
@@ -87,7 +91,7 @@ public class RobotContainer {
     controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
     //controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
-    controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setManualTargetPose(new ArmPose(Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(0)))));
+    // controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setManualTargetPose(new ArmPose(Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(-45)))));
   }
 
   private void robotManagerSetup() {
