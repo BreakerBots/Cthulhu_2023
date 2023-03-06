@@ -22,18 +22,18 @@ import io.github.oblarg.oblog.Loggable;
 
 /** A robot arm subsystem that moves with a motion profile. */
 public class ArmJoint extends SubsystemBase implements Loggable {
-  private WPI_TalonFX motor;
-  private WPI_CANCoder encoder;
-  private ArmFeedforward ff;
-  private PIDController pid;
-  private Supplier<Rotation2d> angleOffsetSupplier;
-  private Supplier<BreakerVector2> vec2Supplier;
-  private double armLengthMeters;
+  protected WPI_TalonFX motor;
+  protected WPI_CANCoder encoder;
+  protected ArmFeedforward ff;
+  protected PIDController pid;
+  protected Supplier<Rotation2d> angleOffsetSupplier;
+  protected Supplier<BreakerVector2> vec2Supplier;
+  protected double armLengthMeters;
   public double maxAng, minAng;
-  private boolean enabled = true;
+  protected boolean enabled = true;
 
   /** Create a new ArmSubsystem. */
-  private Rotation2d target;
+  protected Rotation2d target;
   public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, ArmJointConfig config) {
     pid = new PIDController(config.kP, config.kI,config.kD);
     pid.setTolerance(2, Double.MAX_VALUE);
@@ -109,6 +109,7 @@ public class ArmJoint extends SubsystemBase implements Loggable {
       return enabled;
   }
 
+  @Override
   public void periodic() {
     SmartDashboard.putNumber("MOTOR OUT", motor.get());
     SmartDashboard.putData(pid);
@@ -116,7 +117,7 @@ public class ArmJoint extends SubsystemBase implements Loggable {
     double err = pid.getPositionError();
     if (isEnabled()) {
       if (!pid.atSetpoint()) {
-        motor.set(Math.signum(err) * -0.12);
+        motor.set(Math.signum(err) * pid.getP());
       } else {
         motor.set(-0.05);
       }

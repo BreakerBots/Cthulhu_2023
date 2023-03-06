@@ -21,12 +21,14 @@ import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.subsystems.arm.ProxArmJoint;
 import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.Constants.MiscConstants.*;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
-    private ArmJoint proximalJoint, distalJoint;
+    private ArmJoint distalJoint;
+    private ProxArmJoint proximalJoint;
     private ArmState targetState = ArmState.MANUAL;
     private ArmState prevState = ArmState.MANUAL;
     private ArmPose targetPose;
@@ -110,7 +112,7 @@ public class Arm extends SubsystemBase {
                 new TrapezoidProfile.Constraints(999, 999),
                 DIST_KP, DIST_KI, DIST_KD, DIST_KS, DIST_KG, DIST_KV, DIST_KA,
                 distalMotor);
-        proximalJoint = new ArmJoint(() -> {
+        proximalJoint = new ProxArmJoint(() -> {
             return new Rotation2d();
         }, PROX_ARM_LENGTH_METERS, proximalConfig);
         distalJoint = new ArmJoint(proximalJoint::getJointAngle, DIST_ARM_LENGTH_METERS, distalConfig);
@@ -124,6 +126,7 @@ public class Arm extends SubsystemBase {
         distalArmDx.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(distalEncoder));
         targetPose = new ArmPose(proximalJoint.getJointAngle(), distalJoint.getJointAngle());
         proximalJoint.setEnabled(false);
+        distalJoint.setEnabled(true);
         setManualTargetPose(targetPose);
     }
 

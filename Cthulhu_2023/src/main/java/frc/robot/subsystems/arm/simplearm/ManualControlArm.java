@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
 
 import static frc.robot.Constants.ArmConstants.*;
-public class SimpleArm extends SubsystemBase {
+public class ManualControlArm extends SubsystemBase {
   /** Creates a new SimpleArm. */
   private WPI_TalonFX proximalMotor, distalMotor;
   private BreakerXboxController controller;
-  public SimpleArm(BreakerXboxController controller) {
+  public ManualControlArm(BreakerXboxController controller) {
     this.controller = controller;
     proximalMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID);
     distalMotor = new WPI_TalonFX(DISTAL_MOTOR_ID);
