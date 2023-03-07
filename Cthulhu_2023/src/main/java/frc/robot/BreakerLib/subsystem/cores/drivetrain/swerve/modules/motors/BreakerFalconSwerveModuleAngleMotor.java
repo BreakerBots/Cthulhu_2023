@@ -17,6 +17,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveModulePIDConfig;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.math.BreakerUnits;
@@ -29,8 +30,9 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveModuleAngleMotor {
     private WPI_TalonFX motor;
     private WPI_CANCoder encoder;
-    public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveModuleAngleMotorPIDConfig pidConfig) {
-        super(pidConfig, isMotorInverted);
+    private BreakerSwerveModulePIDConfig pidConfig;
+    private Rotation2d targetAngle;
+    public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveModulePIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
         BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
@@ -55,6 +57,7 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
         motor.setInverted(isMotorInverted);
         motor.setNeutralMode(NeutralMode.Brake);
         motor.set(ControlMode.Position, 0);
+        targetAngle = new Rotation2d();
     }
 
     @Override
@@ -128,6 +131,7 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
         double relTgtAng = BreakerMath.absoluteAngleToContinuousRelativeAngleDegrees(getRelativeAngle(),
                 Rotation2d.fromDegrees(getAblsoluteAngle()), targetAngle);
         motor.set(TalonFXControlMode.Position, BreakerUnits.degreesToCANCoderNativeUnits(relTgtAng));
+        this.targetAngle = targetAngle;
         
     }
 
@@ -146,7 +150,12 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
         
     }
     @Override
-    public void getBrakeMode(boolean isEnabled) {
+    public boolean getBrakeMode() {
         // TODO Auto-generated method stub
-        
+        return false;
+    }
+
+    @Override
+    public Rotation2d getTargetAngle() {
+        return targetAngle;
     }}
