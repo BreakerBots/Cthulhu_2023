@@ -35,33 +35,16 @@ public class LeaveThenBalance extends SequentialCommandGroup {
     
       BreakerWaypointPath wpp = new BreakerWaypointPath(
         0.5, 
-        new Translation2d(2, 1)
-        );
-
-        BreakerWaypointPath wpp2 = new BreakerWaypointPath(
-          0.25,
-          new Translation2d(6, 1)
-        );
-
-        BreakerWaypointPath wpp3 = new BreakerWaypointPath(
-          0.5, 
-          new Translation2d(6, 2.7)
-        );
-
-        BreakerWaypointPath wpp4 = new BreakerWaypointPath(
-          1.0,
-          new Translation2d(4, 2.7)
+        new Translation2d(2, 1),
+        new Translation2d(6, 1),
+        new Translation2d(6, 2.7),
+        new Translation2d(4, 2.7)
         );
 
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
     addCommands(
         new BreakerStartTrajectoryPath(drive, new Pose2d()),
         new BreakerSwerveWaypointFollower(config, true, wpp),
-        new WaitCommand(0.5),
-        new BreakerSwerveWaypointFollower(config, true, wpp2),
-        new WaitCommand(0.5),
-        new BreakerSwerveWaypointFollower(config, true, wpp3),
-        new BreakerSwerveWaypointFollower(config, true, wpp4),
         new BalanceChargingStation(drive, imu)
         );
   }
