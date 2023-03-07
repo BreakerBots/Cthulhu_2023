@@ -22,7 +22,7 @@ import io.github.oblarg.oblog.Loggable;
 
 /** A robot arm subsystem that moves with a motion profile. */
 public class ArmJoint extends SubsystemBase implements Loggable {
-  protected WPI_TalonFX motor;
+  public WPI_TalonFX motor;
   protected WPI_CANCoder encoder;
   protected ArmFeedforward ff;
   protected PIDController pid;
@@ -34,28 +34,23 @@ public class ArmJoint extends SubsystemBase implements Loggable {
 
   /** Create a new ArmSubsystem. */
   protected Rotation2d target;
-  public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, ArmJointConfig config) {
-    pid = new PIDController(config.kP, config.kI,config.kD);
+  public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder, boolean invertMotor,
+  TrapezoidProfile.Constraints constraints, double kP, double kI, double kD, double kS, double kG, double kV,
+  double kA, WPI_TalonFX... motors) {
+    pid = new PIDController(kP, kI, kD);
     pid.setTolerance(2, Double.MAX_VALUE);
-    ff = new ArmFeedforward(config.kS, config.kG, config.kV, config.kA);
-    motor = config.motors[0];
-    encoder = config.encoder;
+    ff = new ArmFeedforward(kS, kG, kV, kA);
+    motor = motors[0];
+    this.encoder = encoder;
     this.angleOffsetSupplier = angleOffsetSupplier;
     this.vec2Supplier = () -> {return new BreakerVector2();};
     this.armLengthMeters = armLengthMeters;
-    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motorConfig.peakOutputForward = 0.35;
-    motorConfig.peakOutputReverse = -0.35;
-    motorConfig.voltageCompSaturation = 12.0;
-    motorConfig.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 80.0, 80.0, 1.5);
-    BreakerCTREUtil.checkError(motor.configAllSettings(motorConfig),
-        " Failed to arm joint motor ");
-        motor.setInverted(config.invertMotor);
+        motor.setInverted(invertMotor);
     target = getJointAngle();
     motor.selectProfileSlot(0, 0);
-    if (config.motors.length > 0) {
-      for (int i = 1; i < config.motors.length; i++) {
-        config.motors[i].follow(motor);
+    if (motors.length > 0) {
+      for (int i = 1; i < motors.length; i++) {
+        motors[i].follow(motor);
       }
     }
   }
@@ -111,46 +106,17 @@ public class ArmJoint extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("MOTOR OUT", motor.get());
     SmartDashboard.putData(pid);
     pid.calculate(getJointAngle().getDegrees(), target.getDegrees());
     double err = pid.getPositionError();
     if (isEnabled()) {
       if (!pid.atSetpoint()) {
-        motor.set(Math.signum(err) * pid.getP());
+        motor.set(Math.signum(err) * pid.getP() * err > 35 ? 2.0 : 1.0);
       } else {
         motor.set(-0.05);
       }
     } else {
       motor.set(0);
-    }
-  }
-
-  
-
-  public static class ArmJointConfig {
-    public final double kP, kI, kD, kS, kG, kV, kA;
-    public final TrapezoidProfile.Constraints constraints;
-    public final WPI_TalonFX[] motors;
-    public final WPI_CANCoder encoder;
-    public final boolean invertMotor;
-
-    public ArmJointConfig(WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder, boolean invertMotor,
-        TrapezoidProfile.Constraints constraints, double kP, double kI, double kD, double kS, double kG, double kV,
-        double kA, WPI_TalonFX... motors) {
-      BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
-          AbsoluteSensorRange.Signed_PlusMinus180, encoderOffsetDegrees, invertEncoder);
-      this.motors = motors;
-      this.encoder = encoder;
-      this.kP = kP;
-      this.kI = kI;
-      this.kD = kD;
-      this.kS = kS;
-      this.kG = kG;
-      this.kV = kV;
-      this.kA = kA;
-      this.constraints = constraints;
-      this.invertMotor = invertMotor;
     }
   }
 }

@@ -160,9 +160,9 @@ public final class Constants {
         public static final double DIST_ARM_LENGTH_METERS = 1;
         public static final double DIST_BIAS_ANGLE = -10;
 
-        public static final double PROX_KP = 0.15;
+        public static final double PROX_KP = 0.012;
         public static final double PROX_KI = 0;
-        public static final double PROX_KD = 0.45;
+        public static final double PROX_KD = 0.005;
 
         public static final double PROX_KS = 0;
         public static final double PROX_KG = 0;

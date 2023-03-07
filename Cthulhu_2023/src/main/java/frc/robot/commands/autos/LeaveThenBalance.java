@@ -25,9 +25,9 @@ import frc.robot.subsystems.Drive;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TestWaypointAutoPath extends SequentialCommandGroup {
+public class LeaveThenBalance extends SequentialCommandGroup {
   /** Creates a new TestWaypointAutoPath. */
-  public TestWaypointAutoPath(Drive drive, BreakerPigeon2 imu) {
+  public LeaveThenBalance(Drive drive, BreakerPigeon2 imu) {
     ProfiledPIDController anglePID = new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0));
     PIDController drivePID = new PIDController(2.0, 0, 0.0);
     BreakerHolonomicDriveController driveController = new BreakerHolonomicDriveController(drivePID, anglePID);
