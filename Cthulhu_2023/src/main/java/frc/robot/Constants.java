@@ -65,7 +65,6 @@ public final class Constants {
         public static final int BL_ENCODER_ID = 22;
         public static final int BR_ENCODER_ID = 23;
 
-
         // FL is pos/pos, FR is pos/neg, BL is neg/pos, BR is neg/neg
         public static final Translation2d FL_TRANSLATION = new Translation2d(0.2635, 0.2635);
         public static final Translation2d FR_TRANSLATION = new Translation2d(0.2635, -0.2635);
@@ -83,63 +82,65 @@ public final class Constants {
         // public static final double BL_ENCODER_OFFSET = 117.246;
         // public static final double BR_ENCODER_OFFSET = -155.918;
 
-        
     }
 
     public static final class VisionConstants {
         public static final class AprilTagConstants {
-            // public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new BreakerPhotonCamera[] {
-                    // new BreakerPhotonCamera("April_Test_1", new Transform3d(new Translation3d(), new Rotation3d()))
-                    // new BreakerPhotonCamera("leftApriltagCam", null),
-                    // new BreakerPhotonCamera("rightApriltagCam", null),
-                    // new BreakerPhotonCamera("backApriltagCam", null)
+            // public static final BreakerPhotonCamera[] APRILTAG_CAMERAS = new
+            // BreakerPhotonCamera[] {
+            // new BreakerPhotonCamera("April_Test_1", new Transform3d(new Translation3d(),
+            // new Rotation3d()))
+            // new BreakerPhotonCamera("leftApriltagCam", null),
+            // new BreakerPhotonCamera("rightApriltagCam", null),
+            // new BreakerPhotonCamera("backApriltagCam", null)
             // };
 
-        //     public static BreakerFiducialPhotonTarget[] APRILTAGS = new BreakerFiducialPhotonTarget[] {
-        //             new BreakerFiducialPhotonTarget(1,
-        //                     new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(42.19),
-        //                             Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180))),
-        //                     APRILTAG_CAMERAS),
-        //             new BreakerFiducialPhotonTarget(2,
-        //                     new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(108.19),
-        //                             Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180))),
-        //                     APRILTAG_CAMERAS),
-        //             new BreakerFiducialPhotonTarget(3,
-        //                     new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(174.19),
-        //                             Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180))),
-        //                     APRILTAG_CAMERAS),
-        //             new BreakerFiducialPhotonTarget(4,
-        //                     new Pose3d(Units.inchesToMeters(636.96), Units.inchesToMeters(265.74),
-        //                             Units.inchesToMeters(27.38), new Rotation3d(0, 0, Math.toRadians(180))),
-        //                     APRILTAG_CAMERAS),
-        //             new BreakerFiducialPhotonTarget(5,
-        //                     new Pose3d(Units.inchesToMeters(14.25), Units.inchesToMeters(265.74),
-        //                             Units.inchesToMeters(27.38), new Rotation3d(0, 0, 0)),
-        //                     APRILTAG_CAMERAS),
-        //             new BreakerFiducialPhotonTarget(6,
-        //                     new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(174.19),
-        //                             Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0)),
-        //                     APRILTAG_CAMERAS),
-        //             new BreakerFiducialPhotonTarget(7,
-        //                     new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(108.19),
-        //                             Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0)),
-        //                     APRILTAG_CAMERAS),
-        //             new BreakerFiducialPhotonTarget(8,
-        //                     new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(42.19),
-        //                             Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0)),
-        //                     APRILTAG_CAMERAS)
-        //     };
+            // public static BreakerFiducialPhotonTarget[] APRILTAGS = new
+            // BreakerFiducialPhotonTarget[] {
+            // new BreakerFiducialPhotonTarget(1,
+            // new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(42.19),
+            // Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180))),
+            // APRILTAG_CAMERAS),
+            // new BreakerFiducialPhotonTarget(2,
+            // new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(108.19),
+            // Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180))),
+            // APRILTAG_CAMERAS),
+            // new BreakerFiducialPhotonTarget(3,
+            // new Pose3d(Units.inchesToMeters(610.77), Units.inchesToMeters(174.19),
+            // Units.inchesToMeters(18.22), new Rotation3d(0, 0, Math.toRadians(180))),
+            // APRILTAG_CAMERAS),
+            // new BreakerFiducialPhotonTarget(4,
+            // new Pose3d(Units.inchesToMeters(636.96), Units.inchesToMeters(265.74),
+            // Units.inchesToMeters(27.38), new Rotation3d(0, 0, Math.toRadians(180))),
+            // APRILTAG_CAMERAS),
+            // new BreakerFiducialPhotonTarget(5,
+            // new Pose3d(Units.inchesToMeters(14.25), Units.inchesToMeters(265.74),
+            // Units.inchesToMeters(27.38), new Rotation3d(0, 0, 0)),
+            // APRILTAG_CAMERAS),
+            // new BreakerFiducialPhotonTarget(6,
+            // new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(174.19),
+            // Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0)),
+            // APRILTAG_CAMERAS),
+            // new BreakerFiducialPhotonTarget(7,
+            // new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(108.19),
+            // Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0)),
+            // APRILTAG_CAMERAS),
+            // new BreakerFiducialPhotonTarget(8,
+            // new Pose3d(Units.inchesToMeters(40.45), Units.inchesToMeters(42.19),
+            // Units.inchesToMeters(18.22), new Rotation3d(0, 0, 0)),
+            // APRILTAG_CAMERAS)
+            // };
         }
     }
 
     public static final class GripperConstants {
         public static final int GRIPPER_MOTOR_ID = 32;
 
-        public static final double CONE_GRIP_POSITION = 6.0;
-        public static final double CUBE_GRIP_POSITION = 6.0;
+        public static final double MOTOR_ROT_TO_GRIP_POS_CM = Units.inchesToMeters(-15 * 12) * 100;
+        public static final double CONE_GRIP_POSITION = -6.0 * MOTOR_ROT_TO_GRIP_POS_CM;
+        public static final double CUBE_GRIP_POSITION = -6.0;
         public static final double ClOSED_GRIP_POSITION = 0.0;
-
-        public static final double MOTOR_ROT_TO_GRIP_POS_CM = -10.16;
+        public static final double MAX_GRIPPER_POSITION_CM = 9;
         public static final double GRIP_OPEN_SPD = 1.0;
         public static final Color CONE_COLOR = new Color(0, 0, 0);
         public static final Color CUBE_COLOR = new Color(0, 0, 0);

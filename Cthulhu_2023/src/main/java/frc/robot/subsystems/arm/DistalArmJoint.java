@@ -21,7 +21,7 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import io.github.oblarg.oblog.Loggable;
 
 /** A robot arm subsystem that moves with a motion profile. */
-public class ArmJoint extends SubsystemBase implements Loggable {
+public class DistalArmJoint extends SubsystemBase implements Loggable {
   public WPI_TalonFX motor;
   protected WPI_CANCoder encoder;
   protected ArmFeedforward ff;
@@ -34,7 +34,7 @@ public class ArmJoint extends SubsystemBase implements Loggable {
 
   /** Create a new ArmSubsystem. */
   protected Rotation2d target;
-  public ArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder, boolean invertMotor,
+  public DistalArmJoint(Supplier<Rotation2d> angleOffsetSupplier, double armLengthMeters, WPI_CANCoder encoder, double encoderOffsetDegrees, boolean invertEncoder, boolean invertMotor,
   TrapezoidProfile.Constraints constraints, double kP, double kI, double kD, double kS, double kG, double kV,
   double kA, WPI_TalonFX... motors) {
     pid = new PIDController(kP, kI, kD);
@@ -111,7 +111,7 @@ public class ArmJoint extends SubsystemBase implements Loggable {
     double err = pid.getPositionError();
     if (isEnabled()) {
       if (!pid.atSetpoint()) {
-        motor.set(Math.signum(err) * pid.getP() * err > 35 ? 2.0 : 1.0);
+        motor.set(Math.signum(err) * (pid.getP() * (err > 35 ? 1.5 : 1.0)));
       } else {
         motor.set(-0.05);
       }

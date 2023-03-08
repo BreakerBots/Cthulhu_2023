@@ -11,6 +11,8 @@ import org.photonvision.PhotonCamera;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,7 +37,9 @@ import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ProximalArmJoint;
 import frc.robot.subsystems.arm.Arm.ArmPose;
+import frc.robot.subsystems.arm.Arm.ArmState;
 import frc.robot.subsystems.gamepiece.GamePieceTracker;
+import static frc.robot.subsystems.gamepiece.GamePieceType.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -52,7 +56,9 @@ public class RobotContainer {
 
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
-  //private final Gripper gripperSys = new Gripper(controllerSys);
+  //private CANSparkMax sparky = new CANSparkMax(32, MotorType.kBrushless);
+  
+ // private final Gripper gripperSys = new Gripper(controllerSys);
  // private final Odometer odometerSys = new Odometer(drivetrainSys, new BreakerVisionPoseFilter(5.0, 0.35, Constants.Vision.AprilTag.APRILTAGS));
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
@@ -89,11 +95,18 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
-    controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
+    //controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
+    //controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
+    //controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
     //controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
-    controllerSys.getButtonY().toggleOnFalse(new InstantCommand(() -> armSys.setManualTargetPose(new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(10)))));
+
+    // GRIPPER TEST!!!
+    // controllerSys.getButtonA().onTrue(new InstantCommand(gripperSys::setOpenGrip));
+    // controllerSys.getButtonB().onTrue(new InstantCommand(() -> gripperSys.setClosedGrip(CONE)));
+    // controllerSys.getButtonX().onTrue(new InstantCommand(() -> gripperSys.setClosedGrip(CUBE)));
+
+    // controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setManualTargetPose(new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20)))));
+    controllerSys.getButtonY().onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM));
   }
 
   private void robotManagerSetup() {

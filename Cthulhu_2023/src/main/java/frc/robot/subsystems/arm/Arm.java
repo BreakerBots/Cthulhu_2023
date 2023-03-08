@@ -26,10 +26,10 @@ import static frc.robot.Constants.MiscConstants.*;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
-    private ArmJoint distalJoint;
+    private DistalArmJoint distalJoint;
     public ProximalArmJoint proximalJoint;
-    private ArmState targetState = ArmState.MANUAL;
-    private ArmState prevState = ArmState.MANUAL;
+    private ArmState targetState = ArmState.START;
+    private ArmState prevState = ArmState.START;
     private ArmPose targetPose;
     private MoveToState activeMoveCommand;
     private WPI_CANCoder proximalEncoder, distalEncoder;
@@ -40,16 +40,14 @@ public class Arm extends SubsystemBase {
 
     // CANCoder Angles of resting position: (-53.7 -> 126.3, -177.2)
     public enum ArmState {
-        PLACE_HIGH_CONE(75, 5, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(10))),
-        PLACE_HIGH_CUBE(15.0, 83.0),
-        PLACE_MEDIUM_CONE(-9.0, 97.5),
-        PLACE_MEDIUM_CUBE(0.0, 128.0),
+        PLACE_HIGH(75, 20, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
+        PLACE_MEDIUM(95, 0, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
         PLACE_HYBRID(18.0, 150.0),
         PICKUP_HIGH(15.0, 78.0),
-        PICKUP_LOW(18.0, 150.0),
-        CARRY(0.0, 170.0),
-        STOW_ARM(-15.0, 170.0),
-        MANUAL(0.0, 0.0); // Always zero
+        PICKUP_LOW (83.0, -63.0),
+        CARRY(95.0, -70.0),
+        MANUAL(0.0, 0.0), // Always zero
+        START(0.0, 0.0);
 
         private final ArmPose statePose;
         private final ArrayList<ArmPose> intermediaryPoses;
@@ -90,8 +88,8 @@ public class Arm extends SubsystemBase {
         @Override
         public boolean equals(Object obj) {
             ArmPose other = (ArmPose) obj;
-            return BreakerMath.epsilonEquals(proximalAngle.getDegrees(), other.proximalAngle.getDegrees(), 1.5) &&
-                    BreakerMath.epsilonEquals(distalAngle.getDegrees(), other.distalAngle.getDegrees(), 1.5);
+            return BreakerMath.epsilonEquals(proximalAngle.getDegrees(), other.proximalAngle.getDegrees(), 5) &&
+                    BreakerMath.epsilonEquals(distalAngle.getDegrees(), other.distalAngle.getDegrees(), 5);
         }
     }
 
@@ -107,7 +105,7 @@ public class Arm extends SubsystemBase {
         // PROX_KP, PROX_KI, PROX_KD, PROX_KS, PROX_KG, PROX_KV, PROX_KA,
         // proximalMotor);
         proximalJoint = new ProximalArmJoint(proximalMotor, proximalEncoder);
-        distalJoint = new ArmJoint(proximalJoint::getJointAngle, DIST_ARM_LENGTH_METERS, distalEncoder,
+        distalJoint = new DistalArmJoint(proximalJoint::getJointAngle, DIST_ARM_LENGTH_METERS, distalEncoder,
                 DISTAL_ENCODER_OFFSET, false, false,
                 new TrapezoidProfile.Constraints(999, 999),
                 DIST_KP, DIST_KI, DIST_KD, DIST_KS, DIST_KG, DIST_KV, DIST_KA,
@@ -212,20 +210,21 @@ public class Arm extends SubsystemBase {
         // Called when the command is initially scheduled.
         @Override
         public void initialize() {
-            if (newState != ArmState.MANUAL) {
+            if (newState != ArmState.MANUAL && newState != ArmState.START ) {
                 if (startState != newState) {
-                    if (startState != ArmState.CARRY) {
+                    if (startState != ArmState.CARRY && startState != ArmState.MANUAL && startState != ArmState.START) {
                         if (startState.intermediaryPoses.size() != 0) {
                             ArrayList<ArmPose> ip = startState.getIntermediaryPoses();
                             Collections.reverse(ip);
                             path.addAll(ip);
                         }
-                        path.add(ArmState.CARRY.statePose);
+                        //path.add(ArmState.CARRY.statePose);
                     }
                     if (newState.intermediaryPoses.size() != 0) {
                         path.addAll(newState.getIntermediaryPoses());
                     }
                 }
+                System.out.println("\n\nhere0\n\n");
                 path.add(newState.statePose);
                 setTargetPose(path.get(pathIndex));
             }
@@ -235,6 +234,7 @@ public class Arm extends SubsystemBase {
         @Override
         public void execute() {
             if (atTargetPose() && pathIndex < path.size() - 1 && newState != ArmState.MANUAL) {
+                System.out.println("\n\nhere1\n\n");
                 pathIndex++;
                 setTargetPose(path.get(pathIndex));
             }
