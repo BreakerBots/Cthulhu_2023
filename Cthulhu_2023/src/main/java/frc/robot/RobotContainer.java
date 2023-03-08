@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import org.photonvision.PhotonCamera;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -34,6 +35,7 @@ import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.MoveToGamePiece;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.RollerIntake;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ProximalArmJoint;
 import frc.robot.subsystems.arm.Arm.ArmPose;
@@ -67,6 +69,8 @@ public class RobotContainer {
   private final GamePieceTracker gpt = new GamePieceTracker();
   private final BreakerXboxController controller2 = new BreakerXboxController(1);
   private final Arm armSys = new Arm();
+
+  private final RollerIntake rollerIntake = new RollerIntake(new WPI_TalonSRX(Constants.RollerIntakeConstants.INTAKE_ID));
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -99,6 +103,11 @@ public class RobotContainer {
     //controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     //controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
     //controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
+
+    controllerSys.getDPad().getRight().onTrue(new InstantCommand(rollerIntake::runCubeIntake));
+    controllerSys.getDPad().getLeft().onTrue(new InstantCommand(rollerIntake::runConeIntake));
+    controllerSys.getDPad().getDown().onTrue(new InstantCommand(rollerIntake::stop));
+    controllerSys.getDPad().getUp().onTrue(new InstantCommand(rollerIntake::eject));
 
     // GRIPPER TEST!!!
     // controllerSys.getButtonA().onTrue(new InstantCommand(gripperSys::setOpenGrip));
