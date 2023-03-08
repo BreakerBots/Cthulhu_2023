@@ -13,16 +13,13 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import static frc.robot.Constants.ArmConstants.*;
-import static frc.robot.Constants.MiscConstants.*;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
@@ -52,10 +49,10 @@ public class Arm extends SubsystemBase {
         private final ArmPose statePose;
         private final ArrayList<ArmPose> intermediaryPoses;
 
-        ArmState(double proxAngleDeg, double distAngleDeg, ArmPose... intermedairyPoses) {
+        ArmState(double proxAngleDeg, double distAngleDeg, ArmPose... intermediaryPoses) {
             statePose = new ArmPose(Rotation2d.fromDegrees(proxAngleDeg), Rotation2d.fromDegrees(distAngleDeg));
             this.intermediaryPoses = new ArrayList<>();
-            for (ArmPose ap : intermedairyPoses) {
+            for (ArmPose ap : intermediaryPoses) {
                 this.intermediaryPoses.add(ap);
             }
         }
