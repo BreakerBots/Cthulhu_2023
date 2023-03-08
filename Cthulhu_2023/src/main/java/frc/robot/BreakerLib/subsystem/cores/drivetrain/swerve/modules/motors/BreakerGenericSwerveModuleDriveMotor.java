@@ -11,6 +11,8 @@ public interface BreakerGenericSwerveModuleDriveMotor extends BreakerGenericDevi
     public abstract void setTargetVelocity(double targetMetersPerSecond);
     public abstract double getVelocity();
     public abstract double getDistance();
+    public abstract void resetDistance();
     public abstract void setBrakeMode(boolean isEnabled);
-    public abstract void getBrakeMode(boolean isEnabled);
+    public abstract boolean getBrakeMode();
+    public abstract double getTargetVelocity();
 }
