@@ -132,6 +132,10 @@ public final class Constants {
         }
     }
 
+    public static final class RollerIntakeConstants {
+        public static final int INTAKE_ID = 1;
+    }
+
     public static final class GripperConstants {
         public static final int GRIPPER_MOTOR_ID = 32;
 
