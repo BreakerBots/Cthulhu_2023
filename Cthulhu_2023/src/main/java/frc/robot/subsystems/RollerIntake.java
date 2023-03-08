@@ -7,13 +7,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import static frc.robot.Constants.RollerIntakeConstants.*;
 
 public class RollerIntake extends SubsystemBase {
   private WPI_TalonSRX motor;
 
   /** Creates a new RollerIntake. */
-  public RollerIntake(WPI_TalonSRX motor) {
-    this.motor = motor;
+  public RollerIntake() {
+    this.motor = new WPI_TalonSRX(INTAKE_ID);
   }
 
   @Override

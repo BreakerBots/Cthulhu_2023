@@ -2,21 +2,13 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.MiscConstants.CANIVORE_2;
 import static frc.robot.Constants.MiscConstants.IMU_ID;
 
 import java.util.ArrayList;
 
 import org.photonvision.PhotonCamera;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.sensors.WPI_CANCoder;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -31,17 +23,10 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
-import frc.robot.commands.BalanceChargingStation;
-import frc.robot.commands.MoveToGamePiece;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.RollerIntake;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.ProximalArmJoint;
-import frc.robot.subsystems.arm.Arm.ArmPose;
 import frc.robot.subsystems.arm.Arm.ArmState;
-import frc.robot.subsystems.gamepiece.GamePieceTracker;
-import static frc.robot.subsystems.gamepiece.GamePieceType.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -58,19 +43,12 @@ public class RobotContainer {
 
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
-  //private CANSparkMax sparky = new CANSparkMax(32, MotorType.kBrushless);
-  
- // private final Gripper gripperSys = new Gripper(controllerSys);
- // private final Odometer odometerSys = new Odometer(drivetrainSys, new BreakerVisionPoseFilter(5.0, 0.35, Constants.Vision.AprilTag.APRILTAGS));
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-  //private final AprilTagTracker att = new AprilTagTracker();
-  private final GamePieceTracker gpt = new GamePieceTracker();
-  private final BreakerXboxController controller2 = new BreakerXboxController(1);
+      
   private final Arm armSys = new Arm();
-
-  private final RollerIntake rollerIntake = new RollerIntake(new WPI_TalonSRX(Constants.RollerIntakeConstants.INTAKE_ID));
+  private final RollerIntake rollerIntake = new RollerIntake();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -81,8 +59,6 @@ public class RobotContainer {
 
     // 0.06 is normal, 0.1 is for testing with bad controller
     controllerSys.configDeadbands(new BreakerGamepadAnalogDeadbandConfig(0.1, 0.1, 0.1, 0.1));
-
-    controller2.configDeadbands(new BreakerGamepadAnalogDeadbandConfig(0.1, 0.1, 0.1, 0.1));
 
     drivetrainSys.resetOdometryPosition();
 
