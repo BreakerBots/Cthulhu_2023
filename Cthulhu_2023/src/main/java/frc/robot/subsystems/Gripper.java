@@ -12,6 +12,7 @@ import static frc.robot.Constants.GripperConstants.CUBE_GRIP_POSITION;
 import static frc.robot.Constants.GripperConstants.GAME_PIECE_PROX_THRESHOLD;
 import static frc.robot.Constants.GripperConstants.GRIP_OPEN_SPD;
 import static frc.robot.Constants.GripperConstants.MOTOR_ROT_TO_GRIP_POS_CM;
+import static frc.robot.Constants.GripperConstants.*;
 import static frc.robot.subsystems.gamepiece.GamePieceType.CONE;
 import static frc.robot.subsystems.gamepiece.GamePieceType.CUBE;
 import static frc.robot.subsystems.gamepiece.GamePieceType.NONE;
@@ -29,8 +30,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensor.BreakerPicoColorSensorInstance;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
@@ -51,12 +54,13 @@ public class Gripper extends SubsystemBase {
     private boolean isCalibrated = false;
     private ColorMatch colorMatch;
     private BreakerXboxController con;
+
     public Gripper(BreakerXboxController con) {
         this.con = con;
-        spark = new CANSparkMax(32, MotorType.kBrushless);
+        spark = new CANSparkMax(Constants.GripperConstants.GRIPPER_MOTOR_ID, MotorType.kBrushless);
         spark.setIdleMode(IdleMode.kBrake);
-        spark.setSoftLimit(SoftLimitDirection.kReverse, (float)  (6.0 * MOTOR_ROT_TO_GRIP_POS_CM));
-        spark.enableSoftLimit(SoftLimitDirection.kReverse, false);
+        spark.setSoftLimit(SoftLimitDirection.kReverse, (float) (MAX_GRIPPER_POSITION_CM * MOTOR_ROT_TO_GRIP_POS_CM));
+        spark.enableSoftLimit(SoftLimitDirection.kReverse, true);
         limit = spark.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
         limit.enableLimitSwitch(true);
         pid = spark.getPIDController();
@@ -67,7 +71,7 @@ public class Gripper extends SubsystemBase {
         pid.setD(0);
         diagnostics = new SystemDiagnostics("Gripper");
         diagnostics.addSparkMax(spark);
-        //setGripperPosition(getGripperPosition());
+        // setGripperPosition(getGripperPosition());
 
         colorSensor = new BreakerPicoColorSensor().getSensor0();
         colorMatch = new ColorMatch();
@@ -76,6 +80,8 @@ public class Gripper extends SubsystemBase {
         colorMatch.addColorMatch(CUBE_COLOR);
         diagnostics.addBreakerDevice(colorSensor);
         spark.burnFlash();
+        setOpenGrip();
+        encoder.setPosition(0);
     }
 
     /** @return Gripper position in cm. Larger = more closed. */
@@ -86,7 +92,9 @@ public class Gripper extends SubsystemBase {
     /** Moves gripper to set centimeter position. */
     public void setGripperPosition(double position) {
         setPosition = position;
-        pid.setReference(position / MOTOR_ROT_TO_GRIP_POS_CM, ControlType.kPosition);
+        spark.setSoftLimit(SoftLimitDirection.kReverse, (float) (position * MOTOR_ROT_TO_GRIP_POS_CM));
+        spark.enableSoftLimit(SoftLimitDirection.kReverse, true);
+        spark.set(-1.0);
     }
 
     /** Automatically closes grip based on detected game piece type. */
@@ -109,7 +117,10 @@ public class Gripper extends SubsystemBase {
         }
     }
 
-    /** @return Whether the SPARK MAX encoder has been properly calibrated with the limit switch. */
+    /**
+     * @return Whether the SPARK MAX encoder has been properly calibrated with the
+     *         limit switch.
+     */
     public boolean isCalibrated() {
         return isCalibrated;
     }
@@ -125,7 +136,10 @@ public class Gripper extends SubsystemBase {
         spark.set(percentSpeed);
     }
 
-    /** @return If the gripper is around its target position or is open and at position 0. */
+    /**
+     * @return If the gripper is around its target position or is open and at
+     *         position 0.
+     */
     public boolean atTargetPosition() {
         return BreakerMath.epsilonEquals(getGripperPosition(), setPosition, 0.2) || (setPosition == 0 && isOpen());
     }
@@ -158,10 +172,17 @@ public class Gripper extends SubsystemBase {
     public void periodic() {
         if (limit.isPressed()) {
             isCalibrated = true;
-            spark.enableSoftLimit(SoftLimitDirection.kReverse, true) ;
-            encoder.setPosition(0.0);
+            spark.enableSoftLimit(SoftLimitDirection.kReverse, true);
+            encoder.setPosition(0);
         }
-        System.out.println(con.getRightTrigger().get() - con.getLeftTrigger().get());
-        spark.set(con.getRightTrigger().get() - con.getLeftTrigger().get());
+
+        SmartDashboard.putNumber("SPARK OUT", spark.get());
+
+        //MOTOR CONTROL LOOP!
+        if (!atTargetPosition()) {
+            spark.set(Math.signum(encoder.getPosition() - setPosition));
+        } else {
+            spark.set(0);
+        }
     }
 }

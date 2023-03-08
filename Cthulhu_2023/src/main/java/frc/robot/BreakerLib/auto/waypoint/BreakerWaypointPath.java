@@ -57,11 +57,11 @@ public class BreakerWaypointPath {
             newWaypoints);
     }
 
-    public BreakerWaypointPath mirror(double axisOfSymetry) {
+    public BreakerWaypointPath mirror(double axisOfSymmetry) {
         Translation2d[] result = new Translation2d [waypoints.length];
         for (int i = 0; i < waypoints.length; i++) {
-            double distance = axisOfSymetry - waypoints[i].getX();
-            result[i] = new Translation2d(axisOfSymetry + distance, waypoints[i].getY());
+            double distance = axisOfSymmetry - waypoints[i].getX();
+            result[i] = new Translation2d(axisOfSymmetry + distance, waypoints[i].getY());
         }
         return new BreakerWaypointPath(maxVelocity, result);
     }

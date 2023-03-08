@@ -13,6 +13,7 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,9 +26,10 @@ import static frc.robot.Constants.MiscConstants.*;
 
 /** Add your docs here. */
 public class Arm extends SubsystemBase {
-    private ArmJoint proximalJoint, distalJoint;
-    private ArmState targetState = ArmState.MANUAL;
-    private ArmState prevState = ArmState.MANUAL;
+    private DistalArmJoint distalJoint;
+    public ProximalArmJoint proximalJoint;
+    private ArmState targetState = ArmState.START;
+    private ArmState prevState = ArmState.START;
     private ArmPose targetPose;
     private MoveToState activeMoveCommand;
     private WPI_CANCoder proximalEncoder, distalEncoder;
@@ -38,16 +40,14 @@ public class Arm extends SubsystemBase {
 
     // CANCoder Angles of resting position: (-53.7 -> 126.3, -177.2)
     public enum ArmState {
-        PLACE_HIGH_CONE(12.0, 74.0),
-        PLACE_HIGH_CUBE(15.0, 83.0),
-        PLACE_MEDIUM_CONE(-9.0, 97.5),
-        PLACE_MEDIUM_CUBE(0.0, 128.0),
+        PLACE_HIGH(75, 20, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
+        PLACE_MEDIUM(95, 0, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
         PLACE_HYBRID(18.0, 150.0),
         PICKUP_HIGH(15.0, 78.0),
-        PICKUP_LOW(18.0, 150.0),
-        CARRY(0.0, 170.0),
-        STOW_ARM(-15.0, 170.0),
-        MANUAL(0.0, 0.0); // Always zero
+        PICKUP_LOW (83.0, -63.0),
+        CARRY(95.0, -70.0),
+        MANUAL(0.0, 0.0), // Always zero
+        START(0.0, 0.0);
 
         private final ArmPose statePose;
         private final ArrayList<ArmPose> intermediaryPoses;
@@ -88,32 +88,29 @@ public class Arm extends SubsystemBase {
         @Override
         public boolean equals(Object obj) {
             ArmPose other = (ArmPose) obj;
-            return BreakerMath.epsilonEquals(proximalAngle.getDegrees(), other.proximalAngle.getDegrees(), 1.5) &&
-                    BreakerMath.epsilonEquals(distalAngle.getDegrees(), other.distalAngle.getDegrees(), 1.5);
+            return BreakerMath.epsilonEquals(proximalAngle.getDegrees(), other.proximalAngle.getDegrees(), 5) &&
+                    BreakerMath.epsilonEquals(distalAngle.getDegrees(), other.distalAngle.getDegrees(), 5);
         }
     }
 
     public Arm() {
         proximalEncoder = new WPI_CANCoder(PROXIMAL_ENCODER_ID);
         proximalMotor = new WPI_TalonFX(PROXIMAL_MOTOR_ID);
-        ArmJoint.ArmJointConfig proximalConfig = new ArmJoint.ArmJointConfig(
-                proximalEncoder, PROXIMAL_ENCODER_OFFSET, false, true,
-                new TrapezoidProfile.Constraints(999, 999),
-                PROX_KP, PROX_KI, PROX_KD, PROX_KS, PROX_KG, PROX_KV, PROX_KA,
-                proximalMotor);
 
-        distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID, CANIVORE_2);
+        distalEncoder = new WPI_CANCoder(DISTAL_ENCODER_ID);
         distalMotor = new WPI_TalonFX(DISTAL_MOTOR_ID);
-        ArmJoint.ArmJointConfig distalConfig = new ArmJoint.ArmJointConfig(
-                distalEncoder, DISTAL_ENCODER_OFFSET, false, false,
+        // proximalJoint = new ProxArmJoint( proximalEncoder, PROXIMAL_ENCODER_OFFSET,
+        // false, false,
+        // new TrapezoidProfile.Constraints(999, 999),
+        // PROX_KP, PROX_KI, PROX_KD, PROX_KS, PROX_KG, PROX_KV, PROX_KA,
+        // proximalMotor);
+        proximalJoint = new ProximalArmJoint(proximalMotor, proximalEncoder);
+        distalJoint = new DistalArmJoint(proximalJoint::getJointAngle, DIST_ARM_LENGTH_METERS, distalEncoder,
+                DISTAL_ENCODER_OFFSET, false, false,
                 new TrapezoidProfile.Constraints(999, 999),
                 DIST_KP, DIST_KI, DIST_KD, DIST_KS, DIST_KG, DIST_KV, DIST_KA,
                 distalMotor);
-        proximalJoint = new ArmJoint(() -> {
-            return new Rotation2d();
-        }, PROX_ARM_LENGTH_METERS, proximalConfig);
-        distalJoint = new ArmJoint(proximalJoint::getJointAngle, DIST_ARM_LENGTH_METERS, distalConfig);
-        proximalJoint.setAttacedJointVecSupplier(distalJoint::getJointVector);
+        // proximalJoint.setAttacedJointVecSupplier(distalJoint::getJointVector);
 
         proximalArmDx = new SystemDiagnostics("Proximal_Arm");
         proximalArmDx.addCTREMotorController(proximalMotor);
@@ -122,6 +119,10 @@ public class Arm extends SubsystemBase {
         distalArmDx.addCTREMotorController(distalMotor);
         distalArmDx.addSupplier(() -> BreakerCTREUtil.checkCANCoderFaultsAndConnection(distalEncoder));
         targetPose = new ArmPose(proximalJoint.getJointAngle(), distalJoint.getJointAngle());
+
+        // proximalJoint.setEnabled(true);
+        // distalJoint.setEnabled(false);
+        // setManualTargetPose(targetPose);
     }
 
     private void setTargetState(ArmState targetState) {
@@ -136,8 +137,8 @@ public class Arm extends SubsystemBase {
 
     private void setTargetPose(ArmPose targetPose) {
         this.targetPose = targetPose;
-        proximalJoint.setGoal(targetPose.proximalAngle.getRadians());
-        distalJoint.setGoal(targetPose.distalAngle.getRadians());
+        proximalJoint.setTarget(targetPose.proximalAngle);
+        distalJoint.setTarget(targetPose.distalAngle);
     }
 
     public ArmState getPrevState() {
@@ -177,8 +178,8 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("PROX JOINT ANGLE", proximalJoint.getJointAngle().getDegrees());
         SmartDashboard.putNumber("DIST JOINT ANGLE", distalJoint.getJointAngle().getDegrees());
-        SmartDashboard.putNumber("PROX MOTOR OUT", proximalJoint.getRawMotorOut());
         SmartDashboard.putNumber("DIST MOTOR OUT", distalJoint.getRawMotorOut());
+        SmartDashboard.putNumber("PROX MOTOR OUT", proximalJoint.getRawMotorOut());
         SmartDashboard.putNumber("PROX TGT", getTargetPose().proximalAngle.getDegrees());
         SmartDashboard.putNumber("DIST TGT", getTargetPose().distalAngle.getDegrees());
     }
@@ -209,20 +210,21 @@ public class Arm extends SubsystemBase {
         // Called when the command is initially scheduled.
         @Override
         public void initialize() {
-            if (newState != ArmState.MANUAL) {
+            if (newState != ArmState.MANUAL && newState != ArmState.START ) {
                 if (startState != newState) {
-                    if (startState != ArmState.CARRY) {
+                    if (startState != ArmState.CARRY && startState != ArmState.MANUAL && startState != ArmState.START) {
                         if (startState.intermediaryPoses.size() != 0) {
                             ArrayList<ArmPose> ip = startState.getIntermediaryPoses();
                             Collections.reverse(ip);
                             path.addAll(ip);
                         }
-                        path.add(ArmState.CARRY.statePose);
+                        //path.add(ArmState.CARRY.statePose);
                     }
                     if (newState.intermediaryPoses.size() != 0) {
                         path.addAll(newState.getIntermediaryPoses());
                     }
                 }
+                System.out.println("\n\nhere0\n\n");
                 path.add(newState.statePose);
                 setTargetPose(path.get(pathIndex));
             }
@@ -232,6 +234,7 @@ public class Arm extends SubsystemBase {
         @Override
         public void execute() {
             if (atTargetPose() && pathIndex < path.size() - 1 && newState != ArmState.MANUAL) {
+                System.out.println("\n\nhere1\n\n");
                 pathIndex++;
                 setTargetPose(path.get(pathIndex));
             }
