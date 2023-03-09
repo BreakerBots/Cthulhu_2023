@@ -174,7 +174,7 @@ public final class Constants {
         public static final double PROX_KV = 0;
         public static final double PROX_KA = 0;
 
-        public static final double DIST_KP = -0.004;
+        public static final double DIST_KP = 0.012;
         public static final double DIST_KI = 0.0;
         public static final double DIST_KD = 0;
 

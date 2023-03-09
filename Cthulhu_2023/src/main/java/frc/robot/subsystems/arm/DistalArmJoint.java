@@ -109,11 +109,11 @@ public class DistalArmJoint extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     SmartDashboard.putData(pid);
-    pid.calculate(getJointAngle().getDegrees(), target.getDegrees());
-    double err = pid.getPositionError();
+    //pid.calculate(getJointAngle().getDegrees(), target.getDegrees());
+    //double err = pid.getPositionError();
     if (isEnabled()) {
       if (!BreakerMath.epsilonEquals(getJointAngle().getDegrees(), target.getDegrees(), 5)) {
-        motor.set(Math.signum(err) * MathUtil.clamp((pid.getP() * err), -0.2, 0.2));
+        motor.set(-MathUtil.clamp(pid.calculate(getJointAngle().getDegrees(), target.getDegrees()), -0.2, 0.2));
       } else {
         motor.set(-0.05);
       }
