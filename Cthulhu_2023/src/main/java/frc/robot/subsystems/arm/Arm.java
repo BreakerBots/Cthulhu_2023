@@ -181,7 +181,7 @@ public class Arm extends SubsystemBase {
         SmartDashboard.putNumber("DIST TGT", getTargetPose().distalAngle.getDegrees());
     }
 
-    private void regesterMoveCommand(MoveToState com) {
+    private void registerMoveCommand(MoveToState com) {
         if (Objects.nonNull(activeMoveCommand) && activeMoveCommand.isScheduled()) {
             activeMoveCommand.cancel();
         }
@@ -197,7 +197,7 @@ public class Arm extends SubsystemBase {
         private int pathIndex = 0;
 
         public MoveToState(ArmState targetState) {
-            regesterMoveCommand(this);
+            registerMoveCommand(this);
             setTargetState(targetState);
             path = new ArrayList<>();
             newState = targetState;

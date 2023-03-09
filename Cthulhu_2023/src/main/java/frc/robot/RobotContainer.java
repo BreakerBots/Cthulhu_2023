@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
@@ -43,12 +45,14 @@ public class RobotContainer {
 
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
-  private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186), new Translation2d(0.799, 0.317));
+  private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186),
+      new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-      
+
   private final Arm armSys = new Arm();
   private final RollerIntake rollerIntake = new RollerIntake();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -64,7 +68,7 @@ public class RobotContainer {
 
     configureButtonBindings();
     drivetrainSys.setDefaultCommand(manualDriveCommand);
-    }
+  }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be
@@ -75,23 +79,23 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    //controllerSys.getButtonB().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
-    //controllerSys.getButtonX().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    //controllerSys.getButtonA().onTrue(new MoveToGamePiece(drivetrainSys, gpt));
-    //controllerSys.getButtonY().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
+    controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runConeIntake),
+        new InstantCommand(() -> armSys.new MoveToState(ArmState.PICKUP_LOW))));
+    controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runConeIntake),
+        new InstantCommand(() -> armSys.new MoveToState(ArmState.PICKUP_HIGH))));
+    controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
+    controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::stop));
+    controllerSys.getLeftBumper().or(controllerSys.getRightBumper()).onTrue(
+        new ParallelCommandGroup(new InstantCommand(rollerIntake::stop), armSys.new MoveToState(ArmState.CARRY)));
 
-    controllerSys.getDPad().getRight().onTrue(new InstantCommand(rollerIntake::runCubeIntake));
-    controllerSys.getDPad().getLeft().onTrue(new InstantCommand(rollerIntake::runConeIntake));
-    controllerSys.getDPad().getDown().onTrue(new InstantCommand(rollerIntake::stop));
-    controllerSys.getDPad().getUp().onTrue(new InstantCommand(rollerIntake::eject));
+    controllerSys.getDPad().getUp().onTrue(armSys.new MoveToState(ArmState.PLACE_HIGH));
+    controllerSys.getDPad().getLeft().or(controllerSys.getDPad().getRight())
+        .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM));
+    controllerSys.getDPad().getDown().onTrue(armSys.new MoveToState(ArmState.PLACE_HYBRID));
 
-    // GRIPPER TEST!!!
-    // controllerSys.getButtonA().onTrue(new InstantCommand(gripperSys::setOpenGrip));
-    // controllerSys.getButtonB().onTrue(new InstantCommand(() -> gripperSys.setClosedGrip(CONE)));
-    // controllerSys.getButtonX().onTrue(new InstantCommand(() -> gripperSys.setClosedGrip(CUBE)));
-
-    // controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setManualTargetPose(new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20)))));
-    controllerSys.getButtonY().onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM));
+    // ASK NIKO FIRST!!!
+    // controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
+    // controllerSys.getLeftThumbstick().getJoystickButton().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
   }
 
   private void robotManagerSetup() {
@@ -111,16 +115,19 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    //drivetrainSys.getTestSuite().setLogType(BreakerTestSuiteDataLogType.LIVE_AUTOLOG);
+    // drivetrainSys.getTestSuite().setLogType(BreakerTestSuiteDataLogType.LIVE_AUTOLOG);
     ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
-    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3), 3.0));
+    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3),
+    // 3.0));
     speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(2.0, 0, 0.0), 3.0));
-    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, Math.PI), 3.0));
-    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 3, 0), 3.0));
+    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0,
+    // Math.PI), 3.0));
+    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 3, 0),
+    // 3.0));
 
-   //return new ApriltagTestPath(drivetrainSys, att, imuSys);
-   //return drivetrainSys.getTestSuite().stressTest(speedList);
-   //return new Pickup1_Place2_Balence_6_3(drivetrainSys, att, imuSys);
-   return null;
+    // return new ApriltagTestPath(drivetrainSys, att, imuSys);
+    // return drivetrainSys.getTestSuite().stressTest(speedList);
+    // return new Pickup1_Place2_Balence_6_3(drivetrainSys, att, imuSys);
+    return null;
   }
 }
