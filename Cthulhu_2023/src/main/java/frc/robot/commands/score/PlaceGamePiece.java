@@ -19,7 +19,7 @@ public class PlaceGamePiece extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      arm.new MoveToState(targetNode.getPlacementState()),
+      arm.new MoveToState(targetNode.getPlacementState(), arm),
       new OpenGripper(gripper)
     );
   }

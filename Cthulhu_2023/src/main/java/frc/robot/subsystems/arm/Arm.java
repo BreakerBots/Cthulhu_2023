@@ -37,11 +37,11 @@ public class Arm extends SubsystemBase {
 
     // CANCoder Angles of resting position: (-53.7 -> 126.3, -177.2)
     public enum ArmState {
-        PLACE_HIGH(75, 20, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
-        PLACE_MEDIUM(95, 0, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
+        PLACE_HIGH(75, 15, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
+        PLACE_MEDIUM(95, -5, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
         PLACE_HYBRID(18.0, 150.0),
         PICKUP_HIGH(15.0, 78.0),
-        PICKUP_LOW (83.0, -63.0),
+        PICKUP_LOW (74, -63.0),
         CARRY(95.0, -70.0),
         MANUAL(0.0, 0.0), // Always zero
         START(0.0, 0.0);
@@ -196,8 +196,9 @@ public class Arm extends SubsystemBase {
         private ArrayList<ArmPose> path;
         private int pathIndex = 0;
 
-        public MoveToState(ArmState targetState) {
-            registerMoveCommand(this);
+        public MoveToState(ArmState targetState, Arm arm) {
+            //registerMoveCommand(this);
+            addRequirements(arm);
             setTargetState(targetState);
             path = new ArrayList<>();
             newState = targetState;

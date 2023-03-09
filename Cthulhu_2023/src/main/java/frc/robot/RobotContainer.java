@@ -25,6 +25,8 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
+import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.autos.TESTPATH;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.RollerIntake;
 import frc.robot.subsystems.arm.Arm;
@@ -79,24 +81,25 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runConeIntake),
-        new InstantCommand(() -> armSys.new MoveToState(ArmState.PICKUP_LOW))));
-    controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runConeIntake),
-        new InstantCommand(() -> armSys.new MoveToState(ArmState.PICKUP_HIGH))));
+    controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
+        armSys.new MoveToState(ArmState.PICKUP_LOW, armSys)));
+    controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
+        armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
     controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
-    controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::stop));
+    controllerSys.getButtonB().onTrue(new InstantCommand(rollerIntake::stop));
     controllerSys.getLeftBumper().or(controllerSys.getRightBumper()).onTrue(
-        new ParallelCommandGroup(new InstantCommand(rollerIntake::stop), armSys.new MoveToState(ArmState.CARRY)));
+        new ParallelCommandGroup(new InstantCommand(rollerIntake::stop), armSys.new MoveToState(ArmState.CARRY, armSys)));
 
-    controllerSys.getDPad().getUp().onTrue(armSys.new MoveToState(ArmState.PLACE_HIGH));
+    controllerSys.getDPad().getUp().onTrue(armSys.new MoveToState(ArmState.PLACE_HIGH, armSys));
     controllerSys.getDPad().getLeft().or(controllerSys.getDPad().getRight())
-        .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM));
-    controllerSys.getDPad().getDown().onTrue(armSys.new MoveToState(ArmState.PLACE_HYBRID));
-    //controllerSys.getStartButton().onTrue()
+        .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM, armSys));
+    controllerSys.getDPad().getDown().onTrue(armSys.new MoveToState(ArmState.PLACE_HYBRID, armSys));
+    // controllerSys.getStartButton().onTrue()
 
     // ASK NIKO FIRST!!!
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    controllerSys.getStartButton().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
+
+    controllerSys.getStartButton().onTrue(new InstantCommand(rollerIntake::toggleConeModeSelected));
   }
 
   private void robotManagerSetup() {
@@ -116,19 +119,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // drivetrainSys.getTestSuite().setLogType(BreakerTestSuiteDataLogType.LIVE_AUTOLOG);
-    ArrayList<Pair<ChassisSpeeds, Double>> speedList = new ArrayList<>();
-    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0, 0.3),
-    // 3.0));
-    speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(2.0, 0, 0.0), 3.0));
-    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 0,
-    // Math.PI), 3.0));
-    // speedList.add(new Pair<ChassisSpeeds, Double>(new ChassisSpeeds(0, 3, 0),
-    // 3.0));
-
-    // return new ApriltagTestPath(drivetrainSys, att, imuSys);
-    // return drivetrainSys.getTestSuite().stressTest(speedList);
-    // return new Pickup1_Place2_Balence_6_3(drivetrainSys, att, imuSys);
-    return null;
+    return new TESTPATH(drivetrainSys, imuSys);
   }
 }

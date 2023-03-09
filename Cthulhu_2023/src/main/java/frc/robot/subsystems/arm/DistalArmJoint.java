@@ -9,6 +9,7 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
+import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import io.github.oblarg.oblog.Loggable;
 
@@ -110,8 +112,8 @@ public class DistalArmJoint extends SubsystemBase implements Loggable {
     pid.calculate(getJointAngle().getDegrees(), target.getDegrees());
     double err = pid.getPositionError();
     if (isEnabled()) {
-      if (!pid.atSetpoint()) {
-        motor.set(Math.signum(err) * (pid.getP() * (err > 35 ? 1.5 : 1.0)));
+      if (!BreakerMath.epsilonEquals(getJointAngle().getDegrees(), target.getDegrees(), 5)) {
+        motor.set(Math.signum(err) * MathUtil.clamp((pid.getP() * err), -0.2, 0.2));
       } else {
         motor.set(-0.05);
       }
