@@ -92,10 +92,11 @@ public class RobotContainer {
     controllerSys.getDPad().getLeft().or(controllerSys.getDPad().getRight())
         .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM));
     controllerSys.getDPad().getDown().onTrue(armSys.new MoveToState(ArmState.PLACE_HYBRID));
+    //controllerSys.getStartButton().onTrue()
 
     // ASK NIKO FIRST!!!
-    // controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    // controllerSys.getLeftThumbstick().getJoystickButton().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
+    controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
+    controllerSys.getStartButton().onTrue(new InstantCommand(drivetrainSys::toggleSlowMode));
   }
 
   private void robotManagerSetup() {
