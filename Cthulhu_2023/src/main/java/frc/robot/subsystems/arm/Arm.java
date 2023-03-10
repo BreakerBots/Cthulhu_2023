@@ -39,8 +39,8 @@ public class Arm extends SubsystemBase {
     public enum ArmState {
         PLACE_HIGH(75, 15, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
         PLACE_MEDIUM(95, -5, new ArmPose(Rotation2d.fromDegrees(95), Rotation2d.fromDegrees(20))),
-        PLACE_HYBRID(18.0, 150.0),
-        PICKUP_HIGH(15.0, 78.0),
+        PLACE_HYBRID(74, -63),
+        PICKUP_HIGH(95, 1),
         PICKUP_LOW (74, -63.0),
         CARRY(95.0, -70.0),
         MANUAL(0.0, 0.0), // Always zero
