@@ -28,9 +28,10 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.autos.LeaveOnly;
+import frc.robot.commands.autos.MidBalance;
 import frc.robot.commands.autos.GateLeaveThenBalance;
 import frc.robot.commands.autos.GatePlaceLeaveThenBalance;
-import frc.robot.commands.autos.MidGateLeaveThenBalance;
+import frc.robot.commands.autos.MidLeaveThenBalance;
 import frc.robot.commands.autos.SubLeaveThenBalance;
 import frc.robot.commands.autos.TESTPATH;
 //import frc.robot.commands.autos.TESTPATH;
@@ -95,7 +96,8 @@ public class RobotContainer {
     controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
     controllerSys.getButtonB().onTrue(new InstantCommand(rollerIntake::stop));
     controllerSys.getLeftBumper().or(controllerSys.getRightBumper()).onTrue(
-        new ParallelCommandGroup(new InstantCommand(rollerIntake::stop), armSys.new MoveToState(ArmState.CARRY, armSys)));
+        new ParallelCommandGroup(new InstantCommand(rollerIntake::stop),
+            armSys.new MoveToState(ArmState.CARRY, armSys)));
 
     controllerSys.getDPad().getUp().onTrue(armSys.new MoveToState(ArmState.PLACE_HIGH, armSys));
     controllerSys.getDPad().getLeft().or(controllerSys.getDPad().getRight())
@@ -129,18 +131,17 @@ public class RobotContainer {
     int pathNum = 0;
     switch (pathNum) {
       case 0:
-       return new GateLeaveThenBalance(drivetrainSys, imuSys);
+        return new GateLeaveThenBalance(drivetrainSys, imuSys);
       case 1:
-        return new MidGateLeaveThenBalance(drivetrainSys, imuSys);
+        return new MidLeaveThenBalance(drivetrainSys, imuSys);
       case 2:
-      return null;
-        //return new SubLeaveThenBalance(drivetrainSys, imuSys);
+        return new SubLeaveThenBalance(drivetrainSys, imuSys);
       case 3:
-        return new GatePlaceLeaveThenBalance(drivetrainSys, armSys, rollerIntake, imuSys);
+        return new GatePlaceLeaveThenBalance(drivetrainSys, armSys, rollerIntake, imuSys); // TODO
       case 4:
         return new LeaveOnly(drivetrainSys, imuSys);
       case 5:
-        return new TESTPATH(drivetrainSys, imuSys);
+        return new MidBalance(drivetrainSys, imuSys);
       default:
         return null;
 

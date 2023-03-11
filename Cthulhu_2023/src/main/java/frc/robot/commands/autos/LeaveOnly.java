@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerStartTrajectoryPath;
@@ -28,22 +30,22 @@ import frc.robot.subsystems.Drive;
 public class LeaveOnly extends SequentialCommandGroup {
   /** Creates a new TestWaypointAutoPath. */
   public LeaveOnly(Drive drive, BreakerPigeon2 imu) {
-    ProfiledPIDController anglePID = new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0));
+    ProfiledPIDController anglePID = new ProfiledPIDController(0.000000001, 0.0, 0.0,
+        new TrapezoidProfile.Constraints(0.0, 0.0));
     PIDController drivePID = new PIDController(2.0, 0, 0.0);
     BreakerHolonomicDriveController driveController = new BreakerHolonomicDriveController(drivePID, anglePID);
     driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)));
-    
-      BreakerWaypointPath wpp = new BreakerWaypointPath(
-        1.5, 
+
+    BreakerWaypointPath wpp = new BreakerWaypointPath(
+        1.5,
         new Translation2d(1.88, 0.453),
-        new Translation2d(5.895, 0.737)
-        );
+        new Translation2d(5.895, 0.737));
 
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
     addCommands(
-        new BreakerStartTrajectoryPath(drive, new Pose2d(wpp.getWaypoints()[0], new Rotation2d())),
+        new BreakerStartTrajectoryPath(drive, new Pose2d(Drive.mirrorPathToAlliance(wpp).getWaypoints()[0],
+            DriverStation.getAlliance() == Alliance.Red ? Rotation2d.fromDegrees(-180) : new Rotation2d())),
         new BreakerSwerveWaypointFollower(config, true, Drive.mirrorPathToAlliance(wpp)),
-        new BalanceChargingStation(drive, imu)
-        );
+        new BalanceChargingStation(drive, imu));
   }
 }

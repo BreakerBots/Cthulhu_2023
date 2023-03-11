@@ -27,25 +27,27 @@ import frc.robot.subsystems.Drive;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class MidGateLeaveThenBalance extends SequentialCommandGroup {
+public class MidLeaveThenBalance extends SequentialCommandGroup {
   /** Creates a new TestWaypointAutoPath. */
-  public MidGateLeaveThenBalance(Drive drive, BreakerPigeon2 imu) {
-    ProfiledPIDController anglePID = new ProfiledPIDController(0.000000001, 0.0, 0.0, new TrapezoidProfile.Constraints(0.0, 0.0));
+  public MidLeaveThenBalance(Drive drive, BreakerPigeon2 imu) {
+    ProfiledPIDController anglePID = new ProfiledPIDController(0.000000001, 0.0, 0.0,
+        new TrapezoidProfile.Constraints(0.0, 0.0));
     PIDController drivePID = new PIDController(2.0, 0, 0.0);
     BreakerHolonomicDriveController driveController = new BreakerHolonomicDriveController(drivePID, anglePID);
     driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)));
-    
-      BreakerWaypointPath wpp = new BreakerWaypointPath(
-        2.0, 
-        new Translation2d(1.88, 2.777),
-        new Translation2d(3.802, 2.777)
-        );
+
+    BreakerWaypointPath wpp = new BreakerWaypointPath(
+        2.0,
+        new Translation2d(2.062, 2.721),
+        new Translation2d(5.949, 2.721),
+        new Translation2d(3.802, 2.721));
 
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
     addCommands(
-      new BreakerStartTrajectoryPath(drive, new Pose2d(Drive.mirrorPathToAlliance(wpp).getWaypoints()[0], DriverStation.getAlliance() == Alliance.Red ? Rotation2d.fromDegrees(-180) : new Rotation2d())),
+        new BreakerStartTrajectoryPath(drive,
+            new Pose2d(Drive.mirrorPathToAlliance(wpp).getWaypoints()[0],
+                DriverStation.getAlliance() == Alliance.Red ? Rotation2d.fromDegrees(-180) : new Rotation2d())),
         new BreakerSwerveWaypointFollower(config, true, Drive.mirrorPathToAlliance(wpp)),
-        new BalanceChargingStation(drive, imu)
-        );
+        new BalanceChargingStation(drive, imu));
   }
 }
