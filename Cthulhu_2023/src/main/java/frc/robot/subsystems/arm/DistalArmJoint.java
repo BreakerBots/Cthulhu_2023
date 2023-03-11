@@ -113,10 +113,8 @@ public class DistalArmJoint extends SubsystemBase implements Loggable {
     //double err = pid.getPositionError();
     if (isEnabled()) {
       if (!BreakerMath.epsilonEquals(getJointAngle().getDegrees(), target.getDegrees(), 5)) {
-        motor.set(-MathUtil.clamp(pid.calculate(getJointAngle().getDegrees(), target.getDegrees()), -0.2, 0.2));
-      } else {
-        motor.set(-0.05);
-      }
+        motor.set(-MathUtil.clamp(pid.calculate(getJointAngle().getDegrees(), target.getDegrees()), -0.35, 0.2));
+      } 
     } else {
       motor.set(0);
     }

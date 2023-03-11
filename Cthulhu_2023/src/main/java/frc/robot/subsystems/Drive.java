@@ -9,6 +9,7 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
@@ -69,6 +70,13 @@ public class Drive extends BreakerSwerveDrive {
         // BreakerDashboard.getDiagnosticsTab().add("FR Module", frontRightModule);
         // BreakerDashboard.getDiagnosticsTab().add("BL Module", backLeftModule);
         // BreakerDashboard.getDiagnosticsTab().add("BR Module", backRightModule);
+    }
+
+    @Override
+    public void periodic() {
+        // TODO Auto-generated method stub
+        super.periodic();
+        SmartDashboard.putNumber("IMU YAW", getOdometryPoseMeters().getRotation().getDegrees());
     }
 
     public static BreakerWaypointPath mirrorPathToAlliance(BreakerWaypointPath path) {

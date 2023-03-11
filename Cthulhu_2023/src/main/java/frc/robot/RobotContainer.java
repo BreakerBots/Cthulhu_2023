@@ -11,6 +11,7 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,7 +27,13 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.autos.LeaveOnly;
+import frc.robot.commands.autos.GateLeaveThenBalance;
+import frc.robot.commands.autos.GatePlaceLeaveThenBalance;
+import frc.robot.commands.autos.MidGateLeaveThenBalance;
+import frc.robot.commands.autos.SubLeaveThenBalance;
 import frc.robot.commands.autos.TESTPATH;
+//import frc.robot.commands.autos.TESTPATH;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.RollerIntake;
 import frc.robot.subsystems.arm.Arm;
@@ -119,6 +126,24 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new TESTPATH(drivetrainSys, imuSys);
+    int pathNum = 0;
+    switch (pathNum) {
+      case 0:
+       return new GateLeaveThenBalance(drivetrainSys, imuSys);
+      case 1:
+        return new MidGateLeaveThenBalance(drivetrainSys, imuSys);
+      case 2:
+      return null;
+        //return new SubLeaveThenBalance(drivetrainSys, imuSys);
+      case 3:
+        return new GatePlaceLeaveThenBalance(drivetrainSys, armSys, rollerIntake, imuSys);
+      case 4:
+        return new LeaveOnly(drivetrainSys, imuSys);
+      case 5:
+        return new TESTPATH(drivetrainSys, imuSys);
+      default:
+        return null;
+
+    }
   }
 }

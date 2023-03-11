@@ -176,7 +176,7 @@ public final class Constants {
 
         public static final double DIST_KP = 0.012;
         public static final double DIST_KI = 0.0;
-        public static final double DIST_KD = 0;
+        public static final double DIST_KD = 0.0025;
 
         public static final double DIST_KS = 0;
         public static final double DIST_KG = 0;

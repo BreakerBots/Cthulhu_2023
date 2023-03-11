@@ -42,8 +42,8 @@ public class TESTPATH extends SequentialCommandGroup {
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
     addCommands(
         new BreakerStartTrajectoryPath(drive, new Pose2d()),
-        new BreakerSwerveWaypointFollower(config, true, wpp),
-        new BalanceChargingStation(drive, imu)
+        new BreakerSwerveWaypointFollower(config, true, wpp)
+        //new BalanceChargingStation(drive, imu)
         );
   }
 }
