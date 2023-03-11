@@ -41,7 +41,8 @@ public class Arm extends SubsystemBase {
         PLACE_MEDIUM(95, -5),// Intermediary 95,20
         PLACE_HYBRID(74, -63.0),
         PICKUP_HIGH(95, 1),
-        PICKUP_LOW (74, -63.0),
+        PICKUP_CONE_LOW (74, -63.0),
+        PICKUP_CUBE_LOW(52,-51),
         CARRY(100.0, -71),
         MANUAL(0.0, 0.0), // Always zero
         START(0.0, 0.0);

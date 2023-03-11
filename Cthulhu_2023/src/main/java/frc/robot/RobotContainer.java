@@ -90,7 +90,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
-        armSys.new MoveToState(ArmState.PICKUP_LOW, armSys)));
+        armSys.new MoveToState(rollerIntake.isConeModeSelected() ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW, armSys)));
     controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
         armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
     controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
