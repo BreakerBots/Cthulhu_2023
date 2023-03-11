@@ -16,6 +16,7 @@ public class IntakeLow extends CommandBase {
   private MoveToState moveToState;
   private RollerIntake rollerIntake;
   private Arm arm;
+  private boolean inConeMode = true;
   public IntakeLow(RollerIntake rollerIntake, Arm arm) {
     this.arm = arm;
     this.rollerIntake = rollerIntake;
@@ -24,7 +25,8 @@ public class IntakeLow extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    moveToState = arm.new MoveToState(rollerIntake.isConeModeSelected() ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW, arm);
+    inConeMode = rollerIntake.isConeModeSelected();
+    moveToState = arm.new MoveToState(inConeMode ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW, arm);
     new InstantCommand(rollerIntake::runSelectedIntakeMode).schedule();
     moveToState.schedule();
   }
@@ -32,6 +34,6 @@ public class IntakeLow extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return moveToState.isFinished();
+    return moveToState.isFinished() || arm.getTargetState() != (inConeMode ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW);
   }
 }

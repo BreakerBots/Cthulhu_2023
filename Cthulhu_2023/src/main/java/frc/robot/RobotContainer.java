@@ -130,7 +130,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    int pathNum = 0;
+    int pathNum = 4;
     switch (pathNum) {
       case 0:
         return new GateLeaveThenBalance(drivetrainSys, imuSys);
