@@ -34,6 +34,7 @@ import frc.robot.commands.autos.GatePlaceLeaveThenBalance;
 import frc.robot.commands.autos.MidLeaveThenBalance;
 import frc.robot.commands.autos.SubLeaveThenBalance;
 import frc.robot.commands.autos.TESTPATH;
+import frc.robot.commands.intake.IntakeLow;
 //import frc.robot.commands.autos.TESTPATH;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.RollerIntake;
@@ -89,8 +90,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
-        armSys.new MoveToState(rollerIntake.isConeModeSelected() ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW, armSys)));
+    // controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
+    //     armSys.new MoveToState(rollerIntake.isConeModeSelected() ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW, armSys)));
+    controllerSys.getButtonX().onTrue(new IntakeLow(rollerIntake, armSys));
     controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
         armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
     controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
