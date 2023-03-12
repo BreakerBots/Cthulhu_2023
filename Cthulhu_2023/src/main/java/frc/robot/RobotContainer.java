@@ -27,6 +27,7 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.autos.InNOut;
 import frc.robot.commands.autos.LeaveOnly;
 import frc.robot.commands.autos.MidBalance;
 import frc.robot.commands.autos.GateLeaveThenBalance;
@@ -61,8 +62,8 @@ public class RobotContainer {
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
 
-  private final Arm armSys = new Arm();
-  private final RollerIntake rollerIntake = new RollerIntake();
+  // private final Arm armSys = new Arm();
+  // private final RollerIntake rollerIntake = new RollerIntake();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -90,27 +91,27 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
-        armSys.new MoveToState(ArmState.PICKUP_CONE_LOW, armSys)));
-    // controllerSys.getButtonX().onTrue(new IntakeLow(rollerIntake, armSys));
-    controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
-        armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
-    controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
-    controllerSys.getButtonB().onTrue(new InstantCommand(rollerIntake::stop));
-    controllerSys.getLeftBumper().or(controllerSys.getRightBumper()).onTrue(
-        new ParallelCommandGroup(new InstantCommand(rollerIntake::stop),
-            armSys.new MoveToState(ArmState.CARRY, armSys)));
+    // controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
+    //     armSys.new MoveToState(ArmState.PICKUP_CONE_LOW, armSys)));
+    // // controllerSys.getButtonX().onTrue(new IntakeLow(rollerIntake, armSys));
+    // controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
+    //     armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
+    // controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
+    // controllerSys.getButtonB().onTrue(new InstantCommand(rollerIntake::stop));
+    // controllerSys.getLeftBumper().or(controllerSys.getRightBumper()).onTrue(
+    //     new ParallelCommandGroup(new InstantCommand(rollerIntake::stop),
+    //         armSys.new MoveToState(ArmState.CARRY, armSys)));
 
-    controllerSys.getDPad().getUp().onTrue(armSys.new MoveToState(ArmState.PLACE_HIGH, armSys));
-    controllerSys.getDPad().getLeft().or(controllerSys.getDPad().getRight())
-        .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM, armSys));
-    controllerSys.getDPad().getDown().onTrue(armSys.new MoveToState(ArmState.PLACE_HYBRID, armSys));
-    // controllerSys.getStartButton().onTrue()
+    // controllerSys.getDPad().getUp().onTrue(armSys.new MoveToState(ArmState.PLACE_HIGH, armSys));
+    // controllerSys.getDPad().getLeft().or(controllerSys.getDPad().getRight())
+    //     .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM, armSys));
+    // controllerSys.getDPad().getDown().onTrue(armSys.new MoveToState(ArmState.PLACE_HYBRID, armSys));
+    //controllerSys.getStartButton().onTrue()
 
     // ASK NIKO FIRST!!!
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
 
-    controllerSys.getStartButton().onTrue(new InstantCommand(rollerIntake::runSelectedIntakeMode));
+    // controllerSys.getStartButton().onTrue(new InstantCommand(rollerIntake::runSelectedIntakeMode));
     // controllerSys.getStartButton().onTrue(new
     // InstantCommand(rollerIntake::toggleConeModeSelected));
   }
@@ -132,7 +133,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    int pathNum = 0;
+    int pathNum = 4;
     switch (pathNum) {
       case 0:
         return new GateLeaveThenBalance(drivetrainSys, imuSys);
@@ -141,11 +142,14 @@ public class RobotContainer {
       case 2:
         return new SubLeaveThenBalance(drivetrainSys, imuSys);
       case 3:
-        return new GatePlaceLeaveThenBalance(drivetrainSys, armSys, rollerIntake, imuSys); // TODO
+        //return new GatePlaceLeaveThenBalance(drivetrainSys, armSys, rollerIntake, imuSys); // TODO
+        return null;
       case 4:
-        return new LeaveOnly(drivetrainSys, imuSys);
+        return new InNOut(drivetrainSys, imuSys);
       case 5:
         return new MidBalance(drivetrainSys, imuSys);
+      case 6:
+        return new LeaveOnly(drivetrainSys, imuSys);
       default:
         return null;
 
