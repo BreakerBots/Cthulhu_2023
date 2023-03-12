@@ -36,17 +36,27 @@ public class GateLeaveThenBalance extends SequentialCommandGroup {
     driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)));
     
       BreakerWaypointPath wpp = new BreakerWaypointPath(
-        1.5, 
+        2, 
         new Translation2d(1.88, 0.453),
-        new Translation2d(5.895, 0.737),
+        new Translation2d(5.724, 0.453),
         new Translation2d(5.724, 2.727),
-        new Translation2d(3.802, 2.705)
+        new Translation2d(3.802, 2.727)
         );
+
+       
+
+        // BreakerWaypointPath wpp2 = new BreakerWaypointPath(
+        // 2.0, 
+        // new Translation2d(3.802, 2.727)
+        // );
+
+      
 
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);
     addCommands(
       new BreakerStartTrajectoryPath(drive, new Pose2d(Drive.mirrorPathToAlliance(wpp).getWaypoints()[0], DriverStation.getAlliance() == Alliance.Red ? Rotation2d.fromDegrees(-180) : new Rotation2d())),
         new BreakerSwerveWaypointFollower(config, true, Drive.mirrorPathToAlliance(wpp)),
+        // new BreakerSwerveWaypointFollower(config, true, Drive.mirrorPathToAlliance(wpp2)),
         new BalanceChargingStation(drive, imu)
         );
   }

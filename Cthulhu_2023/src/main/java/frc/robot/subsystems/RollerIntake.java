@@ -34,6 +34,7 @@ public class RollerIntake extends SubsystemBase {
   public void 
   toggleConeModeSelected() {
       isConeModeSelected = !isConeModeSelected;
+      System.out.println("Pickup mode changed: is in cone mode - " + isConeModeSelected);
   }
 
   public void runSelectedIntakeMode() {

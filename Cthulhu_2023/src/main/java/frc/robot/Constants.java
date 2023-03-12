@@ -167,7 +167,7 @@ public final class Constants {
 
         public static final double PROX_KP = 0.012;
         public static final double PROX_KI = 0;
-        public static final double PROX_KD = 0.005;
+        public static final double PROX_KD = 0.000;
 
         public static final double PROX_KS = 0;
         public static final double PROX_KG = 0;

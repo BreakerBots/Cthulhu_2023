@@ -48,7 +48,7 @@ public class ProximalArmJoint extends SubsystemBase {
   @Override
   public void periodic() {
     if (!BreakerMath.epsilonEquals(getJointAngle().getDegrees(), proxTgt, 5)) {
-      proxMotor.set(MathUtil.clamp(-pid.calculate(proxEncoder.getAbsolutePosition(), proxTgt), -1, 1));
+      proxMotor.set(MathUtil.clamp(-pid.calculate(proxEncoder.getAbsolutePosition(), proxTgt), -.35, .35));
     }
   }
 }

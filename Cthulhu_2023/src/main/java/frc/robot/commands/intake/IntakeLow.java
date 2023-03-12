@@ -24,7 +24,8 @@ public class IntakeLow extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    moveToState = arm.new MoveToState(rollerIntake.isConeModeSelected() ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW, arm);
+    // moveToState = arm.new MoveToState(rollerIntake.isConeModeSelected() ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW, arm);
+    moveToState = arm.new MoveToState(ArmState.PICKUP_CONE_LOW, arm);
     new InstantCommand(rollerIntake::runSelectedIntakeMode).schedule();
     moveToState.schedule();
   }

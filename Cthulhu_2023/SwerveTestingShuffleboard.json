@@ -205,6 +205,32 @@
               "_glyph": 148,
               "_showGlyph": false
             }
+          },
+          "1,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/IMU YAW",
+              "_title": "IMU YAW",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/AMPS",
+              "_title": "AMPS",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
           }
         }
       }

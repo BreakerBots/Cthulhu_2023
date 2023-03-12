@@ -90,9 +90,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
-    //     armSys.new MoveToState(rollerIntake.isConeModeSelected() ? ArmState.PICKUP_CONE_LOW : ArmState.PICKUP_CUBE_LOW, armSys)));
-    controllerSys.getButtonX().onTrue(new IntakeLow(rollerIntake, armSys));
+    controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
+        armSys.new MoveToState(ArmState.PICKUP_CONE_LOW, armSys)));
+    // controllerSys.getButtonX().onTrue(new IntakeLow(rollerIntake, armSys));
     controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
         armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
     controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
@@ -110,7 +110,9 @@ public class RobotContainer {
     // ASK NIKO FIRST!!!
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
 
-    controllerSys.getStartButton().onTrue(new InstantCommand(rollerIntake::toggleConeModeSelected));
+    controllerSys.getStartButton().onTrue(new InstantCommand(rollerIntake::runSelectedIntakeMode));
+    // controllerSys.getStartButton().onTrue(new
+    // InstantCommand(rollerIntake::toggleConeModeSelected));
   }
 
   private void robotManagerSetup() {
