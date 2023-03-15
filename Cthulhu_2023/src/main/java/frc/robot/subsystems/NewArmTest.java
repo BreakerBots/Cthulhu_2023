@@ -22,9 +22,9 @@ public class NewArmTest extends SubsystemBase {
   public NewArmTest(BreakerXboxController controller) {
     this.controller = controller;
     motor0 = new WPI_TalonFX(41);
-
     motor1 = new WPI_TalonFX(40);
-    motor1.setInverted(TalonFXInvertType.OpposeMaster);
+    motor1.setInverted(TalonFXInvertType.Clockwise);
+    motor0.setInverted(TalonFXInvertType.Clockwise);
     motor1.follow(motor0);
   }
 
