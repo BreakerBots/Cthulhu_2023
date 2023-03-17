@@ -5,6 +5,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.FollowerType;
+import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
+import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -23,6 +26,9 @@ public class NewArmTest extends SubsystemBase {
     this.controller = controller;
     motor0 = new WPI_TalonFX(41);
     motor1 = new WPI_TalonFX(40);
+    motor0.setNeutralMode(NeutralMode.Brake);
+    motor0.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    motor1.setNeutralMode(NeutralMode.Brake);
     motor1.setInverted(TalonFXInvertType.Clockwise);
     motor0.setInverted(TalonFXInvertType.Clockwise);
     motor1.follow(motor0);
@@ -30,6 +36,6 @@ public class NewArmTest extends SubsystemBase {
 
   @Override
   public void periodic() {
-    motor0.set(controller.getLeftTrigger().get());
+    motor0.set(controller.getRightTrigger().get() - controller.getLeftTrigger().get());
   }
 }
