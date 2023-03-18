@@ -39,15 +39,21 @@ public class SebArm extends SubsystemBase {
 
   private BreakerXboxController controller;
 
+  /**
+   * Arm class for the new arm.
+   * 
+   * @param controller
+   */
   public SebArm(BreakerXboxController controller) {
     this.controller = controller;
     motor0 = new WPI_TalonFX(41);
     motor1 = new WPI_TalonFX(40);
     canCoder = new WPI_CANCoder(42);
-    pid = new PIDController(0, 0, 0); // TODO
+    pid = new PIDController(0, 0, 0); // TODO: Set actual PID values for this constructor.
 
     motor0.setNeutralMode(NeutralMode.Brake);
     motor0.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    motor1.setStatusFramePeriod(0, 0, 0);
     motor1.setNeutralMode(NeutralMode.Brake);
     motor1.setInverted(TalonFXInvertType.Clockwise);
     motor0.setInverted(TalonFXInvertType.Clockwise);

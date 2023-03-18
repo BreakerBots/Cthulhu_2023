@@ -38,7 +38,7 @@ import frc.robot.commands.autos.TESTPATH;
 import frc.robot.commands.intake.IntakeLow;
 //import frc.robot.commands.autos.TESTPATH;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.NewArmTest;
+import frc.robot.subsystems.DoubleMotorArmTest;
 import frc.robot.subsystems.RollerIntake;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.Arm.ArmState;
@@ -62,7 +62,7 @@ public class RobotContainer {
       new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-    private final NewArmTest nat = new NewArmTest(controllerSys);
+    private final DoubleMotorArmTest nat = new DoubleMotorArmTest(controllerSys);
   // private final Arm armSys = new Arm();
   // private final RollerIntake rollerIntake = new RollerIntake();
 
