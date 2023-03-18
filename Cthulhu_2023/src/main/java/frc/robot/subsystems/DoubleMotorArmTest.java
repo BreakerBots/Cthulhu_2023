@@ -15,14 +15,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
 
-public class NewArmTest extends SubsystemBase {
+public class DoubleMotorArmTest extends SubsystemBase {
   /** Creates a new NewArmTest. */
 
   private WPI_TalonFX motor0, motor1;
 
   private BreakerXboxController controller;
 
-  public NewArmTest(BreakerXboxController controller) {
+  public DoubleMotorArmTest(BreakerXboxController controller) {
     this.controller = controller;
     motor0 = new WPI_TalonFX(41);
     motor1 = new WPI_TalonFX(40);
