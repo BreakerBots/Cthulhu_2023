@@ -23,12 +23,20 @@ public class BreakerHolonomicDriveController {
     public BreakerHolonomicDriveController(PIDController linearController, ProfiledPIDController angleController) {
         this.linearController = linearController;
         this.angleController = angleController;
+        angleController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     public void setTolerances(Pose2d tolerences) {
         this.tolerences = tolerences;
     }
 
+    /**
+     * 
+     * @param currentPose Robot's current pose.
+     * @param targetPose Robot's target pose.
+     * @param maxLinearVelocity Maximum linear velocity of pose.
+     * @return Robot chassis speeds for swerve drive.
+     */
     public ChassisSpeeds calculate(Pose2d currentPose, Pose2d targetPose, double maxLinearVelocity) {
         Translation2d errTrans = targetPose.getTranslation().minus(currentPose.getTranslation());
         double tgtVel = -linearController.calculate(errTrans.getNorm(), 0);

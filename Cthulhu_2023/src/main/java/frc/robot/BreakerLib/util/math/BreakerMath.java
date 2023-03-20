@@ -172,10 +172,19 @@ public class BreakerMath {
         double y1 = point1.getY();
         double x2 = point2.getX();
         double y2 = point2.getY();
-        double startRelAng = Math.atan(x2 - x1 / y2 - y1) * 180 / Math.PI;
-        double cor = (y2 - y2 / Math.abs(y2 - y1));
-        double finalAng = ((startRelAng * cor) + 90) * (-cor);
-        return Rotation2d.fromDegrees(finalAng).rotateBy(Rotation2d.fromDegrees(90));
+        if (x2 >= x1) {
+            return Rotation2d.fromRadians(Math.atan2(y2-y1, x2-x1));
+        } else {
+            if (y2 >= y1) {
+                double a = Math.atan2(y2-y1, x2-x1);
+                a *= -Math.signum(a);
+                return Rotation2d.fromRadians(Math.PI - a);
+            } else {
+                double a = Math.atan2(y2-y1, x2-x1);
+                a *= -Math.signum(a);
+                return Rotation2d.fromRadians(-Math.PI + a);
+            }
+        }
     }
 
     /**

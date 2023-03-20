@@ -37,9 +37,9 @@ public class MidLeaveThenBalance extends SequentialCommandGroup {
     driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(180)));
 
     BreakerWaypointPath wpp = new BreakerWaypointPath(
-        2.0,
+        1.5,
         new Translation2d(2.062, 2.721),
-        new Translation2d(5.949, 2.721),
+        new Translation2d(6.4, 2.721),
         new Translation2d(3.802, 2.721));
 
     BreakerSwerveWaypointFollowerConfig config = new BreakerSwerveWaypointFollowerConfig(drive, driveController);

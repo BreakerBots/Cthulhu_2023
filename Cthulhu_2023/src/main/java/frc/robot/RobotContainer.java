@@ -35,6 +35,7 @@ import frc.robot.commands.autos.GatePlaceLeaveThenBalance;
 import frc.robot.commands.autos.MidLeaveThenBalance;
 import frc.robot.commands.autos.SubLeaveThenBalance;
 import frc.robot.commands.autos.TESTPATH;
+import frc.robot.commands.autos.TurnTestAuto;
 import frc.robot.commands.intake.IntakeLow;
 //import frc.robot.commands.autos.TESTPATH;
 import frc.robot.subsystems.Drive;
@@ -134,7 +135,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    int pathNum = 4;
+    int pathNum = 3;
     switch (pathNum) {
       case 0:
         return new GateLeaveThenBalance(drivetrainSys, imuSys);
@@ -143,14 +144,15 @@ public class RobotContainer {
       case 2:
         return new SubLeaveThenBalance(drivetrainSys, imuSys);
       case 3:
-        //return new GatePlaceLeaveThenBalance(drivetrainSys, armSys, rollerIntake, imuSys); // TODO
-        return null;
+        return new GatePlaceLeaveThenBalance(drivetrainSys, imuSys);
       case 4:
         return new InNOut(drivetrainSys, imuSys);
       case 5:
         return new MidBalance(drivetrainSys, imuSys);
       case 6:
         return new LeaveOnly(drivetrainSys, imuSys);
+      case 7:
+        return new TurnTestAuto(drivetrainSys, imuSys);
       default:
         return null;
 
