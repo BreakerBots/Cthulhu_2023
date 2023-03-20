@@ -69,6 +69,7 @@ public class BreakerSwervePoseWaypointPathFollower extends CommandBase {
     timer.reset();
     BreakerLog.logBreakerLibEvent("A new BreakerSwerveWaypointFollower instance has started");
     prevWp = config.getOdometer().getOdometryPoseMeters();
+    driveController.reset(prevWp);
     totalDistance += waypoints.get(curTargetWaypointIndex).getTranslation().getDistance(prevWp.getTranslation());
   }
 

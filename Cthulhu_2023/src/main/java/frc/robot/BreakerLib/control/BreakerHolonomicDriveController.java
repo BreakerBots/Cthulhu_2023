@@ -54,5 +54,10 @@ public class BreakerHolonomicDriveController {
                 calculateHasBeenRun;
     }
 
+    public void reset(Pose2d currentPose) {
+        angleController.reset(currentPose.getRotation().getRadians());
+        linearController.reset();
+    }
+
 
 }
