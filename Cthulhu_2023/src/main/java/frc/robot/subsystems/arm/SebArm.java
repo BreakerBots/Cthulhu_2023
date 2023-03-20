@@ -21,7 +21,9 @@ public class SebArm extends SubsystemBase {
     STOW(new Rotation2d()),
     LOW(new Rotation2d()),
     PICKUPHIGH(new Rotation2d()),
-    PLACEMID(new Rotation2d());
+    PLACEMID(new Rotation2d()),
+    UNKNOWN(new Rotation2d());
+
 
     public final Rotation2d rot;
 

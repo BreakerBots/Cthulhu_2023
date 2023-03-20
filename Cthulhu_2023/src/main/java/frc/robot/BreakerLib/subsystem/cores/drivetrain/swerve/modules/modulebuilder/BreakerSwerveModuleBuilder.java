@@ -16,6 +16,14 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.Bre
 public class BreakerSwerveModuleBuilder {
     private BreakerGenericSwerveModuleDriveMotor driveMotor;
     private BreakerGenericSwerveModuleAngleMotor angleMotor;
+
+    private BreakerSwerveModuleBuilder() {
+
+    }
+
+    public static BreakerSwerveModuleBuilder getInstance() {
+        return new BreakerSwerveModuleBuilder();
+    }
     public void withFalconAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderOffsetAngle, boolean isAngleMotorInverted)  {
        // angleMotor = new BreakerFalconSwerveModuleAngleMotor(motor, encoder, 0, isAngleMotorInverted, null);
     }
