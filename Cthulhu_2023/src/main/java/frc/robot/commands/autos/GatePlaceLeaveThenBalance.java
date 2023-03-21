@@ -8,29 +8,17 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerStartTrajectoryPath;
 import frc.robot.BreakerLib.auto.waypoint.BreakerPoseWaypointPath;
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwervePoseWaypointPathFollower;
-import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollower;
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollowerConfig;
-import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.RollerIntake;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.Arm.ArmState;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
