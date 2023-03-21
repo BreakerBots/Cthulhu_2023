@@ -45,13 +45,13 @@ public class GatePlaceLeaveThenBalance extends SequentialCommandGroup {
     driveController.setTolerances(new Pose2d(0.05, 0.05, Rotation2d.fromDegrees(1.0)));
 
     BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
-        1.5,
+        2.5,
         new Pose2d(1.856, 0.397, new Rotation2d()),
         new Pose2d(7.024, 0.902, Rotation2d.fromDegrees(180)),
         new Pose2d(3.457, 0.419, new Rotation2d()),
         new Pose2d(1.856, 1.096, new Rotation2d()));
 
-    BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(1.5,
+    BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(2.5,
         new Pose2d(1.856, 1.901, new Rotation2d()),
         new Pose2d(3.854, 2.5, new Rotation2d()));
 
