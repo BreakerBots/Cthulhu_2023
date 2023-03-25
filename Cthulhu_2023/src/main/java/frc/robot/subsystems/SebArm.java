@@ -79,8 +79,10 @@ public class SebArm extends SubsystemBase {
     motor1 = new WPI_TalonFX(SUB_MOTOR_ID, CANIVORE_1);
     motor1.follow(motor0);
 
-    motor0.setNeutralMode(NeutralMode.Brake);
-    motor1.setNeutralMode(NeutralMode.Brake);
+    // motor0.setNeutralMode(NeutralMode.Brake);
+    // motor1.setNeutralMode(NeutralMode.Brake);
+    motor0.setNeutralMode(NeutralMode.Coast);
+    motor1.setNeutralMode(NeutralMode.Coast);
     motor1.setStatusFramePeriod(0, 0, 0);
     motor0.setInverted(TalonFXInvertType.CounterClockwise);
     motor1.setInverted(TalonFXInvertType.FollowMaster);
