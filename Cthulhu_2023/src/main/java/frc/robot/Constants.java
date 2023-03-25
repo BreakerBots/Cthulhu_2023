@@ -139,49 +139,15 @@ public final class Constants {
         public static final int INTAKE_ID = 32;
     }
 
-    public static final class GripperConstants {
-        public static final int GRIPPER_MOTOR_ID = 32;
-
-        public static final double MOTOR_ROT_TO_GRIP_POS_CM = Units.inchesToMeters(-15 * 12) * 100;
-        public static final double CONE_GRIP_POSITION = -6.0 * MOTOR_ROT_TO_GRIP_POS_CM;
-        public static final double CUBE_GRIP_POSITION = -6.0;
-        public static final double ClOSED_GRIP_POSITION = 0.0;
-        public static final double MAX_GRIPPER_POSITION_CM = 9;
-        public static final double GRIP_OPEN_SPD = 1.0;
-        public static final Color CONE_COLOR = new Color(0, 0, 0);
-        public static final Color CUBE_COLOR = new Color(0, 0, 0);
-        public static final double COLOR_MATCH_CONFIDENCE_THRESHOLD = 95.0;
-        public static final double GAME_PIECE_PROX_THRESHOLD = 0.0;
-        public static final double AUTO_CLOSE_DELAY_SEC = 0.5;
-    }
-
     public static final class ArmConstants {
         public static final int MAIN_MOTOR_ID = 31;
         public static final int SUB_MOTOR_ID = 30;
         public static final int ARM_CANCODER_ID = 24;
+        public static final double ARM_CANCODER_OFFSET = -181.0;
 
-        public static final int PROXIMAL_MOTOR_ID = 0, DISTAL_MOTOR_ID = 0, PROXIMAL_ENCODER_ID = 0,
-                DISTAL_ENCODER_ID = 0;
-        public static final double DIST_ARM_LENGTH_METERS = 0, DISTAL_ENCODER_OFFSET = 0;
-
-        public static final double PROX_KP = 0.012;
-        public static final double PROX_KI = 0;
-        public static final double PROX_KD = 0.005;
-
-        public static final double PROX_KS = 0;
-        public static final double PROX_KG = 0;
-        public static final double PROX_KV = 0;
-        public static final double PROX_KA = 0;
-
-        public static final double DIST_KP = 0.012;
-        public static final double DIST_KI = 0.0;
-        public static final double DIST_KD = 0.0025;
-
-        public static final double DIST_KS = 0;
-        public static final double DIST_KG = 0;
-        public static final double DIST_KV = 0;
-        public static final double DIST_KA = 0;
-
+        public static final double ARM_KP = 0.02;
+        public static final double ARM_KI = 0.0;
+        public static final double ARM_KD = 0.0;
     }
 
     public static final class FieldConstants {
@@ -194,7 +160,6 @@ public final class Constants {
     }
 
     public static final class RobotGeometryConstants {
-        // TODO: Define this!
         public static final BreakerRobotGeometry2d ROBOT_GEOMETRY = new BreakerRobotGeometry2d(null);
     }
 

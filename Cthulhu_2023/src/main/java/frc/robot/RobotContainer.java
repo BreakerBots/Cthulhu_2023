@@ -2,24 +2,18 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.MiscConstants.CANIVORE_1;
 import static frc.robot.Constants.MiscConstants.IMU_ID;
-
-import java.util.ArrayList;
 
 import org.photonvision.PhotonCamera;
 
-import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
@@ -28,27 +22,17 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
-import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.autos.GateLeaveThenBalance;
 import frc.robot.commands.autos.InNOut;
 import frc.robot.commands.autos.LeaveOnly;
 import frc.robot.commands.autos.MidBalance;
-import frc.robot.commands.autos.GateLeaveThenBalance;
-import frc.robot.commands.autos.GatePlaceLeaveThenBalance;
 import frc.robot.commands.autos.MidLeaveThenBalance;
 import frc.robot.commands.autos.SubLeaveThenBalance;
-import frc.robot.commands.autos.TESTPATH;
-import frc.robot.commands.autos.TurnTestAuto;
-import frc.robot.commands.intake.IntakeLow;
-//import frc.robot.commands.autos.TESTPATH;
+import frc.robot.commands.autos.pose.GatePlace2LeaveThenBalance;
+import frc.robot.commands.autos.test.TurnTestAuto;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.RollerIntake;
-import frc.robot.subsystems.DoubleMotorArmTest;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.SebArm;
-import frc.robot.subsystems.arm.Arm.ArmState;
-import frc.robot.subsystems.arm.SebArm.State;
-
-import static frc.robot.Constants.MiscConstants.*;
+import frc.robot.subsystems.SebArm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -69,7 +53,6 @@ public class RobotContainer {
       new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-  private final DoubleMotorArmTest nat = new DoubleMotorArmTest(controllerSys);
   private final SebArm armSys = new SebArm(controllerSys);
   private final RollerIntake intakeSys = new RollerIntake();
   private static boolean isInCubeMode = true;
@@ -103,30 +86,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new
-    // InstantCommand(rollerIntake::runSelectedIntakeMode),
-    // armSys.new MoveToState(ArmState.PICKUP_CONE_LOW, armSys)));
-    // // controllerSys.getButtonX().onTrue(new IntakeLow(rollerIntake, armSys));
-    // controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new
-    // InstantCommand(rollerIntake::runSelectedIntakeMode),
-    // armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
-    // controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
-    // controllerSys.getButtonB().onTrue(new InstantCommand(rollerIntake::stop));
-    // controllerSys.getLeftBumper().or(controllerSys.getRightBumper()).onTrue(
-    // new ParallelCommandGroup(new InstantCommand(rollerIntake::stop),
-    // armSys.new MoveToState(ArmState.CARRY, armSys)));
 
-    // controllerSys.getDPad().getUp().onTrue(armSys.new
-    // MoveToState(ArmState.PLACE_HIGH, armSys));
-    // controllerSys.getDPad().getLeft().or(controllerSys.getDPad().getRight())
-    // .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM, armSys));
-    // controllerSys.getDPad().getDown().onTrue(armSys.new
-    // MoveToState(ArmState.PLACE_HYBRID, armSys));
-    // controllerSys.getStartButton().onTrue()
-
-    // ASK NIKO FIRST!!!
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    // controllerSys.getStartButton().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
     controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
     
     controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
@@ -136,13 +97,13 @@ public class RobotContainer {
       new InstantCommand(intakeSys::start)
       ));
     controllerSys.getButtonX().onTrue(new ParallelCommandGroup(
-      new InstantCommand(armSys::pickupLow),
+      armSys.pickupLowCommand(),
       new InstantCommand(intakeSys::start)
       ));
     
     controllerSys.getLeftBumper().onTrue(new InstantCommand(intakeSys::start));
     controllerSys.getRightBumper().onTrue(new ParallelCommandGroup(
-      new InstantCommand(armSys::stow),
+      armSys.stowCommand(),
       new InstantCommand(intakeSys::stop)
       ));
     
@@ -192,7 +153,7 @@ public class RobotContainer {
       case 2:
         return new SubLeaveThenBalance(drivetrainSys, imuSys);
       case 3:
-        return new GatePlaceLeaveThenBalance(drivetrainSys, imuSys);
+        return new GatePlace2LeaveThenBalance(drivetrainSys, imuSys, intakeSys, armSys);
       case 4:
         return new InNOut(drivetrainSys, imuSys);
       case 5:
