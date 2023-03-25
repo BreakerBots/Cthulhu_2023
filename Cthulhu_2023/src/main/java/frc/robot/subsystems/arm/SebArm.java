@@ -31,10 +31,10 @@ public class SebArm extends SubsystemBase {
   public enum State {
     STOW(new Rotation2d()),
     PLACE_LOW(new Rotation2d()),
-    PICKUP_HIGH(new Rotation2d()),
+    PICKUP_HIGH(Rotation2d.fromDegrees(180)),
     PLACE_MID(new Rotation2d()),
-    PICKUP_LOW_CUBE(new Rotation2d()),
-    PICKUP_LOW_CONE(new Rotation2d()),
+    PICKUP_LOW_CUBE(Rotation2d.fromDegrees(-44)),
+    PICKUP_LOW_CONE(Rotation2d.fromDegrees(-32)),
     UNKNOWN(new Rotation2d());
 
     public final Rotation2d rot;
@@ -104,11 +104,12 @@ public class SebArm extends SubsystemBase {
     double pos = canCoder.getPosition();
     //double ctrlInput = profPID.calculate(pos, desiredRot.getDegrees());
     //double ctrlInput = pid.calculate(pos, desiredRot.getDegrees());
-    if (!BreakerMath.epsilonEquals(pos, desiredRot.getDegrees(), 2.0)) {
-      motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
-    } else {
-       motor0.set(0);
-     }
+    // if (!BreakerMath.epsilonEquals(pos, desiredRot.getDegrees(), 2.0)) {
+    //   motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
+    // } else {
+    //    motor0.set(0);
+    //  }
+    motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
     SmartDashboard.putNumber("Arm Tgt", desiredRot.getDegrees());
     SmartDashboard.putNumber("Arm motor", motor0.get());
     

@@ -123,12 +123,12 @@ public class RobotContainer {
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     controllerSys.getStartButton().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
 
-    // controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::start));
-    // controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
-    // controllerSys.getButtonX().onTrue(new InstantCommand(intakeSys::eject));
-    controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(-45))));
-    controllerSys.getButtonX().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(90))));
-    controllerSys.getButtonA().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(210))));
+    controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::start));
+    controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
+    controllerSys.getButtonX().onTrue(new InstantCommand(intakeSys::eject));
+    // controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(-45))));
+    // controllerSys.getButtonX().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(90))));
+    // controllerSys.getButtonA().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(210))));
     
 
 
