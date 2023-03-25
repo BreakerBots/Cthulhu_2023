@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -66,7 +67,7 @@ public class RobotContainer {
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
   private final DoubleMotorArmTest nat = new DoubleMotorArmTest(controllerSys);
-  private final SebArm sebArm = new SebArm(controllerSys);
+  private final SebArm armSys = new SebArm(controllerSys);
   private final RollerIntake intakeSys = new RollerIntake();
   // private final Arm armSys = new Arm();
   // private final RollerIntake rollerIntake = new RollerIntake();
@@ -122,9 +123,12 @@ public class RobotContainer {
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     controllerSys.getStartButton().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
 
-    controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::start));
-    controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
-    controllerSys.getButtonX().onTrue(new InstantCommand(intakeSys::eject));
+    // controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::start));
+    // controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
+    // controllerSys.getButtonX().onTrue(new InstantCommand(intakeSys::eject));
+    controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(-45))));
+    controllerSys.getButtonX().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(90))));
+    controllerSys.getButtonA().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(210))));
     
 
 
