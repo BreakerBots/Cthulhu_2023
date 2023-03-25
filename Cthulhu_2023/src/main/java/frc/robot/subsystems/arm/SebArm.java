@@ -17,11 +17,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
-import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 
 import static frc.robot.Constants.ArmConstants.*;
@@ -29,12 +28,16 @@ import static frc.robot.Constants.MiscConstants.*;
 
 public class SebArm extends SubsystemBase {
   public enum State {
-    STOW(new Rotation2d()),
-    PLACE_LOW(new Rotation2d()),
-    PICKUP_HIGH(Rotation2d.fromDegrees(180)),
-    PLACE_MID(new Rotation2d()),
-    PICKUP_LOW_CUBE(Rotation2d.fromDegrees(-44)),
-    PICKUP_LOW_CONE(Rotation2d.fromDegrees(-32)),
+    STOW_CUBE(Rotation2d.fromDegrees(210)),
+    STOW_CONE(Rotation2d.fromDegrees(190)),
+    PLACE_LOW_AUTO(new Rotation2d()),
+    PICKUP_HIGH(Rotation2d.fromDegrees(175)),
+    PLACE_CUBE_MID(Rotation2d.fromDegrees(25)),
+    PLACE_CONE_MID(Rotation2d.fromDegrees(57)),
+    PICKUP_LOW_CUBE(Rotation2d.fromDegrees(-48)),
+
+    PICKUP_LOW_CONE_PREP(Rotation2d.fromDegrees(-26)),
+    PICKUP_LOW_CONE(Rotation2d.fromDegrees(-45)),
     UNKNOWN(new Rotation2d());
 
     public final Rotation2d rot;
@@ -56,6 +59,8 @@ public class SebArm extends SubsystemBase {
   private ProfiledPIDController profPID;
   private BreakerBezierCurve curve;
 
+  private boolean isConePreparing = true;
+
   private BreakerXboxController controller;
 
   /**
@@ -75,6 +80,7 @@ public class SebArm extends SubsystemBase {
     canCoder.configSensorDirection(false);
     canCoder.configMagnetOffset(-181.0);
     canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+    canCoder.setPosition(canCoder.getAbsolutePosition() +  (canCoder.getAbsolutePosition() <= -90 && canCoder.getAbsolutePosition() >= -180 ? 360 : 0));
     pid = new PIDController(0.02, 0, 0); // TODO: Set actual PID values for this constructor.
 
     // profPID = new ProfiledPIDController(0.02, 0.0, 0.0, new TrapezoidProfile.Constraints(100.0,20.0));
@@ -91,6 +97,11 @@ public class SebArm extends SubsystemBase {
     desiredRot = Rotation2d.fromDegrees(canCoder.getPosition());
   }
 
+  // public Rotation2d getAngle() {
+  //   double ang = canCoder.getAbsolutePosition() + (canCoder.getAbsolutePosition() >= -90 && canCoder.getAbsolutePosition() <= -180 ? 360 : 0);
+  //   return Rotation2d.fromDegrees(ang);
+  // }
+
   public void setTarget(Rotation2d target) {
     desiredRot = target;
     //profPID.reset(canCoder.getPosition());
@@ -98,12 +109,12 @@ public class SebArm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Arm Angle", canCoder.getAbsolutePosition());
-     double ctrlInput = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
+    SmartDashboard.putNumber("Arm Angle", canCoder.getPosition());
+     //double ctrlInput = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
     // motor0.set(-curve.getSignRelativeValueAtX(ctrlInput));
     double pos = canCoder.getPosition();
     //double ctrlInput = profPID.calculate(pos, desiredRot.getDegrees());
-    //double ctrlInput = pid.calculate(pos, desiredRot.getDegrees());
+    double ctrlInput = pid.calculate(pos, desiredRot.getDegrees());
     // if (!BreakerMath.epsilonEquals(pos, desiredRot.getDegrees(), 2.0)) {
     //   motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
     // } else {
@@ -113,5 +124,39 @@ public class SebArm extends SubsystemBase {
     SmartDashboard.putNumber("Arm Tgt", desiredRot.getDegrees());
     SmartDashboard.putNumber("Arm motor", motor0.get());
     
+  }
+
+  public void setArmState(State armState) {
+    setTarget(armState.rot);
+  }
+
+  public void pickupLow() {
+    if (RobotContainer.isInCubeMode()) {
+      isConePreparing = true;
+      setArmState(State.PICKUP_LOW_CUBE);
+    } else {
+      if (isConePreparing) {
+        setArmState(State.PICKUP_LOW_CONE_PREP);
+      } else {
+        setArmState(State.PICKUP_LOW_CONE);
+      }
+      isConePreparing = !isConePreparing;
+    }
+  }
+
+  public void placeMid() {
+    if (RobotContainer.isInCubeMode()) {
+      setArmState(State.PLACE_CUBE_MID);
+    } else {
+      setArmState(State.PLACE_CONE_MID);
+    }
+  }
+
+  public void stow() {
+    if (RobotContainer.isInCubeMode()) {
+      setArmState(State.STOW_CUBE);
+    } else {
+      setArmState(State.STOW_CONE);
+    }
   }
 }

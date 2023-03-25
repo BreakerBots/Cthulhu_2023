@@ -111,6 +111,6 @@ public class ScoreGamePiece extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return RobotContainer.isGlobalManualOverride() || (targetSelected && placeCom.isFinished()) || pieceType == GamePieceType.NONE;
+    return (targetSelected && placeCom.isFinished()) || pieceType == GamePieceType.NONE;
   }
 }

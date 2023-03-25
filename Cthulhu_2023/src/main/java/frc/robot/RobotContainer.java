@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -45,6 +46,8 @@ import frc.robot.subsystems.DoubleMotorArmTest;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.SebArm;
 import frc.robot.subsystems.arm.Arm.ArmState;
+import frc.robot.subsystems.arm.SebArm.State;
+
 import static frc.robot.Constants.MiscConstants.*;
 
 /**
@@ -69,6 +72,7 @@ public class RobotContainer {
   private final DoubleMotorArmTest nat = new DoubleMotorArmTest(controllerSys);
   private final SebArm armSys = new SebArm(controllerSys);
   private final RollerIntake intakeSys = new RollerIntake();
+  private static boolean isInCubeMode = true;
   // private final Arm armSys = new Arm();
   // private final RollerIntake rollerIntake = new RollerIntake();
 
@@ -87,6 +91,7 @@ public class RobotContainer {
 
     configureButtonBindings();
     drivetrainSys.setDefaultCommand(manualDriveCommand);
+    SmartDashboard.putBoolean("Is in Cube Mode", isInCubeMode);
   }
 
   /**
@@ -121,11 +126,27 @@ public class RobotContainer {
 
     // ASK NIKO FIRST!!!
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    controllerSys.getStartButton().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
-
-    controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::start));
+    // controllerSys.getStartButton().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
+    controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
+    
     controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
-    controllerSys.getButtonX().onTrue(new InstantCommand(intakeSys::eject));
+    controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
+    controllerSys.getButtonY().onTrue(new ParallelCommandGroup(
+      new InstantCommand(() -> armSys.setArmState(SebArm.State.PICKUP_HIGH)),
+      new InstantCommand(intakeSys::start)
+      ));
+    controllerSys.getButtonX().onTrue(new ParallelCommandGroup(
+      new InstantCommand(armSys::pickupLow),
+      new InstantCommand(intakeSys::start)
+      ));
+    
+    controllerSys.getLeftBumper().onTrue(new InstantCommand(intakeSys::start));
+    controllerSys.getRightBumper().onTrue(new ParallelCommandGroup(
+      new InstantCommand(armSys::stow),
+      new InstantCommand(intakeSys::stop)
+      ));
+    
+    controllerSys.getDPad().getUp().onTrue(new InstantCommand(armSys::placeMid));
     // controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(-45))));
     // controllerSys.getButtonX().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(90))));
     // controllerSys.getButtonA().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(210))));
@@ -145,9 +166,16 @@ public class RobotContainer {
     BreakerRobotManager.setup(drivetrainSys, robotConfig);
   }
 
-  public static boolean isGlobalManualOverride() {
-    return controllerSys.getStartButton().getAsBoolean();
+  public static boolean isInCubeMode() {
+    return isInCubeMode;
   }
+
+  public static void toggleisInCubeMode() {
+    isInCubeMode = !isInCubeMode;
+    SmartDashboard.putBoolean("Is in Cube Mode", isInCubeMode);
+  }
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
