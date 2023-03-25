@@ -7,15 +7,19 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 public class RollerIntake extends SubsystemBase{
-  private WPI_TalonSRX motor = new WPI_TalonSRX(
-    Constants.RollerIntakeConstants.INTAKE_ID
-  );
+
+  public InstantCommand ejectCmd = new InstantCommand(this::eject);
+  public InstantCommand stopCmd = new InstantCommand(this::stop);
+  public InstantCommand startCmd = new InstantCommand(this::start);
+
+  private WPI_TalonSRX motor = new WPI_TalonSRX(Constants.RollerIntakeConstants.INTAKE_ID);
 
   /** Creates a new Intake. */
   public RollerIntake() {
