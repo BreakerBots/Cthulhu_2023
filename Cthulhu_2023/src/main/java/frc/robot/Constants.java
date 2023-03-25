@@ -71,16 +71,18 @@ public final class Constants {
         public static final Translation2d BL_TRANSLATION = new Translation2d(-0.2635, 0.2635);
         public static final Translation2d BR_TRANSLATION = new Translation2d(-0.2635, -0.2635);
 
-        // Gears all face outward
-        public static final double FL_ENCODER_OFFSET = -150.732;
-        public static final double FR_ENCODER_OFFSET = 38.5;
-        public static final double BL_ENCODER_OFFSET = -85.693;
-        public static final double BR_ENCODER_OFFSET = 122.113;
+        // Gears all face outward!
 
-        // public static final double FL_ENCODER_OFFSET = -112.500;
-        // public static final double FR_ENCODER_OFFSET = 141.152;
-        // public static final double BL_ENCODER_OFFSET = 117.246;
-        // public static final double BR_ENCODER_OFFSET = -155.918;
+        // BRAVO BOT
+        // public static final double FL_ENCODER_OFFSET = -150.732;
+        // public static final double FR_ENCODER_OFFSET = 38.5;
+        // public static final double BL_ENCODER_OFFSET = -85.693;
+        // public static final double BR_ENCODER_OFFSET = 122.113;
+
+        public static final double FL_ENCODER_OFFSET = 53.701;
+        public static final double FR_ENCODER_OFFSET = 160.576;
+        public static final double BL_ENCODER_OFFSET = -67.412;
+        public static final double BR_ENCODER_OFFSET = -113.818;
 
     }
 
@@ -154,16 +156,13 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
-        public static final int PROXIMAL_MOTOR_ID = 30;
-        public static final int PROXIMAL_ENCODER_ID = 24;
-        public static final double PROXIMAL_ENCODER_OFFSET = 107.6;
-        public static final double PROX_ARM_LENGTH_METERS = 1;
+        public static final int MAIN_MOTOR_ID = 31;
+        public static final int SUB_MOTOR_ID = 30;
+        public static final int ARM_CANCODER_ID = 24;
 
-        public static final int DISTAL_MOTOR_ID = 31;
-        public static final int DISTAL_ENCODER_ID = 25;
-        public static final double DISTAL_ENCODER_OFFSET = -192.932;
-        public static final double DIST_ARM_LENGTH_METERS = 1;
-        public static final double DIST_BIAS_ANGLE = -10;
+        public static final int PROXIMAL_MOTOR_ID = 0, DISTAL_MOTOR_ID = 0, PROXIMAL_ENCODER_ID = 0,
+                DISTAL_ENCODER_ID = 0;
+        public static final double DIST_ARM_LENGTH_METERS = 0, DISTAL_ENCODER_OFFSET = 0;
 
         public static final double PROX_KP = 0.012;
         public static final double PROX_KI = 0;

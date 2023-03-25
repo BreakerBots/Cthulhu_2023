@@ -39,10 +39,12 @@ import frc.robot.commands.autos.TurnTestAuto;
 import frc.robot.commands.intake.IntakeLow;
 //import frc.robot.commands.autos.TESTPATH;
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.DoubleMotorArmTest;
 import frc.robot.subsystems.RollerIntake;
+import frc.robot.subsystems.DoubleMotorArmTest;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.SebArm;
 import frc.robot.subsystems.arm.Arm.ArmState;
+import static frc.robot.Constants.MiscConstants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -57,13 +59,15 @@ public class RobotContainer {
 
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
 
-  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
+  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID, CANIVORE_1);
   private final Drive drivetrainSys = new Drive(imuSys);
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186),
       new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-    private final DoubleMotorArmTest nat = new DoubleMotorArmTest(controllerSys);
+  private final DoubleMotorArmTest nat = new DoubleMotorArmTest(controllerSys);
+  private final SebArm sebArm = new SebArm(controllerSys);
+  private final RollerIntake intakeSys = new RollerIntake();
   // private final Arm armSys = new Arm();
   // private final RollerIntake rollerIntake = new RollerIntake();
 
@@ -93,27 +97,39 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
-    //     armSys.new MoveToState(ArmState.PICKUP_CONE_LOW, armSys)));
+    // controllerSys.getButtonX().onTrue(new ParallelCommandGroup(new
+    // InstantCommand(rollerIntake::runSelectedIntakeMode),
+    // armSys.new MoveToState(ArmState.PICKUP_CONE_LOW, armSys)));
     // // controllerSys.getButtonX().onTrue(new IntakeLow(rollerIntake, armSys));
-    // controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new InstantCommand(rollerIntake::runSelectedIntakeMode),
-    //     armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
+    // controllerSys.getButtonY().onTrue(new ParallelCommandGroup(new
+    // InstantCommand(rollerIntake::runSelectedIntakeMode),
+    // armSys.new MoveToState(ArmState.PICKUP_HIGH, armSys)));
     // controllerSys.getButtonA().onTrue(new InstantCommand(rollerIntake::eject));
     // controllerSys.getButtonB().onTrue(new InstantCommand(rollerIntake::stop));
     // controllerSys.getLeftBumper().or(controllerSys.getRightBumper()).onTrue(
-    //     new ParallelCommandGroup(new InstantCommand(rollerIntake::stop),
-    //         armSys.new MoveToState(ArmState.CARRY, armSys)));
+    // new ParallelCommandGroup(new InstantCommand(rollerIntake::stop),
+    // armSys.new MoveToState(ArmState.CARRY, armSys)));
 
-    // controllerSys.getDPad().getUp().onTrue(armSys.new MoveToState(ArmState.PLACE_HIGH, armSys));
+    // controllerSys.getDPad().getUp().onTrue(armSys.new
+    // MoveToState(ArmState.PLACE_HIGH, armSys));
     // controllerSys.getDPad().getLeft().or(controllerSys.getDPad().getRight())
-    //     .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM, armSys));
-    // controllerSys.getDPad().getDown().onTrue(armSys.new MoveToState(ArmState.PLACE_HYBRID, armSys));
-    //controllerSys.getStartButton().onTrue()
+    // .onTrue(armSys.new MoveToState(ArmState.PLACE_MEDIUM, armSys));
+    // controllerSys.getDPad().getDown().onTrue(armSys.new
+    // MoveToState(ArmState.PLACE_HYBRID, armSys));
+    // controllerSys.getStartButton().onTrue()
 
     // ASK NIKO FIRST!!!
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
+    controllerSys.getStartButton().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
 
-    // controllerSys.getStartButton().onTrue(new InstantCommand(rollerIntake::runSelectedIntakeMode));
+    controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::start));
+    controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
+    controllerSys.getButtonX().onTrue(new InstantCommand(intakeSys::eject));
+    
+
+
+    // controllerSys.getStartButton().onTrue(new
+    // InstantCommand(rollerIntake::runSelectedIntakeMode));
     // controllerSys.getStartButton().onTrue(new
     // InstantCommand(rollerIntake::toggleConeModeSelected));
   }

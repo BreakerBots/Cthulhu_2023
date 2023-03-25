@@ -4,57 +4,31 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.RollerIntakeConstants.*;
+import frc.robot.Constants;
+import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 public class RollerIntake extends SubsystemBase {
-  private WPI_TalonSRX motor;
-  private boolean isConeModeSelected = true;
+  private WPI_TalonSRX motor = new WPI_TalonSRX(Constants.RollerIntakeConstants.INTAKE_ID);
 
-  /** Creates a new RollerIntake. */
+  /** Creates a new Intake. */
   public RollerIntake() {
-    this.motor = new WPI_TalonSRX(INTAKE_ID);
-    motor.configPeakCurrentLimit(40);
-    motor.configPeakCurrentDuration(1000);
+    BreakerCTREUtil.checkError(motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30.0, 30.0, 1.5)),
+            " Failed to config swerve module turn motor ");
   }
 
   @Override
-  public void periodic() {
-    var amps = motor.getStatorCurrent();
-    SmartDashboard.putNumber("AMPS", amps);
-  }
+  public void periodic() {}
 
-  public boolean isConeModeSelected() {
-      return isConeModeSelected;
-  }
-
-  public void 
-  toggleConeModeSelected() {
-      isConeModeSelected = !isConeModeSelected;
-      System.out.println("Pickup mode changed: is in cone mode - " + isConeModeSelected);
-  }
-
-  public void runSelectedIntakeMode() {
-    if (isConeModeSelected) {
-      runConeIntake();
-    } else {
-      runCubeIntake();
-    }
-  }
-
-  public void runConeIntake() {
-    motor.set(0.80);
-  }
-
-  public void runCubeIntake() {
-    motor.set(0.2);
+  public void start() {
+    motor.set(-1.0);
   }
 
   public void eject() {
-    motor.set(-1);
+    motor.set(1.0);
   }
 
   public void stop() {

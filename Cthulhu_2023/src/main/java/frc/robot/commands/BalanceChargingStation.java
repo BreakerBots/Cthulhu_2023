@@ -23,8 +23,8 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    xPID = new PIDController(1, 0.0, 0.35);
-    yPID = new PIDController(1, 0.0, 0.35);
+    xPID = new PIDController(1.2, 0.0, 0.35);
+    yPID = new PIDController(1.2, 0.0, 0.35);
     xPID.setTolerance(0.02, 0.05);
     yPID.setTolerance(0.02, 0.05);
     addRequirements(drivetrain);
@@ -39,9 +39,9 @@ public class BalanceChargingStation extends CommandBase {
   @Override
   public void execute() {
     BreakerVector3 gravity = imu.getGravityVector();
-    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.35, 0.35);
-    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.35, 0.35);
-    drivetrain.move(xSpeed, -ySpeed, 0);
+    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.50, 0.50);
+    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.50, 0.50);
+    drivetrain.move(-xSpeed, ySpeed, 0);
     System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", gravity.getMagnitudeY(), xSpeed, ySpeed);
   }
 

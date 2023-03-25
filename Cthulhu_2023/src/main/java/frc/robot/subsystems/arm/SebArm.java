@@ -15,6 +15,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
+import static frc.robot.Constants.ArmConstants.*;
+import static frc.robot.Constants.MiscConstants.*;
 
 public class SebArm extends SubsystemBase {
   public enum State {
@@ -24,7 +26,6 @@ public class SebArm extends SubsystemBase {
     PLACEMID(new Rotation2d()),
     UNKNOWN(new Rotation2d());
 
-
     public final Rotation2d rot;
 
     private State(Rotation2d rot) {
@@ -33,6 +34,9 @@ public class SebArm extends SubsystemBase {
   }
 
   /** Creates a new NewArmTest. */
+
+  // Motor reverse moves arm to intake position. Motor forward moves arm to stow position.
+  
 
   private WPI_TalonFX motor0, motor1;
   private Rotation2d desiredRot;
@@ -48,24 +52,24 @@ public class SebArm extends SubsystemBase {
    */
   public SebArm(BreakerXboxController controller) {
     this.controller = controller;
-    motor0 = new WPI_TalonFX(41);
-    motor1 = new WPI_TalonFX(40);
-    canCoder = new WPI_CANCoder(42);
+    motor0 = new WPI_TalonFX(MAIN_MOTOR_ID, CANIVORE_1);
+    motor1 = new WPI_TalonFX(SUB_MOTOR_ID, CANIVORE_1);
+    canCoder = new WPI_CANCoder(ARM_CANCODER_ID);
     pid = new PIDController(0, 0, 0); // TODO: Set actual PID values for this constructor.
 
     motor0.setNeutralMode(NeutralMode.Brake);
     motor0.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    motor0.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
     motor1.setStatusFramePeriod(0, 0, 0);
     motor1.setNeutralMode(NeutralMode.Brake);
-    motor1.setInverted(TalonFXInvertType.Clockwise);
-    motor0.setInverted(TalonFXInvertType.Clockwise);
+    motor0.setInverted(TalonFXInvertType.CounterClockwise);
     motor1.follow(motor0);
-
-    motor0.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);
+    motor1.setInverted(TalonFXInvertType.FollowMaster);
   }
 
   @Override
   public void periodic() {
-    motor0.set(controller.getRightTrigger().get() - controller.getLeftTrigger().get());
+    double ctrlInput = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
+    motor0.set(-ctrlInput);
   }
 }
