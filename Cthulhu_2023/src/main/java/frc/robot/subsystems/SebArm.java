@@ -66,6 +66,8 @@ public class SebArm extends SubsystemBase {
 
   private BreakerXboxController controller;
 
+
+
   /**
    * Arm class for the new arm.
    * 
@@ -79,10 +81,10 @@ public class SebArm extends SubsystemBase {
     motor1 = new WPI_TalonFX(SUB_MOTOR_ID, CANIVORE_1);
     motor1.follow(motor0);
 
-    // motor0.setNeutralMode(NeutralMode.Brake);
-    // motor1.setNeutralMode(NeutralMode.Brake);
-    motor0.setNeutralMode(NeutralMode.Coast);
-    motor1.setNeutralMode(NeutralMode.Coast);
+    motor0.setNeutralMode(NeutralMode.Brake);
+    motor1.setNeutralMode(NeutralMode.Brake);
+    // motor0.setNeutralMode(NeutralMode.Coast);
+    // motor1.setNeutralMode(NeutralMode.Coast);
     motor1.setStatusFramePeriod(0, 0, 0);
     motor0.setInverted(TalonFXInvertType.CounterClockwise);
     motor1.setInverted(TalonFXInvertType.FollowMaster);
@@ -117,7 +119,7 @@ public class SebArm extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Arm Angle", canCoder.getPosition());
-     //double ctrlInput = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
+   //double ctrlInput = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
     // motor0.set(-curve.getSignRelativeValueAtX(ctrlInput));
     double pos = canCoder.getPosition();
     //double ctrlInput = profPID.calculate(pos, desiredRot.getDegrees());
@@ -127,7 +129,7 @@ public class SebArm extends SubsystemBase {
     } else {
        motor0.set(0);
      }
-    //motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
+    // motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
     SmartDashboard.putNumber("Arm Tgt", desiredRot.getDegrees());
     SmartDashboard.putNumber("Arm motor", motor0.get());
     
