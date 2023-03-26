@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerStartTrajectoryPath;
 import frc.robot.BreakerLib.auto.waypoint.BreakerPoseWaypointPath;
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwervePoseWaypointPathFollower;
@@ -30,37 +31,44 @@ public class GatePlace2LeaveThenBalance extends SequentialCommandGroup {
 
                 // Move out to game piece
                 BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
-                                2.5,
-                                new Pose2d(1.856, 0.397, new Rotation2d()),
-                                new Pose2d(7.024, 0.902, Rotation2d.fromDegrees(180)));
+                                1.5,
+                                new Pose2d(1.9, 1.02, new Rotation2d()),
+                                new Pose2d(6.75, 1.06, Rotation2d.fromDegrees(180)));
 
-                // Move back to game piece
+                // Grab then move back to position
                 BreakerPoseWaypointPath wpp1 = new BreakerPoseWaypointPath(
-                                2.5,
-                                new Pose2d(3.457, 0.419, new Rotation2d()),
-                                new Pose2d(1.856, 1.096, new Rotation2d()));
+                                1.5,
+                                new Pose2d(7.02, 1.06, Rotation2d.fromDegrees(180)),
+                                new Pose2d(3.457, 1.06, Rotation2d.fromDegrees(180)),
+                                new Pose2d(1.9, 1.02, Rotation2d.fromDegrees(180)));
 
                 // Move to charging station
-                BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(2.5,
-                                new Pose2d(1.856, 1.901, new Rotation2d()),
-                                new Pose2d(3.854, 2.5, new Rotation2d()));
+                BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(1.5,
+                                new Pose2d(1.9, 1.901, Rotation2d.fromDegrees(180)),
+                                new Pose2d(3.854, 2.5, Rotation2d.fromDegrees(180)));
 
                 addCommands(
                                 new BreakerStartTrajectoryPath(drive,
                                                 Drive.mirrorPathToAlliance(wpp).getWaypoints()[0]),
                                 new MoveArmToState(arm, PLACE_CUBE_MID),
-                                intake.ejectCmd,
+                                intake.ejectCmd(),
+                                new WaitCommand(.25),
+                                new MoveArmToState(arm, STOW_CUBE),
+                                new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
+                                                Drive.mirrorPathToAlliance(wpp)),
                                 new ParallelCommandGroup(
                                                 new MoveArmToState(arm, PICKUP_LOW_CUBE),
-                                                intake.startCmd,
-                                                new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, false,
-                                                                Drive.mirrorPathToAlliance(wpp))),
-                                intake.stopCmd,
+                                                intake.startCmd()),
+                                new WaitCommand(0.5),
+                                intake.stopCmd(),
                                 new ParallelCommandGroup(
+                                                new MoveArmToState(arm, STOW_CUBE),
                                                 new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
-                                                                Drive.mirrorPathToAlliance(wpp1)),
-                                                new MoveArmToState(arm, PLACE_LOW)),
-                                intake.ejectCmd,
+                                                                Drive.mirrorPathToAlliance(wpp1))),
+                                intake.ejectCmd(),
+                                new WaitCommand(1),
+                                intake.stopCmd(),
+                                new MoveArmToState(arm, STOW_CUBE),
                                 new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
                                                 Drive.mirrorPathToAlliance(wpp2)),
                                 new BalanceChargingStation(drive, imu));

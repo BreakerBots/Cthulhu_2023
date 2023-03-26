@@ -15,10 +15,6 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 public class RollerIntake extends SubsystemBase{
 
-  public InstantCommand ejectCmd = new InstantCommand(this::eject);
-  public InstantCommand stopCmd = new InstantCommand(this::stop);
-  public InstantCommand startCmd = new InstantCommand(this::start);
-
   private WPI_TalonSRX motor = new WPI_TalonSRX(Constants.RollerIntakeConstants.INTAKE_ID);
 
   /** Creates a new Intake. */
@@ -28,6 +24,18 @@ public class RollerIntake extends SubsystemBase{
 
     BreakerCTREUtil.checkError(motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15.0, 15.0, 1.5)),
             " Failed to config swerve module turn motor ");
+  }
+
+  public InstantCommand ejectCmd() {
+    return new InstantCommand(this::eject);
+  }
+
+  public InstantCommand stopCmd() {
+    return new InstantCommand(this::stop);
+  }
+
+  public InstantCommand startCmd() {
+    return new InstantCommand(this::start);
   }
 
   @Override
