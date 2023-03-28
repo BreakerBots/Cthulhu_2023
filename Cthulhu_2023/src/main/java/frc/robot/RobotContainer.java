@@ -7,6 +7,7 @@ import static frc.robot.Constants.MiscConstants.IMU_ID;
 
 import org.photonvision.PhotonCamera;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -22,6 +23,7 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
+import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.autos.GateLeaveThenBalance;
 import frc.robot.commands.autos.InNOut;
 import frc.robot.commands.autos.LeaveOnly;
@@ -88,7 +90,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
+    //controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
+    controllerSys.getStartButton().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
     
     controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
     controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
@@ -108,6 +111,7 @@ public class RobotContainer {
       ));
     
     controllerSys.getDPad().getUp().onTrue(new InstantCommand(armSys::placeMid));
+    controllerSys.getDPad().getLeft().onTrue(armSys.setTargetCommand(Rotation2d.fromDegrees(90)));
     // controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(-45))));
     // controllerSys.getButtonX().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(90))));
     // controllerSys.getButtonA().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(210))));

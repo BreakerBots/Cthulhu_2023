@@ -31,21 +31,23 @@ public class GatePlace2LeaveThenBalance extends SequentialCommandGroup {
 
                 // Move out to game piece
                 BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
-                                1.5,
+                                3,
                                 new Pose2d(1.9, 1.02, new Rotation2d()),
-                                new Pose2d(6.75, 1.06, Rotation2d.fromDegrees(180)));
+                                new Pose2d(6.75, 0.885, Rotation2d.fromDegrees(180)));
 
                 // Grab then move back to position
                 BreakerPoseWaypointPath wpp1 = new BreakerPoseWaypointPath(
-                                1.5,
-                                new Pose2d(7.02, 1.06, Rotation2d.fromDegrees(180)),
-                                new Pose2d(3.457, 1.06, Rotation2d.fromDegrees(180)),
+                                3,
+                                new Pose2d(7.02, 0.885, Rotation2d.fromDegrees(180)),
+                                new Pose2d(3.457, 0.885, Rotation2d.fromDegrees(180)),
                                 new Pose2d(1.9, 1.02, Rotation2d.fromDegrees(180)));
 
                 // Move to charging station
-                BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(1.5,
-                                new Pose2d(1.9, 1.901, Rotation2d.fromDegrees(180)),
-                                new Pose2d(3.854, 2.5, Rotation2d.fromDegrees(180)));
+                // BUMP UP SPEED AT COMP
+                BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(
+                                1.5,
+                                new Pose2d(1.9, 2.25, Rotation2d.fromDegrees(180)),
+                                new Pose2d(4.2, 2.5, Rotation2d.fromDegrees(180)));
 
                 addCommands(
                                 new BreakerStartTrajectoryPath(drive,
@@ -53,10 +55,10 @@ public class GatePlace2LeaveThenBalance extends SequentialCommandGroup {
                                 new MoveArmToState(arm, PLACE_CUBE_MID),
                                 intake.ejectCmd(),
                                 new WaitCommand(.25),
-                                new MoveArmToState(arm, STOW_CUBE),
-                                new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
-                                                Drive.mirrorPathToAlliance(wpp)),
+                                //new MoveArmToState(arm, STOW_CUBE),
                                 new ParallelCommandGroup(
+                                        new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
+                                        Drive.mirrorPathToAlliance(wpp)),
                                                 new MoveArmToState(arm, PICKUP_LOW_CUBE),
                                                 intake.startCmd()),
                                 new WaitCommand(0.5),
@@ -66,7 +68,7 @@ public class GatePlace2LeaveThenBalance extends SequentialCommandGroup {
                                                 new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
                                                                 Drive.mirrorPathToAlliance(wpp1))),
                                 intake.ejectCmd(),
-                                new WaitCommand(1),
+                                new WaitCommand(0.25),
                                 intake.stopCmd(),
                                 new MoveArmToState(arm, STOW_CUBE),
                                 new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,

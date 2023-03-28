@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.physics.vector.BreakerVector3;
+import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.subsystems.Drive;
 
 public class BalanceChargingStation extends CommandBase {
@@ -23,10 +24,10 @@ public class BalanceChargingStation extends CommandBase {
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    xPID = new PIDController(1.2, 0.0, 0.35);
-    yPID = new PIDController(1.2, 0.0, 0.35);
-    xPID.setTolerance(0.02, 0.05);
-    yPID.setTolerance(0.02, 0.05);
+    xPID = new PIDController(1.75, 0.0, 0.35);
+    yPID = new PIDController(1.75, 0.0, 0.35);
+    xPID.setTolerance(0.05, 0.05);
+    yPID.setTolerance(0.05, 0.05);
     addRequirements(drivetrain);
   }
  
@@ -39,10 +40,18 @@ public class BalanceChargingStation extends CommandBase {
   @Override
   public void execute() {
     BreakerVector3 gravity = imu.getGravityVector();
-    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.50, 0.50);
-    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.50, 0.50);
-    drivetrain.move(-xSpeed, ySpeed, 0);
+    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.75, 0.75);
+    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.75, 0.75);
+    if (!atSetpoint(gravity)) {
+      drivetrain.move(-xSpeed, ySpeed, 0);
+    } else {
+      drivetrain.stop();
+    }
     System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", gravity.getMagnitudeY(), xSpeed, ySpeed);
+  }
+
+  private boolean atSetpoint(BreakerVector3 vec) {
+    return BreakerMath.epsilonEquals(vec.getMagnitudeX(), 0, 0.05) && BreakerMath.epsilonEquals(vec.getMagnitudeY(), 0, 0.05);
   }
 
   // Called once the command ends or is interrupted.

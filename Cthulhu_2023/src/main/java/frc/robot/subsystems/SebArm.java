@@ -103,7 +103,7 @@ public class SebArm extends SubsystemBase {
     //   canCoder.setPosition(canCoder.getPosition() - 360);
     // }
     
-    pid = new PIDController(0.02, 0, 0); // TODO: Set actual PID values for this constructor.
+    pid = new PIDController(0.015, 0, 0.0); // TODO: Set actual PID values for this constructor.
 
     // profPID = new ProfiledPIDController(0.02, 0.0, 0.0, new TrapezoidProfile.Constraints(100.0,20.0));
 
@@ -204,5 +204,9 @@ public class SebArm extends SubsystemBase {
 
   public InstantCommand setStateCommand(State target) {
     return new InstantCommand(() -> setArmState(target));
+  }
+
+  public InstantCommand setTargetCommand(Rotation2d target) {
+    return new InstantCommand(() -> setTarget(target));
   }
 }
