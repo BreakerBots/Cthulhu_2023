@@ -9,34 +9,44 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerStartTrajectoryPath;
+import frc.robot.BreakerLib.auto.waypoint.BreakerPoseWaypointPath;
+import frc.robot.BreakerLib.auto.waypoint.BreakerSwervePoseWaypointPathFollower;
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollower;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.MoveArmToState;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.RollerIntake;
+import frc.robot.subsystems.SebArm;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GateLeaveThenBalance extends SequentialCommandGroup {
   /** Creates a new TestWaypointAutoPath. */
-  public GateLeaveThenBalance(Drive drive, BreakerPigeon2 imu) {
-    
-      BreakerWaypointPath wpp = new BreakerWaypointPath(
-        2, 
-        new Translation2d(1.88, 0.453),
-        new Translation2d(5.724, 0.453),
-        new Translation2d(5.724, 2.727),
-        new Translation2d(3.802, 2.727)
-        );
+  public GateLeaveThenBalance(Drive drive, BreakerPigeon2 imu, SebArm arm, RollerIntake intake) {
+
+    BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
+        2,
+        new Pose2d(1.88, 0.453, new Rotation2d()),
+        new Pose2d(5.724, 0.453, new Rotation2d()),
+        new Pose2d(5.724, 2.727, new Rotation2d()),
+        new Pose2d(3.802, 2.727, new Rotation2d()));
 
     addCommands(
-      new BreakerStartTrajectoryPath(drive, new Pose2d(Drive.mirrorPathToAlliance(wpp).getWaypoints()[0], DriverStation.getAlliance() == Alliance.Red ? Rotation2d.fromDegrees(-180) : new Rotation2d())),
-        new BreakerSwerveWaypointFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp)),
-        // new BreakerSwerveWaypointFollower(config, true, Drive.mirrorPathToAlliance(wpp2)),
-        new BalanceChargingStation(drive, imu)
-        );
+        new BreakerStartTrajectoryPath(drive, Drive.mirrorPathToAlliance(wpp).getWaypoints()[0]),
+        new MoveArmToState(arm, SebArm.State.PLACE_CUBE_MID),
+        intake.ejectCmd(),
+        new WaitCommand(0.25),
+        intake.stopCmd(),
+        new ParallelCommandGroup(
+            new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp)),
+            new MoveArmToState(arm, SebArm.State.STOW_CUBE)),
+        new BalanceChargingStation(drive, imu));
   }
 }
