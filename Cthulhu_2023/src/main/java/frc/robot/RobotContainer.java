@@ -148,12 +148,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    int pathNum = 3;
+    int pathNum = 1;
     switch (pathNum) {
       case 0:
         return new GateLeaveThenBalance(drivetrainSys, imuSys);
       case 1:
-        return new MidLeaveThenBalance(drivetrainSys, imuSys);
+        return new MidLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
       case 2:
         return new SubLeaveThenBalance(drivetrainSys, imuSys);
       case 3:
@@ -161,7 +161,7 @@ public class RobotContainer {
       case 4:
         return new InNOut(drivetrainSys, imuSys);
       case 5:
-        return new MidBalance(drivetrainSys, imuSys);
+        return new MidBalance(drivetrainSys, imuSys, armSys, intakeSys);
       case 6:
         return new LeaveOnly(drivetrainSys, imuSys);
       case 7:

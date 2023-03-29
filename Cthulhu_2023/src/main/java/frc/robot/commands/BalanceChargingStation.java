@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.physics.vector.BreakerVector3;
@@ -18,14 +19,15 @@ public class BalanceChargingStation extends CommandBase {
   private PIDController xPID , yPID;
   //private Odometer odometer;
   private Drive drivetrain;
+  private final Timer balanceTimer = new Timer();
   
   public BalanceChargingStation(Drive drivetrain, BreakerPigeon2 imu) { /* Odometer odometer */
     // Use addRequirements() here to declare subsystem dependencies.
     this.imu = imu;
     //this.odometer = odometer;
     this.drivetrain = drivetrain;
-    xPID = new PIDController(1.75, 0.0, 0.35);
-    yPID = new PIDController(1.75, 0.0, 0.35);
+    xPID = new PIDController(1.25, 0.0, 0.35);
+    yPID = new PIDController(1.25, 0.0, 0.35);
     xPID.setTolerance(0.05, 0.05);
     yPID.setTolerance(0.05, 0.05);
     addRequirements(drivetrain);
@@ -34,29 +36,37 @@ public class BalanceChargingStation extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    balanceTimer.stop();
+    balanceTimer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     BreakerVector3 gravity = imu.getGravityVector();
-    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.75, 0.75);
-    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.75, 0.75);
+    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.5, 0.5);
+    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.5, 0.5);
     if (!atSetpoint(gravity)) {
+      balanceTimer.stop();
+      balanceTimer.reset();
       drivetrain.move(-xSpeed, ySpeed, 0);
     } else {
+      balanceTimer.reset();
+      balanceTimer.start();
       drivetrain.stop();
     }
     System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", gravity.getMagnitudeY(), xSpeed, ySpeed);
   }
 
   private boolean atSetpoint(BreakerVector3 vec) {
-    return BreakerMath.epsilonEquals(vec.getMagnitudeX(), 0, 0.05) && BreakerMath.epsilonEquals(vec.getMagnitudeY(), 0, 0.05);
+    return BreakerMath.epsilonEquals(vec.getMagnitudeX(), 0, 0.07) && BreakerMath.epsilonEquals(vec.getMagnitudeY(), 0, 0.07);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("BALANCE END");
+  }
 
   // private boolean outOfWorkingBounds() {
   //   if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -102,6 +112,6 @@ public class BalanceChargingStation extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return /*outOfBounds() ||balancePID.atSetpoint() */ false;
+    return /*outOfBounds() ||balancePID.atSetpoint() */ balanceTimer.hasElapsed(1);
   }
 }

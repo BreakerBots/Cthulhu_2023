@@ -149,7 +149,7 @@ public class SebArm extends SubsystemBase {
   }
 
   public boolean isAtTarget() {
-    return BreakerMath.epsilonEquals(getAngle().getDegrees(), desiredRot.getDegrees(), 2.0);
+    return BreakerMath.epsilonEquals(getAngle().getDegrees(), desiredRot.getDegrees(), 3.5);
   }
 
   public void pickupLow() {

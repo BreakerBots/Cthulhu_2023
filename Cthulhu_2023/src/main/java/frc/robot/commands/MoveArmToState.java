@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.SebArm;
 import frc.robot.subsystems.SebArm.State;
@@ -12,6 +13,8 @@ public class MoveArmToState extends CommandBase {
   /** Creates a new MoveArmToState. */
   private SebArm arm;
   private State targetState;
+  private final Timer timeoutTimer = new Timer();
+
   public MoveArmToState(SebArm arm, State targetState) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.arm = arm;
@@ -22,12 +25,14 @@ public class MoveArmToState extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timeoutTimer.reset();
+    timeoutTimer.start();
     arm.setArmState(targetState);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.isAtTarget();
+    return arm.isAtTarget() || timeoutTimer.hasElapsed(3);
   }
 }
