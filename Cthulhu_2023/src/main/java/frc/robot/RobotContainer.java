@@ -24,13 +24,13 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
-import frc.robot.commands.autos.GateLeaveThenBalance;
 import frc.robot.commands.autos.InNOut;
 import frc.robot.commands.autos.LeaveOnly;
 import frc.robot.commands.autos.MidBalance;
-import frc.robot.commands.autos.MidLeaveThenBalance;
-import frc.robot.commands.autos.SubLeaveThenBalance;
+import frc.robot.commands.autos.pose.GatePlaceLeaveThenBalance;
 import frc.robot.commands.autos.pose.GatePlace2LeaveThenBalance;
+import frc.robot.commands.autos.pose.MidPlaceLeaveThenBalance;
+import frc.robot.commands.autos.pose.SubPlaceLeaveThenBalance;
 import frc.robot.commands.autos.test.TurnTestAuto;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.RollerIntake;
@@ -151,11 +151,11 @@ public class RobotContainer {
     int pathNum = 1;
     switch (pathNum) {
       case 0:
-        return new GateLeaveThenBalance(drivetrainSys, imuSys);
+        return new GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
       case 1:
-        return new MidLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
+        return new MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
       case 2:
-        return new SubLeaveThenBalance(drivetrainSys, imuSys);
+        return new SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
       case 3:
         return new GatePlace2LeaveThenBalance(drivetrainSys, imuSys, intakeSys, armSys);
       case 4:

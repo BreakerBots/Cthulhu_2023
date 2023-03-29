@@ -6,36 +6,46 @@ package frc.robot.commands.autos.pose;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerStartTrajectoryPath;
 import frc.robot.BreakerLib.auto.waypoint.BreakerPoseWaypointPath;
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwervePoseWaypointPathFollower;
+import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollower;
+import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.MoveArmToState;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.RollerIntake;
+import frc.robot.subsystems.SebArm;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SubPlaceLeaveThenBalance extends SequentialCommandGroup {
-  /** Creates a new SubPlaceLeaveThenBalance. */
-  public SubPlaceLeaveThenBalance(Drive drive, BreakerPigeon2 imu) {
+  /** Creates a new TestWaypointAutoPath. */
+  public SubPlaceLeaveThenBalance(Drive drive, BreakerPigeon2 imu, SebArm arm, RollerIntake intake) {
 
     BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
         1.5,
-        new Pose2d(1.856, 5, new Rotation2d()),
-        new Pose2d(7.089, 4.588, Rotation2d.fromDegrees(180)),
-        new Pose2d(1.856, 4.351, new Rotation2d()));
+        new Pose2d(1.88, 4.459, new Rotation2d()),
+        new Pose2d(5.949, 4.460, new Rotation2d()),
+        new Pose2d(5.950, 2.721, new Rotation2d()),
+        new Pose2d(3.972, 2.722, new Rotation2d()));
 
-    BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(1.5,
-        new Pose2d(1.856, 3.148, new Rotation2d()),
-        new Pose2d(3.919, 3.148, new Rotation2d()));
-
-    addCommands(new BreakerStartTrajectoryPath(drive, Drive.mirrorPathToAlliance(wpp).getWaypoints()[0]),
-        new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp)),
-        new WaitCommand(1),
-        new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp2)),
+    addCommands(
+      new BreakerStartTrajectoryPath(drive, Drive.mirrorPathToAlliance(wpp).getWaypoints()[0]),
+      new MoveArmToState(arm, SebArm.State.PLACE_CUBE_MID),
+      intake.ejectCmd(),
+      new WaitCommand(0.25),
+      intake.stopCmd(),
+      new SequentialCommandGroup(
+          new MoveArmToState(arm, SebArm.State.STOW_CUBE),
+          new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp))),
         new BalanceChargingStation(drive, imu));
   }
 }
