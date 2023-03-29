@@ -166,6 +166,14 @@ public class SebArm extends SubsystemBase {
     }
   }
 
+  public void pickupLowSimple() {
+    if (RobotContainer.isInCubeMode()) {
+      setArmState(State.PICKUP_LOW_CUBE);
+    } else {
+      setArmState(State.PICKUP_LOW_CONE);
+    }
+  }
+
   public InstantCommand pickupLowCommand() {
     return new InstantCommand(this::pickupLow);
   }

@@ -90,33 +90,30 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    //controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
-    controllerSys.getStartButton().onTrue(new BalanceChargingStation(drivetrainSys, imuSys));
-    
+    // controllerSys.getStartButton().onTrue(new
+    // InstantCommand(RobotContainer::toggleisInCubeMode));
+
     controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
     controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
     controllerSys.getButtonY().onTrue(new ParallelCommandGroup(
-      new InstantCommand(() -> armSys.setArmState(SebArm.State.PICKUP_HIGH)),
-      new InstantCommand(intakeSys::start)
-      ));
+        new InstantCommand(() -> armSys.setArmState(SebArm.State.PICKUP_HIGH)),
+        new InstantCommand(intakeSys::start)));
     controllerSys.getButtonX().onTrue(new ParallelCommandGroup(
-      armSys.pickupLowCommand(),
-      new InstantCommand(intakeSys::start)
-      ));
-    
+        armSys.pickupLowCommand(),
+        new InstantCommand(intakeSys::start)));
+
     controllerSys.getLeftBumper().onTrue(new InstantCommand(intakeSys::start));
     controllerSys.getRightBumper().onTrue(new ParallelCommandGroup(
-      armSys.stowCommand(),
-      new InstantCommand(intakeSys::stop)
-      ));
-    
+        armSys.stowCommand(),
+        new InstantCommand(intakeSys::stop)));
     controllerSys.getDPad().getUp().onTrue(new InstantCommand(armSys::placeMid));
     controllerSys.getDPad().getLeft().onTrue(armSys.setTargetCommand(Rotation2d.fromDegrees(90)));
-    // controllerSys.getButtonY().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(-45))));
-    // controllerSys.getButtonX().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(90))));
-    // controllerSys.getButtonA().onTrue(new InstantCommand(() -> armSys.setTarget(Rotation2d.fromDegrees(210))));
-    
-
+    // controllerSys.getButtonY().onTrue(new InstantCommand(() ->
+    // armSys.setTarget(Rotation2d.fromDegrees(-45))));
+    // controllerSys.getButtonX().onTrue(new InstantCommand(() ->
+    // armSys.setTarget(Rotation2d.fromDegrees(90))));
+    // controllerSys.getButtonA().onTrue(new InstantCommand(() ->
+    // armSys.setTarget(Rotation2d.fromDegrees(210))));
 
     // controllerSys.getStartButton().onTrue(new
     // InstantCommand(rollerIntake::runSelectedIntakeMode));
@@ -139,8 +136,6 @@ public class RobotContainer {
     isInCubeMode = !isInCubeMode;
     SmartDashboard.putBoolean("Is in Cube Mode", isInCubeMode);
   }
-
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
