@@ -33,7 +33,7 @@ public class GatePlace2 extends SequentialCommandGroup {
                 BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
                                 1.5,
                                 new Pose2d(1.9, 1.02, new Rotation2d()),
-                                new Pose2d(6.75, 0.885, Rotation2d.fromDegrees(180)));
+                                new Pose2d(7, 0.885, Rotation2d.fromDegrees(180)));
 
                 // Grab then move back to position
                 BreakerPoseWaypointPath wpp1 = new BreakerPoseWaypointPath(
@@ -56,9 +56,9 @@ public class GatePlace2 extends SequentialCommandGroup {
                                 intake.ejectCmd(),
                                 new WaitCommand(.25),
                                 new MoveArmToState(arm, STOW_CUBE),
-                                new ParallelCommandGroup(
-                                        new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
+                                new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
                                         Drive.mirrorPathToAlliance(wpp)),
+                                new ParallelCommandGroup(
                                                 new MoveArmToState(arm, PICKUP_LOW_CUBE),
                                                 intake.startCmd()),
                                 new WaitCommand(0.5),
