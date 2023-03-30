@@ -55,7 +55,7 @@ public class GatePlace2 extends SequentialCommandGroup {
                                 new MoveArmToState(arm, PLACE_CUBE_MID),
                                 intake.ejectCmd(),
                                 new WaitCommand(.25),
-                                //new MoveArmToState(arm, STOW_CUBE),
+                                new MoveArmToState(arm, STOW_CUBE),
                                 new ParallelCommandGroup(
                                         new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
                                         Drive.mirrorPathToAlliance(wpp)),

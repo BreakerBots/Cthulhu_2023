@@ -11,10 +11,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.BreakerLib.auto.trajectory.management.BreakerAutoPath;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
@@ -31,7 +33,6 @@ import frc.robot.commands.autos.pose.GatePlaceLeaveThenBalance;
 import frc.robot.commands.autos.pose.GatePlace2;
 import frc.robot.commands.autos.pose.MidPlaceLeaveThenBalance;
 import frc.robot.commands.autos.pose.SubPlaceLeaveThenBalance;
-import frc.robot.commands.autos.test.TurnTestAuto;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.RollerIntake;
 import frc.robot.subsystems.SebArm;
@@ -47,6 +48,7 @@ import frc.robot.subsystems.SebArm;
  */
 public class RobotContainer {
 
+  SendableChooser autoChooser = new SendableChooser<Command>();
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
 
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID, CANIVORE_1);
@@ -125,6 +127,14 @@ public class RobotContainer {
     BreakerRobotConfig robotConfig = new BreakerRobotConfig(new BreakerRobotStartConfig(5104, "BreakerBots",
         "Cthulhu", 2023, "v1", "Yousif Alkhalaf, Roman Abrahamson, Sebastian Rueda"));
 
+        robotConfig.setAutoPaths(
+          new BreakerAutoPath("GatePlace2", new GatePlace2(drivetrainSys, imuSys, intakeSys, armSys)),
+          new BreakerAutoPath("GatePlaceLeaveThenBalance", new GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+          new BreakerAutoPath("MidPlaceLeaveThenBalance", new MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+          new BreakerAutoPath("SubPlaceLeaveThenBalance", new SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+          new BreakerAutoPath("MidBalance", new MidBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+          new BreakerAutoPath("LeaveOnly", new LeaveOnly(drivetrainSys, imuSys)),
+          new BreakerAutoPath("PlaceLow", new InstantCommand(intakeSys::eject)));
     BreakerRobotManager.setup(drivetrainSys, robotConfig);
   }
 
@@ -143,27 +153,26 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    int pathNum = 1;
-    switch (pathNum) {
-      case 0:
-        return new GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
-      case 1:
-        return new MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
-      case 2:
-        return new SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
-      case 3:
-        return new GatePlace2(drivetrainSys, imuSys, intakeSys, armSys);
-      case 4:
-        return new InNOut(drivetrainSys, imuSys);
-      case 5:
-        return new MidBalance(drivetrainSys, imuSys, armSys, intakeSys);
-      case 6:
-        return new LeaveOnly(drivetrainSys, imuSys);
-      case 7:
-        return new TurnTestAuto(drivetrainSys, imuSys);
-      default:
-        return null;
+    int pathNum = 3;
+    // switch (pathNum) {
+    //   case 0:
+    //     return new GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
+    //   case 1:
+    //     return new MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
+    //   case 2:
+    //     return new SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
+    //   case 3:
+    //     return new GatePlace2(drivetrainSys, imuSys, intakeSys, armSys);
+    //   case 4:
+    //     return new InNOut(drivetrainSys, imuSys);
+    //   case 5:
+    //     return new MidBalance(drivetrainSys, imuSys, armSys, intakeSys);
+    //   case 6:
+    //     return new LeaveOnly(drivetrainSys, imuSys);
+    //   default:
+    //     return null;
 
-    }
+    // }
+    return BreakerRobotManager.getSelectedAutoPath();
   }
 }

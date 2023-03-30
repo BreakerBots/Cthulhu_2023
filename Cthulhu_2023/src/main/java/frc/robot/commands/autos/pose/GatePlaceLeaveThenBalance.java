@@ -37,7 +37,6 @@ public class GatePlaceLeaveThenBalance extends SequentialCommandGroup {
         new Pose2d(5.724, 1.084, new Rotation2d()),
         new Pose2d(5.725, 2.726, new Rotation2d()),
         new Pose2d(3.802, 2.727, new Rotation2d()));
-
     addCommands(
         new BreakerStartTrajectoryPath(drive, Drive.mirrorPathToAlliance(wpp).getWaypoints()[0]),
         new MoveArmToState(arm, SebArm.State.PLACE_CUBE_MID),
