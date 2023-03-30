@@ -26,28 +26,28 @@ import frc.robot.subsystems.SebArm.State;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class GatePlace2LeaveThenBalance extends SequentialCommandGroup {
-        public GatePlace2LeaveThenBalance(Drive drive, BreakerPigeon2 imu, RollerIntake intake, SebArm arm) {
+public class GatePlace2 extends SequentialCommandGroup {
+        public GatePlace2(Drive drive, BreakerPigeon2 imu, RollerIntake intake, SebArm arm) {
 
                 // Move out to game piece
                 BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
-                                3,
+                                1.5,
                                 new Pose2d(1.9, 1.02, new Rotation2d()),
                                 new Pose2d(6.75, 0.885, Rotation2d.fromDegrees(180)));
 
                 // Grab then move back to position
                 BreakerPoseWaypointPath wpp1 = new BreakerPoseWaypointPath(
-                                3,
+                                1.5,
                                 new Pose2d(7.02, 0.885, Rotation2d.fromDegrees(180)),
                                 new Pose2d(3.457, 0.885, Rotation2d.fromDegrees(180)),
                                 new Pose2d(1.9, 1.02, Rotation2d.fromDegrees(180)));
 
                 // Move to charging station
                 // BUMP UP SPEED AT COMP
-                BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(
-                                1.5,
-                                new Pose2d(1.9, 2.25, Rotation2d.fromDegrees(180)),
-                                new Pose2d(4.2, 2.5, Rotation2d.fromDegrees(180)));
+                // BreakerPoseWaypointPath wpp2 = new BreakerPoseWaypointPath(
+                //                 1.5,
+                //                 new Pose2d(1.9, 2.25, Rotation2d.fromDegrees(180)),
+                //                 new Pose2d(4.2, 2.5, Rotation2d.fromDegrees(180)));
 
                 addCommands(
                                 new BreakerStartTrajectoryPath(drive,
@@ -70,9 +70,10 @@ public class GatePlace2LeaveThenBalance extends SequentialCommandGroup {
                                 intake.ejectCmd(),
                                 new WaitCommand(0.25),
                                 intake.stopCmd(),
-                                new MoveArmToState(arm, STOW_CUBE),
-                                new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
-                                                Drive.mirrorPathToAlliance(wpp2)),
-                                new BalanceChargingStation(drive, imu));
+                                new MoveArmToState(arm, STOW_CUBE)
+                                // new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true,
+                                //                 Drive.mirrorPathToAlliance(wpp2)),
+                                // new BalanceChargingStation(drive, imu)
+                                );
         }
 }

@@ -28,7 +28,7 @@ import frc.robot.commands.autos.InNOut;
 import frc.robot.commands.autos.LeaveOnly;
 import frc.robot.commands.autos.MidBalance;
 import frc.robot.commands.autos.pose.GatePlaceLeaveThenBalance;
-import frc.robot.commands.autos.pose.GatePlace2LeaveThenBalance;
+import frc.robot.commands.autos.pose.GatePlace2;
 import frc.robot.commands.autos.pose.MidPlaceLeaveThenBalance;
 import frc.robot.commands.autos.pose.SubPlaceLeaveThenBalance;
 import frc.robot.commands.autos.test.TurnTestAuto;
@@ -90,8 +90,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    // controllerSys.getStartButton().onTrue(new
-    // InstantCommand(RobotContainer::toggleisInCubeMode));
+    controllerSys.getStartButton().onTrue(new
+    InstantCommand(RobotContainer::toggleisInCubeMode));
 
     controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
     controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
@@ -152,7 +152,7 @@ public class RobotContainer {
       case 2:
         return new SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
       case 3:
-        return new GatePlace2LeaveThenBalance(drivetrainSys, imuSys, intakeSys, armSys);
+        return new GatePlace2(drivetrainSys, imuSys, intakeSys, armSys);
       case 4:
         return new InNOut(drivetrainSys, imuSys);
       case 5:
