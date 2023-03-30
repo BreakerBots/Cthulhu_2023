@@ -121,25 +121,6 @@ public class SebArm extends SubsystemBase {
     //profPID.reset(canCoder.getPosition());
   }
 
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Arm Angle", getAngle().getDegrees());
-   //double ctrlInput = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
-    // motor0.set(-curve.getSignRelativeValueAtX(ctrlInput));
-    double pos = getAngle().getDegrees();
-    //double ctrlInput = profPID.calculate(pos, desiredRot.getDegrees());
-    double ctrlInput = pid.calculate(pos, desiredRot.getDegrees());
-    if (!isAtTarget()) {
-      motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
-    } else {
-       motor0.set(0);
-     }
-    // motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
-    SmartDashboard.putNumber("Arm Tgt", desiredRot.getDegrees());
-    SmartDashboard.putNumber("Arm motor", motor0.get());
-    
-  }
-
   public void setArmState(State armState) {
     setTarget(armState.rot);
   }
@@ -216,5 +197,24 @@ public class SebArm extends SubsystemBase {
 
   public InstantCommand setTargetCommand(Rotation2d target) {
     return new InstantCommand(() -> setTarget(target));
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Arm Angle", getAngle().getDegrees());
+   //double ctrlInput = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
+    // motor0.set(-curve.getSignRelativeValueAtX(ctrlInput));
+    double pos = getAngle().getDegrees();
+    //double ctrlInput = profPID.calculate(pos, desiredRot.getDegrees());
+    double ctrlInput = pid.calculate(pos, desiredRot.getDegrees());
+    if (!isAtTarget()) {
+      motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
+    } else {
+       motor0.set(0);
+     }
+    // motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
+    SmartDashboard.putNumber("Arm Tgt", desiredRot.getDegrees());
+    SmartDashboard.putNumber("Arm motor", motor0.get());
+    
   }
 }
