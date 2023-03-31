@@ -11,202 +11,22 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "3,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/PROX JOINT ANGLE",
-              "_title": "PROX JOINT ANGLE",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DIST JOINT ANGLE",
-              "_title": "DIST JOINT ANGLE",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/PROX MOTOR OUT",
-              "_title": "PROX MOTOR OUT",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DIST MOTOR OUT",
-              "_title": "DIST MOTOR OUT",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/PROX TGT",
-              "_title": "PROX TGT",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DIST TGT",
-              "_title": "DIST TGT",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/MOTOR OUT",
-              "_title": "MOTOR OUT",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "0,0": {
             "size": [
-              1,
-              1
+              10,
+              4
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Forward",
-              "_title": "Forward",
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Is in Cube Mode",
+              "_title": "Is in Cube Mode",
               "_glyph": 148,
-              "_showGlyph": false
+              "_showGlyph": false,
+              "Colors/Color when true": "#664DB3FF",
+              "Colors/Color when false": "#FFFF00FF"
             }
           },
-          "1,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Horizontal",
-              "_title": "Horizontal",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "2,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Rotation",
-              "_title": "Rotation",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive input",
-              "_title": "Drive input",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/MOTOR IN",
-              "_title": "MOTOR IN",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "8,0": {
-            "size": [
-              1,
-              2
-            ],
-            "content": {
-              "_type": "PID Controller",
-              "_source0": "network_table:///SmartDashboard/PIDController[1]",
-              "_title": "PIDController[1]",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "9,0": {
-            "size": [
-              1,
-              2
-            ],
-            "content": {
-              "_type": "PID Controller",
-              "_source0": "network_table:///SmartDashboard/PIDController[2]",
-              "_title": "PIDController[2]",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "0,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SPARK OUT",
-              "_title": "SPARK OUT",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "1,1": {
+          "0,4": {
             "size": [
               1,
               1
@@ -219,15 +39,106 @@
               "_showGlyph": false
             }
           },
-          "2,1": {
+          "1,4": {
             "size": [
               1,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/AMPS",
-              "_title": "AMPS",
+              "_source0": "network_table:///SmartDashboard/ODOMETER",
+              "_title": "ODOMETER",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Arm Angle",
+              "_title": "Arm Angle",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Arm Tgt",
+              "_title": "Arm Tgt",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Arm motor",
+              "_title": "Arm motor",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Forward",
+              "_title": "Forward",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Horizontal",
+              "_title": "Horizontal",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Rotation",
+              "_title": "Rotation",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,4": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Drive input",
+              "_title": "Drive input",
               "_glyph": 148,
               "_showGlyph": false
             }

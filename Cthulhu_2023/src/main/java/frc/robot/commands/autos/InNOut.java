@@ -33,7 +33,7 @@ public class InNOut extends SequentialCommandGroup {
 
     addCommands(
         new BreakerStartTrajectoryPath(drive, new Pose2d(Drive.mirrorPathToAlliance(wpp).getWaypoints()[0],
-            DriverStation.getAlliance() == Alliance.Red ? Rotation2d.fromDegrees(-180) : new Rotation2d())),
+            DriverStation.getAlliance() == Alliance.Red ? Rotation2d.fromDegrees(180) : new Rotation2d())),
         new BreakerSwerveWaypointFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp)),
         new BalanceChargingStation(drive, imu));
   }

@@ -99,11 +99,11 @@ public class Drive extends BreakerSwerveDrive {
                 super.periodic();
                 SmartDashboard.putNumber("IMU YAW", getOdometryPoseMeters().getRotation().getDegrees());
                 SmartDashboard.putString("ODOMETER", getOdometryPoseMeters().toString());
-                // if (DriverStation.getAlliance() == Alliance.Red) {
-                //         setFieldRelativeMovementOffsetAngle(Rotation2d.fromDegrees(180));
-                // } else {
-                //         setFieldRelativeMovementOffsetAngle(new Rotation2d());
-                // }
+                if (DriverStation.getAlliance() == Alliance.Red) {
+                        setFieldRelativeMovementOffsetAngle(Rotation2d.fromDegrees(-180));
+                } else {
+                        setFieldRelativeMovementOffsetAngle(new Rotation2d());
+                }
         }
 
         public static BreakerWaypointPath mirrorPathToAlliance(BreakerWaypointPath path) {
