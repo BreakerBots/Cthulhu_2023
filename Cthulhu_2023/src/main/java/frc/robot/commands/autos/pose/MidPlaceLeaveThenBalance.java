@@ -39,6 +39,7 @@ public class MidPlaceLeaveThenBalance extends SequentialCommandGroup {
         new Pose2d(4.802, 2.721, new Rotation2d()));
 
     addCommands(
+
         new BreakerStartTrajectoryPath(drive, Drive.mirrorPathToAlliance(wpp).getWaypoints()[0]),
         new MoveArmToState(arm, SebArm.State.PLACE_CUBE_MID),
         intake.ejectCmd(),
@@ -46,8 +47,7 @@ public class MidPlaceLeaveThenBalance extends SequentialCommandGroup {
         intake.stopCmd(),
         new MoveArmToState(arm, SebArm.State.STOW_CUBE),
         // new SequentialCommandGroup(
-            
-            new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp)),
+        new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp)),
         new BalanceChargingStation(drive, imu),
         new InstantCommand(() -> drive.move(0, 0, 0.001), drive));
   }

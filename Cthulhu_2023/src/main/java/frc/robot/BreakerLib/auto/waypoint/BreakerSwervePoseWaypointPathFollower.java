@@ -67,6 +67,7 @@ public class BreakerSwervePoseWaypointPathFollower extends CommandBase {
   public void initialize() {
     timer.stop();
     timer.reset();
+    curTargetWaypointIndex = 0;
     BreakerLog.logBreakerLibEvent("A new BreakerSwerveWaypointFollower instance has started");
     prevWp = config.getOdometer().getOdometryPoseMeters();
     driveController.reset(prevWp);
