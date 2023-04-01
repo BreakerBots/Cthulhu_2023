@@ -32,6 +32,7 @@ import frc.robot.commands.autos.MidBalance;
 import frc.robot.commands.autos.pose.GatePlaceLeaveThenBalance;
 import frc.robot.commands.autos.pose.GatePlace2;
 import frc.robot.commands.autos.pose.MidPlaceLeaveThenBalance;
+import frc.robot.commands.autos.pose.PlaceMidOnly;
 import frc.robot.commands.autos.pose.SubPlaceLeaveThenBalance;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.RollerIntake;
@@ -51,7 +52,7 @@ public class RobotContainer {
   SendableChooser autoChooser = new SendableChooser<Command>();
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
 
-  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID, CANIVORE_1);
+  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186),
       new Translation2d(0.799, 0.317));
@@ -134,7 +135,11 @@ public class RobotContainer {
           new BreakerAutoPath("SubPlaceLeaveThenBalance", new SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
           new BreakerAutoPath("MidBalance", new MidBalance(drivetrainSys, imuSys, armSys, intakeSys)),
           new BreakerAutoPath("LeaveOnly", new LeaveOnly(drivetrainSys, imuSys)),
-          new BreakerAutoPath("PlaceLow", new InstantCommand(intakeSys::eject)));
+          new BreakerAutoPath("PlaceLow", new InstantCommand(intakeSys::eject)),
+          new BreakerAutoPath("PlaceMidOnly", new 
+          PlaceMidOnly(drivetrainSys, armSys, intakeSys)
+          )
+          );
     BreakerRobotManager.setup(drivetrainSys, robotConfig);
   }
 

@@ -81,7 +81,7 @@ public class Drive extends BreakerSwerveDrive {
         public Drive(BreakerPigeon2 imu) {
                 super(config, imu, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
 
-                autoDriveController.setTolerances(new Pose2d(0.07, 0.07, Rotation2d.fromDegrees(5.0)));
+                autoDriveController.setTolerances(new Pose2d(0.07, 0.07, Rotation2d.fromDegrees(10.0)));
 
                 frontLeftModule.setDeviceName(" FL_Module ");
                 frontRightModule.setDeviceName(" FR_Module ");
