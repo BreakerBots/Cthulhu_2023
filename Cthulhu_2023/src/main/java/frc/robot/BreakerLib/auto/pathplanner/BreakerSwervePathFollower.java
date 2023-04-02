@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-/** Custom PathPlanner version of SwerveControllerCommand */
+/** Custom BreakerLib version of PathPlanner's custom version of SwerveControllerCommand */
 public class BreakerSwervePathFollower extends CommandBase {
   private final Timer timer = new Timer();
   private final PathPlannerTrajectory trajectory;

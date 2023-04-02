@@ -20,7 +20,7 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.differential.BreakerDiffD
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-/** Custom PathPlanner version of RamseteCommand */
+/** Custom BreakerLib version of PathPlanner's custom version of RamseteCommand */
 public class BreakerRamsetePathFollower extends CommandBase {
   private final Timer timer = new Timer();
   private final PathPlannerTrajectory trajectory;
@@ -38,29 +38,10 @@ public class BreakerRamsetePathFollower extends CommandBase {
   private static BiConsumer<Translation2d, Rotation2d> logError = BreakerRamsetePathFollower::defaultLogError;
 
   /**
-   * Constructs a new PPRamseteCommand that, when executed, will follow the provided trajectory. PID
-   * control and feedforward are handled internally, and outputs are scaled -12 to 12 representing
-   * units of volts.
-   *
-   * <p>Note: The controller will *not* set the outputVolts to zero upon completion of the path -
-   * this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+   * Constructs a new BreakerRamsetePathFollower that, when executed, will follow the provided trajectory. PID
+   * control and feedforward are handled internally.
    *
    * @param trajectory The trajectory to follow.
-   * @param poseSupplier A function that supplies the robot pose - use one of the odometry classes
-   *     to provide this.
-   * @param controller The RAMSETE controller used to follow the trajectory.
-   * @param feedforward The feedforward to use for the drive.
-   * @param kinematics The kinematics for the robot drivetrain.
-   * @param speedsSupplier A function that supplies the speeds of the left and right sides of the
-   *     robot drive.
-   * @param leftController The PIDController for the left side of the robot drive.
-   * @param rightController The PIDController for the right side of the robot drive.
-   * @param outputVolts A function that consumes the computed left and right outputs (in volts) for
-   *     the robot drive.
-   * @param useAllianceColor Should the path states be automatically transformed based on alliance
-   *     color? In order for this to work properly, you MUST create your path on the blue side of
-   *     the field.
-   * @param requirements The subsystems to require.
    */
   public BreakerRamsetePathFollower(
       BreakerRamsetePathFollowerConfig config,
