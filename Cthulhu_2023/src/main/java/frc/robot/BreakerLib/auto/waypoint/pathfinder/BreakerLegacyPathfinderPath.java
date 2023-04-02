@@ -11,22 +11,22 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 
 /** Add your docs here. */
-public class BreakerPathfinderPath {
-    private ArrayList<BreakerPathfinderNode> pathNodes;
+public class BreakerLegacyPathfinderPath {
+    private ArrayList<BreakerlegacyPathfinderNode> pathNodes;
     private double nodeSideLength;
-    public BreakerPathfinderPath(double nodeSideLength, ArrayList<BreakerPathfinderNode> pathNodes) {
-        this.pathNodes = new ArrayList<BreakerPathfinderNode>(pathNodes);
+    public BreakerLegacyPathfinderPath(double nodeSideLength, ArrayList<BreakerlegacyPathfinderNode> pathNodes) {
+        this.pathNodes = new ArrayList<BreakerlegacyPathfinderNode>(pathNodes);
         this.nodeSideLength = nodeSideLength;
     }
 
-    public ArrayList<BreakerPathfinderNode> getPathNodes() {
-        return new ArrayList<BreakerPathfinderNode>(pathNodes);
+    public ArrayList<BreakerlegacyPathfinderNode> getPathNodes() {
+        return new ArrayList<BreakerlegacyPathfinderNode>(pathNodes);
     }
 
     public BreakerWaypointPath getAsWaypointPath(double maxVelocity) {
         Translation2d[] waypoints = new Translation2d[pathNodes.size()];
         for (int i = 0; i < waypoints.length; i++) {
-            BreakerPathfinderNode node = pathNodes.get(i);
+            BreakerlegacyPathfinderNode node = pathNodes.get(i);
             double x = ((double)(node.getGridPosX()) + 0.5) * nodeSideLength;
             double y = ((double)(node.getGridPosY()) + 0.5) * nodeSideLength;
 
@@ -38,7 +38,7 @@ public class BreakerPathfinderPath {
     public BreakerWaypointPath getAsWaypointPath(double maxVelocity, Translation2d startPoint, Translation2d endPoint) {
         Translation2d[] waypoints = new Translation2d[pathNodes.size()];
         for (int i = 1; i < waypoints.length - 1; i++) {
-            BreakerPathfinderNode node = pathNodes.get(i);
+            BreakerlegacyPathfinderNode node = pathNodes.get(i);
             double x = ((double)(node.getGridPosX()) + 0.5) * nodeSideLength;
             double y = ((double)(node.getGridPosY()) + 0.5) * nodeSideLength;
 

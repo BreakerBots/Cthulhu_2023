@@ -7,9 +7,9 @@ package frc.robot.BreakerLib.auto.waypoint;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinder;
-import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinderNodeGrid;
-import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinderPath;
+import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerLegacyPathfinder;
+import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerLegacyPathfinderNodeGrid;
+import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerLegacyPathfinderPath;
 import frc.robot.BreakerLib.util.math.interpolation.BreakerInterpolatableDoubleArray;
 import frc.robot.BreakerLib.util.math.interpolation.maps.BreakerLegrangeInterpolateingTreeMap;
 
@@ -42,17 +42,17 @@ public class BreakerWaypointPathGenerator {
         return new BreakerWaypointPath(maxVelocity, newWaypoints.toArray(new Translation2d[newWaypoints.size()]));
     }
 
-    public static BreakerWaypointPath findWaypointPath(double pathSearchTimeoutSeconds, double maxVelocity, Translation2d startPoint, Translation2d endPoint, BreakerPathfinderNodeGrid nodeGrid) throws Exception {
+    public static BreakerWaypointPath findWaypointPath(double pathSearchTimeoutSeconds, double maxVelocity, Translation2d startPoint, Translation2d endPoint, BreakerLegacyPathfinderNodeGrid nodeGrid) throws Exception {
         try {
-            BreakerPathfinder pathfinder = new BreakerPathfinder(pathSearchTimeoutSeconds, nodeGrid.getInstance(nodeGrid.getNodeFromPosition(startPoint), nodeGrid.getNodeFromPosition(startPoint)));
-            BreakerPathfinderPath pfPath = pathfinder.calculatePath();
+            BreakerLegacyPathfinder pathfinder = new BreakerLegacyPathfinder(pathSearchTimeoutSeconds, nodeGrid.getInstance(nodeGrid.getNodeFromPosition(startPoint), nodeGrid.getNodeFromPosition(startPoint)));
+            BreakerLegacyPathfinderPath pfPath = pathfinder.calculatePath();
             return pfPath.getAsWaypointPath(maxVelocity, startPoint, endPoint);
         } catch (Exception e) {
             throw e;
         }
     }
 
-    public static BreakerWaypointPath findWaypointPath(double pathSearchTimeoutSeconds, double maxVelocity, BreakerPathfinderNodeGrid nodeGrid, Translation2d... pathPoints) throws Exception {
+    public static BreakerWaypointPath findWaypointPath(double pathSearchTimeoutSeconds, double maxVelocity, BreakerLegacyPathfinderNodeGrid nodeGrid, Translation2d... pathPoints) throws Exception {
         BreakerWaypointPath[] wpPaths = new BreakerWaypointPath[pathPoints.length - 1];
         double sTimeout = pathSearchTimeoutSeconds / (pathPoints.length - 1);
         for (int i = 0; i < pathPoints.length - 1; i++) {

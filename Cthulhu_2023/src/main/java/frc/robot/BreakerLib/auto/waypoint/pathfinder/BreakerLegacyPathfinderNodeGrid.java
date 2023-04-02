@@ -4,7 +4,7 @@
 
 package frc.robot.BreakerLib.auto.waypoint.pathfinder;
 
-import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinderNode.BreakerPathfinderNodeInstance;
+import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerlegacyPathfinderNode.BreakerPathfinderNodeInstance;
 import frc.robot.BreakerLib.position.geometry.BreakerFieldGeometry2d;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
@@ -12,39 +12,39 @@ import java.util.Arrays;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /** Grid of nodes for BreakerPathfinder. */
-public class BreakerPathfinderNodeGrid {
+public class BreakerLegacyPathfinderNodeGrid {
 
-    private BreakerPathfinderNode[][] nodeGrid;
+    private BreakerlegacyPathfinderNode[][] nodeGrid;
     private Rectangle2D.Double[][] nodeBounds;
     private double nodeSideLengthMeters;
 
     /** */
-    public BreakerPathfinderNodeGrid(int nodesX, int nodesY, double nodeSideLengthMeters,
+    public BreakerLegacyPathfinderNodeGrid(int nodesX, int nodesY, double nodeSideLengthMeters,
             BreakerFieldGeometry2d fieldGeometry) {
-        nodeGrid = new BreakerPathfinderNode[nodesX][nodesY];
+        nodeGrid = new BreakerlegacyPathfinderNode[nodesX][nodesY];
         nodeBounds = new Rectangle2D.Double[nodesX][nodesY];
         this.nodeSideLengthMeters = nodeSideLengthMeters;
         for (int i = 0; i < nodesX; i++) {
             for (int j = 0; j < nodesY; j++) {
                 nodeBounds[i][j] = new Rectangle2D.Double((double) i, (double) j + 1, nodeSideLengthMeters,
                         nodeSideLengthMeters);
-                nodeGrid[i][j] = new BreakerPathfinderNode(i, j, fieldGeometry.intersects(nodeBounds[i][j]));
+                nodeGrid[i][j] = new BreakerlegacyPathfinderNode(i, j, fieldGeometry.intersects(nodeBounds[i][j]));
             }
         }
     }
 
-    public BreakerPathfinderNodeGrid(int nodesX, int nodesY, double nodeSideLengthMeters,
-            BreakerPathfinderNode... preDefinedNodes) {
-        nodeGrid = new BreakerPathfinderNode[nodesY][nodesX];
+    public BreakerLegacyPathfinderNodeGrid(int nodesX, int nodesY, double nodeSideLengthMeters,
+            BreakerlegacyPathfinderNode... preDefinedNodes) {
+        nodeGrid = new BreakerlegacyPathfinderNode[nodesY][nodesX];
         nodeBounds = new Rectangle2D.Double[nodesX][nodesY];
         this.nodeSideLengthMeters = nodeSideLengthMeters;
         for (int i = 0; i < nodesX; i++) {
             for (int j = 0; j < nodesY; j++) {
-                for (BreakerPathfinderNode node : preDefinedNodes) {
+                for (BreakerlegacyPathfinderNode node : preDefinedNodes) {
                     if (node.getGridPosX() == i && node.getGridPosY() == j) {
                         nodeGrid[i][j] = node;
                     } else {
-                        nodeGrid[i][j] = new BreakerPathfinderNode(i, j, false);
+                        nodeGrid[i][j] = new BreakerlegacyPathfinderNode(i, j, false);
                     }
                 }
                 nodeBounds[i][j] = new Rectangle2D.Double((double) i, (double) j + 1, nodeSideLengthMeters,
@@ -57,12 +57,12 @@ public class BreakerPathfinderNodeGrid {
         return nodeSideLengthMeters;
     }
 
-    public BreakerPathfinderNodeGridInstance getInstance(BreakerPathfinderNode startNode,
-            BreakerPathfinderNode endNode) {
+    public BreakerPathfinderNodeGridInstance getInstance(BreakerlegacyPathfinderNode startNode,
+            BreakerlegacyPathfinderNode endNode) {
         return new BreakerPathfinderNodeGridInstance(nodeSideLengthMeters, startNode, endNode, nodeGrid, nodeBounds);
     }
 
-    public BreakerPathfinderNode getNodeFromPosition(Translation2d position) throws NodeNotFoundWithinGridException {
+    public BreakerlegacyPathfinderNode getNodeFromPosition(Translation2d position) throws NodeNotFoundWithinGridException {
         for (int i = 0; i < nodeBounds.length; i++) {
             for (int j = 0; j < nodeBounds[i].length; j++) {
                 if (nodeBounds[i][j].contains(position.getX(), position.getY())) {
@@ -80,8 +80,8 @@ public class BreakerPathfinderNodeGrid {
         private double nodeSideLengthMeters;
         private Rectangle2D.Double[][] nodeBounds;
 
-        public BreakerPathfinderNodeGridInstance(double nodeSideLengthMeters, BreakerPathfinderNode startNode,
-                BreakerPathfinderNode endNode, BreakerPathfinderNode[][] nodeGrid, Rectangle2D.Double[][] nodeBounds) {
+        public BreakerPathfinderNodeGridInstance(double nodeSideLengthMeters, BreakerlegacyPathfinderNode startNode,
+                BreakerlegacyPathfinderNode endNode, BreakerlegacyPathfinderNode[][] nodeGrid, Rectangle2D.Double[][] nodeBounds) {
             this.nodeSideLengthMeters = nodeSideLengthMeters;
             this.nodeBounds = Arrays.copyOf(nodeBounds, nodeBounds.length);
             startNodeInstance = startNode.getInstance(startNode, endNode);

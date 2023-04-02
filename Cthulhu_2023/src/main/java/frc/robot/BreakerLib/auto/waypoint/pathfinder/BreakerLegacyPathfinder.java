@@ -6,12 +6,12 @@ package frc.robot.BreakerLib.auto.waypoint.pathfinder;
 
 import java.util.ArrayList;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinderNode.BreakerPathfinderNodeHeuristics;
-import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinderNode.BreakerPathfinderNodeInstance;
-import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerPathfinderNodeGrid.BreakerPathfinderNodeGridInstance;
+import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerlegacyPathfinderNode.BreakerPathfinderNodeHeuristics;
+import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerlegacyPathfinderNode.BreakerPathfinderNodeInstance;
+import frc.robot.BreakerLib.auto.waypoint.pathfinder.BreakerLegacyPathfinderNodeGrid.BreakerPathfinderNodeGridInstance;
 
 /** Add your docs here. */
-public class BreakerPathfinder {
+public class BreakerLegacyPathfinder {
     private BreakerPathfinderNodeInstance curNode, startNode, endNode;
     private BreakerPathfinderNodeInstance[][] nodes;
     private ArrayList<BreakerPathfinderNodeInstance> openNodeList;
@@ -19,7 +19,7 @@ public class BreakerPathfinder {
     private boolean goalReached = false;
     private double searchTimeoutSeconds, nodeSideLengthMeters;
 
-    public BreakerPathfinder(double searchTimeoutSeconds, BreakerPathfinderNodeGridInstance gridInstance) {
+    public BreakerLegacyPathfinder(double searchTimeoutSeconds, BreakerPathfinderNodeGridInstance gridInstance) {
         this.searchTimeoutSeconds = searchTimeoutSeconds;
         nodes = gridInstance.getInstanceNodeGridArray();
         openNodeList = new ArrayList<>();
@@ -29,7 +29,7 @@ public class BreakerPathfinder {
         nodeSideLengthMeters = gridInstance.getNodeSideLengthMeters();
     }
 
-    public BreakerPathfinderPath calculatePath() throws PathCalculationTimeOverrunException {
+    public BreakerLegacyPathfinderPath calculatePath() throws PathCalculationTimeOverrunException {
         Timer timer = new Timer();
         timer.start();
         while (!goalReached && timer.get() < searchTimeoutSeconds){
@@ -80,7 +80,7 @@ public class BreakerPathfinder {
         }  
 
         if (goalReached) {
-            return new BreakerPathfinderPath(nodeSideLengthMeters, trackPath());
+            return new BreakerLegacyPathfinderPath(nodeSideLengthMeters, trackPath());
         }
         throw new PathCalculationTimeOverrunException();
     }
@@ -93,9 +93,9 @@ public class BreakerPathfinder {
         }
     }
 
-    private ArrayList<BreakerPathfinderNode> trackPath() {
+    private ArrayList<BreakerlegacyPathfinderNode> trackPath() {
         BreakerPathfinderNodeInstance cur = endNode;
-        ArrayList<BreakerPathfinderNode> nodePath = new ArrayList<>();
+        ArrayList<BreakerlegacyPathfinderNode> nodePath = new ArrayList<>();
         nodePath.add(endNode.getBaseNode());
         while (!cur.equals(startNode)) {
             cur = cur.getParent();
