@@ -8,7 +8,9 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.CANSparkMax;
 
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveModulePIDConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerFalconSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleDriveMotor;
 
@@ -17,18 +19,13 @@ public class BreakerSwerveModuleBuilder {
     private BreakerGenericSwerveModuleDriveMotor driveMotor;
     private BreakerGenericSwerveModuleAngleMotor angleMotor;
 
-    private BreakerSwerveModuleBuilder() {
-
-    }
+    private BreakerSwerveModuleBuilder() {}
 
     public static BreakerSwerveModuleBuilder getInstance() {
         return new BreakerSwerveModuleBuilder();
     }
-    public void withFalconAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderOffsetAngle, boolean isAngleMotorInverted)  {
-       // angleMotor = new BreakerFalconSwerveModuleAngleMotor(motor, encoder, 0, isAngleMotorInverted, null);
-    }
 
-    public void withFalconAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, BreakerSwerveModulePIDConfig pidConfig)  {
+    public void withFalconAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderOffsetAngle, boolean isAngleMotorInverted, BreakerSwerveModulePIDConfig pidConfig)  {
 
     }
 

@@ -1,0 +1,213 @@
+package frc.robot.BreakerLib.auto.pathplanner;
+
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.server.PathPlannerServer;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveFieldRelativeMovementPrefrences;
+
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+/** Custom PathPlanner version of SwerveControllerCommand */
+public class BreakerSwervePathFollower extends CommandBase {
+  private final Timer timer = new Timer();
+  private final PathPlannerTrajectory trajectory;
+  private PathPlannerTrajectory transformedTrajectory;
+  private final BreakerSwervePathFollowerConfig config;
+  private final boolean stopAtEnd;
+
+  private static Consumer<PathPlannerTrajectory> logActiveTrajectory = null;
+  private static Consumer<Pose2d> logTargetPose = null;
+  private static Consumer<ChassisSpeeds> logSetpoint = null;
+  private static BiConsumer<Translation2d, Rotation2d> logError =
+      BreakerSwervePathFollower::defaultLogError;
+
+  /**
+   * Constructs a new PPSwerveControllerCommand that when executed will follow the provided
+   * trajectory. This command will not return output voltages but ChassisSpeeds from the position
+   * controllers which need to be converted to module states and put into a velocity PID.
+   *
+   * <p>Note: The controllers will *not* set the output to zero upon completion of the path this is
+   * left to the user, since it is not appropriate for paths with nonstationary endstates.
+   *
+   * @param trajectory The trajectory to follow.
+   * @param poseSupplier A function that supplies the robot pose - use one of the odometry classes
+   *     to provide this.
+   * @param xController The Trajectory Tracker PID controller for the robot's x position.
+   * @param yController The Trajectory Tracker PID controller for the robot's y position.
+   * @param rotationController The Trajectory Tracker PID controller for angle for the robot.
+   * @param outputChassisSpeeds The field relative chassis speeds output consumer.
+   * @param useAllianceColor Should the path states be automatically transformed based on alliance
+   *     color? In order for this to work properly, you MUST create your path on the blue side of
+   *     the field.
+   * @param requirements The subsystems to require.
+   */
+  public BreakerSwervePathFollower(
+    BreakerSwervePathFollowerConfig config, 
+    PathPlannerTrajectory trajectory,
+    boolean stopAtEnd
+    ) {
+    this.trajectory = trajectory;
+    this.config = config;
+    this.stopAtEnd = stopAtEnd;
+    addRequirements(config.getDrivetrain());
+
+    if (config.getUseAllianceColor() && trajectory.fromGUI && trajectory.getInitialPose().getX() > 8.27) {
+      DriverStation.reportWarning(
+          "You have constructed a path following command that will automatically transform path states depending"
+              + " on the alliance color, however, it appears this path was created on the red side of the field"
+              + " instead of the blue side. This is likely an error.",
+          false);
+    }
+  }
+
+  @Override
+  public void initialize() {
+    if (config.getUseAllianceColor() && trajectory.fromGUI) {
+      transformedTrajectory =
+          PathPlannerTrajectory.transformTrajectoryForAlliance(
+              trajectory, DriverStation.getAlliance());
+    } else {
+      transformedTrajectory = trajectory;
+    }
+
+    if (logActiveTrajectory != null) {
+      logActiveTrajectory.accept(transformedTrajectory);
+    }
+
+    timer.reset();
+    timer.start();
+
+    PathPlannerServer.sendActivePath(transformedTrajectory.getStates());
+  }
+
+  @Override
+  public void execute() {
+    double currentTime = this.timer.get();
+    PathPlannerState desiredState = (PathPlannerState) transformedTrajectory.sample(currentTime);
+
+    Pose2d currentPose = this.config.odometer.getOdometryPoseMeters();
+
+    PathPlannerServer.sendPathFollowingData(
+        new Pose2d(desiredState.poseMeters.getTranslation(), desiredState.holonomicRotation),
+        currentPose);
+
+    ChassisSpeeds targetChassisSpeeds = this.config.driveController.calculate(currentPose, desiredState);
+
+    this.config.drivetrain.move(ChassisSpeeds.fromFieldRelativeSpeeds(targetChassisSpeeds, currentPose.getRotation()), false);
+
+    if (logTargetPose != null) {
+      logTargetPose.accept(
+          new Pose2d(desiredState.poseMeters.getTranslation(), desiredState.holonomicRotation));
+    }
+
+    if (logError != null) {
+      logError.accept(
+          currentPose.getTranslation().minus(desiredState.poseMeters.getTranslation()),
+          currentPose.getRotation().minus(desiredState.holonomicRotation));
+    }
+
+    if (logSetpoint != null) {
+      logSetpoint.accept(targetChassisSpeeds);
+    }
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    this.timer.stop();
+
+    if (interrupted || Math.abs(transformedTrajectory.getEndState().velocityMetersPerSecond) < 0.1 || stopAtEnd) {
+      this.config.drivetrain.stop();
+    }
+  }
+
+  @Override
+  public boolean isFinished() {
+    return this.timer.hasElapsed(transformedTrajectory.getTotalTimeSeconds());
+  }
+
+  private static void defaultLogError(Translation2d translationError, Rotation2d rotationError) {
+    SmartDashboard.putNumber("PPSwerveControllerCommand/xErrorMeters", translationError.getX());
+    SmartDashboard.putNumber("PPSwerveControllerCommand/yErrorMeters", translationError.getY());
+    SmartDashboard.putNumber(
+        "PPSwerveControllerCommand/rotationErrorDegrees", rotationError.getDegrees());
+  }
+
+  /**
+   * Set custom logging callbacks for this command to use instead of the default configuration of
+   * pushing values to SmartDashboard
+   *
+   * @param logActiveTrajectory Consumer that accepts a PathPlannerTrajectory representing the
+   *     active path. This will be called whenever a PPSwerveControllerCommand starts
+   * @param logTargetPose Consumer that accepts a Pose2d representing the target pose while path
+   *     following
+   * @param logSetpoint Consumer that accepts a ChassisSpeeds object representing the setpoint
+   *     speeds
+   * @param logError BiConsumer that accepts a Translation2d and Rotation2d representing the error
+   *     while path following
+   */
+  public static void setLoggingCallbacks(
+      Consumer<PathPlannerTrajectory> logActiveTrajectory,
+      Consumer<Pose2d> logTargetPose,
+      Consumer<ChassisSpeeds> logSetpoint,
+      BiConsumer<Translation2d, Rotation2d> logError) {
+    BreakerSwervePathFollower.logActiveTrajectory = logActiveTrajectory;
+    BreakerSwervePathFollower.logTargetPose = logTargetPose;
+    BreakerSwervePathFollower.logSetpoint = logSetpoint;
+    BreakerSwervePathFollower.logError = logError;
+  }
+
+  public static class BreakerSwervePathFollowerConfig {
+    private BreakerSwerveDrive drivetrain;
+    private BreakerGenericOdometer odometer;
+    private PPHolonomicDriveController driveController;
+    private boolean useAllianceColor;
+    public BreakerSwervePathFollowerConfig(BreakerSwerveDrive drivetrain, BreakerGenericOdometer odometer, PPHolonomicDriveController driveController, boolean useAllianceColor) {
+      this.driveController = driveController;
+      this.drivetrain = drivetrain;
+      this.odometer = odometer;
+      this.useAllianceColor = useAllianceColor;
+    }
+
+    public BreakerSwervePathFollowerConfig(BreakerSwerveDrive drivetrain, PPHolonomicDriveController driveController, boolean useAllianceColor) {
+      this.driveController = driveController;
+      this.drivetrain = drivetrain;
+      this.odometer = drivetrain;
+      this.useAllianceColor = useAllianceColor;
+    }
+
+    public PPHolonomicDriveController getDriveController() {
+        return driveController;
+    }
+
+    public BreakerSwerveDrive getDrivetrain() {
+        return drivetrain;
+    }
+
+    public BreakerGenericOdometer getOdometer() {
+        return odometer;
+    }
+
+    public boolean getUseAllianceColor() {
+        return useAllianceColor;
+    }
+  }
+}
+
+
+

@@ -13,7 +13,6 @@ public abstract class BreakerGenericSwerveModuleAngleMotor implements BreakerGen
     public abstract double getAblsoluteAngle();
     public abstract double getRelativeAngle(); 
     public abstract void setBrakeMode(boolean isEnabled);
-    public abstract boolean getBrakeMode();
     public abstract Rotation2d getTargetAngle();
 
 }

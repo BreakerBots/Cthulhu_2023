@@ -33,6 +33,7 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
     private WPI_CANCoder encoder;
     private BreakerSwerveModulePIDConfig pidConfig;
     private Rotation2d targetAngle;
+    private String deviceName;
     public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveModulePIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
@@ -59,6 +60,7 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
         motor.setNeutralMode(NeutralMode.Brake);
         motor.set(ControlMode.Position, 0);
         targetAngle = new Rotation2d();
+        deviceName = "TalonFX_Swerve_Angle_Motor_(" + motor.getDeviceID() + ")";
     }
 
     @Override
@@ -123,7 +125,7 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
 
     @Override
     public void setDeviceName(String newName) {
-        // TODO Auto-generated method stub
+        deviceName = newName;
         
     }
 
@@ -147,13 +149,7 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
     }
     @Override
     public void setBrakeMode(boolean isEnabled) {
-        // TODO Auto-generated method stub
-        
-    }
-    @Override
-    public boolean getBrakeMode() {
-        // TODO Auto-generated method stub
-        return false;
+       motor.setNeutralMode(isEnabled ? NeutralMode.Brake : NeutralMode.Coast);
     }
 
     @Override
