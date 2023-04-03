@@ -6,10 +6,10 @@ package frc.robot.BreakerLib.devices.sensors.color;
 
 
 import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.BreakerLib.devices.BreakerGenericDeviceBase;
+import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 
 /** Add your docs here. */
-public abstract class BreakerGenericColorSensor extends BreakerGenericDeviceBase {
+public abstract class BreakerGenericColorSensor extends BreakerGenericDevice {
 
   /** Current color detected by the sensor. */
   public abstract Color getColor();
