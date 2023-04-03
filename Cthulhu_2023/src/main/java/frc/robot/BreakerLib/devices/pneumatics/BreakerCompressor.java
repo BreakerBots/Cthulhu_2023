@@ -9,14 +9,14 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsBase;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import frc.robot.BreakerLib.devices.BreakerGenericDeviceBase;
+import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
 
 /**
  * Compressor bundled with PCM/PH and support for an analog pressure sensor.
  */
-public class BreakerCompressor extends BreakerGenericDeviceBase {
+public class BreakerCompressor extends BreakerGenericDevice {
 
     private PneumaticsModuleType moduleType;
 
