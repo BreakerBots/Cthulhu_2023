@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.BreakerLib.devices.BreakerGenericDevice;
+import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestable;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -17,19 +18,19 @@ import edu.wpi.first.util.sendable.SendableBuilder;
  * class is meant to serve as an intermedairy between your swerve hardware and
  * the BreakerSwerveDrive class
  */
-public interface BreakerGenericSwerveModule extends BreakerGenericDevice, Sendable{
+public abstract class BreakerGenericSwerveModule extends BreakerGenericDevice implements Sendable {
 
     /**
      * default method for setting a swerve module to a given target state,
      * automaticly calls the overloded version of this method that independently
      * specifyes angle and speed
      */
-    public default void setModuleTarget(SwerveModuleState targetModuleState) {
+    public void setModuleTarget(SwerveModuleState targetModuleState) {
         setModuleTarget(targetModuleState.angle, targetModuleState.speedMetersPerSecond);
     }
 
     /** Sets the modules target speed to zero while maintaning the last set angle */
-    public default void stop() {
+    public void stop() {
         setModuleTarget(getModuleTargetState().angle, 0.0);
     }
 
@@ -57,7 +58,7 @@ public interface BreakerGenericSwerveModule extends BreakerGenericDevice, Sendab
     public abstract SwerveModuleState getModuleTargetState();
 
     /** @return Module's {@link SwerveModuleState}. */
-    public default SwerveModuleState getModuleState() {
+    public SwerveModuleState getModuleState() {
         return new SwerveModuleState(getModuleVelMetersPerSec(), Rotation2d.fromDegrees(getModuleAbsoluteAngle()));
     }
 
@@ -82,7 +83,7 @@ public interface BreakerGenericSwerveModule extends BreakerGenericDevice, Sendab
      */
     public abstract void setModuleBrakeMode(boolean isEnabled);
 
-    public default SwerveModulePosition getModulePosition() {
+    public SwerveModulePosition getModulePosition() {
         return new SwerveModulePosition(getModuleDriveDistanceMeters(), Rotation2d.fromDegrees(getModuleAbsoluteAngle()));
     }
 
@@ -102,7 +103,7 @@ public interface BreakerGenericSwerveModule extends BreakerGenericDevice, Sendab
         return String.format("%s(Name: %s, Overall_Device_Health: %s, Set_State: %s, Current_State: %s)", moduleType, module.getDeviceName(), module.getHealth().toString(), module.getModuleTargetState().toString(), module.getModuleState().toString());
     }
 
-    public default void initSendable(SendableBuilder builder) {
+    public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Target Velocity", () -> this.getModuleTargetState().speedMetersPerSecond, null);
         builder.addDoubleProperty("Target Angle", () -> this.getModuleTargetState().angle.getDegrees(), null); 
         builder.addDoubleProperty("Actual Velocity", () -> this.getModuleVelMetersPerSec(), null);

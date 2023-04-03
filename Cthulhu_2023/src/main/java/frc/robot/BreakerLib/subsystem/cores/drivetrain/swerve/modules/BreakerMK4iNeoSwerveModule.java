@@ -28,7 +28,7 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
 
 /** Swerve Drive Specialties' MK4i swerve module driven by Spark Max motor controllers with Neo motors. */
-public class BreakerMK4iNeoSwerveModule implements BreakerGenericSwerveModule {
+public class BreakerMK4iNeoSwerveModule extends BreakerGenericSwerveModule {
 
     private BreakerArbitraryFeedforwardProvider ffProvider;
     private BreakerSwerveDriveConfig config;

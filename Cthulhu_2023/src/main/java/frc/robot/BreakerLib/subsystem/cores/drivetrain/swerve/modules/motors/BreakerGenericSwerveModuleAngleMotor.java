@@ -5,10 +5,10 @@
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.BreakerLib.devices.BreakerGenericDevice;
+import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestableBase;
 
 /** Add your docs here. */
-public abstract class BreakerGenericSwerveModuleAngleMotor implements BreakerGenericDevice {
+public abstract class BreakerGenericSwerveModuleAngleMotor extends BreakerSelfTestableBase {
     public abstract void setTargetAngle(Rotation2d targetAngle);
     public abstract double getAblsoluteAngle();
     public abstract double getRelativeAngle(); 

@@ -34,7 +34,7 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import io.github.oblarg.oblog.Loggable;
 
 /** Swerve Drive Specialties' MK4i swerve module driven by Falcon 500 motors. */
-public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule, Loggable {
+public class BreakerMK4iFalconSwerveModule extends BreakerGenericSwerveModule implements Loggable {
 
     private BreakerArbitraryFeedforwardProvider ffProvider;
     private BreakerSwerveDriveConfig config;
@@ -288,36 +288,6 @@ public class BreakerMK4iFalconSwerveModule implements BreakerGenericSwerveModule
     @Override
     public void setDeviceName(String newName) {
         deviceName = newName;
-    }
-
-    @Override
-    public boolean isUnderAutomaticControl() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public DevicePowerMode getPowerMode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public DevicePowerMode managePower(BreakerPowerManagementConfig managementConfig, double... managementPerameters) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void overrideAutomaticPowerManagement(DevicePowerMode manualPowerMode) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void returnToAutomaticPowerManagement() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

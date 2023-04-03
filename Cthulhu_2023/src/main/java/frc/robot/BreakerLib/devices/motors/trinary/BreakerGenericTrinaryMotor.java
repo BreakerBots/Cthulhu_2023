@@ -4,10 +4,10 @@
 
 package frc.robot.BreakerLib.devices.motors.trinary;
 
-import frc.robot.BreakerLib.devices.BreakerGenericDeviceBase;
+import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 
 /** Add your docs here. */
-public abstract class BreakerGenericTrinaryMotor extends BreakerGenericDeviceBase {
+public abstract class BreakerGenericTrinaryMotor extends BreakerGenericDevice {
         /** Sets motor to designated forward percent output. */
         public abstract void forward();
     

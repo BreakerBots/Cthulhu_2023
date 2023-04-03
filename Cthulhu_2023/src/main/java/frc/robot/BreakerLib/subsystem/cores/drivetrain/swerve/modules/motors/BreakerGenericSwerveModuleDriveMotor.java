@@ -4,10 +4,11 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors;
 
-import frc.robot.BreakerLib.devices.BreakerGenericDevice;
+import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestable;
+import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestableBase;
 
 /** Add your docs here. */
-public interface BreakerGenericSwerveModuleDriveMotor extends BreakerGenericDevice {
+public abstract class BreakerGenericSwerveModuleDriveMotor extends BreakerSelfTestableBase {
     public abstract void setTargetVelocity(double targetMetersPerSecond);
     public abstract double getVelocity();
     public abstract double getDistance();

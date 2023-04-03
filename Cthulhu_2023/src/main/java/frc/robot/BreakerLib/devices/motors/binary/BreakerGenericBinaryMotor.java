@@ -4,10 +4,10 @@
 
 package frc.robot.BreakerLib.devices.motors.binary;
 
-import frc.robot.BreakerLib.devices.BreakerGenericDeviceBase;
+import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 
 /** Add your docs here. */
-public abstract class BreakerGenericBinaryMotor extends BreakerGenericDeviceBase {
+public abstract class BreakerGenericBinaryMotor extends BreakerGenericDevice {
       
         /** Sets motor to designated percent output. */
         public abstract void start();

@@ -7,10 +7,10 @@ package frc.robot.BreakerLib.devices.motors.smart;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import frc.robot.BreakerLib.devices.BreakerGenericDevice;
+import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestable;
 
 /** Add your docs here. */
-public interface BreakerGenericSmartMotorController extends BreakerGenericDevice, MotorController {
+public interface BreakerGenericSmartMotorController extends BreakerSelfTestable, MotorController {
 
 
     public static enum SmartMotorControlMode {

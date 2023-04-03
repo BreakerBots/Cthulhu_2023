@@ -13,7 +13,7 @@ import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /** Add your docs here. */
-public class BreakerSwerveModule implements BreakerGenericSwerveModule {
+public class BreakerSwerveModule extends BreakerGenericSwerveModule {
     private BreakerGenericSwerveModuleDriveMotor driveMotor;
     private BreakerGenericSwerveModuleAngleMotor angleMotor;
     public BreakerSwerveModule(BreakerGenericSwerveModuleDriveMotor driveMotor, BreakerGenericSwerveModuleAngleMotor angleMotor) {

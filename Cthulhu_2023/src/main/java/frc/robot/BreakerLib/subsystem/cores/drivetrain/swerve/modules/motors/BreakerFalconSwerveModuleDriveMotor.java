@@ -19,7 +19,7 @@ import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 /** Add your docs here. */
-public class BreakerFalconSwerveModuleDriveMotor implements BreakerGenericSwerveModuleDriveMotor {
+public class BreakerFalconSwerveModuleDriveMotor extends BreakerGenericSwerveModuleDriveMotor {
     private WPI_TalonFX motor;
     public BreakerFalconSwerveModuleDriveMotor(WPI_TalonFX motor, double driveGearRatio, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
