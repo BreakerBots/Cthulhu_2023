@@ -235,32 +235,6 @@ public class BreakerAHRS extends BreakerGenericIMU implements BreakerGenericMagn
         return imu.getRawAccelZ();
     }
 
-    @Override
-    public DevicePowerMode managePower(BreakerPowerManagementConfig managementConfig, double... managementPerameters) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void overrideAutomaticPowerManagement(DevicePowerMode manualPowerMode) {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void returnToAutomaticPowerManagement() {
-        // TODO Auto-generated method stub
-
-    }
-
-    public boolean isUnderAutomaticControl() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public DevicePowerMode getPowerMode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public void runSelfTest() {
         health = DeviceHealth.NOMINAL;
         faultStr = "";

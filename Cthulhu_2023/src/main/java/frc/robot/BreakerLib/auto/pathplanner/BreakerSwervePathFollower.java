@@ -38,24 +38,12 @@ public class BreakerSwervePathFollower extends CommandBase {
       BreakerSwervePathFollower::defaultLogError;
 
   /**
-   * Constructs a new PPSwerveControllerCommand that when executed will follow the provided
-   * trajectory. This command will not return output voltages but ChassisSpeeds from the position
-   * controllers which need to be converted to module states and put into a velocity PID.
+   * Constructs a new BreakerSwervePathFollower that when executed will follow the provided
+   * trajectory.
    *
-   * <p>Note: The controllers will *not* set the output to zero upon completion of the path this is
-   * left to the user, since it is not appropriate for paths with nonstationary endstates.
-   *
+   * @param config 
    * @param trajectory The trajectory to follow.
-   * @param poseSupplier A function that supplies the robot pose - use one of the odometry classes
-   *     to provide this.
-   * @param xController The Trajectory Tracker PID controller for the robot's x position.
-   * @param yController The Trajectory Tracker PID controller for the robot's y position.
-   * @param rotationController The Trajectory Tracker PID controller for angle for the robot.
-   * @param outputChassisSpeeds The field relative chassis speeds output consumer.
-   * @param useAllianceColor Should the path states be automatically transformed based on alliance
-   *     color? In order for this to work properly, you MUST create your path on the blue side of
-   *     the field.
-   * @param requirements The subsystems to require.
+   * @param stopAtEnd Weather or not the follower should stop the drivetrain upon completion of the path
    */
   public BreakerSwervePathFollower(
     BreakerSwervePathFollowerConfig config, 

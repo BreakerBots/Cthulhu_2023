@@ -136,33 +136,5 @@ public class BreakerLimelight extends BreakerGenericDeviceBase {
   public void setDeviceName(String newName) {
   }
 
-  @Override
-  public boolean isUnderAutomaticControl() {
-    // TODO Auto-generated method stub
-    return false;
-  }
 
-  @Override
-  public DevicePowerMode getPowerMode() {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public void overrideAutomaticPowerManagement(DevicePowerMode manualPowerMode) {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public void returnToAutomaticPowerManagement() {
-    // TODO Auto-generated method stub
-    
-  }
-
-  @Override
-  public DevicePowerMode managePower(BreakerPowerManagementConfig managementConfig, double... managementPerameters) {
-    // TODO Auto-generated method stub
-    return null;
-  }
 }

@@ -22,36 +22,6 @@ public class BreakerSwerveModule implements BreakerGenericSwerveModule {
     }
 
     @Override
-    public DevicePowerMode managePower(BreakerPowerManagementConfig managementConfig, double... managementPerameters) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void overrideAutomaticPowerManagement(DevicePowerMode manualPowerMode) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void returnToAutomaticPowerManagement() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public boolean isUnderAutomaticControl() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public DevicePowerMode getPowerMode() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void runSelfTest() {
         // TODO Auto-generated method stub
         
@@ -151,9 +121,9 @@ public class BreakerSwerveModule implements BreakerGenericSwerveModule {
         return null;
     }
 
-    public static class BreakerSwerveModulePIDConfig {
+    public static class BreakerSwerveMotorPIDConfig {
         public final double kP, kI, kD, kF;
-        public BreakerSwerveModulePIDConfig(double kP, double kI, double kD, double kF) {
+        public BreakerSwerveMotorPIDConfig(double kP, double kI, double kD, double kF) {
             this.kP = kP;
             this.kI = kI;
             this.kD = kD;

@@ -8,5 +8,6 @@ import frc.robot.BreakerLib.util.power.BreakerPowerManageable;
 import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestable;
 
 /** Base interface for all Breaker devices. */
-public interface BreakerGenericDevice extends BreakerPowerManageable, BreakerSelfTestable {
+@Deprecated
+public interface BreakerGenericDevice extends BreakerSelfTestable {
 }

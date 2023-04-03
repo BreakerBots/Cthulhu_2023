@@ -17,7 +17,7 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveModulePIDConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
 //import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveModulePIDConfig;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
 import frc.robot.BreakerLib.util.math.BreakerMath;
@@ -31,10 +31,10 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveModuleAngleMotor {
     private WPI_TalonFX motor;
     private WPI_CANCoder encoder;
-    private BreakerSwerveModulePIDConfig pidConfig;
+    private BreakerSwerveMotorPIDConfig pidConfig;
     private Rotation2d targetAngle;
     private String deviceName;
-    public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveModulePIDConfig pidConfig) {
+    public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
         BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
@@ -61,36 +61,6 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
         motor.set(ControlMode.Position, 0);
         targetAngle = new Rotation2d();
         deviceName = "TalonFX_Swerve_Angle_Motor_(" + motor.getDeviceID() + ")";
-    }
-
-    @Override
-    public DevicePowerMode managePower(BreakerPowerManagementConfig managementConfig, double... managementPerameters) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void overrideAutomaticPowerManagement(DevicePowerMode manualPowerMode) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void returnToAutomaticPowerManagement() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public boolean isUnderAutomaticControl() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public DevicePowerMode getPowerMode() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override

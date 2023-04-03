@@ -31,4 +31,10 @@ public class BreakerPathfinderNode {
     public String getName() {
         return nodeName;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        BreakerPathfinderNode node = (BreakerPathfinderNode) obj;
+        return node.nodeLocation.equals(nodeLocation) && node.linkedNodes.equals(linkedNodes);
+    }
 }

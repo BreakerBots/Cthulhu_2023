@@ -308,34 +308,7 @@ public abstract class BreakerDiffDrive extends BreakerGenericDrivetrain {
     return BreakerMath.fromRobotRelativeSpeeds(getRobotRelativeChassisSpeeds(),
         odometer.getOdometryPoseMeters().getRotation());
   }
-
-  @Override
-  public boolean isUnderAutomaticControl() {
-    return isAutoPowerManaged;
-  }
-
-  @Override
-  public DevicePowerMode getPowerMode() {
-    return powerMode;
-  }
-
-  @Override
-  public DevicePowerMode managePower(BreakerPowerManagementConfig managementConfig, double... managementPerameters) {
-      // TODO Auto-generated method stub
-      return null;
-  }
-
-  @Override
-  public void overrideAutomaticPowerManagement(DevicePowerMode manualPowerMode) {
-    isAutoPowerManaged = false;
-    
-  }
-
-  @Override
-  public void returnToAutomaticPowerManagement() {
-    isAutoPowerManaged = true;
-  }
-
+  
   @Override
   public void periodic() {
     updateOdometry();
