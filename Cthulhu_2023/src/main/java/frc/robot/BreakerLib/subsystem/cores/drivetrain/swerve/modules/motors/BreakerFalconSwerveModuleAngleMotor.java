@@ -33,7 +33,6 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
     private WPI_CANCoder encoder;
     private BreakerSwerveMotorPIDConfig pidConfig;
     private Rotation2d targetAngle;
-    private String deviceName;
     public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
@@ -64,42 +63,6 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
     }
 
     @Override
-    public void runSelfTest() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public DeviceHealth getHealth() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getFaults() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getDeviceName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean hasFault() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setDeviceName(String newName) {
-        deviceName = newName;
-        
-    }
-
-    @Override
     public void setTargetAngle(Rotation2d targetAngle) {
         double relTgtAng = BreakerMath.absoluteAngleToContinuousRelativeAngleDegrees(getRelativeAngle(),
                 Rotation2d.fromDegrees(getAblsoluteAngle()), targetAngle);
@@ -125,4 +88,12 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
     @Override
     public Rotation2d getTargetAngle() {
         return targetAngle;
-    }}
+    }
+
+    @Override
+    public void runSelfTest() {
+        
+        
+    }
+
+}

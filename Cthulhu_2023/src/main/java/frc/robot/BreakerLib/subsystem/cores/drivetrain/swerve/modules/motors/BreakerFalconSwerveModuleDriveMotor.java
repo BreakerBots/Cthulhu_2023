@@ -49,38 +49,8 @@ public class BreakerFalconSwerveModuleDriveMotor extends BreakerGenericSwerveMod
     }
 
     @Override
-    public DeviceHealth getHealth() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getFaults() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getDeviceName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean hasFault() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setDeviceName(String newName) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public void setTargetVelocity(double targetMetersPerSecond) {
-        // TODO Auto-generated method stub
+         
         
     }
 

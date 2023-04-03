@@ -11,6 +11,7 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.Bre
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
+import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 /** Add your docs here. */
 public class BreakerSwerveModule extends BreakerGenericSwerveModule {
@@ -19,42 +20,6 @@ public class BreakerSwerveModule extends BreakerGenericSwerveModule {
     public BreakerSwerveModule(BreakerGenericSwerveModuleDriveMotor driveMotor, BreakerGenericSwerveModuleAngleMotor angleMotor) {
         this.angleMotor = angleMotor;
         this.driveMotor = driveMotor;
-    }
-
-    @Override
-    public void runSelfTest() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public DeviceHealth getHealth() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getFaults() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getDeviceName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean hasFault() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setDeviceName(String newName) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
@@ -118,7 +83,16 @@ public class BreakerSwerveModule extends BreakerGenericSwerveModule {
 
     @Override
     public DeviceHealth[] getModuleHealths() {
-        return null;
+        DeviceHealth driveHealth = driveMotor.getHealth();
+        DeviceHealth turnHealth = angleMotor.getHealth();
+        DeviceHealth overall = driveHealth != DeviceHealth.NOMINAL || turnHealth != DeviceHealth.NOMINAL ? DeviceHealth.INOPERABLE : DeviceHealth.NOMINAL;
+        return new DeviceHealth[]{overall, driveHealth, turnHealth};
+    }
+
+
+    @Override
+    public void runSelfTest() {
+        
     }
 
     public static class BreakerSwerveMotorPIDConfig {
