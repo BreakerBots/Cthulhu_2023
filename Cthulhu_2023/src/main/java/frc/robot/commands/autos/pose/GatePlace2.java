@@ -31,14 +31,14 @@ public class GatePlace2 extends SequentialCommandGroup {
 
                 // Move out to game piece
                 BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
-                                1.5,
+                                2,
                                 new Pose2d(1.9, 1.02, new Rotation2d()),
-                                new Pose2d(7, 0.885, Rotation2d.fromDegrees(180)));
+                                new Pose2d(7, 0.685, Rotation2d.fromDegrees(180)));
 
                 // Grab then move back to position
                 BreakerPoseWaypointPath wpp1 = new BreakerPoseWaypointPath(
-                                1.5,
-                                new Pose2d(7.02, 0.885, Rotation2d.fromDegrees(180)),
+                                2,
+                                new Pose2d(7.02, 0.685, Rotation2d.fromDegrees(180)),
                                 new Pose2d(3.457, 0.885, Rotation2d.fromDegrees(180)),
                                 new Pose2d(1.9, 1.02, Rotation2d.fromDegrees(180)));
 
