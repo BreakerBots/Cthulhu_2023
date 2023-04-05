@@ -7,10 +7,11 @@ package frc.robot.BreakerLib.devices.vision.limelight;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 /** Add your docs here. */
-public class BreakerLimelightTarget {
+@Deprecated
+public class BreakerLeagacyLimelightTarget {
     private int pipelineNum;
     private double targetHeight;
-    private BreakerLimelight limelight;
+    private BreakerLeagacyLimelight limelight;
     private double targetOffsetDistX = 0;
     private double targetOffsetDistY = 0;
     private double targetOffsetDistZ = 0;
@@ -21,7 +22,7 @@ public class BreakerLimelightTarget {
      * @param limelight the limelight used to track the intended target (refers to the vision target being tracked)
      * @param pipelineNum the pipeline number (0 - 9) that the limelight needs to use to track the intended target
      */
-    public BreakerLimelightTarget(double targetHeight, BreakerLimelight limelight, double pipelineNum) {
+    public BreakerLeagacyLimelightTarget(double targetHeight, BreakerLeagacyLimelight limelight, double pipelineNum) {
       targetHeight = this.targetHeight;
       pipelineNum = this.pipelineNum;
       limelight = this.limelight;

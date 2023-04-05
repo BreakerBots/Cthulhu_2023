@@ -9,19 +9,19 @@ import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-
-public class BreakerLimelight extends BreakerGenericDevice {
+@Deprecated
+public class BreakerLeagacyLimelight extends BreakerGenericDevice {
   private double mountingAngle;
   private double mountingHeight;
   private final String limelightName;
-  private BreakerLimelightTarget currentTarget;
+  private BreakerLeagacyLimelightTarget currentTarget;
 
   /**
    * Creates an new vision prossesing limelight
    * 
    * @param limelightName the network name of the limelight you are initializing
    */
-  public BreakerLimelight(String limelightName) {
+  public BreakerLeagacyLimelight(String limelightName) {
     this.limelightName = limelightName;
     deviceName = limelightName;
   }
@@ -52,7 +52,7 @@ public class BreakerLimelight extends BreakerGenericDevice {
     return limelightName;
   }
 
-  public void setTarget(BreakerLimelightTarget target) {
+  public void setTarget(BreakerLeagacyLimelightTarget target) {
     if (currentTarget != target) {
       currentTarget = target;
       if (getPipeline() != target.getTargetPipeline()) {
@@ -103,7 +103,7 @@ public class BreakerLimelight extends BreakerGenericDevice {
     return (getAllVisionData()[0] > 0);
   }
 
-  public BreakerLimelightTarget getCurrentTarget() {
+  public BreakerLeagacyLimelightTarget getCurrentTarget() {
     return currentTarget;
   }
 
