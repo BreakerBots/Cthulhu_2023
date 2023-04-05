@@ -9,13 +9,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import frc.robot.BreakerLib.devices.vision.BreakerGenericFiducialTarget;
 import frc.robot.BreakerLib.devices.vision.photon.BreakerFiducialPhotonTarget;
 import frc.robot.BreakerLib.util.math.averages.BreakerAverage;
 import frc.robot.BreakerLib.util.math.averages.BreakerWeightedAverage;
 
 /** Weighted average for vision-based pose predictions. */
 public class BreakerVisionPoseFilter {
-    private BreakerFiducialPhotonTarget[] positioningTargets;
+    private BreakerGenericFiducialTarget[] positioningTargets;
     private BreakerAverage avgLatency;
     private double trustCoef, maxUncertainty, distanceScailFactor, maxDistance;
     private boolean usesDistanceScaleing = false;
@@ -32,7 +33,7 @@ public class BreakerVisionPoseFilter {
      * @param positioningTargets - The fiducial targets for positioning.
      */
     public BreakerVisionPoseFilter(double trustCoef, double maxUncertainty,
-            BreakerFiducialPhotonTarget... positioningTargets) {
+            BreakerGenericFiducialTarget... positioningTargets) {
         this.positioningTargets = positioningTargets;
         this.trustCoef = MathUtil.clamp(trustCoef, 1, Double.MAX_VALUE);
         this.maxUncertainty = maxUncertainty;
@@ -58,7 +59,7 @@ public class BreakerVisionPoseFilter {
     public BreakerVisionPoseFilter(
             double trustCoef, double maxUncertainty, 
             double distanceScailFactor, double maxDistance,
-            BreakerFiducialPhotonTarget... positioningTargets
+            BreakerGenericFiducialTarget... positioningTargets
         ) {
         this.positioningTargets = positioningTargets;
         this.distanceScailFactor = MathUtil.clamp(distanceScailFactor, 1, Double.MAX_VALUE);
@@ -81,7 +82,7 @@ public class BreakerVisionPoseFilter {
         BreakerWeightedAverage rAngAverage = new BreakerWeightedAverage();
         avgLatency.clear();
         for (int i = 0; i < positioningTargets.length; i++) {
-            BreakerFiducialPhotonTarget tgt = positioningTargets[i];
+            BreakerGenericFiducialTarget tgt = positioningTargets[i];
             if (tgt.isAssignedTargetVisible()) {
                 if (tgt.getPoseAmbiguity() <= maxUncertainty && (usesDistanceScaleing ? tgt.getDistance() <= maxDistance : true)) {
                     double weight = Math.pow(trustCoef, (-trustCoef) * tgt.getPoseAmbiguity());
@@ -119,7 +120,7 @@ public class BreakerVisionPoseFilter {
         BreakerWeightedAverage yAngAverage = new BreakerWeightedAverage();
         avgLatency.clear();
         for (int i = 0; i < positioningTargets.length; i++) {
-            BreakerFiducialPhotonTarget tgt = positioningTargets[i];
+            BreakerGenericFiducialTarget tgt = positioningTargets[i];
             if (tgt.isAssignedTargetVisible()) {
                 if (tgt.getPoseAmbiguity() <= maxUncertainty && (usesDistanceScaleing ? tgt.getDistance() <= maxDistance : true)) {
                     double weight = Math.pow(trustCoef, (-trustCoef) * tgt.getPoseAmbiguity());
@@ -144,7 +145,7 @@ public class BreakerVisionPoseFilter {
     }
 
     public boolean isAnyTargetVisable() {
-        for (BreakerFiducialPhotonTarget tgt: positioningTargets) {
+        for (BreakerGenericFiducialTarget tgt: positioningTargets) {
             if (tgt.isAssignedTargetVisible()) {
                 return true;
             }

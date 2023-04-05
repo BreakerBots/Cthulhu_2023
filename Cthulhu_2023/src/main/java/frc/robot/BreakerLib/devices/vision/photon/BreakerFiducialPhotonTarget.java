@@ -16,9 +16,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.BreakerLib.devices.vision.BreakerGenericFiducialTarget;
+
+
 
 /** Fiducial marker target. Use if using AprilTags w/ 3D calibrated camera. */
-public class BreakerFiducialPhotonTarget extends SubsystemBase {
+public class BreakerFiducialPhotonTarget extends SubsystemBase implements BreakerGenericFiducialTarget {
     private PhotonTrackedTarget assignedTarget;
     private double lastDataUpdate = Timer.getFPGATimestamp();
 
