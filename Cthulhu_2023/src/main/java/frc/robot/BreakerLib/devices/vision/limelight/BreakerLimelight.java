@@ -9,9 +9,9 @@ import frc.robot.BreakerLib.util.vendorutil.LimelightHelpers.LimelightResults;
 
 /** Add your docs here. */
 public class BreakerLimelight {
-    private final String limeilghtName;
+    private final String limelightName;
     public BreakerLimelight(String limelightName) {
-        this.limeilghtName = limelightName;
+        this.limelightName = limelightName;
         
     }
 
