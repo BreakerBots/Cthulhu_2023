@@ -4,11 +4,76 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.modulebuilder;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerFalconSwerveModuleAngleMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerFalconSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleAngleMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
+
 /** Add your docs here. */
 public class BreakerSwerveModuleBuilder {
-    public static enum SwerveModuleType {
-        SDS_MK4I,
-        SDS_MK4,
+    private BreakerSwerveModuleConfig config;
+    private BreakerGenericSwerveModuleAngleMotor angleMotor;
+    private BreakerGenericSwerveModuleDriveMotor driveMotor;
+    private BreakerSwerveModuleBuilder(BreakerSwerveModuleConfig config) {
+        this.config = config;
+    }
 
+    public static BreakerSwerveModuleBuilder getInstance(BreakerSwerveModuleConfig config) {
+        return new BreakerSwerveModuleBuilder(config);
+    }
+
+    public BreakerSwerveModuleBuilder withFalconAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
+        angleMotor = new BreakerFalconSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, isMotorInverted, config.getAnglePIDConfig());
+        return this;
+    }
+
+    public BreakerSwerveModuleBuilder withFalconDriveMotor(WPI_TalonFX motor, boolean isMotorInverted) {
+        driveMotor = new BreakerFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
+        return this;
+    }
+
+    public BreakerSwerveModule createSwerveModule(Translation2d wheelPositionRelativeToRobot) {
+        return new BreakerSwerveModule(driveMotor, angleMotor, wheelPositionRelativeToRobot);
+    }
+
+    public static class BreakerSwerveModuleConfig {
+        private double driveGearRatio, wheelDiameter;
+        private BreakerSwerveMotorPIDConfig anglePIDConfig, drivePIDConfig;
+        private BreakerArbitraryFeedforwardProvider driveArbFF;
+        public BreakerSwerveModuleConfig(double driveGearRatio, double wheelDiameter, BreakerSwerveMotorPIDConfig anglePIDConfig, BreakerSwerveMotorPIDConfig drivePIDConfig, BreakerArbitraryFeedforwardProvider driveArbFF) {
+            this.driveGearRatio = driveGearRatio;
+            this.wheelDiameter = wheelDiameter;
+            this.drivePIDConfig = drivePIDConfig;
+            this.anglePIDConfig = anglePIDConfig;
+            this.driveArbFF = driveArbFF;
+        }
+
+        public BreakerSwerveMotorPIDConfig getAnglePIDConfig() {
+            return anglePIDConfig;
+        }
+
+        public BreakerSwerveMotorPIDConfig getDrivePIDConfig() {
+            return drivePIDConfig;
+        }
+
+        public BreakerArbitraryFeedforwardProvider getDriveArbFF() {
+            return driveArbFF;
+        }
+
+        public double getDriveGearRatio() {
+            return driveGearRatio;
+        }
+
+        public double getWheelDiameter() {
+            return wheelDiameter;
+        }
     }
 }

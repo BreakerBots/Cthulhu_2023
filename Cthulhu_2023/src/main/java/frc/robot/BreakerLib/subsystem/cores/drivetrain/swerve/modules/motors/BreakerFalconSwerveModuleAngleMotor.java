@@ -16,6 +16,7 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
 //import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveModulePIDConfig;
@@ -31,7 +32,6 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveModuleAngleMotor {
     private WPI_TalonFX motor;
     private WPI_CANCoder encoder;
-    private BreakerSwerveMotorPIDConfig pidConfig;
     private Rotation2d targetAngle;
     public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
@@ -92,8 +92,19 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
 
     @Override
     public void runSelfTest() {
-        
-        
+        faultStr = "";
+        health = DeviceHealth.NOMINAL;
+        Pair<DeviceHealth, String> motorPair = BreakerCTREUtil.checkMotorFaultsAndConnection(motor);
+        Pair<DeviceHealth, String> encoderPair = BreakerCTREUtil.checkCANCoderFaultsAndConnection(encoder);
+        if (encoderPair.getFirst() != DeviceHealth.NOMINAL || encoderPair.getFirst() != DeviceHealth.INOPERABLE) {
+            health = DeviceHealth.INOPERABLE;
+            if (motorPair.getFirst() != DeviceHealth.NOMINAL) {
+                faultStr += " ANGLE_MOTOR_FAULTS : " + motorPair.getSecond();
+            }
+            if (encoderPair.getFirst() != DeviceHealth.NOMINAL) {
+                faultStr += " ENCODER_FAULTS : " + encoderPair.getSecond();
+            }
+        }
     }
 
 }

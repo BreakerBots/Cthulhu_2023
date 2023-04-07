@@ -5,6 +5,7 @@
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.BreakerLib.devices.BreakerGenericDevice;
@@ -19,6 +20,10 @@ import edu.wpi.first.util.sendable.SendableBuilder;
  * the BreakerSwerveDrive class
  */
 public abstract class BreakerGenericSwerveModule extends BreakerGenericDevice implements Sendable {
+    protected Translation2d wheelPositionRelativeToRobot;
+    public BreakerGenericSwerveModule(Translation2d wheelPositionRelativeToRobot) {
+        this.wheelPositionRelativeToRobot = wheelPositionRelativeToRobot;
+    }
 
     /**
      * default method for setting a swerve module to a given target state,
@@ -51,9 +56,6 @@ public abstract class BreakerGenericSwerveModule extends BreakerGenericDevice im
 
     /** @return The velocity of the module's drive wheel in meters per second. */
     public abstract double getModuleVelMetersPerSec();
-
-    /** @return The velocity of the module's drive wheel in device's native unit. */
-    public abstract double getMetersPerSecToNativeVelUnits(double speedMetersPerSec);
 
     public abstract SwerveModuleState getModuleTargetState();
 
@@ -101,6 +103,10 @@ public abstract class BreakerGenericSwerveModule extends BreakerGenericDevice im
 
     public static String getModuleAsString(String moduleType, BreakerGenericSwerveModule module) {
         return String.format("%s(Name: %s, Overall_Device_Health: %s, Set_State: %s, Current_State: %s)", moduleType, module.getDeviceName(), module.getHealth().toString(), module.getModuleTargetState().toString(), module.getModuleState().toString());
+    }
+
+    public Translation2d getWheelPositionRelativeToRobot() {
+        return wheelPositionRelativeToRobot;
     }
 
     public void initSendable(SendableBuilder builder) {

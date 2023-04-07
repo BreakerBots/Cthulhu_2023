@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -32,6 +33,7 @@ import frc.robot.BreakerLib.util.test.suites.drivetrain.swerve.BreakerSwerveDriv
  */
 public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements BreakerGenericTestSuiteImplementation<BreakerSwerveDriveTestSuite> {
   private BreakerSwerveDriveConfig config;
+  private SwerveDriveKinematics kinematics;
 
   /** The current {@link SwerveModuleState} each of this drivetrain's swerve modules is set to */
   private SwerveModuleState[] targetModuleStates;
@@ -68,10 +70,13 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     this.gyro = gyro;
     deviceName = "Swerve_Drivetrain";
     targetModuleStates = new SwerveModuleState[swerveModules.length];
+    Translation2d[] wheelPositions = new Translation2d[swerveModules.length];
     for (int i = 0; i < targetModuleStates.length; i++) {
       targetModuleStates[i] = new SwerveModuleState();
+      wheelPositions[i] = swerveModules[i].getWheelPositionRelativeToRobot();
     }
-    odometer = new SwerveDriveOdometry(config.getKinematics(), Rotation2d.fromDegrees(gyro.getRawYaw()), getSwerveModulePositions());
+    kinematics = new SwerveDriveKinematics(wheelPositions);
+    odometer = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getRawYaw()), getSwerveModulePositions());
   }
 
   /**
@@ -132,7 +137,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
       robotRelativeVelocities.vyMetersPerSecond *= config.getSlowModeLinearMultiplier();
       robotRelativeVelocities.omegaRadiansPerSecond *= config.getSlowModeTurnMultiplier();
     }
-    setModuleStates(config.getKinematics().toSwerveModuleStates(robotRelativeVelocities));
+    setModuleStates(kinematics.toSwerveModuleStates(robotRelativeVelocities));
   }
 
   /**
@@ -324,6 +329,10 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   public BreakerSwerveDriveConfig getConfig() {
     return config;
   }
+  
+  public SwerveDriveKinematics getKinematics() {
+      return kinematics;
+  }
 
   @Override
   public void runSelfTest() {
@@ -378,7 +387,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
 
   @Override
   public ChassisSpeeds getRobotRelativeChassisSpeeds() {
-    return config.getKinematics().toChassisSpeeds(getSwerveModuleStates());
+    return kinematics.toChassisSpeeds(getSwerveModuleStates());
   }
 
   @Override

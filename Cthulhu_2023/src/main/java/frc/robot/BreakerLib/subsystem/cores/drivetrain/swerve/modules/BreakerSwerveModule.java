@@ -5,6 +5,7 @@
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleDriveMotor;
@@ -17,7 +18,8 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 public class BreakerSwerveModule extends BreakerGenericSwerveModule {
     private BreakerGenericSwerveModuleDriveMotor driveMotor;
     private BreakerGenericSwerveModuleAngleMotor angleMotor;
-    public BreakerSwerveModule(BreakerGenericSwerveModuleDriveMotor driveMotor, BreakerGenericSwerveModuleAngleMotor angleMotor) {
+    public BreakerSwerveModule(BreakerGenericSwerveModuleDriveMotor driveMotor, BreakerGenericSwerveModuleAngleMotor angleMotor, Translation2d wheelPositionRelativeToRobot) {
+        super(wheelPositionRelativeToRobot);
         this.angleMotor = angleMotor;
         this.driveMotor = driveMotor;
     }
@@ -41,11 +43,6 @@ public class BreakerSwerveModule extends BreakerGenericSwerveModule {
     @Override
     public double getModuleVelMetersPerSec() {
         return driveMotor.getVelocity();
-    }
-
-    @Override
-    public double getMetersPerSecToNativeVelUnits(double speedMetersPerSec) {
-        return 0.0;
     }
 
     @Override
@@ -89,10 +86,19 @@ public class BreakerSwerveModule extends BreakerGenericSwerveModule {
         return new DeviceHealth[]{overall, driveHealth, turnHealth};
     }
 
-
     @Override
     public void runSelfTest() {
-        
+        faultStr = "";
+        DeviceHealth[] healths = getModuleHealths();
+        health = healths[0];
+        if (health != DeviceHealth.NOMINAL) {
+            if (healths[1] != DeviceHealth.NOMINAL) {
+                faultStr += driveMotor.getFaults();
+            }
+            if (healths[2] != DeviceHealth.NOMINAL) {
+                faultStr += angleMotor.getFaults();
+            }
+        }
     }
 
     public static class BreakerSwerveMotorPIDConfig {

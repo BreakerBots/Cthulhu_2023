@@ -34,7 +34,7 @@ public class BreakerSwerveDrivePoseEstimator extends SubsystemBase implements Br
     ) {
         this.drivetrain = drivetrain;
         poseEstimator = new SwerveDrivePoseEstimator(
-            drivetrain.getConfig().getKinematics(),
+            drivetrain.getKinematics(),
             gyro.getYawRotation2d(), 
             drivetrain.getSwerveModulePositions(),
             initialPose,

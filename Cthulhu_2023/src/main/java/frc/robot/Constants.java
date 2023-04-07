@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.BreakerLib.position.geometry.BreakerRobotGeometry2d;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
+import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -36,9 +38,11 @@ public final class Constants {
         public static final double MODULE_ANGLE_KP = 0.85;
         public static final double MODULE_ANGLE_KI = 0.0;
         public static final double MODULE_ANGLE_KD = 0.0;
+        public static final BreakerSwerveMotorPIDConfig MODULE_ANGLE_PID_CONFIG = new BreakerSwerveMotorPIDConfig(MODULE_ANGLE_KP, MODULE_ANGLE_KI, MODULE_ANGLE_KD, 0.0);
         public static final double MODULE_VELOCITY_KP = -0.045; // 0.01
         public static final double MODULE_VELOCITY_KI = 0.0;
         public static final double MODULE_VELOCITY_KD = 0.0;
+        public static final BreakerSwerveMotorPIDConfig MODULE_VELOCITY_PID_CONFIG = new BreakerSwerveMotorPIDConfig(MODULE_VELOCITY_KP, MODULE_VELOCITY_KI, MODULE_VELOCITY_KD, 0.0);
         public static final double DRIVE_MOTOR_GEAR_RATIO_TO_ONE = 8.14;
         public static final double WHEEL_DIAMETER = 4.0;
         public static final double MODULE_WHEEL_SPEED_DEADBAND = 0.001;
@@ -46,6 +50,7 @@ public final class Constants {
 
         public static final double FF_STATIC_FRICTION_COEFFICIENT = 0.3;
         public static final double FF_VELOCITY_COEFFICIENT = 2.82;
+        public static final BreakerArbitraryFeedforwardProvider MODULE_VELOCITY_FF = new BreakerArbitraryFeedforwardProvider(FF_STATIC_FRICTION_COEFFICIENT, FF_VELOCITY_COEFFICIENT);
 
         public static final double SLOW_MODE_LINEAR_MULTIPLIER = 0.5;
         public static final double SLOW_MODE_TURN_MULTIPLIER = 0.5;

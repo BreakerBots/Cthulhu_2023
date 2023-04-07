@@ -22,7 +22,9 @@ import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerMK4iFalconSwerveModule;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.modulebuilder.BreakerSwerveModuleBuilder;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.modulebuilder.BreakerSwerveModuleBuilder.BreakerSwerveModuleConfig;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -55,28 +57,33 @@ public class Drive extends BreakerSwerveDrive {
         private static WPI_CANCoder encoderBR = new WPI_CANCoder(BR_ENCODER_ID, CANIVORE_1);
 
         private static BreakerSwerveDriveConfig config = new BreakerSwerveDriveConfig(
-                        MAX_FORWARD_VELOCITY, MAX_SIDEWAYS_VELOCITY, MAX_ANGLE_VELOCITY,
-                        MODULE_ANGLE_KP, MODULE_ANGLE_KI, MODULE_ANGLE_KD,
-                        MODULE_VELOCITY_KP, MODULE_VELOCITY_KI, MODULE_VELOCITY_KD, 0.0,
-                        DRIVE_MOTOR_GEAR_RATIO_TO_ONE, WHEEL_DIAMETER, MODULE_WHEEL_SPEED_DEADBAND,
-                        MAX_ATTAINABLE_MODULE_WHEEL_SPEED,
-                        new BreakerArbitraryFeedforwardProvider(FF_STATIC_FRICTION_COEFFICIENT,
-                                        FF_VELOCITY_COEFFICIENT),
-                        FL_TRANSLATION, FR_TRANSLATION, BL_TRANSLATION, BR_TRANSLATION)
-                        .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
+                MAX_FORWARD_VELOCITY, MAX_SIDEWAYS_VELOCITY, MAX_ANGLE_VELOCITY,
+                MODULE_WHEEL_SPEED_DEADBAND, MAX_ATTAINABLE_MODULE_WHEEL_SPEED)
+                .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
 
-        @Log
-        private static BreakerMK4iFalconSwerveModule frontLeftModule = new BreakerMK4iFalconSwerveModule(driveFL,
-                        turnFL,
-                        encoderFL, config, FL_ENCODER_OFFSET, true, true);
-        private static BreakerMK4iFalconSwerveModule frontRightModule = new BreakerMK4iFalconSwerveModule(driveFR,
-                        turnFR,
-                        encoderFR, config, FR_ENCODER_OFFSET, false, true);
-        private static BreakerMK4iFalconSwerveModule backLeftModule = new BreakerMK4iFalconSwerveModule(driveBL, turnBL,
-                        encoderBL, config, BL_ENCODER_OFFSET, true, true);
-        private static BreakerMK4iFalconSwerveModule backRightModule = new BreakerMK4iFalconSwerveModule(driveBR,
-                        turnBR,
-                        encoderBR, config, BR_ENCODER_OFFSET, false, true);
+        private static BreakerSwerveModuleConfig falconMk4iConfig = new BreakerSwerveModuleConfig(
+                DRIVE_MOTOR_GEAR_RATIO_TO_ONE, WHEEL_DIAMETER, MODULE_ANGLE_PID_CONFIG, 
+                MODULE_VELOCITY_PID_CONFIG, MODULE_VELOCITY_FF);
+
+        private static BreakerSwerveModule frontLeftModule = BreakerSwerveModuleBuilder.getInstance(falconMk4iConfig)
+                .withFalconAngleMotor(turnFL, encoderFL, FL_ENCODER_OFFSET, true)
+                .withFalconDriveMotor(driveFL, true)
+                .createSwerveModule(FL_TRANSLATION);
+
+        private static BreakerSwerveModule frontRightModule = BreakerSwerveModuleBuilder.getInstance(falconMk4iConfig)
+                .withFalconAngleMotor(turnFR, encoderFR, FR_ENCODER_OFFSET, true)
+                .withFalconDriveMotor(driveFR, false)
+                .createSwerveModule(FR_TRANSLATION);
+
+        private static BreakerSwerveModule backLeftModule = BreakerSwerveModuleBuilder.getInstance(falconMk4iConfig)
+                .withFalconAngleMotor(turnBL, encoderBL, BL_ENCODER_OFFSET, true)
+                .withFalconDriveMotor(driveBL, true)
+                .createSwerveModule(BL_TRANSLATION);
+
+        private static BreakerSwerveModule backRightModule = BreakerSwerveModuleBuilder.getInstance(falconMk4iConfig)
+                .withFalconAngleMotor(turnBR, encoderBR, BR_ENCODER_OFFSET, true)
+                .withFalconDriveMotor(driveBR, false)
+                .createSwerveModule(BR_TRANSLATION);
 
         public Drive(BreakerPigeon2 imu) {
                 super(config, imu, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
