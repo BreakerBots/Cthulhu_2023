@@ -12,20 +12,22 @@ import frc.robot.BreakerLib.position.movement.BreakerMovementState2d;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
 
 /** Add your docs here. */
-public class BreakerVisionOdometer extends SubsystemBase implements BreakerGenericOdometer {
+public class BreakerVisionPoseFilterOdometer extends SubsystemBase implements BreakerGenericVisionOdometer {
     private BreakerVisionPoseFilter visionPoseFilter;
     private Pose2d curPose;
     private Transform2d offset;
-    public BreakerVisionOdometer(BreakerVisionPoseFilter visionPoseFilter) {
+    public BreakerVisionPoseFilterOdometer(BreakerVisionPoseFilter visionPoseFilter) {
         this.visionPoseFilter = visionPoseFilter;
         curPose = new Pose2d();
         offset = new Transform2d();
     }
 
+    @Override
     public double getDataTimestamp() {
         return visionPoseFilter.getDataTimestamp();
     }
 
+    @Override
     public boolean isAnyTargetVisable() {
         return visionPoseFilter.isAnyTargetVisable();
     }

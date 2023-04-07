@@ -9,18 +9,19 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.position.movement.BreakerMovementState2d;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
-import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionOdometer;
+import frc.robot.BreakerLib.position.odometry.vision.BreakerGenericVisionOdometer;
+import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilterOdometer;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 
 /** Estimates swerve drive pose based on vision odometry. */
 public class BreakerSwerveDriveFiducialVisionPoseEstimator
         extends SubsystemBase implements BreakerGenericOdometer {
-    private BreakerVisionOdometer vision;
+    private BreakerGenericVisionOdometer vision;
     private BreakerSwerveDrivePoseEstimator poseEstimator;
 
     public BreakerSwerveDriveFiducialVisionPoseEstimator(
             BreakerSwerveDrive drivetrain,
-            BreakerVisionOdometer vision,
+            BreakerVisionPoseFilterOdometer vision,
             double[] stateStanderdDeveation,
             double[] visionStanderdDeveation) {
         this.vision = vision;
@@ -31,7 +32,7 @@ public class BreakerSwerveDriveFiducialVisionPoseEstimator
 
     public BreakerSwerveDriveFiducialVisionPoseEstimator(
             BreakerSwerveDrive drivetrain,
-            BreakerVisionOdometer vision,
+            BreakerVisionPoseFilterOdometer vision,
             Pose2d initialPose,
             double[] stateStandardDeviation,
             double[] visionStandardDeviation) {

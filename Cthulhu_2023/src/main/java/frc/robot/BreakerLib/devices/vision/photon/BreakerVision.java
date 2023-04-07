@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.BreakerLib.position.movement.BreakerMovementState2d;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
-import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionOdometer;
+import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilterOdometer;
 import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilter;
 
 /** WIP */
@@ -18,7 +18,7 @@ public class BreakerVision implements BreakerGenericOdometer {
     private BreakerFiducialPhotonTarget[] targets;
     private BreakerPhotonCamera[] cameras;
     private BreakerVisionPoseFilter poseFilter;
-    private BreakerVisionOdometer odometer;
+    private BreakerVisionPoseFilterOdometer odometer;
     public BreakerVision(double poseFilterTrustCoef, double poseFilterMaxUncertanty, BreakerPhotonCamera[] cameras, Pair<Integer, Pose3d>[] fiducialTargetIDsAndPoses) {
         targets = new BreakerFiducialPhotonTarget[fiducialTargetIDsAndPoses.length];
         this.cameras = cameras;
@@ -28,7 +28,7 @@ public class BreakerVision implements BreakerGenericOdometer {
         }
 
         poseFilter = new BreakerVisionPoseFilter(poseFilterTrustCoef, poseFilterMaxUncertanty, targets);
-        odometer = new BreakerVisionOdometer(poseFilter);
+        odometer = new BreakerVisionPoseFilterOdometer(poseFilter);
     }
 
     
@@ -94,7 +94,7 @@ public class BreakerVision implements BreakerGenericOdometer {
     /** 
      * @return BreakerVisionOdometer
      */
-    public BreakerVisionOdometer getBaseVisionOdometer() {
+    public BreakerVisionPoseFilterOdometer getBaseVisionOdometer() {
         return odometer;
     }
 
