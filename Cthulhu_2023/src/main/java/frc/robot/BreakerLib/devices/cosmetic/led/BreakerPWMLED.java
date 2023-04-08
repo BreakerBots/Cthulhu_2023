@@ -17,7 +17,7 @@ import frc.robot.BreakerLib.devices.cosmetic.led.animations.BreakerAnimation;
 import frc.robot.BreakerLib.util.BreakerRoboRIO;
 import frc.robot.BreakerLib.util.BreakerRoboRIO.RobotOperatingMode;
 
-/** For PWM LEDs. */
+/** For PWM LEDs which use WPILib's AddressableLED interface. */
 public class BreakerPWMLED extends SubsystemBase implements BreakerGenericLED {
 
     private AddressableLED led;

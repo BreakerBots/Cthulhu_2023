@@ -29,7 +29,7 @@ public class BreakerCANdle extends BreakerGenericLoopedDevice implements Breaker
      * @param canID  ID for CANdle.
      * @param config CANdle config
      */
-    public BreakerCANdle(int canID, BreakerCANdleConfig config) {
+    public BreakerCANdle(BreakerCANdleConfig config, int canID) {
         candle = new CANdle(canID);
         candle.configAllSettings(config.getConfig());
         deviceName = " CANdle_LED_Controller (" + canID + ") ";
@@ -42,7 +42,7 @@ public class BreakerCANdle extends BreakerGenericLoopedDevice implements Breaker
      * @param config  CANdle config
      * @param busName Name of CANBus
      */
-    public BreakerCANdle(int canID, BreakerCANdleConfig config, String busName) {
+    public BreakerCANdle(BreakerCANdleConfig config, int canID, String busName) {
         candle = new CANdle(canID, busName);
         candle.configAllSettings(config.getConfig());
         deviceName = " CANdle_LED_Controller (" + canID + ") ";
