@@ -7,12 +7,14 @@ package frc.robot.BreakerLib.devices.sensors.gyro;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.SPI;
+import frc.robot.BreakerLib.devices.BreakerGenericDevice;
+import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /**
  * ADXRS450 single axis gyro, included in the Kit of Parts. Only one can be used
  * on the robot.
  */
-public class BreakerADXRS450 implements BreakerGenericGyro {
+public class BreakerADXRS450 extends BreakerGenericDevice implements BreakerGenericGyro {
 
     private ADXRS450_Gyro gyro;
 
@@ -71,5 +73,16 @@ public class BreakerADXRS450 implements BreakerGenericGyro {
     @Override
     public void calibrate() {
         gyro.calibrate();
+    }
+
+    @Override
+    public void runSelfTest() {
+        faultStr = "";
+        health = DeviceHealth.NOMINAL;
+        if (!gyro.isConnected()) {
+            health = DeviceHealth.INOPERABLE;
+            faultStr = " GYRO_NOT_CONNECTED ";
+          }
+        
     }
 }
