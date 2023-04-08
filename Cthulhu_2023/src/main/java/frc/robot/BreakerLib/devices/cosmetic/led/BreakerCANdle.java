@@ -6,6 +6,7 @@ package frc.robot.BreakerLib.devices.cosmetic.led;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.CANdleConfiguration;
 import com.ctre.phoenix.led.CANdleFaults;
 
 import edu.wpi.first.math.Pair;
@@ -17,7 +18,7 @@ import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
-/** CTRE LED controller */
+/** CTRE CANdle LED controller. */
 public class BreakerCANdle extends BreakerGenericLoopedDevice implements BreakerGenericLED {
 
     private CANdle candle;
@@ -26,26 +27,31 @@ public class BreakerCANdle extends BreakerGenericLoopedDevice implements Breaker
     /**
      * Creates a BreakerCANdle on the default CANBus.
      * 
-     * @param canID  ID for CANdle.
-     * @param config CANdle config
+     * @param canID  CAN ID for CANdle.
      */
-    public BreakerCANdle(BreakerCANdleConfig config, int canID) {
+    public BreakerCANdle(int canID) {
         candle = new CANdle(canID);
-        candle.configAllSettings(config.getConfig());
         deviceName = " CANdle_LED_Controller (" + canID + ") ";
     }
 
     /**
      * Creates a BreakerCANdle on named CANBus.
      * 
-     * @param canID   ID for CANdle.
-     * @param config  CANdle config
-     * @param busName Name of CANBus
+     * @param canID   CAN ID for CANdle.
+     * @param busName CAN bus name.
      */
-    public BreakerCANdle(BreakerCANdleConfig config, int canID, String busName) {
+    public BreakerCANdle(int canID, String busName) {
         candle = new CANdle(canID, busName);
-        candle.configAllSettings(config.getConfig());
         deviceName = " CANdle_LED_Controller (" + canID + ") ";
+    }
+
+    /**
+     * Applies all settings in provided configuration.
+     * 
+     * @param config Configuration to apply.
+     */
+    public void applyConfig(CANdleConfiguration config) {
+        candle.configAllSettings(config);
     }
 
     /**
