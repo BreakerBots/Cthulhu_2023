@@ -21,7 +21,7 @@ public class BreakerRevBlinkin {
      * @param palette Palette to use on pattern.
      * @param pattern Pattern to use.
      */
-    public void setAdvPattern(AdvPatternPalette palette, AdvPattern pattern) {
+    public void setAdvancedPattern(AdvancedPatternPalette palette, AdvancedPattern pattern) {
         blinkin.set(palette.pwmVal + pattern.pwmVal);
     }
 
@@ -65,7 +65,7 @@ public class BreakerRevBlinkin {
 }
 
 /** Premade palettes for advanced fixed palette patterns. */
-enum AdvPatternPalette {
+enum AdvancedPatternPalette {
     RAINBOW(0),
     PARTY(.02),
     OCEAN(.04),
@@ -74,13 +74,13 @@ enum AdvPatternPalette {
 
     final double pwmVal;
 
-    AdvPatternPalette(double pwmVal) {
+    AdvancedPatternPalette(double pwmVal) {
         this.pwmVal = pwmVal;
     }
 }
 
 /** Fixed palette patterns utilizing advanced pattern palettes. */
-enum AdvPattern {
+enum AdvancedPattern {
     RAINBOW(-0.99),
     SINELON(-0.79),
     BEATS_PER_MIN(-0.69),
@@ -89,7 +89,7 @@ enum AdvPattern {
 
     final double pwmVal;
 
-    AdvPattern(double pwmVal) {
+    AdvancedPattern(double pwmVal) {
         this.pwmVal = pwmVal;
     }
 }
