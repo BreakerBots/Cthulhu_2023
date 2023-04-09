@@ -110,18 +110,18 @@ public interface BreakerGenericLED {
      * Sets lights to perform given animation.
      * 
      * @param startIndex LED index to start animation at.
-     * @param state      Animation to perform.
+     * @param animation      Animation to perform.
      */
-    public abstract void setAnimation(int startIndex, BreakerAnimation state);
+    public abstract void setAnimation(int startIndex, BreakerAnimation animation);
 
     /**
      * Sets lights to perform given animation.
      * 
      * @param startIndex LED index to start animation at.
      * @param endIndex   LED index to end animation at.
-     * @param state      Animation to perform.
+     * @param animation      Animation to perform.
      */
-    public abstract void setAnimation(int startIndex, int endIndex, BreakerAnimation state);
+    public abstract void setAnimation(int startIndex, int endIndex, BreakerAnimation animation);
 
     /**
      * Sets default LED state for given robot operating mode.
