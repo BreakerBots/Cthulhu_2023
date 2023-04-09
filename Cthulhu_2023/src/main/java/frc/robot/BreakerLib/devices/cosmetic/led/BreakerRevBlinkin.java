@@ -11,6 +11,10 @@ public class BreakerRevBlinkin {
 
     PWMSparkMax blinkin;
 
+    /** Constructs a REV Blinkin connected via PWM.
+     * 
+     * @param channel PWM channel to use.
+     */
     public BreakerRevBlinkin(int channel) {
         blinkin = new PWMSparkMax(channel);
     }
@@ -67,10 +71,10 @@ public class BreakerRevBlinkin {
 /** Premade palettes for advanced fixed palette patterns. */
 enum AdvancedPatternPalette {
     RAINBOW(0),
-    PARTY(.02),
-    OCEAN(.04),
-    LAVA(.06),
-    FOREST(.08);
+    PARTY(0.02),
+    OCEAN(0.04),
+    LAVA(0.06),
+    FOREST(0.08);
 
     final double pwmVal;
 
@@ -180,6 +184,7 @@ enum DualColorPattern {
     }
 }
 
+/** Solid colors assignable to all LEDs at once. */
 enum SolidColor {
     HOT_PINK(0.57),
     DARK_RED(0.59),
