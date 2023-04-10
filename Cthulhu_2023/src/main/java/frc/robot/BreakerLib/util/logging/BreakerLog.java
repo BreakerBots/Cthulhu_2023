@@ -63,8 +63,7 @@ public class BreakerLog {
   public static void logRobotChangedMode(RobotOperatingMode newMode) {
     DataLogManager.log("| ---- ROBOT MODE CHANGED TO: " + newMode + " ---- |");
     if (usesOrchestra && BreakerRoboRIO.robotModeHasChanged() && newMode != RobotOperatingMode.DISABLED) {
-      orchestra.loadMusic(BreakerSounds.enableSound);
-      orchestra.playMusic();
+      orchestra.playSong(BreakerSounds.enableSound);
     }
   }
 

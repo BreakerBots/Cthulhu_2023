@@ -99,7 +99,7 @@ public class SelfTest extends SubsystemBase {
 
   private static void runAlarm() {
     if (usesOrchestra) {
-      orchestra.startLoopedSong(BreakerSounds.GeneralAlarmSound);
+      orchestra.loopSong(BreakerSounds.GeneralAlarmSound);
     }
   }
 

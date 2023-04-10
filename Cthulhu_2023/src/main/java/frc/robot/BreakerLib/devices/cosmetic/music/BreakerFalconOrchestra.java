@@ -4,128 +4,164 @@
 
 package frc.robot.BreakerLib.devices.cosmetic.music;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.music.Orchestra;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.BreakerLib.util.logging.BreakerLog;
 
 /** Play audio via the speakers on CTRE Falcon 500 motors. */
 public class BreakerFalconOrchestra extends SubsystemBase {
 
     private Orchestra orchestra;
-    private String[] currentPlaylist;
-    private String loopedSong;
-    private int nextPlaylistSong = 0;
-    private boolean runPlaylist = false;
-    private boolean runLooped = false;
+    private String curSong;
+    private boolean loopSong, playingMusic;
 
+    private String[] playlist;
+    private int index;
+    private boolean loopAtEnd, playAutomatically;
+
+    /** Creates an empty Falcon orchestra. */
     public BreakerFalconOrchestra() {
         orchestra = new Orchestra();
     }
 
-    public BreakerFalconOrchestra(WPI_TalonFX... motors) {
-        Collection<TalonFX> instruments = new ArrayList<>();
-        for (TalonFX motor : motors) {
-            instruments.add(motor);
-        }
-        orchestra = new Orchestra(instruments);
+    /**
+     * Creates an Orchestra with the provided Falcons.
+     * 
+     * @param motors Falcon motors to include in the orchestra.
+     */
+    public BreakerFalconOrchestra(TalonFX... motors) {
+        orchestra = new Orchestra();
+        addOrchestraMotors(motors);
     }
 
-    public void addOrchestraMotors(WPI_TalonFX... motors) {
-        for (WPI_TalonFX motor : motors) {
+    /**
+     * @return Song playtime in milliseconds. If the song was stopped/never played,
+     *         this value will be 0.
+     */
+    public int getPlaytimeMS() {
+        return orchestra.getCurrentTime();
+    }
+
+    public boolean isPlaying() {
+        return orchestra.isPlaying();
+    }
+
+    public boolean isPaused() {
+        return !isPlaying() && getPlaytimeMS() != 0;
+    }
+
+    public boolean isStopped() {
+        return !isPlaying() && getPlaytimeMS() == 0;
+    }
+
+    public boolean awaitingSong() {
+        return isStopped() && playingMusic;
+    }
+
+    /**
+     * Adds motors to the already-created Orchestra.
+     * 
+     * @param motors Falcon motors to add.
+     */
+    public void addOrchestraMotors(TalonFX... motors) {
+        for (TalonFX motor : motors) {
             orchestra.addInstrument(motor);
         }
     }
 
-    /** Starts going through playlist. Must be Chirp files. */
-    public void startPlaylist(String[] playlistSongFilepaths) {
-        currentPlaylist = playlistSongFilepaths;
-        runPlaylist = true;
+    public void clearOrchestraMotors() {
+        orchestra.clearInstruments();
     }
 
-    /** Loops the given song. Must be a Chirp file. */
-    public void startLoopedSong(String loopSongFilepath) {
-        loopedSong = loopSongFilepath;
-        runLooped = true;
-    }
-
-    /** Stops playing the playlist. */
-    public void stopPlaylist() {
-        runPlaylist = false;
-        nextPlaylistSong = 0;
-    }
-
-    /** Stops playing the looped song. */
-    public void stopLoopedSong() {
-        runLooped = false;
-    }
-
-    /** Stops playing the current song and resets playback position to beginning. */
-    public void stopMusic() {
-        orchestra.stop();
-    }
-
-    /** Pauses the current song, allowing for the song to be resumed later. */
-    public void pauseMusic() {
-        orchestra.pause();
-    }
-
-    /** Plays the current song. Resumes if previously paused. */
-    public void playMusic() {
+    public void play() {
+        playingMusic = true;
         orchestra.play();
     }
 
-    /** Loads given Chirp file. Stops current playlist. */
-    public void loadMusic(String musicFilepath) {
-        stopPlaylist();
-        orchestra.loadMusic(musicFilepath);
+    public void loadSong(String songPath) {
+        curSong = songPath;
+        orchestra.loadMusic(songPath);
     }
 
-    /** If music playback is paused. */
-    public boolean isPaused() {
-        return !(orchestra.getCurrentTime() == 0) && !orchestra.isPlaying();
+    public void pause() {
+        playingMusic = false;
+        orchestra.pause();
     }
 
-    /** If music playback is stopped. */
-    public boolean isStopped() {
-        return (orchestra.getCurrentTime() == 0) && !orchestra.isPlaying();
+    public void stop() {
+        playingMusic = false;
+        orchestra.stop();
     }
 
-    /** Current song timestamp in milliseconds. */
-    public int getMusicTimestampMS() {
-        return orchestra.getCurrentTime();
+    public void setLooping(boolean loop) {
+        loopSong = loop;
     }
 
-    /** Loop for playing through a playlist. */
-    private void runPlaylistLoop() {
-        if (runPlaylist && isStopped()) {
-            try {
-                orchestra.loadMusic(currentPlaylist[nextPlaylistSong]);
-                orchestra.play();
-                nextPlaylistSong++;
-            } catch (Exception e) { // Stops music playback if an exception occurs.
-                e.printStackTrace();
-                nextPlaylistSong = 0;
-                orchestra.stop();
+    /**
+     * Plays the given song.
+     * 
+     * @param songPath Path to the Chirp file on the RoboRIO. Files must be within
+     *                 the deploy directory of the robot project and have the
+     *                 extension .chrp.
+     */
+    public void playSong(String songPath) {
+        loadSong(songPath);
+        play();
+    }
+
+    public void loopSong(String songPath) {
+        setLooping(true);
+        playSong(songPath);
+    }
+
+    // PLAYLIST
+
+    public void loadPlaylist(String... playlist) {
+        this.playlist = playlist;
+    }
+
+    public void startPlaylistSong(int index) {
+        try {
+            this.index = index;
+            curSong = playlist[index];
+            playSong(curSong);
+        } catch (IndexOutOfBoundsException e) {
+            if (loopAtEnd) {
+                startPlaylistSong(makeLoopIndex(index));
+            } else {
+                BreakerLog.log("Invalid song index.");
             }
         }
     }
 
-    /** Looped song plays. */
-    private void runLoopedSong() {
-        if (runLooped && isStopped()) {
-            orchestra.loadMusic(loopedSong);
-            orchestra.play();
-        }
+    public void startPlaylist() {
+        startPlaylistSong(0);
+    }
+
+    public void playNextSong() {
+        startPlaylistSong(index + 1);
+    }
+
+    public void playPreviousSong() {
+        startPlaylistSong(index - 1);
+    }
+
+    private int makeLoopIndex(int index) {
+        int len = playlist.length;
+        return index < 0 ? len - 1 : index % len;
     }
 
     @Override
     public void periodic() {
-        runPlaylistLoop();
-        runLoopedSong();
+        // Loops song if song should loop.
+        if (awaitingSong() && loopSong) {
+            playSong(curSong);
+        }
+        // Queues next song if next song should be queued.
+        else if (playAutomatically) {
+            playNextSong();
+        } 
     }
 }
