@@ -86,19 +86,19 @@ public class BreakerCANdle extends BreakerGenericLoopedDevice implements Breaker
     }
 
     @Override
-    public void setAnimation(int startIndex, BreakerAnimation state) {
+    public void setAnimation(int startIndex, BreakerAnimation animation) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void setAnimation(int startIndex, int endIndex, BreakerAnimation state) {
+    public void setAnimation(int startIndex, int endIndex, BreakerAnimation animation) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void setRobotModeDefaultState(RobotOperatingMode mode, BreakerAnimation state) {
+    public void setRobotModeDefaultState(RobotOperatingMode mode, BreakerAnimation animation) {
         // TODO Auto-generated method stub
 
     }
