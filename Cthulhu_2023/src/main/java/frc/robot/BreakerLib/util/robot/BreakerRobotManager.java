@@ -9,8 +9,8 @@ import frc.robot.BreakerLib.auto.trajectory.management.BreakerAutoManager;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.test.selftest.SelfTest;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.brakemode.BreakerBrakeModeManager;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.brakemode.BreakerBrakeModeManagerConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.brakemode.BreakerAutoBrakeManager;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.brakemode.BreakerAutoBrakeManagerConfig;
 
 /**
  * Robot manager that configures SelfTest functionality, automatic brake mode,
@@ -19,7 +19,7 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.brakemode.BreakerBrakeMod
 public class BreakerRobotManager {
     private static SelfTest test;
     private static BreakerAutoManager autoManager;
-    private static BreakerBrakeModeManager brakeModeManager;
+    private static BreakerAutoBrakeManager brakeModeManager;
     private static BreakerGenericDrivetrain baseDrivetrain;
 
     private BreakerRobotManager() {
@@ -43,13 +43,13 @@ public class BreakerRobotManager {
         BreakerRobotManager.baseDrivetrain = baseDrivetrain;
         BreakerRobotManager.autoManager = robotConfig.usesPaths() ? new BreakerAutoManager(robotConfig.getAutoPaths())
                 : new BreakerAutoManager();
-        BreakerRobotManager.brakeModeManager = new BreakerBrakeModeManager(
-                new BreakerBrakeModeManagerConfig(baseDrivetrain));
+        BreakerRobotManager.brakeModeManager = new BreakerAutoBrakeManager(
+                new BreakerAutoBrakeManagerConfig(baseDrivetrain));
         BreakerLog.logRobotStarted(robotConfig.getStartConfig());
     }
 
     /** @return Brake mode manager object. */
-    public static BreakerBrakeModeManager getBrakeModeManager() {
+    public static BreakerAutoBrakeManager getBrakeModeManager() {
         return brakeModeManager;
     }
 

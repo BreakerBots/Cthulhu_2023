@@ -15,8 +15,6 @@ import frc.robot.BreakerLib.devices.sensors.BreakerGenericMagnetometer;
 import frc.robot.BreakerLib.devices.sensors.imu.BreakerGenericIMU;
 import frc.robot.BreakerLib.physics.vector.BreakerVector3;
 import frc.robot.BreakerLib.util.math.BreakerMath;
-import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
-import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /** Breaker NavX gyro. Calibration is called on construction or can be called manually. */

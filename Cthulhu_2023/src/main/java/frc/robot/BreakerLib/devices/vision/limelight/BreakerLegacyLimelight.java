@@ -4,6 +4,7 @@
 
 package frc.robot.BreakerLib.devices.vision.limelight;
 
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
@@ -14,6 +15,7 @@ public class BreakerLegacyLimelight extends BreakerGenericDevice {
   private double mountingAngle;
   private double mountingHeight;
   private final String limelightName;
+  private NetworkTable limelighTable;
   private BreakerLegacyLimelightTarget currentTarget;
 
   /**
@@ -23,6 +25,7 @@ public class BreakerLegacyLimelight extends BreakerGenericDevice {
    */
   public BreakerLegacyLimelight(String limelightName) {
     this.limelightName = limelightName;
+    limelighTable = NetworkTableInstance.getDefault().getTable(limelightName);
     deviceName = limelightName;
   }
 

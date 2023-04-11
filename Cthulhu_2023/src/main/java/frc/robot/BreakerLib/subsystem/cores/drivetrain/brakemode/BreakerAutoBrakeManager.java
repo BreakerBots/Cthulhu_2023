@@ -10,9 +10,9 @@ import frc.robot.BreakerLib.util.BreakerRoboRIO;
 
 /**
  * Automatically handles brake mode switching for your drivetrain based on the
- * robot's current mode according to given config.
+ * robot's current mode and given config.
  */
-public class BreakerBrakeModeManager extends SubsystemBase {
+public class BreakerAutoBrakeManager extends SubsystemBase {
 
     private boolean brakeInAuto;
     private boolean brakeInTeleop;
@@ -21,35 +21,35 @@ public class BreakerBrakeModeManager extends SubsystemBase {
     private boolean autoBrakeIsEnabled = true;
     private BreakerGenericDrivetrain baseDrivetrain;
 
-    /** Creates an AutoBrake (automatic break mode) manager.
+    /**
+     * Creates an AutoBrake (automatic break mode) manager.
      * 
      * @param config Manager settings to use.
      */
-    public BreakerBrakeModeManager(BreakerBrakeModeManagerConfig config) {
-        brakeInAuto = config.getBreakInAuto();
-        brakeInTeleop = config.getBreakInTeleop();
-        brakeInTest = config.getBreakInTest();
-        brakeInDisabled = config.getBreakInDisabled();
+    public BreakerAutoBrakeManager(BreakerAutoBrakeManagerConfig config) {
+        changeConfig(config);
+    }
+
+    public void changeConfig(BreakerAutoBrakeManagerConfig config) {
+        brakeInAuto = config.getBrakeInAuto();
+        brakeInTeleop = config.getBrakeInTeleop();
+        brakeInTest = config.getBrakeInTest();
+        brakeInDisabled = config.getBrakeInDisabled();
         baseDrivetrain = config.getBaseDrivetrain();
     }
 
-    public void changeConfig(BreakerBrakeModeManagerConfig config) {
-        brakeInAuto = config.getBreakInAuto();
-        brakeInTeleop = config.getBreakInTeleop();
-        brakeInTest = config.getBreakInTest();
-        brakeInDisabled = config.getBreakInDisabled();
-        baseDrivetrain = config.getBaseDrivetrain();
-    }
-
-    public boolean isAutomaticBreakModeEnabled() {
+    /** @return If autobrake is enabled. */
+    public boolean autoBrakeEnabled() {
         return autoBrakeIsEnabled;
     }
 
-    public void setAutomaticBreakModeEnabled(Boolean isEnabled) {
+    /** Enables or disables autobrake. */
+    public void setAutoBrakeEnabled(boolean isEnabled) {
         autoBrakeIsEnabled = isEnabled;
     }
 
-    public void setAutomaticBreakMode() {
+    /** Updates brake mode based on current operating mode. */
+    public void setAutoBrakeMode() {
         switch (BreakerRoboRIO.getCurrentRobotMode()) {
             case DISABLED:
                 baseDrivetrain.setDrivetrainBrakeMode(brakeInDisabled);
@@ -71,24 +71,30 @@ public class BreakerBrakeModeManager extends SubsystemBase {
         }
     }
 
+    /** @return If robot enters brake mode in auto. */
     public boolean getBrakeInAuto() {
         return brakeInAuto;
     }
 
+    /** @return If robot enters brake mode when disabled. */
     public boolean getBrakeInDisabled() {
         return brakeInDisabled;
     }
 
+    /** @return If robot enters brake mode in teleop. */
     public boolean getBrakeInTeleop() {
         return brakeInTeleop;
     }
 
+    /** @return If robot enters brake mode in test. */
     public boolean getBrakeInTest() {
         return brakeInTest;
     }
 
     @Override
     public void periodic() {
-        setAutomaticBreakMode();
+        if (BreakerRoboRIO.robotModeHasChanged()) {
+            setAutoBrakeMode();
+        }
     }
 }

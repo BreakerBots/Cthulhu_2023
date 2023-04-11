@@ -22,8 +22,6 @@ public class BreakerLimelight {
         
     }
 
-    
-
     public Pair<Pose3d, Double> getFiducialRobotPoseAndLatancy() {
         double[] data = NetworkTableInstance.getDefault().getTable("limelight").getEntry("<variablename>").getDoubleArray(new double[6]);
         return new Pair<Pose3d,Double>(new Pose3d(new Translation3d(data[0], data[1], data[2]), new Rotation3d(data[3], data[4], data[5])), data[6]);
