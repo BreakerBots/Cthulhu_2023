@@ -19,7 +19,7 @@ public class BreakerFalconOrchestra extends SubsystemBase {
 
     private String[] playlist;
     private int index;
-    private boolean loopAtEnd, playAutomatically;
+    private boolean loopAtEnd = true, autoplay = true;
 
     /** Creates an empty Falcon orchestra. */
     public BreakerFalconOrchestra() {
@@ -44,18 +44,22 @@ public class BreakerFalconOrchestra extends SubsystemBase {
         return orchestra.getCurrentTime();
     }
 
+    /** @return If music is currently playing. */
     public boolean isPlaying() {
         return orchestra.isPlaying();
     }
 
+    /** @return If music is currently paused in the middle of playback. */
     public boolean isPaused() {
         return !isPlaying() && getPlaytimeMS() != 0;
     }
 
+    /** @return If music playback was stopped. */
     public boolean isStopped() {
         return !isPlaying() && getPlaytimeMS() == 0;
     }
 
+    /** @return If music is stopped due to a song ending. */
     public boolean awaitingSong() {
         return isStopped() && playingMusic;
     }
@@ -71,30 +75,48 @@ public class BreakerFalconOrchestra extends SubsystemBase {
         }
     }
 
+    /** Removes all motors from the orchestra. */
     public void clearOrchestraMotors() {
         orchestra.clearInstruments();
     }
 
+    /**
+     * Plays currently loaded music file. Will fail if a music file is not loaded.
+     */
     public void play() {
         playingMusic = true;
         orchestra.play();
     }
 
+    /**
+     * Loads a song through the given filepath.
+     * 
+     * @param songPath Path to the Chirp file on the RoboRIO. Files must be within
+     *                 the deploy directory of the robot project and have the
+     *                 extension .chrp.
+     */
     public void loadSong(String songPath) {
         curSong = songPath;
         orchestra.loadMusic(songPath);
     }
 
+    /** Pauses song playback allowing for music to be resumed later. */
     public void pause() {
         playingMusic = false;
         orchestra.pause();
     }
 
+    /** Stops playing music and moves timestamp back to the beginning. */
     public void stop() {
         playingMusic = false;
         orchestra.stop();
     }
 
+    /**
+     * Set if songs will loop or not.
+     * 
+     * @param loop Whether to loop music.
+     */
     public void setLooping(boolean loop) {
         loopSong = loop;
     }
@@ -111,6 +133,13 @@ public class BreakerFalconOrchestra extends SubsystemBase {
         play();
     }
 
+    /**
+     * Loops the given song.
+     * 
+     * @param songPath Path to the Chirp file on the RoboRIO. Files must be within
+     *                 the deploy directory of the robot project and have the
+     *                 extension .chrp.
+     */
     public void loopSong(String songPath) {
         setLooping(true);
         playSong(songPath);
@@ -118,39 +147,82 @@ public class BreakerFalconOrchestra extends SubsystemBase {
 
     // PLAYLIST
 
+    /**
+     * Loads a playlist of songs to access and play.
+     * 
+     * @param playlist Paths to Chirp files.
+     */
     public void loadPlaylist(String... playlist) {
         this.playlist = playlist;
     }
 
+    /**
+     * Plays the desired song in the playlist. Will fail if the song index is
+     * invalid.
+     * 
+     * @param index Playlist index to access.
+     */
     public void startPlaylistSong(int index) {
         try {
             this.index = index;
             curSong = playlist[index];
             playSong(curSong);
         } catch (IndexOutOfBoundsException e) {
-            if (loopAtEnd) {
-                startPlaylistSong(makeLoopIndex(index));
-            } else {
-                BreakerLog.log("Invalid song index.");
-            }
+            startPlaylistSong(makeLoopIndex(index));
         }
     }
 
+    /** Plays first song in the playlist. */
     public void startPlaylist() {
         startPlaylistSong(0);
     }
 
+    /** Plays the next song in the playlist. */
     public void playNextSong() {
         startPlaylistSong(index + 1);
     }
 
+    /** Plays the previous song in the playlist. */
     public void playPreviousSong() {
         startPlaylistSong(index - 1);
     }
 
+    /**
+     * Sets whether the playlist will automatically proceed to the next song.
+     * 
+     * @param value True for autoplay, false for no autoplay.
+     */
+    public void setAutoplay(boolean value) {
+        autoplay = value;
+    }
+
+    /**
+     * Sets whether the playlist will loop at the end or simply stop.
+     * 
+     * @param value True for looping at end, false for no looping at end. Playlists
+     *              can still be looped manually.
+     */
+    public void setLoopAtEnd(boolean value) {
+
+    }
+
+    /**
+     * Creates an index within playlist bounds.
+     * 
+     * @param index Index to operate on.
+     * @return Bounds-compliant index.
+     */
     private int makeLoopIndex(int index) {
         int len = playlist.length;
         return index < 0 ? len - 1 : index % len;
+    }
+
+    /**
+     * @param index Index to check.
+     * @return If index is outside of playlist bounds.
+     */
+    private boolean indexOutOfBounds(int index) {
+        return index < 0 || index > playlist.length;
     }
 
     @Override
@@ -160,8 +232,12 @@ public class BreakerFalconOrchestra extends SubsystemBase {
             playSong(curSong);
         }
         // Queues next song if next song should be queued.
-        else if (playAutomatically) {
-            playNextSong();
-        } 
+        else if (autoplay) {
+            if (!loopAtEnd && indexOutOfBounds(index + 1)) {
+                stop();
+            } else {
+                playNextSong();
+            }
+        }
     }
 }
