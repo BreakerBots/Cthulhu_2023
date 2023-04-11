@@ -4,9 +4,16 @@
 
 package frc.robot.BreakerLib.devices.sensors.imu;
 
+import java.util.function.Supplier;
+
 import frc.robot.BreakerLib.devices.BreakerGenericDevice;
 import frc.robot.BreakerLib.devices.sensors.accelerometer.BreakerGenericAccelerometer;
 import frc.robot.BreakerLib.devices.sensors.gyro.BreakerGeneric3AxisGyro;
 
-/** Generic IMU interface featuring both accelerometer and gyro functionality. */
-public abstract class BreakerGenericIMU extends BreakerGenericDevice implements BreakerGeneric3AxisGyro, BreakerGenericAccelerometer {}
+/**
+ * Generic IMU interface featuring both accelerometer and gyro functionality.
+ */
+public abstract class BreakerGenericIMU extends BreakerGenericDevice
+        implements BreakerGeneric3AxisGyro, BreakerGenericAccelerometer {
+    
+}

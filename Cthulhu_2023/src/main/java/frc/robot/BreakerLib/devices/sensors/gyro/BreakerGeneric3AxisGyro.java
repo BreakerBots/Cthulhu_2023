@@ -4,6 +4,8 @@
 
 package frc.robot.BreakerLib.devices.sensors.gyro;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;

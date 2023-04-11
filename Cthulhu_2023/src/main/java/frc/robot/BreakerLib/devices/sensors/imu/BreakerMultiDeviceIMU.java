@@ -5,14 +5,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import frc.robot.BreakerLib.devices.sensors.accelerometer.BreakerGenericAccelerometer;
 import frc.robot.BreakerLib.devices.sensors.gyro.BreakerGeneric3AxisGyro;
-import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
-import frc.robot.BreakerLib.util.power.DevicePowerMode;
 
 /**
  * Custom IMU class for combining a 3-axis gyro and 3-axis accelerometer into a single
  * IMU object.
  */
-public class BreakerComboIMU extends BreakerGenericIMU {
+public class BreakerMultiDeviceIMU extends BreakerGenericIMU {
 
     private BreakerGeneric3AxisGyro gyro;
     private BreakerGenericAccelerometer accelerometer;
@@ -23,7 +21,7 @@ public class BreakerComboIMU extends BreakerGenericIMU {
      * @param gyro          Gyroscope to use.
      * @param accelerometer Accelerometer to use.
      */
-    public BreakerComboIMU(BreakerGeneric3AxisGyro gyro, BreakerGenericAccelerometer accelerometer) {
+    public BreakerMultiDeviceIMU(BreakerGeneric3AxisGyro gyro, BreakerGenericAccelerometer accelerometer) {
         this.gyro = gyro;
         this.accelerometer = accelerometer;
     }

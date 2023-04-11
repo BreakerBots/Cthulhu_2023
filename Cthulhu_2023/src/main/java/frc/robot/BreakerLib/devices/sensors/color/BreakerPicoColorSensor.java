@@ -8,8 +8,6 @@ import java.util.Objects;
 
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.BreakerLib.devices.sensors.color.BreakerPicoColorSensorLowLevel.RawColor;
-import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
-import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /** REV Color Sensor V3 implementing the Breaker device interface. */

@@ -1,6 +1,9 @@
 package frc.robot.BreakerLib.util.math;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -173,14 +176,14 @@ public class BreakerMath {
         double x2 = point2.getX();
         double y2 = point2.getY();
         if (x2 >= x1) {
-            return Rotation2d.fromRadians(Math.atan2(y2-y1, x2-x1));
+            return Rotation2d.fromRadians(Math.atan2(y2 - y1, x2 - x1));
         } else {
             if (y2 >= y1) {
-                double a = Math.atan2(y2-y1, x2-x1);
+                double a = Math.atan2(y2 - y1, x2 - x1);
                 a *= -Math.signum(a);
                 return Rotation2d.fromRadians(Math.PI - a);
             } else {
-                double a = Math.atan2(y2-y1, x2-x1);
+                double a = Math.atan2(y2 - y1, x2 - x1);
                 a *= -Math.signum(a);
                 return Rotation2d.fromRadians(-Math.PI + a);
             }
@@ -266,8 +269,8 @@ public class BreakerMath {
         double numer = 0;
         double denom = 0;
         for (int i = 0; i < valuesToAvg.length; i++) {
-            double weaght = i < weights.length ? weights[i] : 1.0;
-            numer += valuesToAvg[i] * weaght;
+            double weight = i < weights.length ? weights[i] : 1.0;
+            numer += valuesToAvg[i] * weight;
         }
 
         for (int i = 0; i < valuesToAvg.length; i++) {
@@ -281,8 +284,8 @@ public class BreakerMath {
         double numer = 0;
         double denom = 0;
         for (int i = 0; i < valuesToAvg.size(); i++) {
-            double weaght = i < weights.size() ? weights.get(i) : 1.0;
-            numer += valuesToAvg.get(i) * weaght;
+            double weight = i < weights.size() ? weights.get(i) : 1.0;
+            numer += valuesToAvg.get(i) * weight;
         }
 
         for (int i = 0; i < valuesToAvg.get(i); i++) {
@@ -300,6 +303,5 @@ public class BreakerMath {
             Rotation2d curAbsoluteAngle, Rotation2d tgtAngle) {
         return curRelativeAngle + (tgtAngle.minus(curAbsoluteAngle).getDegrees());
     }
-    
 
 }

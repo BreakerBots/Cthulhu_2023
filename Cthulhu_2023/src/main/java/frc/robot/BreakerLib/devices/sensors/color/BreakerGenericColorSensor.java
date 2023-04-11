@@ -19,7 +19,7 @@ public abstract class BreakerGenericColorSensor extends BreakerGenericDevice {
     return (comparisionColor.equals(getColor()));
   }
 
-  /** Delivers RGB values plus IR/outher values if supported */
+  /** Delivers RGB values plus IR/other values if supported */
   public abstract int[] getRawColorsADC();
 
   /**
