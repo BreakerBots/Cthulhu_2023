@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import frc.robot.BreakerLib.devices.sensors.imu.BreakerGenericIMU;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.math.BreakerUnits;
-import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
-import frc.robot.BreakerLib.util.power.DevicePowerMode;
 
 /**
  * ADIS16470 IMU using BreakerLib interfaces. Calibration is done on
@@ -82,7 +80,6 @@ public class BreakerADIS16470 extends BreakerGenericIMU {
     public double getYawRate() {
         imu.setYawAxis(kZ);
         double rate = imu.getRate();
-        imu.setYawAxis(kZ);
         return rate;
     }
 
@@ -90,7 +87,6 @@ public class BreakerADIS16470 extends BreakerGenericIMU {
     public double getPitchRate() {
         imu.setYawAxis(kY);
         double rate = imu.getRate();
-        imu.setYawAxis(kZ);
         return rate;
     }
 
@@ -98,7 +94,6 @@ public class BreakerADIS16470 extends BreakerGenericIMU {
     public double getRollRate() {
         imu.setYawAxis(kX);
         double rate = imu.getRate();
-        imu.setYawAxis(kZ);
         return rate;
     }
 
@@ -119,7 +114,6 @@ public class BreakerADIS16470 extends BreakerGenericIMU {
     public double getRawYaw() {
         imu.setYawAxis(kZ);
         double angle = imu.getAngle();
-        imu.setYawAxis(kZ);
         return angle;
     }
 
@@ -127,7 +121,6 @@ public class BreakerADIS16470 extends BreakerGenericIMU {
     public double getRawPitch() {
         imu.setYawAxis(kY);
         double angle = imu.getAngle();
-        imu.setYawAxis(kZ);
         return angle;
     }
 
@@ -135,7 +128,6 @@ public class BreakerADIS16470 extends BreakerGenericIMU {
     public double getRawRoll() {
         imu.setYawAxis(kX);
         double angle = imu.getAngle();
-        imu.setYawAxis(kZ);
         return angle;
     }
 

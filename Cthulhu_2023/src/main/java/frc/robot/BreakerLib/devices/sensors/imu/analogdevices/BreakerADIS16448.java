@@ -1,21 +1,20 @@
 package frc.robot.BreakerLib.devices.sensors.imu.analogdevices;
 
+import static edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis.kZ;
+
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.ADIS16448_IMU;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.ADIS16448_IMU.CalibrationTime;
 import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import frc.robot.BreakerLib.devices.sensors.imu.BreakerGenericIMU;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.math.BreakerUnits;
-import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
-import frc.robot.BreakerLib.util.power.DevicePowerMode;
-import static edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis.*;
-
-import java.util.function.Supplier;
 
 /**
  * ADIS16448 IMU using BreakerLib interfaces. Calibration is done on
@@ -131,19 +130,6 @@ public class BreakerADIS16448 extends BreakerGenericIMU {
         return rollRateSupplier.get();
     }
 
-    /** Does nothing. */
-    public void setYaw(double value) {
-    }
-
-    /** Does nothing. */
-    public void setPitch(double value) {
-    }
-
-    /** Does nothing. */
-    public void setRoll(double value) {
-
-    }
-
     @Override
     public double getRawYaw() {
         return yawSupplier.get();
@@ -238,5 +224,26 @@ public class BreakerADIS16448 extends BreakerGenericIMU {
     public void runSelfTest() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    /** Does nothing. */
+    public void setPitch(double value) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    /** Does nothing. */
+    public void setRoll(double value) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    /** Does nothing. */
+    public void setYaw(double value) {
+        // TODO Auto-generated method stub
+        
     }
 }
