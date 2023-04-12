@@ -15,7 +15,6 @@ public class BreakerLegacyLimelight extends BreakerGenericDevice {
   private double mountingAngle;
   private double mountingHeight;
   private final String limelightName;
-  private NetworkTable limelighTable;
   private BreakerLegacyLimelightTarget currentTarget;
 
   /**
@@ -25,7 +24,6 @@ public class BreakerLegacyLimelight extends BreakerGenericDevice {
    */
   public BreakerLegacyLimelight(String limelightName) {
     this.limelightName = limelightName;
-    limelighTable = NetworkTableInstance.getDefault().getTable(limelightName);
     deviceName = limelightName;
   }
 

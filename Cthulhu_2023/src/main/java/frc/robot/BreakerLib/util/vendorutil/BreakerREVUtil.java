@@ -7,10 +7,12 @@ package frc.robot.BreakerLib.util.vendorutil;
 import java.util.HashMap;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.FaultID;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.Pair;
+import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /** Util class for REV devices. */
@@ -25,6 +27,19 @@ public class BreakerREVUtil {
   public static void setBrakeMode(boolean isEnabled, CANSparkMax... motors) {
     for (CANSparkMax motor : motors) {
       motor.setIdleMode((isEnabled ? IdleMode.kBrake : IdleMode.kCoast));
+    }
+  }
+
+
+ /**
+   * Logs an error to BreakerLog if designated error is discovered.
+   * 
+   * @param error   RevLib error code to detect.
+   * @param message Message to log when the error is detected.
+   */
+  public static void checkError(REVLibError error, String message) {
+    if (error != REVLibError.kOk) {
+      BreakerLog.logError(error + " - " + message);
     }
   }
 
