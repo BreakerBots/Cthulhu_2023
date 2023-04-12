@@ -4,204 +4,256 @@
 
 package frc.robot.BreakerLib.devices.sensors.imu;
 
-import java.util.List;
-
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import frc.robot.BreakerLib.util.math.BreakerMath;
+import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
-/** Fuses multiple IMUs together through a weighted average to produce steadier results. */
-public class BreakerFusedIMU extends BreakerGenericIMU{
+/**
+ * Fuses multiple IMUs together through a weighted average to produce steadier
+ * results.
+ */
+public class BreakerFusedIMU extends BreakerGenericIMU {
 
-    List<BreakerGenericIMU> imuList;
-    List<Double> weightList;
+    private BreakerGenericIMU[] imuArr;
+    private double[] weightArr, dataArr;
 
+    /**
+     * Creates a fused IMU with 2 or more IMUs and corresponding weights. Make sure
+     * to call removeFaultyIMUData() periodically to avoid data from faulty IMUs
+     * polluting the average.
+     * 
+     * @param imuWeightPairs IMU and assosciated weight. Weights do not need to sum
+     *                       to 1.
+     */
     public BreakerFusedIMU(Pair<BreakerGenericIMU, Double>... imuWeightPairs) {
         int pairArrLen = imuWeightPairs.length;
+        dataArr = new double[pairArrLen];
 
         for (int i = 0; i < pairArrLen; i++) {
-            imuList.add(imuWeightPairs[i].getFirst());
-            weightList.add(imuWeightPairs[i].getSecond());
+            imuArr[i] = imuWeightPairs[i].getFirst();
+            weightArr[i] = imuWeightPairs[i].getSecond();
+        }
+    }
+
+    /**
+     * @return IMUs fused together. Use if you want to access only one IMU at a
+     *         time.
+     */
+    public BreakerGenericIMU[] getIMUs() {
+        return imuArr;
+    }
+
+    /** Sets weight of faulty IMUs to 0. Should be called periodically. */
+    public void removeFaultyIMUData() {
+        for (int i = 0; i < imuArr.length; i++) {
+            if (imuArr[i].getHealth() != DeviceHealth.NOMINAL) {
+                weightArr[i] = 0;
+            }
         }
     }
 
     @Override
     public double getPitchDegrees() {
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getPitchDegrees();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double getRollDegrees() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRollDegrees();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public Rotation2d getPitchRotation2d() {
-        // TODO Auto-generated method stub
-        return null;
+        return Rotation2d.fromDegrees(getPitchDegrees());
     }
 
     @Override
     public Rotation2d getRollRotation2d() {
-        // TODO Auto-generated method stub
-        return null;
+        return Rotation2d.fromDegrees(getRollDegrees());
+
     }
 
     @Override
     public Quaternion getQuaternion() {
-        // TODO Auto-generated method stub
-        return null;
+        return getRotation3d().getQuaternion();
     }
 
     @Override
     public Rotation3d getRotation3d() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Rotation3d(getRollDegrees(), getPitchDegrees(), getYawDegrees());
     }
 
     @Override
     public double[] getRawAngles() {
-        // TODO Auto-generated method stub
-        return null;
+        return new double[] { getRawYaw(), getRawPitch(), getRawRoll() };
     }
 
     @Override
     public double getRawPitch() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawPitch();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double getRawRoll() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawRoll();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
-    @Override
     public void setPitch(double value) {
-        // TODO Auto-generated method stub
-        
+        for (BreakerGenericIMU imu : imuArr) {
+            imu.setPitch(value);
+        }
     }
 
-    @Override
     public void setRoll(double value) {
-        // TODO Auto-generated method stub
-        
+        for (BreakerGenericIMU imu : imuArr) {
+            imu.setRoll(value);
+        }
     }
 
     @Override
     public double[] getRawGyroRates() {
-        // TODO Auto-generated method stub
-        return null;
+        return new double[] { getRawYawRate(), getRawPitchRate(), getRawRollRate() };
     }
 
     @Override
     public double getRawPitchRate() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawPitchRate();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double getRawRollRate() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawRollRate();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double getPitchRate() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getPitchRate();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double getRollRate() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRollRate();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public Rotation3d getRawRotation3d() {
-        // TODO Auto-generated method stub
-        return null;
+        return new Rotation3d(getRawRoll(), getRawPitch(), getRawYaw());
     }
 
-    @Override
     public void reset() {
-        // TODO Auto-generated method stub
-        
+        for (BreakerGenericIMU imu : imuArr) {
+            imu.reset();
+        }
     }
 
     @Override
     public double getYawDegrees() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getYawDegrees();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public Rotation2d getYawRotation2d() {
-        // TODO Auto-generated method stub
-        return null;
+        return Rotation2d.fromDegrees(getYawDegrees());
     }
 
-    @Override
     public void setYaw(double value) {
-        // TODO Auto-generated method stub
-        
+        for (BreakerGenericIMU imu : imuArr) {
+            imu.setYaw(value);
+        }
     }
 
     @Override
     public double getYawRate() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getYawRate();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
-    @Override
     public void calibrate() {
-        // TODO Auto-generated method stub
-        
+        for (BreakerGenericIMU imu : imuArr) {
+            imu.calibrate();
+        }
     }
 
     @Override
     public double getRawYaw() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawYaw();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double getRawYawRate() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawYawRate();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double[] getRawAccelerometerVals() {
-        // TODO Auto-generated method stub
-        return null;
+        return new double[] { getRawAccelX(), getRawAccelY(), getRawAccelZ() };
     }
 
     @Override
     public double getRawAccelX() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawAccelX();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double getRawAccelY() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawAccelY();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public double getRawAccelZ() {
-        // TODO Auto-generated method stub
-        return 0;
+        for (int i = 0; i <= imuArr.length; i++) {
+            dataArr[i] = imuArr[i].getRawAccelZ();
+        }
+        return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
-    @Override
     public void runSelfTest() {
-        // TODO Auto-generated method stub
-        
-    }}
+        for (BreakerGenericIMU imu : imuArr) {
+            imu.runSelfTest();
+        }
+    }
+}

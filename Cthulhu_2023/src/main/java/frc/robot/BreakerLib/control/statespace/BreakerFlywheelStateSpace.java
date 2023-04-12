@@ -33,7 +33,8 @@ public class BreakerFlywheelStateSpace extends SubsystemBase {
   public BreakerFlywheelStateSpace(double jKgMeterSqMomentOfInerta, double gearRatioToOne, double modelKalmanTrust,
       double encoderKalmanTrust, double lqrVelocityErrorTolerance, double lqrControlEffort,
       WPI_TalonFX... flywheelMotors) {
-    flywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(flywheelMotors.length), jKgMeterSqMomentOfInerta, gearRatioToOne);
+    flywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(flywheelMotors.length),
+        jKgMeterSqMomentOfInerta, gearRatioToOne);
     kalmanFilter = new KalmanFilter<>(Nat.N1(), Nat.N1(), flywheelPlant, VecBuilder.fill(modelKalmanTrust),
         VecBuilder.fill(encoderKalmanTrust), 0.020);
     lqrController = new LinearQuadraticRegulator<>(flywheelPlant, VecBuilder.fill(lqrVelocityErrorTolerance),

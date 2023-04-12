@@ -8,7 +8,6 @@ import frc.robot.BreakerLib.util.power.BreakerPowerManageable;
 import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestableBase;
 import frc.robot.BreakerLib.util.test.selftest.SelfTest;
 
-/** Less complcated alternative to BreakerGenericDevice that also automaticly regesters Devices */
 public abstract class BreakerGenericDevice extends BreakerSelfTestableBase {
     public BreakerGenericDevice() {
         SelfTest.autoRegisterDevice(this);

@@ -268,11 +268,12 @@ public class BreakerMath {
     public static double getWeightedAvg(double[] valuesToAvg, double[] weights) {
         double numer = 0;
         double denom = 0;
+        // Values multiplied by respective weights.
         for (int i = 0; i < valuesToAvg.length; i++) {
             double weight = i < weights.length ? weights[i] : 1.0;
             numer += valuesToAvg[i] * weight;
         }
-
+        // Weights added up.
         for (int i = 0; i < valuesToAvg.length; i++) {
             denom += i < weights.length ? weights[i] : 1.0;
         }
