@@ -23,8 +23,8 @@ import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.modulebuilder.BreakerSwerveModuleBuilder;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.modulebuilder.BreakerSwerveModuleBuilder.BreakerSwerveModuleConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModuleBuilder;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModuleBuilder.BreakerSwerveModuleConfig;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
 import io.github.oblarg.oblog.annotations.Log;
 
