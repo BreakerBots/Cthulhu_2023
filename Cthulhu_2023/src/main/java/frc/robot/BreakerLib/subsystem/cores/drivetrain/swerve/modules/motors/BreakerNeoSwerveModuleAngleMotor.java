@@ -35,6 +35,7 @@ public class BreakerNeoSwerveModuleAngleMotor extends BreakerGenericSwerveModule
                 AbsoluteSensorRange.Signed_PlusMinus180, encoderAbsoluteAngleOffsetDegrees, false);
         BreakerREVUtil.checkError(motor.enableVoltageCompensation(12.0), "Failed to config " + deviceName + " voltage compensation");
         BreakerREVUtil.checkError(motor.setSmartCurrentLimit(80),  "Failed to config " + deviceName + " smart current limit");
+        motor.setInverted(isMotorInverted);
         pid = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
         pid.enableContinuousInput(-180, 180);
         targetAngle = new Rotation2d();
