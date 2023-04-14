@@ -4,7 +4,7 @@
 
 package frc.robot.BreakerLib.devices.cosmetic.led;
 
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 
 /**
  * Code interface for using the REV Blinkin LED controller. Different patterns
@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
  */
 public class BreakerRevBlinkin {
 
-    PWMSparkMax blinkin;
+    private Spark blinkin;
 
     /** Premade palettes for advanced fixed palette patterns. */
     public enum AdvancedPatternPalette {
@@ -171,7 +171,7 @@ public class BreakerRevBlinkin {
      * @param channel PWM channel to use.
      */
     public BreakerRevBlinkin(int channel) {
-        blinkin = new PWMSparkMax(channel);
+        blinkin = new Spark(channel);
     }
 
     /**
