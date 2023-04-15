@@ -161,26 +161,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    int pathNum = 3;
-    // switch (pathNum) {
-    //   case 0:
-    //     return new GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
-    //   case 1:
-    //     return new MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
-    //   case 2:
-    //     return new SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys);
-    //   case 3:
-    //     return new GatePlace2(drivetrainSys, imuSys, intakeSys, armSys);
-    //   case 4:
-    //     return new InNOut(drivetrainSys, imuSys);
-    //   case 5:
-    //     return new MidBalance(drivetrainSys, imuSys, armSys, intakeSys);
-    //   case 6:
-    //     return new LeaveOnly(drivetrainSys, imuSys);
-    //   default:
-    //     return null;
-
-    // }
     return BreakerRobotManager.getSelectedAutoPath();
   }
 }
