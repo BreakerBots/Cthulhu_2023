@@ -4,7 +4,8 @@
 package frc.robot.BreakerLib.devices.sensors.imu.ctre;
 
 import com.ctre.phoenix.sensors.Pigeon2_Faults;
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenixpro.configs.Pigeon2Configuration;
+import com.ctre.phoenixpro.hardware.Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Quaternion;
@@ -14,39 +15,37 @@ import frc.robot.BreakerLib.devices.sensors.BreakerGenericMagnetometer;
 import frc.robot.BreakerLib.devices.sensors.imu.BreakerGenericIMU;
 import frc.robot.BreakerLib.physics.vector.BreakerVector3;
 import frc.robot.BreakerLib.util.math.BreakerMath;
-import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
-import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /* CTRE Pigeon 2 implementing the Breaker device interface and Breaker IMU interface,  */
-public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericMagnetometer {
-  private WPI_Pigeon2 pigeon;
+public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGenericMagnetometer {
+  private Pigeon2 pigeon;
 
   /** Creates a new PigeonIMU 2 object. */
-  public BreakerPigeon2(int deviceID) {
-    pigeon = new WPI_Pigeon2(deviceID);
+  public BreakerProPigeon2(int deviceID) {
+    pigeon = new Pigeon2(deviceID);
     deviceName = "Pigeon2_IMU (" + deviceID + ") ";
   }
 
   /** Creates a new PigeonIMU 2 object. */
-  public BreakerPigeon2(int deviceID, String busName) {
-    pigeon = new WPI_Pigeon2(deviceID, busName);
+  public BreakerProPigeon2(int deviceID, String busName) {
+    pigeon = new Pigeon2(deviceID, busName);
     deviceName = "Pigeon2_IMU (" + deviceID + ") ";
   }
 
   @Override
   public double getPitchDegrees() {
-    return BreakerMath.angleModulus(pigeon.getPitch());
+    return BreakerMath.angleModulus(pigeon.getPitch().getValue());
   }
 
   @Override
   public double getYawDegrees() {
-    return BreakerMath.angleModulus(pigeon.getYaw());
+    return BreakerMath.angleModulus(pigeon.getAngle());
   }
 
   @Override
   public double getRollDegrees() {
-    return BreakerMath.angleModulus(pigeon.getRoll());
+    return BreakerMath.angleModulus(pigeon.getRoll().getValue()));
   }
 
   @Override
@@ -71,9 +70,7 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
 
   @Override
   public double[] getRawAngles() {
-    double[] RawYPR = new double[3];
-    pigeon.getYawPitchRoll(RawYPR);
-    return RawYPR;
+    return new double[]{pigeon.getYaw().getValue(), pigeon.getPitch().getValue(), pigeon.getRoll().getValue()};
   }
 
   @Override
@@ -106,7 +103,6 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
   /** Does nothing. */
   @Override
   public void setRoll(double value) {
-
   }
 
   /** Sets yaw to 0 */
@@ -116,9 +112,7 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
   }
 
   public double[] getRawGyroRates() {
-    double[] rawRates = new double[3];
-    pigeon.getRawGyro(rawRates);
-    return rawRates;
+    return new double[] {pigeon.getAngularVelocityX().getValue(), pigeon.getAngularVelocityY().getValue(), pigeon.getAngularVelocityZ().getValue()};
   }
 
   @Override
@@ -153,47 +147,61 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
 
   @Override
   public double[] getRawAccelerometerVals() {
-    double[] newVals = new double[3];
-    for (int i = 0; i < 3; i++) {
-      newVals[i] = (BreakerMath.fixedToFloat(getRawAccelerometerValsShort()[i], 14) * 0.000508);
-    }
-    return newVals;
+    return new double[] {pigeon.getAccelerationX().getValue(), pigeon.getAccelerationY().getValue(), pigeon.getAccelerationZ().getValue()};
   }
 
-  public short[] getRawAccelerometerValsShort() {
-    short[] accelVals = new short[3];
-    pigeon.getBiasedAccelerometer(accelVals);
-    return accelVals;
-  }
+//   public short[] getRawAccelerometerValsShort() {
+//     short[] accelVals = new short[3];
+//     pigeon.getBiasedAccelerometer(accelVals);
+//     pigeon.get
+//     return accelVals;
+//   }
 
   @Override
-  /** @return Unbiased accelerometer x-value in G */
+  /** @return Unbiased accelerometer x-value in G. */
   public double getRawAccelX() {
-    return (BreakerMath.fixedToFloat(getRawAccelerometerValsShort()[0], 14) * 0.000508);
+    return pigeon.getAccelerationX().getValue();
   }
 
   @Override
   /** @return Unbiased accelerometer y-value in G. */
   public double getRawAccelY() {
-    return (BreakerMath.fixedToFloat(getRawAccelerometerValsShort()[1], 14) * 0.000508);
+    return pigeon.getAccelerationY().getValue();
   }
 
   @Override
   /** @return Unbiased accelerometer z-value in G. */
   public double getRawAccelZ() {
-    return (BreakerMath.fixedToFloat(getRawAccelerometerValsShort()[2], 14) * 0.000508);
+    return pigeon.getAccelerationZ().getValue();
   }
 
   /** @return Pigeon's runtime in seconds (max of 255) */
   public int getPigeonUpTime() {
-
-    return pigeon.getUpTime();
+    return pigeon.getUpTime().getValue().intValue();
   }
 
   public BreakerVector3 getGravityVector() {
-    double[] gravVec = new double[3];
-    pigeon.getGravityVector(gravVec);
-    return new BreakerVector3(gravVec[0], gravVec[1], gravVec[2]);
+    return new BreakerVector3(pigeon.getGravityVectorX().getValue(), pigeon.getGravityVectorY().getValue(), pigeon.getGravityVectorZ().getValue());
+  }
+
+  public double[] getBiasedAccelerometerVals() {
+    BreakerVector3 vec = new BreakerVector3(getRawAccelX(), getRawAccelY(), getRawAccelZ()).minus(getGravityVector());
+    return new double[] {vec.getMagnitudeX(), vec.getMagnitudeY(), vec.getMagnatudeZ()};
+  }
+
+  /** @return Biased accelerometer x-value in G. */
+  public double getBaisedAccelX() {
+    return getBiasedAccelerometerVals()[0];
+  }
+
+  /** @return Biased accelerometer y-value in G. */
+  public double getBaisedAccelY() {
+    return getBiasedAccelerometerVals()[1];
+  }
+
+  /** @return Biased accelerometer z-value in G. */
+  public double getBiasedAccelZ() {
+    return getBiasedAccelerometerVals()[2];
   }
 
   @Override
