@@ -6,6 +6,7 @@ package frc.robot.BreakerLib.util.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerAutoManager;
+import frc.robot.BreakerLib.devices.cosmetic.music.BreakerFalconOrchestra;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.test.selftest.SelfTest;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain;
@@ -19,6 +20,7 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.brakemode.BreakerAutoBrak
 public class BreakerRobotManager {
     private static SelfTest test;
     private static BreakerAutoManager autoManager;
+    private static BreakerFalconOrchestra orchestra;
     private static BreakerAutoBrakeManager brakeModeManager;
     private static BreakerGenericDrivetrain baseDrivetrain;
 
@@ -41,6 +43,7 @@ public class BreakerRobotManager {
                     robotConfig.getAutoRegisterDevices());
         }
         BreakerRobotManager.baseDrivetrain = baseDrivetrain;
+        BreakerRobotManager.orchestra = robotConfig.getOrchestra();
         BreakerRobotManager.autoManager = robotConfig.usesPaths() ? new BreakerAutoManager(robotConfig.getAutoPaths())
                 : new BreakerAutoManager();
         BreakerRobotManager.brakeModeManager = new BreakerAutoBrakeManager(
@@ -51,6 +54,10 @@ public class BreakerRobotManager {
     /** @return Brake mode manager object. */
     public static BreakerAutoBrakeManager getBrakeModeManager() {
         return brakeModeManager;
+    }
+
+    public static BreakerFalconOrchestra getOrchestra() {
+        return orchestra;
     }
 
     /** @return SelfTest object. */
