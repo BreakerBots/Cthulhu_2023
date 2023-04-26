@@ -4,6 +4,7 @@
 package frc.robot.BreakerLib.devices.sensors.imu.ctre;
 
 import com.ctre.phoenix.sensors.Pigeon2_Faults;
+import com.ctre.phoenixpro.Timestamp.TimestampSource;
 import com.ctre.phoenixpro.configs.Pigeon2Configuration;
 import com.ctre.phoenixpro.hardware.Pigeon2;
 
@@ -45,7 +46,7 @@ public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGener
 
   @Override
   public double getRollDegrees() {
-    return BreakerMath.angleModulus(pigeon.getRoll().getValue()));
+    return BreakerMath.angleModulus(pigeon.getRoll().getValue());
   }
 
   @Override
@@ -150,13 +151,6 @@ public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGener
     return new double[] {pigeon.getAccelerationX().getValue(), pigeon.getAccelerationY().getValue(), pigeon.getAccelerationZ().getValue()};
   }
 
-//   public short[] getRawAccelerometerValsShort() {
-//     short[] accelVals = new short[3];
-//     pigeon.getBiasedAccelerometer(accelVals);
-//     pigeon.get
-//     return accelVals;
-//   }
-
   @Override
   /** @return Unbiased accelerometer x-value in G. */
   public double getRawAccelX() {
@@ -214,30 +208,27 @@ public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGener
   public void runSelfTest() {
     faultStr = "";
     health = DeviceHealth.NOMINAL;
-    Pigeon2_Faults curFaults = new Pigeon2_Faults();
-    pigeon.getFaults(curFaults);
-
-    if (curFaults.HardwareFault) {
+    if (pigeon.getFault_Hardware().getValue()) {
       health = DeviceHealth.INOPERABLE;
       faultStr += " hardware_fault ";
     }
-    if (curFaults.MagnetometerFault) {
+    if (pigeon.getFault_BootupMagnetometer().getValue()) {
       health = DeviceHealth.INOPERABLE;
       faultStr += " mag_fault ";
     }
-    if (curFaults.GyroFault) {
+    if (pigeon.getFault_BootupGyroscope().getValue()) {
       health = DeviceHealth.INOPERABLE;
       faultStr += "  gyro_fault ";
     }
-    if (curFaults.AccelFault) {
+    if (pigeon.getFault_BootupAccelerometer().getValue()) {
       health = DeviceHealth.INOPERABLE;
       faultStr += " accel_fault ";
     }
-    if (curFaults.UnderVoltage) {
+    if (pigeon.getFault_Undervoltage().getValue()) {
       health = (health != DeviceHealth.INOPERABLE) ? DeviceHealth.FAULT : health;
       faultStr += " under_6.5V ";
     }
-    if (pigeon.getFirmwareVersion() == -1) {
+    if (pigeon.getVersion().getValue() == 0) {
       health = DeviceHealth.INOPERABLE;
       faultStr += " device_disconnected ";
     }
@@ -245,38 +236,36 @@ public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGener
 
   @Override
   public double[] getRawFieldStrengths() {
-    short[] rawShorts = new short[] { 3 };
-    pigeon.getRawMagnetometer(rawShorts);
-    return new double[] { (double) rawShorts[0] * 0.6, (double) rawShorts[1] * 0.6, (double) rawShorts[2] * 0.6 };
+    return new double[] {pigeon.getRawMagneticFieldX().getValue(), pigeon.getRawMagneticFieldY().getValue(), pigeon.getRawMagneticFieldZ().getValue()};
   }
 
   @Override
   public double[] getBiasedFieldStrengths() {
-    short[] rawShorts = new short[] { 3 };
-    pigeon.getBiasedMagnetometer(rawShorts);
-    return new double[] { (double) rawShorts[0] * 0.6, (double) rawShorts[1] * 0.6, (double) rawShorts[2] * 0.6 };
+    return new double[] {pigeon.getMagneticFieldX().getValue(), pigeon.getMagneticFieldY().getValue(), pigeon.getMagneticFieldZ().getValue()};
+
   }
 
   @Override
+  /** not supported by phoenix pro */
   public double getCompassFieldStrength() {
-    return pigeon.getCompassFieldStrength();
+    return 0.0;
   }
 
   @Override
+  /** not supported by phoenix pro */
   public double getCompassHeading() {
-    return MathUtil.angleModulus(pigeon.getCompassHeading());
+    return 0.0;
   }
 
   @Override
+  /** not supported by phoenix pro */
   public double getRawCompassHeading() {
-    return pigeon.getCompassHeading();
+    return 0.0;
   }
 
   @Override
   public Quaternion getQuaternion() {
-    double[] quat = new double[4];
-    pigeon.get6dQuaternion(quat);
-    return new Quaternion(quat[0], quat[1], quat[2], quat[3]);
+    return new Quaternion(pigeon.getQuatW().getValue(), pigeon.getQuatX().getValue(), pigeon.getQuatY().getValue(), pigeon.getQuatZ().getValue());
   }
 
   /**
