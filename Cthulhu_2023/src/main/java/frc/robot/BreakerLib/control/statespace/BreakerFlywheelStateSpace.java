@@ -30,11 +30,21 @@ public class BreakerFlywheelStateSpace extends SubsystemBase {
   private double nextVoltage = 0;
   private boolean loopIsRunning = true;
 
-  public BreakerFlywheelStateSpace(double jKgMeterSqMomentOfInerta, double gearRatioToOne, double modelKalmanTrust,
+  /**
+   * 
+   * @param jKgMeterSqMomentOfInertia Moment of inertia of the flywheel (kg * m^2))
+   * @param gearRatioToOne Flywheel gear ratio to 1.
+   * @param modelKalmanTrust Trust of model (plant) in Kalman filter.
+   * @param encoderKalmanTrust Trust of encoder values (physical) in Kalman filter.
+   * @param lqrVelocityErrorTolerance 
+   * @param lqrControlEffort
+   * @param flywheelMotors Flywheel motors.
+   */
+  public BreakerFlywheelStateSpace(double jKgMeterSqMomentOfInertia, double gearRatioToOne, double modelKalmanTrust,
       double encoderKalmanTrust, double lqrVelocityErrorTolerance, double lqrControlEffort,
       WPI_TalonFX... flywheelMotors) {
     flywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(flywheelMotors.length),
-        jKgMeterSqMomentOfInerta, gearRatioToOne);
+        jKgMeterSqMomentOfInertia, gearRatioToOne);
     kalmanFilter = new KalmanFilter<>(Nat.N1(), Nat.N1(), flywheelPlant, VecBuilder.fill(modelKalmanTrust),
         VecBuilder.fill(encoderKalmanTrust), 0.020);
     lqrController = new LinearQuadraticRegulator<>(flywheelPlant, VecBuilder.fill(lqrVelocityErrorTolerance),

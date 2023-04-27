@@ -31,20 +31,32 @@ import frc.robot.BreakerLib.util.test.suites.drivetrain.swerve.BreakerSwerveDriv
 /**
  * BreakerLib swerve drive class.
  */
-public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements BreakerGenericTestSuiteImplementation<BreakerSwerveDriveTestSuite> {
+public class BreakerSwerveDrive extends BreakerGenericDrivetrain
+    implements BreakerGenericTestSuiteImplementation<BreakerSwerveDriveTestSuite> {
   private BreakerSwerveDriveConfig config;
   private SwerveDriveKinematics kinematics;
 
-  /** The current {@link SwerveModuleState} each of this drivetrain's swerve modules is set to */
+  /**
+   * The current {@link SwerveModuleState} each of this drivetrain's swerve
+   * modules is set to
+   */
   private SwerveModuleState[] targetModuleStates;
 
-  /** Each of the {@link BreakerGenericSwerveModule} instances controlled by this class. */
+  /**
+   * Each of the {@link BreakerGenericSwerveModule} instances controlled by this
+   * class.
+   */
   private BreakerGenericSwerveModule[] swerveModules;
 
-  /** The {@link BreakerGenericGyro} used for this drivetrain's internal odometery. */
+  /**
+   * The {@link BreakerGenericGyro} used for this drivetrain's internal odometery.
+   */
   private BreakerGenericGyro gyro;
 
-  /** The {@link SwerveDriveOdometry} object this drivetrain uses for its internal odometry. */
+  /**
+   * The {@link SwerveDriveOdometry} object this drivetrain uses for its internal
+   * odometry.
+   */
   private SwerveDriveOdometry odometer;
 
   private BreakerMovementState2d prevMovementState = new BreakerMovementState2d(),
@@ -76,13 +88,16 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
       wheelPositions[i] = swerveModules[i].getWheelPositionRelativeToRobot();
     }
     kinematics = new SwerveDriveKinematics(wheelPositions);
-    odometer = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getRawYaw()), getSwerveModulePositions());
+    odometer = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(gyro.getRawYaw()),
+        getSwerveModulePositions());
   }
 
   /**
-   * Directly exposes full module controll to the user, does not proform any automatic optimization or desaturation
+   * Directly exposes full module controll to the user, does not proform any
+   * automatic optimization or desaturation
    * <p>
-   * NOTE: Not affected by slow mode, does not consider technical limits of modules or drivetrain,
+   * NOTE: Not affected by slow mode, does not consider technical limits of
+   * modules or drivetrain,
    */
   public void setRawModuleStates(SwerveModuleState... targetModuleStates) {
     for (int i = 0; i < swerveModules.length; i++) {
@@ -93,7 +108,8 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
 
   /**
    * Sets each module to match a target module state in the order they were passed
-   * in. Automaticly optimizes and desaturates wheelspeeds, stops module if set speed is below module speed deadband threshold
+   * in. Automaticly optimizes and desaturates wheelspeeds, stops module if set
+   * speed is below module speed deadband threshold
    * <p>
    * NOTE: Not affected by slow mode.
    */
@@ -104,13 +120,13 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
       if (Math.abs(targetModuleStates[i].speedMetersPerSecond) < config.getModuleWheelSpeedDeadband()) {
 
         swerveModules[i].stop();
-        
+
         this.targetModuleStates[i] = swerveModules[i].getModuleTargetState();
 
       } else {
 
         SwerveModuleState optimizedState = SwerveModuleState.optimize(targetModuleStates[i],
-          Rotation2d.fromDegrees(swerveModules[i].getModuleRelativeAngle()));
+            Rotation2d.fromDegrees(swerveModules[i].getModuleRelativeAngle()));
 
         swerveModules[i].setModuleTarget(optimizedState);
         this.targetModuleStates[i] = optimizedState;
@@ -199,92 +215,109 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
    */
   public void moveWithPercentInput(double forwardPercent, double horizontalPercent, double turnPercent) {
     move(
-      (forwardPercent * config.getMaxForwardVel()),
-      (horizontalPercent * config.getMaxSidewaysVel()),
-      (turnPercent * config.getMaxAngleVel())
-    );
+        (forwardPercent * config.getMaxForwardVel()),
+        (horizontalPercent * config.getMaxSidewaysVel()),
+        (turnPercent * config.getMaxAngleVel()));
   }
 
-    /**
-   * Movement with velocities relative to field. Use if using a separate odometry source.
+  /**
+   * Movement with velocities relative to field. Use if using a separate odometry
+   * source.
    * 
-   * @param forwardVelMetersPerSec Forward velocity relative to field (m/s).
-   * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
-   * @param radPerSec Rotation velocity relative to field (rad/sec).
-   * @param odometer {@link BreakerGenericOdometer} to determine field relative position.
-   * @param useFieldRelativeMovementAngleOffset weather or not to use the set angle offset for the field relative mobement forward angle zero point
+   * @param forwardVelMetersPerSec              Forward velocity relative to field
+   *                                            (m/s).
+   * @param preferences Field movement preferences to use.
    */
-  public void moveRelativeToField(ChassisSpeeds fieldRelativeSpeeds, BreakerSwerveFieldRelativeMovementPrefrences prefrences) {
-    ChassisSpeeds robotRelSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, prefrences.odometryProvider.getOdometryPoseMeters().getRotation().plus(prefrences.useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
+  public void moveRelativeToField(ChassisSpeeds fieldRelativeSpeeds,
+      BreakerSwerveFieldRelativeMovementPreferences preferences) {
+    ChassisSpeeds robotRelSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds,
+        preferences.odometryProvider.getOdometryPoseMeters().getRotation()
+            .plus(preferences.useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
     move(robotRelSpeeds);
   }
 
   /**
    * Movement with velocity values relative to field.
    * 
-   * @param forwardVelMetersPerSec Forward velocity relative to field (m/s).
-   * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
-   * @param radPerSec Rotation velocity relative to field (rad/sec).
+   * @param fieldRelativeSpeeds Field relative speeds to use.
    */
   public void moveRelativeToField(ChassisSpeeds fieldRelativeSpeeds) {
-    moveRelativeToField(fieldRelativeSpeeds, new BreakerSwerveFieldRelativeMovementPrefrences(this));
+    moveRelativeToField(fieldRelativeSpeeds, new BreakerSwerveFieldRelativeMovementPreferences(this));
   }
 
   /**
-   * Movement with velocities relative to field. Use if using a separate odometry source.
+   * Movement with velocities relative to field. Use if using a separate odometry
+   * source.
    * 
-   * @param forwardVelMetersPerSec Forward velocity relative to field (m/s).
-   * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
-   * @param radPerSec Rotation velocity relative to field (rad/sec).
-   * @param odometer {@link BreakerGenericOdometer} to determine field relative position.
-   * @param useFieldRelativeMovementAngleOffset weather or not to use the set angle offset for the field relative mobement forward angle zero point
+   * @param forwardVelMetersPerSec              Forward velocity relative to field
+   *                                            (m/s).
+   * @param horizontalVelMetersPerSec           Sideways velocity relative to
+   *                                            field (m/s).
+   * @param radPerSec                           Rotation velocity relative to
+   *                                            field (rad/sec).
+   * @param odometer                            {@link BreakerGenericOdometer} to
+   *                                            determine field relative position.
+   * @param useFieldRelativeMovementAngleOffset weather or not to use the set
+   *                                            angle offset for the field
+   *                                            relative mobement forward angle
+   *                                            zero point
    */
   public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec,
-    BreakerSwerveFieldRelativeMovementPrefrences prefrences) {
+      BreakerSwerveFieldRelativeMovementPreferences prefrences) {
     ChassisSpeeds robotRelSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         forwardVelMetersPerSec,
-        horizontalVelMetersPerSec, 
+        horizontalVelMetersPerSec,
         radPerSec,
-        prefrences.odometryProvider.getOdometryPoseMeters().getRotation().plus(prefrences.useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
+        prefrences.odometryProvider.getOdometryPoseMeters().getRotation()
+            .plus(prefrences.useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
     move(robotRelSpeeds);
   }
 
   /**
    * Movement with velocity values relative to field.
    * 
-   * @param forwardVelMetersPerSec Forward velocity relative to field (m/s).
+   * @param forwardVelMetersPerSec    Forward velocity relative to field (m/s).
    * @param horizontalVelMetersPerSec Sideways velocity relative to field (m/s).
-   * @param radPerSec Rotation velocity relative to field (rad/sec).
+   * @param radPerSec                 Rotation velocity relative to field
+   *                                  (rad/sec).
    */
   public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec) {
-    moveRelativeToField(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec, new BreakerSwerveFieldRelativeMovementPrefrences(this));
+    moveRelativeToField(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec,
+        new BreakerSwerveFieldRelativeMovementPreferences(this));
   }
 
   /**
-   * Movement with velocity percents relative to field. Swerve drive's own odometry is used.
+   * Movement with velocity percents relative to field. Swerve drive's own
+   * odometry is used.
    * 
-   * @param forwardPercent Forward speed percent (-1 to 1).
+   * @param forwardPercent    Forward speed percent (-1 to 1).
    * @param horizontalPercent Horizontal speed percent (-1 to 1).
-   * @param turnPercent Rotation speed percent (-1 to 1).
+   * @param turnPercent       Rotation speed percent (-1 to 1).
    */
   public void moveWithPercentInputRelativeToField(double forwardPercent, double horizontalPercent, double turnPercent) {
     double fwdV = forwardPercent * config.getMaxForwardVel();
     double horzV = horizontalPercent * config.getMaxSidewaysVel();
     double thetaV = turnPercent * config.getMaxAngleVel();
-    moveRelativeToField(fwdV, horzV, thetaV, new BreakerSwerveFieldRelativeMovementPrefrences(this));
+    moveRelativeToField(fwdV, horzV, thetaV, new BreakerSwerveFieldRelativeMovementPreferences(this));
   }
 
   /**
-   * Movement with velocity percents relative to field. Use if using a separate odometry source.
+   * Movement with velocity percents relative to field. Use if using a separate
+   * odometry source.
    * 
-   * @param forwardPercent Forward speed percent (-1 to 1).
-   * @param horizontalPercent Horizontal speed percent (-1 to 1).
-   * @param turnPercent Rotation speed percent (-1 to 1).
-   * @param odometer {@link BreakerGenericOdometer} to determine field relative position.
-   * @param useFieldRelativeMovementAngleOffset weather or not to use the set angle offset for the field relative mobement forward angle zero point
+   * @param forwardPercent                      Forward speed percent (-1 to 1).
+   * @param horizontalPercent                   Horizontal speed percent (-1 to
+   *                                            1).
+   * @param turnPercent                         Rotation speed percent (-1 to 1).
+   * @param odometer                            {@link BreakerGenericOdometer} to
+   *                                            determine field relative position.
+   * @param useFieldRelativeMovementAngleOffset weather or not to use the set
+   *                                            angle offset for the field
+   *                                            relative mobement forward angle
+   *                                            zero point
    */
   public void moveWithPercentInputRelativeToField(double forwardPercent, double horizontalPercent, double turnPercent,
-      BreakerSwerveFieldRelativeMovementPrefrences prefrences) {
+      BreakerSwerveFieldRelativeMovementPreferences prefrences) {
     double fwdV = forwardPercent * config.getMaxForwardVel();
     double horzV = horizontalPercent * config.getMaxSidewaysVel();
     double thetaV = turnPercent * config.getMaxAngleVel();
@@ -309,7 +342,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   }
 
   public void resetSwerveModuleDriveDistances() {
-    for (BreakerGenericSwerveModule mod: swerveModules) {
+    for (BreakerGenericSwerveModule mod : swerveModules) {
       mod.resetModuleDriveEncoderPosition();
     }
   }
@@ -329,9 +362,9 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   public BreakerSwerveDriveConfig getConfig() {
     return config;
   }
-  
+
   public SwerveDriveKinematics getKinematics() {
-      return kinematics;
+    return kinematics;
   }
 
   @Override
@@ -361,7 +394,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
 
   @Override
   public BreakerGenericGyro getBaseGyro() {
-      return gyro;
+    return gyro;
   }
 
   @Override
@@ -375,7 +408,8 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   }
 
   private void calculateMovementState(double timeToLastUpdateMiliseconds) {
-    // ChassisSpeeds speeds = config.getKinematics().toChassisSpeeds(getSwerveModuleStates());
+    // ChassisSpeeds speeds =
+    // config.getKinematics().toChassisSpeeds(getSwerveModuleStates());
     curMovementState = BreakerMath.movementStateFromChassisSpeedsAndPreviousState(getOdometryPoseMeters(),
         getFieldRelativeChassisSpeeds(), timeToLastUpdateMiliseconds, prevMovementState);
     prevMovementState = curMovementState;
@@ -406,12 +440,13 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   }
 
   public Rotation2d getFieldRelativeMovementOffsetAngle() {
-      return fieldRelativeMovementOffset;
+    return fieldRelativeMovementOffset;
   }
-  
+
   @Override
   public String toString() {
-      return String.format("BreakerSwerveDrive(Health: %s, Movement_State: %s, Swerve_Modules: %s)", health.toString(), curMovementState.toString(), Arrays.toString(swerveModules));
+    return String.format("BreakerSwerveDrive(Health: %s, Movement_State: %s, Swerve_Modules: %s)", health.toString(),
+        curMovementState.toString(), Arrays.toString(swerveModules));
   }
 
   @Override
@@ -424,22 +459,36 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     return new BreakerSwerveDriveTestSuite(this, swerveModules);
   }
 
-  public static class BreakerSwerveFieldRelativeMovementPrefrences {
+  /** Stores preferences for field relative driving. */
+  public static class BreakerSwerveFieldRelativeMovementPreferences {
     public boolean useFieldRelativeMovementAngleOffset;
     public BreakerGenericOdometer odometryProvider;
-    public BreakerSwerveFieldRelativeMovementPrefrences(BreakerSwerveDrive drivetrain) {
+
+    /** Uses the drivetrain as odometry provider and uses a field relative movement angle offset. */
+    public BreakerSwerveFieldRelativeMovementPreferences(BreakerSwerveDrive drivetrain) {
       odometryProvider = drivetrain;
       useFieldRelativeMovementAngleOffset = true;
     }
 
-    public BreakerSwerveFieldRelativeMovementPrefrences setOdometryProvider(BreakerGenericOdometer odometryProvider) {
-        this.odometryProvider = odometryProvider;
-        return this;
+    /** Sets the selected odometry provider.
+     * 
+     * @param odometryProvider Provider of odometry data.
+     * @return this.
+     */
+    public BreakerSwerveFieldRelativeMovementPreferences setOdometryProvider(BreakerGenericOdometer odometryProvider) {
+      this.odometryProvider = odometryProvider;
+      return this;
     }
 
-    public BreakerSwerveFieldRelativeMovementPrefrences setUseFieldRelativeMovementAngleOffset(boolean useFieldRelativeMovementAngleOffset) {
-        this.useFieldRelativeMovementAngleOffset = useFieldRelativeMovementAngleOffset;
-        return this;
+    /** Sets whether or not to use a field relative movement angle offset.
+     * 
+     * @param useFieldRelativeMovementAngleOffset Whether you want to use an angle offset for the default forward angle.
+     * @return this.
+     */
+    public BreakerSwerveFieldRelativeMovementPreferences setUseFieldRelativeMovementAngleOffset(
+        boolean useFieldRelativeMovementAngleOffset) {
+      this.useFieldRelativeMovementAngleOffset = useFieldRelativeMovementAngleOffset;
+      return this;
     }
   }
 

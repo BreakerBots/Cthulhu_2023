@@ -14,7 +14,7 @@ import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerGenericGame
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveFieldRelativeMovementPrefrences;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveFieldRelativeMovementPreferences;
 import frc.robot.BreakerLib.util.math.functions.BreakerGenericMathFunction;
 
 /** Controller object for the {@link BreakerSwerveDrive} drivetrain. */
@@ -244,7 +244,7 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     if (usesExternalOdometer) {
       // External odometry source is used.
       baseDrivetrain.moveWithPercentInputRelativeToField(MathUtil.clamp(forward, -1.0, 1.0),
-          MathUtil.clamp(horizontal, -1.0, 1.0), MathUtil.clamp(turn, -1.0, 1.0), new BreakerSwerveFieldRelativeMovementPrefrences(baseDrivetrain).setOdometryProvider(odometer));
+          MathUtil.clamp(horizontal, -1.0, 1.0), MathUtil.clamp(turn, -1.0, 1.0), new BreakerSwerveFieldRelativeMovementPreferences(baseDrivetrain).setOdometryProvider(odometer));
     } else {
       // Swerve drive's own odometry is used.
       baseDrivetrain.moveWithPercentInputRelativeToField(MathUtil.clamp(forward, -1.0, 1.0),
