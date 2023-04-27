@@ -113,6 +113,6 @@ public abstract class BreakerGenericSwerveModule extends BreakerGenericDevice im
         builder.addDoubleProperty("Target Velocity", () -> this.getModuleTargetState().speedMetersPerSecond, null);
         builder.addDoubleProperty("Target Angle", () -> this.getModuleTargetState().angle.getDegrees(), null); 
         builder.addDoubleProperty("Actual Velocity", () -> this.getModuleVelMetersPerSec(), null);
-        builder.addDoubleProperty("Actual Angle", () -> this.getModuleRelativeAngle(), null); 
+        builder.addDoubleProperty("Actual Angle", () -> this.getModuleAbsoluteAngle(), null); 
     }
 }

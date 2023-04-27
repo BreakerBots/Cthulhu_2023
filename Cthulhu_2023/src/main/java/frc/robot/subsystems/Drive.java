@@ -20,6 +20,7 @@ import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollowerConfig;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
+import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule;
@@ -94,10 +95,10 @@ public class Drive extends BreakerSwerveDrive {
                 frontRightModule.setDeviceName(" FR_Module ");
                 backLeftModule.setDeviceName(" BL_Module ");
                 backRightModule.setDeviceName(" BR_Module ");
-                // BreakerDashboard.getDiagnosticsTab().add("FL Module", frontLeftModule);
-                // BreakerDashboard.getDiagnosticsTab().add("FR Module", frontRightModule);
-                // BreakerDashboard.getDiagnosticsTab().add("BL Module", backLeftModule);
-                // BreakerDashboard.getDiagnosticsTab().add("BR Module", backRightModule);
+                BreakerDashboard.getDiagnosticsTab().add("FL Module", frontLeftModule);
+                BreakerDashboard.getDiagnosticsTab().add("FR Module", frontRightModule);
+                BreakerDashboard.getDiagnosticsTab().add("BL Module", backLeftModule);
+                BreakerDashboard.getDiagnosticsTab().add("BR Module", backRightModule);
         }
 
         @Override
