@@ -6,6 +6,8 @@ package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.ctre.phoenixpro.hardware.CANcoder;
+import com.ctre.phoenixpro.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -16,6 +18,8 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.Bre
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerNeoSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerNeoSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerProFalconSwerveModuleAngleMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerProFalconSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
 
 /** Add your docs here. */
@@ -38,6 +42,16 @@ public class BreakerSwerveModuleBuilder {
 
     public BreakerSwerveModuleBuilder withFalconDriveMotor(WPI_TalonFX motor, boolean isMotorInverted) {
         driveMotor = new BreakerFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
+        return this;
+    }
+
+    public BreakerSwerveModuleBuilder withProFalconAngleMotor(TalonFX motor, CANcoder encoder, double encoderAbsoluteAngleOffsetRotations, boolean isMotorInverted) {
+        angleMotor = new BreakerProFalconSwerveModuleAngleMotor(motor, encoder, config.getAzimuthGearRatio(), encoderAbsoluteAngleOffsetRotations, isMotorInverted, config.getAnglePIDConfig());
+        return this;
+    }
+
+    public BreakerSwerveModuleBuilder withProFalconDriveMotor(TalonFX motor, boolean isMotorInverted) {
+        driveMotor = new BreakerProFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
         return this;
     }
 

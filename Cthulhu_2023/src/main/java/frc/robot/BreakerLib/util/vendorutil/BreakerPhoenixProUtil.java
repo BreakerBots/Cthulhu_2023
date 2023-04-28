@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import com.ctre.phoenixpro.StatusCode;
 import com.ctre.phoenixpro.configs.MotorOutputConfigs;
+import com.ctre.phoenixpro.hardware.CANcoder;
 import com.ctre.phoenixpro.hardware.Pigeon2;
 import com.ctre.phoenixpro.hardware.TalonFX;
 import com.ctre.phoenixpro.hardware.core.CoreTalonFX;
@@ -78,6 +79,34 @@ public class BreakerPhoenixProUtil {
     map.put(12, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " supply_voltage_above_rated_max "));
     map.put(13, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " unstable_supply_voltage "));
     return BreakerVendorUtil.getDeviceHealthAndFaults(bitField, map);
+  }
+
+   /**
+   * Get CANCoder faults and device health.
+   * 
+   * @param encoderFaults CANCoder faults.
+   * @return CANCoder device health and error type (if any).
+   */
+  public static Pair<DeviceHealth, String> getCANcoderHealthAndFaults(int bitField) {
+    HashMap<Integer, Pair<DeviceHealth, String>> map = new HashMap<>();
+    map.put(0, new Pair<DeviceHealth, String>(DeviceHealth.INOPERABLE, " hardware_failure "));
+    map.put(4, new Pair<DeviceHealth, String>(DeviceHealth.INOPERABLE, " magnet_too_weak "));
+    return BreakerVendorUtil.getDeviceHealthAndFaults(bitField, map);
+  }
+
+  /**
+   * @param canCoder
+   * @return Pair<DeviceHealth, String>
+   */
+  public static Pair<DeviceHealth, String> checkCANcoderFaultsAndConnection(CANcoder canCoder) {
+    Pair<DeviceHealth, String> pair = getCANcoderHealthAndFaults(canCoder.getFaultField().getValue());
+    String retStr = pair.getSecond();
+    DeviceHealth retHealth = pair.getFirst();
+    if (canCoder.getVersion().getValue() == 0) {
+      retStr += " device_disconnected ";
+      retHealth = DeviceHealth.INOPERABLE;
+    }
+    return new Pair<DeviceHealth, String>(retHealth, retStr);
   }
 
 
