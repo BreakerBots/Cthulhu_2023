@@ -56,11 +56,12 @@ public class BreakerSwerveModuleBuilder {
     }
 
     public static class BreakerSwerveModuleConfig {
-        private double driveGearRatio, wheelDiameter;
+        private double driveGearRatio, azimuthGearRatio, wheelDiameter;
         private BreakerSwerveMotorPIDConfig anglePIDConfig, drivePIDConfig;
         private BreakerArbitraryFeedforwardProvider driveArbFF;
-        public BreakerSwerveModuleConfig(double driveGearRatio, double wheelDiameter, BreakerSwerveMotorPIDConfig anglePIDConfig, BreakerSwerveMotorPIDConfig drivePIDConfig, BreakerArbitraryFeedforwardProvider driveArbFF) {
+        public BreakerSwerveModuleConfig(double driveGearRatio, double azimuthGearRatio, double wheelDiameter, BreakerSwerveMotorPIDConfig anglePIDConfig, BreakerSwerveMotorPIDConfig drivePIDConfig, BreakerArbitraryFeedforwardProvider driveArbFF) {
             this.driveGearRatio = driveGearRatio;
+            this.azimuthGearRatio = azimuthGearRatio;
             this.wheelDiameter = wheelDiameter;
             this.drivePIDConfig = drivePIDConfig;
             this.anglePIDConfig = anglePIDConfig;
@@ -81,6 +82,10 @@ public class BreakerSwerveModuleBuilder {
 
         public double getDriveGearRatio() {
             return driveGearRatio;
+        }
+
+        public double getAzimuthGearRatio() {
+            return azimuthGearRatio;
         }
 
         public double getWheelDiameter() {

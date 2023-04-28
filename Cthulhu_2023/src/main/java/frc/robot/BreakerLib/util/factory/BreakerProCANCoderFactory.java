@@ -4,14 +4,15 @@
 
 package frc.robot.BreakerLib.util.factory;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.ctre.phoenixpro.configs.CANcoderConfiguration;
+import com.ctre.phoenixpro.hardware.CANcoder;
+import com.ctre.phoenixpro.signals.AbsoluteSensorRangeValue;
 
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenixProUtil;
 
 /** Factory for producing CANcoders. */
-public class BreakerCANCoderFactory {
+public class BreakerProCANCoderFactory {
 
     /**
      * Creates CANCoder on default bus.
@@ -24,9 +25,9 @@ public class BreakerCANCoderFactory {
      * 
      * @return CANCoder with desired settings.
      */
-    public static WPI_CANCoder createCANCoder(int deviceID, SensorInitializationStrategy initializationStrategy,
+    public static CANcoder createCANCoder(int deviceID, SensorInitializationStrategy initializationStrategy,
             AbsoluteSensorRange absoluteSensorRange, double absoluteOffsetDegrees, boolean encoderDirection) {
-        WPI_CANCoder encoder = new WPI_CANCoder(deviceID);
+        CANCoder encoder = new CANCoder(deviceID);
         configExistingCANCoder(encoder, initializationStrategy, absoluteSensorRange, absoluteOffsetDegrees,
                 encoderDirection);
         return encoder;
@@ -43,7 +44,7 @@ public class BreakerCANCoderFactory {
     public static WPI_CANCoder createCANCoder(int deviceID, String busName,
             SensorInitializationStrategy initializationStrategy, AbsoluteSensorRange absoluteSensorRange,
             double absoluteOffsetDegrees, boolean encoderDirection) {
-        WPI_CANCoder encoder = new WPI_CANCoder(deviceID, busName);
+        CANCoder encoder = new CANCoder(deviceID, busName);
         configExistingCANCoder(encoder, initializationStrategy, absoluteSensorRange, absoluteOffsetDegrees,
                 encoderDirection);
         return encoder;
@@ -54,19 +55,18 @@ public class BreakerCANCoderFactory {
      * 
      * @param encoder CANCoder to config.
      * @param initializationStrategy Boot to zero or boot to absolute position.
-     * @param absoluteSensorRange Unsigned 0 to 360 deg or signed +-180 deg.
-     * @param absoluteOffsetDegrees Offset of encoder in degrees.
+     * @param absoluteSensorRange Unsigned 0 to 1 rotation or signed +-0.5 rotations.
+     * @param absoluteOffsetRotations Offset of encoder as a fraction of a rotation (1 to -1)
      * @param encoderDirection False = counterclockwise rotation is positive (facing towards LED).
      */
-    public static void configExistingCANCoder(WPI_CANCoder encoder, SensorInitializationStrategy initializationStrategy,
-            AbsoluteSensorRange absoluteSensorRange, double absoluteOffsetDegrees, boolean encoderDirection) {
-        BreakerCTREUtil.checkError(encoder.configAbsoluteSensorRange(absoluteSensorRange),
-                " CANCoder " + encoder.getDeviceID() + " ABS sensor range config fail ");
-        BreakerCTREUtil.checkError(encoder.configSensorInitializationStrategy(initializationStrategy),
-                " CANCoder " + encoder.getDeviceID() + " init stratagy config fail ");
-        BreakerCTREUtil.checkError(encoder.configMagnetOffset(absoluteOffsetDegrees),
-                " CANCoder " + encoder.getDeviceID() + " mag offset angle config fail ");
-        BreakerCTREUtil.checkError(encoder.configSensorDirection(encoderDirection),
-                " CANCoder " + encoder.getDeviceID() + " sensor direction config fail ");
+    public static void configExistingCANCoder(CANcoder encoder, AbsoluteSensorRangeValue absoluteSensorRange, double absoluteOffsetRotations, boolean encoderDirection) {
+               CANcoderConfiguration config =  new CANcoderConfiguration();
+               config.MagnetSensor.AbsoluteSensorRange = absoluteSensorRange;
+               config.MagnetSensor.MagnetOffset = absoluteOffsetRotations;
+               config.MagnetSensor.SensorDirection = encoderDirection;
+                encoder.getConfigurator().apply(config)
+                encoder.getAbsolutePosition()
+
+        BreakerPhoenixProUtil.checkStatusCode(encoder.getConfigurator().apply(config), null);
     }
 }

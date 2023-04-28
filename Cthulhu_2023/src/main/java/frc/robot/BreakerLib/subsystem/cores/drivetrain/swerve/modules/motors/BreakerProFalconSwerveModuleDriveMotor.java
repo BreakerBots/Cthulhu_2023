@@ -30,7 +30,6 @@ public class BreakerProFalconSwerveModuleDriveMotor extends BreakerGenericSwerve
     private TalonFX motor;
     private double driveGearRatio, wheelDiameter, targetVelocity;
     private final VelocityTorqueCurrentFOC torqueVelocity;
-    private final NeutralOut brake = new NeutralOut();
     private final double wheelCircumfrenceMeters;
     private BreakerArbitraryFeedforwardProvider arbFF;
     public BreakerProFalconSwerveModuleDriveMotor(TalonFX motor, double driveGearRatio, double wheelDiameter, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
@@ -48,8 +47,8 @@ public class BreakerProFalconSwerveModuleDriveMotor extends BreakerGenericSwerve
         driveConfig.Slot1.kI = pidConfig.kI;
         driveConfig.Slot1.kD = pidConfig.kD;
         driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = 60;
-        driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -60;
+        driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = 40;
+        driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -40;
         BreakerPhoenixProUtil.checkStatusCode(motor.getConfigurator().apply(driveConfig),
                 " Failed to config swerve module drive motor ");
     
