@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.BreakerLib.auto.trajectory.management.BreakerAutoManager;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerAutoPath;
 import frc.robot.BreakerLib.devices.cosmetic.led.BreakerRevBlinkin;
 import frc.robot.BreakerLib.devices.cosmetic.led.BreakerRevBlinkin.AdvancedPattern;
@@ -32,6 +33,7 @@ import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.autos.InNOut;
 import frc.robot.commands.autos.LeaveOnly;
 import frc.robot.commands.autos.MidBalance;
+import frc.robot.commands.autos.pathplanner.TestPath;
 import frc.robot.commands.autos.pose.GatePlaceLeaveThenBalance;
 import frc.robot.commands.autos.pose.GatePlace2;
 import frc.robot.commands.autos.pose.MidPlaceLeaveThenBalance;
@@ -139,10 +141,8 @@ public class RobotContainer {
           new BreakerAutoPath("MidBalance", new MidBalance(drivetrainSys, imuSys, armSys, intakeSys)),
           new BreakerAutoPath("LeaveOnly", new LeaveOnly(drivetrainSys, imuSys)),
           new BreakerAutoPath("PlaceLow", new InstantCommand(intakeSys::eject)),
-          new BreakerAutoPath("PlaceMidOnly", new 
-          PlaceMidOnly(drivetrainSys, armSys, intakeSys)
-          )
-          );
+          new BreakerAutoPath("PlaceMidOnly", new PlaceMidOnly(drivetrainSys, armSys, intakeSys)),
+          new BreakerAutoPath("Pathplanner_Test", new TestPath(drivetrainSys)));
     BreakerRobotManager.setup(drivetrainSys, robotConfig);
   }
 
