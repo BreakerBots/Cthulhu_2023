@@ -13,7 +13,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain.SlowModeValue;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveFieldRelativeMovementPreferences;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -25,6 +27,7 @@ public class BreakerSwervePathFollower extends CommandBase {
   private PathPlannerTrajectory transformedTrajectory;
   private final BreakerSwervePathFollowerConfig config;
   private final boolean stopAtEnd;
+  private final BreakerSwerveFieldRelativeMovementPreferences driveMoveCallPrefrences;
 
   private static Consumer<PathPlannerTrajectory> logActiveTrajectory = null;
   private static Consumer<Pose2d> logTargetPose = null;
@@ -48,8 +51,9 @@ public class BreakerSwervePathFollower extends CommandBase {
     this.trajectory = trajectory;
     this.config = config;
     this.stopAtEnd = stopAtEnd;
+    driveMoveCallPrefrences = new BreakerSwerveFieldRelativeMovementPreferences(config.getOdometer(), false, SlowModeValue.DISABLED);
     addRequirements(config.getDrivetrain());
-
+    
     if (config.getUseAllianceColor() && trajectory.fromGUI && trajectory.getInitialPose().getX() > 8.27) {
       DriverStation.reportWarning(
           "You have constructed a path following command that will automatically transform path states depending"
@@ -92,7 +96,7 @@ public class BreakerSwervePathFollower extends CommandBase {
 
     ChassisSpeeds targetChassisSpeeds = this.config.driveController.calculate(currentPose, desiredState);
 
-    this.config.drivetrain.move(ChassisSpeeds.fromFieldRelativeSpeeds(targetChassisSpeeds, currentPose.getRotation()), false);
+    this.config.drivetrain.moveRelativeToField(targetChassisSpeeds,  driveMoveCallPrefrences);
 
     if (logTargetPose != null) {
       logTargetPose.accept(

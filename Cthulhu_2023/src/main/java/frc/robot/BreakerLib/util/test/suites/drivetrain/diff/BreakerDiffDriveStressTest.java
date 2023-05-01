@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain.SlowModeValue;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.differential.BreakerDiffDrive;
 import frc.robot.BreakerLib.util.BreakerTriplet;
 import frc.robot.BreakerLib.util.math.averages.BreakerAverage;
@@ -48,7 +49,7 @@ public class BreakerDiffDriveStressTest extends BreakerTestBase {
     @Override
     public void execute() {
         BreakerTriplet<Double, Double, Double> trip = tankDrivePrecentagesToTestAndStepTimeouts.get(0);
-        drivetrain.tankDrive(trip.getLeft(), trip.getMiddle(), false);
+        drivetrain.tankDrive(trip.getLeft(), trip.getMiddle(), SlowModeValue.DISABLED);
         DifferentialDriveWheelSpeeds wheelSpeeds = drivetrain.getWheelSpeeds();
         leftVelAvg.addValue(wheelSpeeds.leftMetersPerSecond);
         rightVelAvg.addValue(wheelSpeeds.rightMetersPerSecond);

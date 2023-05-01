@@ -45,4 +45,13 @@ public abstract class BreakerGenericDrivetrain extends BreakerGenericLoopedDevic
     /** Stops the robot's movement in all axsies */
     public abstract void stop();
 
+    public static enum SlowModeValue {
+        /** Use slow mode scailar */
+        ENABLED,
+        /** Does not use slow mode scailar */
+        DISABLED,
+        /** Applys slow mode scailar if the drivetrains global slow mode is enabled */
+        DEFAULT
+    }
+
 }

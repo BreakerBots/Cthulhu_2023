@@ -144,11 +144,11 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
    * @param robotRelativeVelocities ChassisSpeeds object representing the robots
    *                                velocities in each axis relative to its local
    *                                reference frame.
-   * @param useSlowMode             Whether or not to apply the set slow mode
-   *                                multiplier to the given speeds.
+   * @param slowModeValue           Whether or not to apply the set slow mode
+   *                                multiplier to the given speeds or to use global default.
    */
-  public void move(ChassisSpeeds robotRelativeVelocities, boolean useSlowMode) {
-    if (useSlowMode) {
+  public void move(ChassisSpeeds robotRelativeVelocities, SlowModeValue slowModeValue) {
+    if (slowModeValue == SlowModeValue.ENABLED || (slowModeValue == SlowModeValue.DEFAULT && slowModeActive)) {
       robotRelativeVelocities.vxMetersPerSecond *= config.getSlowModeLinearMultiplier();
       robotRelativeVelocities.vyMetersPerSecond *= config.getSlowModeLinearMultiplier();
       robotRelativeVelocities.omegaRadiansPerSecond *= config.getSlowModeTurnMultiplier();
@@ -168,7 +168,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
    *                                reference frame.
    */
   public void move(ChassisSpeeds robotRelativeVelocities) {
-    move(robotRelativeVelocities, slowModeActive);
+    move(robotRelativeVelocities, SlowModeValue.DEFAULT);
   }
 
   /**
@@ -194,11 +194,11 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
    * @param forwardVelMetersPerSec    Forward movement velocity in m/s.
    * @param horizontalVelMetersPerSec Sideways movement velocity in m/s.
    * @param radPerSec                 Rotation speed in rad/sec.
-   * @param useSlowMode               Whether slow mode will be applied or not.
+   * @param slowModeValue             Weather or not to use slow mode or default to global setting
    */
   public void move(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec,
-      boolean useSlowMode) {
-    move(new ChassisSpeeds(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec), useSlowMode);
+    SlowModeValue slowModeValue) {
+    move(new ChassisSpeeds(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec), slowModeValue);
   }
 
   /** Sets the target velocity of the robot to 0 in all axes. */
@@ -218,6 +218,22 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
         (forwardPercent * config.getMaxForwardVel()),
         (horizontalPercent * config.getMaxSidewaysVel()),
         (turnPercent * config.getMaxAngleVel()));
+  }
+
+    /**
+   * Movement with speeds passed in as a percentage.
+   * 
+   * @param forwardPercent    Forward speed % (-1 to 1).
+   * @param horizontalPercent Sideways speed % (-1 to 1).
+   * @param turnPercent       Turn speed % (-1 to 1).
+   * @param slowModeValue     Weather or not to use slow mode or default to global setting
+   */
+  public void moveWithPercentInput(double forwardPercent, double horizontalPercent, double turnPercent, SlowModeValue slowModeValue) {
+    move(
+        (forwardPercent * config.getMaxForwardVel()),
+        (horizontalPercent * config.getMaxSidewaysVel()),
+        (turnPercent * config.getMaxAngleVel()),
+        slowModeValue);
   }
 
   /**
@@ -270,7 +286,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
         radPerSec,
         prefrences.odometryProvider.getOdometryPoseMeters().getRotation()
             .plus(prefrences.useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
-    move(robotRelSpeeds);
+    move(robotRelSpeeds, prefrences.slowModeValue);
   }
 
   /**
@@ -463,11 +479,19 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
   public static class BreakerSwerveFieldRelativeMovementPreferences {
     public boolean useFieldRelativeMovementAngleOffset;
     public BreakerGenericOdometer odometryProvider;
+    public SlowModeValue slowModeValue;
 
     /** Uses the drivetrain as odometry provider and uses a field relative movement angle offset. */
     public BreakerSwerveFieldRelativeMovementPreferences(BreakerSwerveDrive drivetrain) {
       odometryProvider = drivetrain;
       useFieldRelativeMovementAngleOffset = true;
+      slowModeValue = SlowModeValue.DEFAULT;
+    }
+
+    public BreakerSwerveFieldRelativeMovementPreferences(BreakerGenericOdometer odometryProvider, boolean useFieldRelativeMovementAngleOffset, SlowModeValue slowModeValue) {
+      this.odometryProvider = odometryProvider;
+      this.slowModeValue = slowModeValue;
+      this.useFieldRelativeMovementAngleOffset = useFieldRelativeMovementAngleOffset;
     }
 
     /** Sets the selected odometry provider.
@@ -490,6 +514,17 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
       this.useFieldRelativeMovementAngleOffset = useFieldRelativeMovementAngleOffset;
       return this;
     }
+
+    /** Sets whether or not you want to apply the drivetrians slow mode scailar or simply default to the global setting.
+     * @param slowModeValue Whether or not you want to apply the drivetrians slow mode scailar or simply default to the global setting.
+     * @return this.
+     */
+    public void setSlowModeValue(SlowModeValue slowModeValue) {
+        this.slowModeValue = slowModeValue;
+    }
   }
+
+
+  
 
 }

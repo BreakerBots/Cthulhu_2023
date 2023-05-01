@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain.SlowModeValue;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerGenericSwerveModule;
 import frc.robot.BreakerLib.util.math.averages.BreakerAverage;
@@ -62,7 +63,7 @@ public class BreakerSwerveDriveStressTest extends BreakerTestBase {
     @Override
     public void execute() {
         ChassisSpeeds setSpeeds = speedsToTestAndStepTimeoutQueue.get(0).getFirst();
-        drivetrain.move(setSpeeds, false);
+        drivetrain.move(setSpeeds, SlowModeValue.DISABLED);
         SwerveModuleState[] tgtStates = drivetrain.getTargetModuleStates();
         SwerveModuleState[] resultStates = drivetrain.getSwerveModuleStates();
         for (int i = 0; i < swerveModules.length; i++) {

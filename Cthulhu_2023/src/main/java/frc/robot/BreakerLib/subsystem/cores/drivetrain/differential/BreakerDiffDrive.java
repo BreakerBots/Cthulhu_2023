@@ -93,13 +93,13 @@ public abstract class BreakerDiffDrive extends BreakerGenericDrivetrain {
     }
 
      /**
-   * Arcade driving controls (movement separated by axis). Slow mode is enabled.
+   * Arcade driving controls (movement separated by axis).Slow mode defaults to global setting.
    * 
    * @param netSpeed  Logitudinal (forward and backward) speed.
    * @param turnSpeed Lateral (left and right) speed.
    */
   public void arcadeDrive(double netSpeed, double turnSpeed) {
-    arcadeDrive(netSpeed, turnSpeed, slowModeActive);
+    arcadeDrive(netSpeed, turnSpeed, SlowModeValue.DEFAULT);
   }
 
   /**
@@ -108,12 +108,12 @@ public abstract class BreakerDiffDrive extends BreakerGenericDrivetrain {
    * 
    * @param netSpeed    Logitudinal (forward and backward) speed. -1 to 1.
    * @param turnSpeed   Lateral (left and right) speed. -1 to 1.
-   * @param useSlowMode Enable or disable slow mode.
+   * @param slowModeValue How shoud slow mode be usedd if at all
    */
-  public void arcadeDrive(double netSpeed, double turnSpeed, boolean useSlowMode) {
-    if (useSlowMode) {
+  public void arcadeDrive(double netSpeed, double turnSpeed, SlowModeValue slowModeValue) {
+    if (slowModeValue == SlowModeValue.ENABLED || (slowModeValue == SlowModeValue.DEFAULT && slowModeActive)) {
+      turnSpeed *= driveConfig.getSlowModeForwardMultiplier();
       netSpeed *= driveConfig.getSlowModeForwardMultiplier();
-      turnSpeed *= driveConfig.getSlowModeTurnMultiplier();
     }
     diffDrive.arcadeDrive(netSpeed, turnSpeed);
   }
@@ -126,7 +126,7 @@ public abstract class BreakerDiffDrive extends BreakerGenericDrivetrain {
    * @param rightSpeed Speed of right motors. -1 to 1.
    */
   public void tankDrive(double leftSpeed, double rightSpeed) {
-    tankDrive(leftSpeed, rightSpeed, slowModeActive);
+    tankDrive(leftSpeed, rightSpeed, SlowModeValue.DEFAULT);
   }
 
   /**
@@ -135,10 +135,10 @@ public abstract class BreakerDiffDrive extends BreakerGenericDrivetrain {
    * 
    * @param leftSpeed   Speed of left motors. -1 to 1.
    * @param rightSpeed  Speed of right motors. -1 to 1.
-   * @param useSlowMode Enable or disable slow mode.
+   * @param slowModeValue How shoud slow mode be usedd if at all
    */
-  public void tankDrive(double leftSpeed, double rightSpeed, boolean useSlowMode) {
-    if (useSlowMode) {
+  public void tankDrive(double leftSpeed, double rightSpeed, SlowModeValue slowModeValue) {
+    if (slowModeValue == SlowModeValue.ENABLED || (slowModeValue == SlowModeValue.DEFAULT && slowModeActive)) {
       leftSpeed *= driveConfig.getSlowModeForwardMultiplier();
       rightSpeed *= driveConfig.getSlowModeForwardMultiplier();
     }
