@@ -12,14 +12,14 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerFalconSwerveModuleAngleMotor;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerFalconSwerveModuleDriveMotor;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleAngleMotor;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerGenericSwerveModuleDriveMotor;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerNeoSwerveModuleAngleMotor;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerNeoSwerveModuleDriveMotor;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerProFalconSwerveModuleAngleMotor;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.BreakerProFalconSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerGenericSwerveModuleAngleMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre.BreakerFalconSwerveModuleAngleMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre.BreakerProFalconSwerveModuleAngleMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.rev.BreakerNeoSwerveModuleAngleMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.BreakerGenericSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre.BreakerFalconSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre.BreakerProFalconSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.rev.BreakerNeoSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
 
 /** Add your docs here. */

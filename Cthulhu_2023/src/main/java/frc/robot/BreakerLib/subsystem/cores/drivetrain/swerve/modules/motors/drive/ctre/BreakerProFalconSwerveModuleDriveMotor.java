@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors;
+package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre;
 
 import com.ctre.phoenixpro.configs.AudioConfigs;
 import com.ctre.phoenixpro.configs.CurrentLimitsConfigs;
@@ -19,10 +19,9 @@ import com.ctre.phoenixpro.signals.NeutralModeValue;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.util.Units;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.BreakerGenericSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
-import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenixProUtil;
 
 /** Add your docs here. */
