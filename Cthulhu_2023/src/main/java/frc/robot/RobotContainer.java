@@ -53,8 +53,6 @@ import frc.robot.subsystems.SebArm;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-  SendableChooser autoChooser = new SendableChooser<Command>();
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
 
   private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);

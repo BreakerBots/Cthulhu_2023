@@ -40,7 +40,7 @@ public class BreakerHolonomicDriveController {
     public ChassisSpeeds calculate(Pose2d currentPose, Pose2d targetPose, double maxLinearVelocity) {
         Translation2d errTrans = targetPose.getTranslation().minus(currentPose.getTranslation());
         double tgtVel = -linearController.calculate(errTrans.getNorm(), 0);
-        BreakerVector2 vec = BreakerVector2.fromTranslation(errTrans).getUnitVector().times(MathUtil.clamp(tgtVel, -maxLinearVelocity, maxLinearVelocity));
+        BreakerVector2 vec = new BreakerVector2(errTrans).getUnitVector().times(MathUtil.clamp(tgtVel, -maxLinearVelocity, maxLinearVelocity));
         curPose = currentPose;
         tgtPose = targetPose;
         calculateHasBeenRun = true;

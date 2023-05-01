@@ -19,6 +19,15 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
     private double magnitudeX;
     private double magnitudeY;
 
+
+     /** creates an empty BreakerVector2 with 0's for all values */
+     public BreakerVector2() {
+        magnitudeX = 0;
+           magnitudeY = 0;
+           vectorRotation = Rotation2d.fromDegrees(0);
+           magnitude = 0;
+       }
+
     /**
      * creates a new BreakerVector2 from the magnatudes of the vector's X and Y
      * components
@@ -30,34 +39,26 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
         magnitude = Math.sqrt(Math.pow(magnitudeX, 2) + Math.pow(magnitudeY, 2));
     }
 
-    private BreakerVector2(double magnitudeX, double magnitudeY, double magnitude, Rotation2d vectorRotation) {
-        this.magnitudeX = magnitudeX;
-        this.magnitudeY = magnitudeY;
-        this.magnitude = magnitude;
-        this.vectorRotation = vectorRotation;
-    }
-
-    /** creates an empty BreakerVector2 with 0's for all values */
-    public BreakerVector2() {
-     magnitudeX = 0;
-        magnitudeY = 0;
-        vectorRotation = Rotation2d.fromDegrees(0);
-        magnitude = 0;
-    }
-
     /**
      * creates a new BreakerVector2 from the vectors Magnatude and the vectors angle
      * in the Yaw angular axis
      */
-    public static BreakerVector2 fromForceAndRotation(Rotation2d vectorRotation, double magnatude) {
-        return new BreakerVector2(magnatude * Math.cos(vectorRotation.getRadians()),
+    public BreakerVector2(Rotation2d vectorRotation, double magnatude) {
+        this(magnatude * Math.cos(vectorRotation.getRadians()),
                 magnatude * Math.sin(vectorRotation.getRadians()), magnatude, vectorRotation);
     }
 
     /** converts an instance of WPILib's translation2d class into a vector.
      *  This exists because of the Tranlation2d classes suppport of various vector opperations */
-    public static BreakerVector2 fromTranslation(Translation2d translationToVectorize) {
-        return new BreakerVector2(translationToVectorize.getX(), translationToVectorize.getY());
+    public BreakerVector2(Translation2d translationToVectorize) {
+       this(translationToVectorize.getX(), translationToVectorize.getY(), translationToVectorize.getNorm(), translationToVectorize.getAngle());
+    }
+
+    private BreakerVector2(double magnitudeX, double magnitudeY, double magnitude, Rotation2d vectorRotation) {
+        this.magnitudeX = magnitudeX;
+        this.magnitudeY = magnitudeY;
+        this.magnitude = magnitude;
+        this.vectorRotation = vectorRotation;
     }
 
     
@@ -160,7 +161,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * @return BreakerVector2
      */
     public BreakerVector2 getUnitVector() {
-        return BreakerVector2.fromForceAndRotation(vectorRotation, 1.0);
+        return new BreakerVector2(vectorRotation, 1.0);
     }
 
     

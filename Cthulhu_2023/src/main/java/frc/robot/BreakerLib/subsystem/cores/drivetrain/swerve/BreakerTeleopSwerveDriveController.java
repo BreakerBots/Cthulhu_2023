@@ -215,7 +215,7 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     // Speed curves are applied if overrides are not active.
     if (usesCurves) {
       BreakerVector2 vec = new BreakerVector2(horizontal, forward);
-      BreakerVector2 corVec = BreakerVector2.fromForceAndRotation(vec.getVectorRotation(),  linearSpeedCurve.getSignRelativeValueAtX(vec.getMagnitude()));
+      BreakerVector2 corVec = new BreakerVector2(vec.getVectorRotation(),  linearSpeedCurve.getSignRelativeValueAtX(vec.getMagnitude()));
       forward = corVec.getMagnitudeY();
       horizontal = corVec.getMagnitudeX();
       turn = turnSpeedCurve.getSignRelativeValueAtX(turn);
