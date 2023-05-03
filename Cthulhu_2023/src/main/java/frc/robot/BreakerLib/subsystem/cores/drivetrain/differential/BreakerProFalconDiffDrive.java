@@ -11,17 +11,18 @@ import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.devices.sensors.gyro.BreakerGenericGyro;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenixProUtil;
 
-/** A {@link BreakerDiffDrive} instance with TalonFX (Falcon 500) motors */
+/** A {@link BreakerDiffDrive} instance with TalonFX (Falcon 500) motors running Phoenix Pro firmware */
 public class BreakerProFalconDiffDrive extends BreakerDiffDrive {
     private TalonFX[] leftMotors;
     private TalonFX[] rightMotors;
 
      /** Creates a new Differential (tank drive) drivetrain instance.
      * 
-     * @param leftMotors Left {@link WPI_TalonFX} motors.
+     * @param leftMotors Left {@link TalonFX} motors.
      * @param invertL Invert left motor outputs & encoder readings.
-     * @param rightMotors Right {@link WPI_TalonFX} motors.
+     * @param rightMotors Right {@link TalonFX} motors.
      * @param invertR Invert right motor outputs & encoder readings.
      * @param gyro {@link BreakerGenericGyro} capable of reading yaw. 
      * @param driveConfig A {@link BreakerDiffDriveConfig} representing the configerable values of this drivetrain's kinimatics and control values
@@ -31,12 +32,12 @@ public class BreakerProFalconDiffDrive extends BreakerDiffDrive {
         
         super(
             leftMotors,
-            leftMotors[0],
-            () -> ((Double)((leftMotors[0].getSensorCollection().getIntegratedSensorVelocity() * 600) / 2048.0)),
+            () -> {return leftMotors[0].getRotorPosition().getValue();},
+            () -> {return leftMotors[0].getRotorVelocity().getValue();},
             invertL, 
             rightMotors,
-            () -> ((Double)rightMotors[0].getSensorCollection().getIntegratedSensorPosition() / 2048.0),
-            () -> ((Double)((rightMotors[0].getSensorCollection().getIntegratedSensorVelocity() * 600) / 2048.0)), 
+            () -> {return rightMotors[0].getRotorPosition().getValue();},
+            () -> {return rightMotors[0].getRotorVelocity().getValue();},
             invertR,
             imu,
             driveConfig);
@@ -48,15 +49,15 @@ public class BreakerProFalconDiffDrive extends BreakerDiffDrive {
         health = DeviceHealth.NOMINAL;
 
         StringBuilder work = new StringBuilder();
-        for (WPI_TalonFX motorL : leftMotors) {
-            Pair<DeviceHealth, String> motorFaultData = BreakerCTREUtil.checkMotorFaultsAndConnection(motorL);
+        for (TalonFX motorL : leftMotors) {
+            Pair<DeviceHealth, String> motorFaultData = BreakerPhoenixProUtil.checkMotorFaultsAndConnection(motorL);
             if (motorFaultData.getFirst() != DeviceHealth.NOMINAL) {
                 health = DeviceHealth.FAULT;
                 work.append(" MOTOR ID (" + motorL.getDeviceID() + ") FAULTS: " + motorFaultData.getSecond());
             }
         }
-        for (WPI_TalonFX motorR : rightMotors) {
-            Pair<DeviceHealth, String> motorFaultData = BreakerCTREUtil.checkMotorFaultsAndConnection(motorR);
+        for (TalonFX motorR : rightMotors) {
+            Pair<DeviceHealth, String> motorFaultData = BreakerPhoenixProUtil.checkMotorFaultsAndConnection(motorR);
             if (motorFaultData.getFirst() != DeviceHealth.NOMINAL) {
                 health = DeviceHealth.FAULT;
                 work.append(" MOTOR ID (" + motorR.getDeviceID() + ") FAULTS: " + motorFaultData.getSecond());
@@ -68,14 +69,14 @@ public class BreakerProFalconDiffDrive extends BreakerDiffDrive {
 
     @Override
     public void resetDriveEncoders() {
-        leftMotors[0].setSelectedSensorPosition(0);
-        rightMotors[0].setSelectedSensorPosition(0);
+        leftMotors[0].setRotorPosition(0);
+        rightMotors[0].setRotorPosition(0);
     }
 
     @Override
     public void setDrivetrainBrakeMode(boolean isEnabled) {
-        BreakerCTREUtil.setBrakeMode(isEnabled, leftMotors);
-        BreakerCTREUtil.setBrakeMode(isEnabled, rightMotors);
+        BreakerPhoenixProUtil.setBrakeMode(isEnabled, leftMotors);
+        BreakerPhoenixProUtil.setBrakeMode(isEnabled, rightMotors);
     }
 
 }

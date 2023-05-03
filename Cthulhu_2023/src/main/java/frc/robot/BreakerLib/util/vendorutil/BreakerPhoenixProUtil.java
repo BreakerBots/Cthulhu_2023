@@ -34,6 +34,11 @@ public class BreakerPhoenixProUtil {
   }
 
 
+  public static void setBrakeMode(boolean isEnabled, TalonFX... motors) {
+    for (TalonFX motor: motors) {
+      setBrakeMode(motor, isEnabled);
+    }
+  }
   public static void setBrakeMode(TalonFX motor, boolean isEnabled) {
     MotorOutputConfigs moc = new MotorOutputConfigs();
     checkStatusCode(motor.getConfigurator().refresh(moc), "Failded to refresh TalonFX motor config");

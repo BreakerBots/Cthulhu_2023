@@ -48,9 +48,6 @@ public abstract class BreakerDiffDrive extends BreakerGenericDrivetrain {
   
     private boolean invertL;
     private boolean invertR;
-  
-    private boolean isAutoPowerManaged = true;
-    private DevicePowerMode powerMode = DevicePowerMode.FULL_POWER_MODE;
 
     /** Creates a new instance of the BreakerDiffDrive backround infestructure
      * 
