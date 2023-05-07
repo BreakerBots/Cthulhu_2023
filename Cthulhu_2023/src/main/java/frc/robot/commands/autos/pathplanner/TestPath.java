@@ -24,9 +24,9 @@ public class TestPath extends SequentialCommandGroup {
   public TestPath(Drive drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 2));
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(2, 3));
     BreakerSwervePathFollowerConfig config = new BreakerSwervePathFollowerConfig(drive, new PPHolonomicDriveController(
-        new PIDController(4.0, 0.0, 0.0), new PIDController(4.0, 0.0, 0.0), new PIDController(6.9, 0.0, 0.0)), false);
+        new PIDController(3.4, 0.0, 0.0), new PIDController(3.4, 0.0, 0.0), new PIDController(4.75, 0.0, 0.0)), false);
     addCommands(
         new BreakerStartAutoPath(drive, examplePath.sample(0).poseMeters),
         new BreakerSwervePathFollower(config, examplePath, true));

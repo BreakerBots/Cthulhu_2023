@@ -7,6 +7,8 @@ import static frc.robot.Constants.MiscConstants.IMU_ID;
 
 import org.photonvision.PhotonCamera;
 
+import com.pathplanner.lib.server.PathPlannerServer;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -83,6 +85,7 @@ public class RobotContainer {
     configureButtonBindings();
     drivetrainSys.setDefaultCommand(manualDriveCommand);
     SmartDashboard.putBoolean("Is in Cube Mode", isInCubeMode);
+    PathPlannerServer.startServer(5811);
   }
 
   /**
