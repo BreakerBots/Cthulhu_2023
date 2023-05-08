@@ -23,7 +23,7 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import io.github.oblarg.oblog.Loggable;
 
 /** A robot arm subsystem that moves with a motion profile. */
-public class DistalArmJoint extends SubsystemBase implements Loggable {
+public class DistalArmJoint extends SubsystemBase{
   public WPI_TalonFX motor;
   protected WPI_CANCoder encoder;
   protected ArmFeedforward ff;

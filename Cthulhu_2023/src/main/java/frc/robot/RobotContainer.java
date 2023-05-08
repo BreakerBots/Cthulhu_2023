@@ -2,7 +2,7 @@
 
 package frc.robot;
 
-import static frc.robot.Constants.MiscConstants.IMU_ID;
+import static frc.robot.Constants.MiscConstants.*;
 
 import java.util.ArrayList;
 
@@ -52,7 +52,7 @@ public class RobotContainer {
 
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
 
-  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
+  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID, CANIVORE_1);
   private final Drive drivetrainSys = new Drive(imuSys);
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186),
       new Translation2d(0.799, 0.317));
