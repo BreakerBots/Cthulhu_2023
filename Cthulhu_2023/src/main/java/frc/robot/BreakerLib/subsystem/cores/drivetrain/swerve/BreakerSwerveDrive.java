@@ -5,6 +5,7 @@
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -247,9 +248,9 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
   public void moveRelativeToField(ChassisSpeeds fieldRelativeSpeeds,
       BreakerSwerveFieldRelativeMovementPreferences preferences) {
     ChassisSpeeds robotRelSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds,
-        preferences.odometryProvider.getOdometryPoseMeters().getRotation()
+        preferences..getOdometryProvider(this).getOdometryPoseMeters().getRotation()
             .plus(preferences.useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
-    move(robotRelSpeeds);
+    move(robotRelSpeeds, preferences.slowModeValue);
   }
 
   /**
@@ -258,7 +259,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
    * @param fieldRelativeSpeeds Field relative speeds to use.
    */
   public void moveRelativeToField(ChassisSpeeds fieldRelativeSpeeds) {
-    moveRelativeToField(fieldRelativeSpeeds, new BreakerSwerveFieldRelativeMovementPreferences(this));
+    moveRelativeToField(fieldRelativeSpeeds, new BreakerSwerveFieldRelativeMovementPreferences());
   }
 
   /**
@@ -284,7 +285,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
         forwardVelMetersPerSec,
         horizontalVelMetersPerSec,
         radPerSec,
-        prefrences.odometryProvider.getOdometryPoseMeters().getRotation()
+        prefrences.getOdometryProvider(this).getOdometryPoseMeters().getRotation()
             .plus(prefrences.useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
     move(robotRelSpeeds, prefrences.slowModeValue);
   }
@@ -299,7 +300,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
    */
   public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec) {
     moveRelativeToField(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec,
-        new BreakerSwerveFieldRelativeMovementPreferences(this));
+        new BreakerSwerveFieldRelativeMovementPreferences());
   }
 
   /**
@@ -314,7 +315,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
     double fwdV = forwardPercent * config.getMaxForwardVel();
     double horzV = horizontalPercent * config.getMaxSidewaysVel();
     double thetaV = turnPercent * config.getMaxAngleVel();
-    moveRelativeToField(fwdV, horzV, thetaV, new BreakerSwerveFieldRelativeMovementPreferences(this));
+    moveRelativeToField(fwdV, horzV, thetaV, new BreakerSwerveFieldRelativeMovementPreferences());
   }
 
   /**
@@ -477,13 +478,13 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
 
   /** Stores preferences for field relative driving. */
   public static class BreakerSwerveFieldRelativeMovementPreferences {
-    public boolean useFieldRelativeMovementAngleOffset;
-    public BreakerGenericOdometer odometryProvider;
-    public SlowModeValue slowModeValue;
+    private boolean useFieldRelativeMovementAngleOffset;
+    private BreakerGenericOdometer odometryProvider; 
+    private SlowModeValue slowModeValue;
 
     /** Uses the drivetrain as odometry provider and uses a field relative movement angle offset. */
-    public BreakerSwerveFieldRelativeMovementPreferences(BreakerSwerveDrive drivetrain) {
-      odometryProvider = drivetrain;
+    public BreakerSwerveFieldRelativeMovementPreferences() {
+      odometryProvider = null;
       useFieldRelativeMovementAngleOffset = true;
       slowModeValue = SlowModeValue.DEFAULT;
     }
@@ -521,6 +522,18 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
      */
     public void setSlowModeValue(SlowModeValue slowModeValue) {
         this.slowModeValue = slowModeValue;
+    }
+
+    public BreakerGenericOdometer getOdometryProvider(BreakerSwerveDrive drivetrain) {
+      return Objects.isNull(odometryProvider) ? drivetrain : odometryProvider;
+    }
+
+    public SlowModeValue getSlowModeValue() {
+        return slowModeValue;
+    }
+
+    public boolean getUseFieldRelativeMovementAngleOffset() {
+        return useFieldRelativeMovementAngleOffset;
     }
   }
 
