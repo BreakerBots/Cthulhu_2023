@@ -248,7 +248,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
   public void moveRelativeToField(ChassisSpeeds fieldRelativeSpeeds,
       BreakerSwerveFieldRelativeMovementPreferences preferences) {
     ChassisSpeeds robotRelSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds,
-        preferences..getOdometryProvider(this).getOdometryPoseMeters().getRotation()
+        preferences.getOdometryProvider(this).getOdometryPoseMeters().getRotation()
             .plus(preferences.useFieldRelativeMovementAngleOffset ? fieldRelativeMovementOffset : new Rotation2d()));
     move(robotRelSpeeds, preferences.slowModeValue);
   }
