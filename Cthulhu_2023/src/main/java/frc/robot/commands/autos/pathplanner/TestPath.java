@@ -10,6 +10,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.BreakerLib.auto.pathplanner.BreakerSwervePathFollower;
 import frc.robot.BreakerLib.auto.pathplanner.BreakerSwervePathFollower.BreakerSwervePathFollowerConfig;
@@ -24,11 +25,11 @@ public class TestPath extends SequentialCommandGroup {
   public TestPath(Drive drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(2, 3));
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("test path", new PathConstraints(3.75, 3));
     BreakerSwervePathFollowerConfig config = new BreakerSwervePathFollowerConfig(drive, new PPHolonomicDriveController(
-        new PIDController(3.4, 0.0, 0.0), new PIDController(3.4, 0.0, 0.0), new PIDController(4.75, 0.0, 0.0)), false);
+        new PIDController(4.5, 0.0, 0), new PIDController(4.5, 0.0, 0), new PIDController(4.75, 0.0, 0.0)), false);
     addCommands(
-        new BreakerStartAutoPath(drive, examplePath.sample(0).poseMeters),
+        new BreakerStartAutoPath(drive, new Pose2d(examplePath.getInitialState().poseMeters.getTranslation(), examplePath.getInitialState().holonomicRotation)),
         new BreakerSwervePathFollower(config, examplePath, true));
   }
 }

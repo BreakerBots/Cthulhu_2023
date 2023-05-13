@@ -244,7 +244,7 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     if (usesExternalOdometer) {
       // External odometry source is used.
       baseDrivetrain.moveWithPercentInputRelativeToField(MathUtil.clamp(forward, -1.0, 1.0),
-          MathUtil.clamp(horizontal, -1.0, 1.0), MathUtil.clamp(turn, -1.0, 1.0), new BreakerSwerveFieldRelativeMovementPreferences(baseDrivetrain).setOdometryProvider(odometer));
+          MathUtil.clamp(horizontal, -1.0, 1.0), MathUtil.clamp(turn, -1.0, 1.0), new BreakerSwerveFieldRelativeMovementPreferences().setOdometryProvider(odometer));
     } else {
       // Swerve drive's own odometry is used.
       baseDrivetrain.moveWithPercentInputRelativeToField(MathUtil.clamp(forward, -1.0, 1.0),
