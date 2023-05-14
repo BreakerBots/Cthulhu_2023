@@ -129,10 +129,10 @@ public class BreakerSwervePathFollower extends CommandBase {
   }
 
   private static void defaultLogError(Translation2d translationError, Rotation2d rotationError) {
-    SmartDashboard.putNumber("PPSwerveControllerCommand/xErrorMeters", translationError.getX());
-    SmartDashboard.putNumber("PPSwerveControllerCommand/yErrorMeters", translationError.getY());
+    SmartDashboard.putNumber("BreakerSwervePathFollower/xErrorMeters", translationError.getX());
+    SmartDashboard.putNumber("BreakerSwervePathFollower/yErrorMeters", translationError.getY());
     SmartDashboard.putNumber(
-        "PPSwerveControllerCommand/rotationErrorDegrees", rotationError.getDegrees());
+        "BreakerSwervePathFollower/rotationErrorDegrees", rotationError.getDegrees());
   }
 
   /**
