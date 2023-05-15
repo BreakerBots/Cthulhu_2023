@@ -36,7 +36,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
         this.magnitudeX = magnitudeX;
         this.magnitudeY = magnitudeY;
         vectorRotation = new Rotation2d(Math.atan2(magnitudeY, magnitudeX));
-        magnitude = Math.sqrt(Math.pow(magnitudeX, 2) + Math.pow(magnitudeY, 2));
+        magnitude = Math.sqrt((magnitudeX * magnitudeX) + (magnitudeY * magnitudeY));
     }
 
     /**
@@ -44,8 +44,8 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      * in the Yaw angular axis
      */
     public BreakerVector2(Rotation2d vectorRotation, double magnatude) {
-        this(magnatude * Math.cos(vectorRotation.getRadians()),
-                magnatude * Math.sin(vectorRotation.getRadians()), magnatude, vectorRotation);
+        this(magnatude * vectorRotation.getCos(),
+                magnatude * vectorRotation.getSin(), magnatude, vectorRotation);
     }
 
     /** converts an instance of WPILib's translation2d class into a vector.

@@ -7,7 +7,7 @@ package frc.robot.BreakerLib.driverstation.gamepad.components;
 /** Configuration for all axis deadbands for a given gamepad. */
 public class BreakerGamepadAnalogDeadbandConfig {
 
-    private double leftX = 0.0, leftY = 0.0, rightX = 0.0, rightY = 0.0, leftTriggerAxis = 0.0, rightTriggerAxis = 0.0;
+    private double leftStick = 0.0, rightStick = 0.0, leftTriggerAxis = 0.0, rightTriggerAxis = 0.0;
 
     /**
      * Constructs deadband config for both sticks and triggers
@@ -19,11 +19,9 @@ public class BreakerGamepadAnalogDeadbandConfig {
      * @param leftTriggerAxis Left triggert deadband.
      * @param rightTriggerAxis Right trigger deadband.
      */
-    public BreakerGamepadAnalogDeadbandConfig(double leftX, double leftY, double rightX, double rightY, double leftTriggerAxis, double rightTriggerAxis) {
-        this.leftX = leftX;
-        this.leftY = leftY;
-        this.rightX = rightX;
-        this.rightY = rightY;
+    public BreakerGamepadAnalogDeadbandConfig(double leftStick, double rightStick, double leftTriggerAxis, double rightTriggerAxis) {
+        this.leftStick = leftStick;
+        this.rightStick = rightStick;
         this.leftTriggerAxis = leftTriggerAxis;
         this.rightTriggerAxis = rightTriggerAxis;
     }
@@ -36,31 +34,23 @@ public class BreakerGamepadAnalogDeadbandConfig {
      * @param rightX Right stick X-axis deadband.
      * @param rightY Right stick Y-axis deadband.
      */
-    public BreakerGamepadAnalogDeadbandConfig(double leftX, double leftY, double rightX, double rightY) {
-        this.leftX = leftX;
-        this.leftY = leftY;
-        this.rightX = rightX;
-        this.rightY = rightY;
-        leftTriggerAxis = 0.0;
-        rightTriggerAxis = 0.0;
+    public BreakerGamepadAnalogDeadbandConfig(double leftStick, double rightStick) {
+        this(leftStick, rightStick, 0.0, 0.0);
     }
 
     /** Deadbands are all set to 0. */
-    public BreakerGamepadAnalogDeadbandConfig() {}
+    public BreakerGamepadAnalogDeadbandConfig() {
+        this(0.0, 0.0);
+    }
     
     /** @return Left trigger deadband. */
     public double getLeftTriggerAxis() {
         return leftTriggerAxis;
     }
 
-    /** @return Left stick X-axis deadband. */
-    public double getLeftX() {
-        return leftX;
-    }
-    
-    /** @return Left stick Y-axis deadband. */
-    public double getLeftY() {
-        return leftY;
+    /** @return Left stick hypot deadband. */
+    public double getLeftStick() {
+        return leftStick;
     }
 
     /** @return Right trigger deadband. */
@@ -68,13 +58,8 @@ public class BreakerGamepadAnalogDeadbandConfig {
         return rightTriggerAxis;
     }
 
-    /** @return Right stick X-axis deadband. */
-    public double getRightX() {
-        return rightX;
-    }
-
-    /** @return Right stick Y-axis deadband. */
-    public double getRightY() {
-        return rightY;
+    /** @return Right stick hypot deadband. */
+    public double getRightStick() {
+        return rightStick;
     }
 }

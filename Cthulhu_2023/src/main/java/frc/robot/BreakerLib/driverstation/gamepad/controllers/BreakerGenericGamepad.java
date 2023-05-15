@@ -60,8 +60,8 @@ public class BreakerGenericGamepad {
      * @param deadbandConfig List of deadbands.
      */
     public void configDeadbands(BreakerGamepadAnalogDeadbandConfig deadbandConfig) {
-        leftJoystick.setDeadband(deadbandConfig.getLeftX(), deadbandConfig.getLeftY());
-        rightJoystick.setDeadband(deadbandConfig.getRightX(), deadbandConfig.getRightY());
+        leftJoystick.setDeadband(deadbandConfig.getLeftStick());
+        rightJoystick.setDeadband(deadbandConfig.getRightStick());
         leftTrigger.setDeadband(deadbandConfig.getLeftTriggerAxis());
         rightTrigger.setDeadband(deadbandConfig.getRightTriggerAxis());
     }

@@ -6,13 +6,14 @@ package frc.robot.BreakerLib.driverstation.gamepad.components;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID;
+import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 
 /** Class which represents an analog HID thumbstick. */
 public class BreakerAnalogThumbstick {
     private GenericHID hid;
     private int xAxisPort, yAxisPort;
     private boolean invertX, invertY;
-    private double xDeadband = 0.0, yDeadband = 0.0;
+    private double deadband = 0.0;
     
 
     /**
@@ -41,16 +42,15 @@ public class BreakerAnalogThumbstick {
         this.yAxisPort = yAxisPort;
         this.invertX = invertX;
         this.invertY = invertY;
+        deadband = 0.0;
     }
 
     /** Set stick deadbands.
      * 
-     * @param xDeadband Deadband for x-axis.
-     * @param yDeadband Deadband for y-axis.
+     * @param deadband Magnitude deadband for stick reading vector.
      */
-    public void setDeadband(double xDeadband, double yDeadband) {
-        this.xDeadband = xDeadband;
-        this.yDeadband = yDeadband;
+    public void setDeadband(double deadband) {
+        this.deadband = deadband;
     }
 
     /** @return Raw X-axis value. */
@@ -63,14 +63,23 @@ public class BreakerAnalogThumbstick {
         return hid.getRawAxis(yAxisPort);
     }
 
+    public BreakerVector2 getRawVector() {
+        return new BreakerVector2(getRawX(), getRawY());
+    }
+
+    public BreakerVector2 getVector() {
+        BreakerVector2 vec = new BreakerVector2(getRawX() * (invertX ? -1 : 1), getRawY() * (invertY ? -1 : 1));
+        return new BreakerVector2(vec.getVectorRotation(), MathUtil.applyDeadband(vec.getMagnitude(), deadband));
+    }
+
     /** @return X-axis value. */
     public double getX() {
-        return MathUtil.applyDeadband(getRawX(), xDeadband) * (invertX ? -1 : 1);
+        return getVector().getMagnitudeX();
     }
 
     /** @return Y-axis value. */
     public double getY() {
-        return MathUtil.applyDeadband(getRawY(), yDeadband) * (invertY ? -1 : 1);
+        return getVector().getMagnitudeY();
     }
 
     /** @return If stick inputs outside of the deadband are detected. */
