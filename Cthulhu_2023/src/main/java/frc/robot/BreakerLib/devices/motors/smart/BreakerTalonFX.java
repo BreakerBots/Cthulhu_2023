@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.simulation.CallbackStore;
 import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
-import frc.robot.BreakerLib.devices.motors.smart.BreakerSmartMotorControler.BreakerSmartMotorControlRequest.BreakerSmartMotorControlRequestOutputMode;
 import frc.robot.BreakerLib.devices.motors.smart.BreakerSmartMotorControler.BreakerSmartMotorControlRequest.BreakerSmartMotorControlRequestStatusCode;
 import frc.robot.BreakerLib.devices.motors.smart.BreakerSmartMotorControler.BreakerSmartMotorControlRequest.BreakerSmartMotorControlRequestType;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
@@ -567,7 +566,6 @@ public class BreakerTalonFX extends TalonFX implements BreakerSmartMotorControle
     @Override
     public BreakerSmartMotorControlRequestStatusCode setControl(BreakerSmartMotorControlRequest request) {
         BreakerSmartMotorControlRequestType requestType = request.getRequestType();
-        BreakerSmartMotorControlRequestOutputMode requestOutputMode = request.getRequestOutputMode();
         boolean enableFOC = request.getEnableFOC(), enableRequestFallback = request.getEnableRequestFallback();
         double requestValue = request.getRequestValue(), feedforwardValue = request.getFeedforwardValue();
         int pidSlot = request.getPidSlot();
@@ -586,24 +584,25 @@ public class BreakerTalonFX extends TalonFX implements BreakerSmartMotorControle
 
         selectProfileSlot(pidSlot, 0);
         switch(request.getRequestType()) {
-            case OUTPUT:
-                switch (request.getRequestOutputMode()) {
-                    case CURRENT:
-                        set(TalonFXControlMode.Current, requestValue, DemandType.ArbitraryFeedForward, feedforwardValue);
-                        break;
-                    case DUTY_CYCLE:
-                    
-                        break;
-                    case VOLTAGE:
-                        break;
-                }
-                break;
+           
             case POSITION:
                 break;
             case SMART_MOTION:
                 break;
             case VELOCITY:
+				set(TalonFXControlMode.Velocity, requestValue, DemandType.ArbitraryFeedForward, feedforwardValue);
                 break;
+			case CURRENT:
+				set(TalonFXControlMode.Current, requestValue, DemandType.ArbitraryFeedForward, feedforwardValue);
+				break;
+			case DUTY_CYCLE:
+				set(TalonFXControlMode.PercentOutput, requestValue, DemandType.ArbitraryFeedForward, feedforwardValue);
+				break;
+			case VOLTAGE:
+				set(TalonFXControlMode.PercentOutput, requestValue * RobotController.getBatteryVoltage(), DemandType.ArbitraryFeedForward, feedforwardValue);
+				break;
+			default:
+				break;
 
         }
         return sc;

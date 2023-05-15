@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import frc.robot.BreakerLib.devices.motors.smart.BreakerSmartMotorControler.BreakerSmartMotorControlRequest.BreakerSmartMotorControlRequestOutputMode;
 import frc.robot.BreakerLib.devices.motors.smart.BreakerSmartMotorControler.BreakerSmartMotorControlRequest.BreakerSmartMotorControlRequestStatusCode;
 import frc.robot.BreakerLib.devices.motors.smart.BreakerSmartMotorControler.BreakerSmartMotorControlRequest.BreakerSmartMotorControlRequestType;
 import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestable;
@@ -25,16 +24,12 @@ public interface BreakerSmartMotorControler extends MotorController, Sendable, A
 
     public static class BreakerSmartMotorControlRequest {
         public enum BreakerSmartMotorControlRequestType {
-            OUTPUT,
+            VOLTAGE,
+            CURRENT,
+            DUTY_CYCLE,
             POSITION,
             VELOCITY,
             SMART_MOTION
-        }
-
-        public enum BreakerSmartMotorControlRequestOutputMode {
-            VOLTAGE,
-            DUTY_CYCLE,
-            CURRENT
         }
 
         public enum BreakerSmartMotorControlRequestStatusCode {
@@ -44,16 +39,14 @@ public interface BreakerSmartMotorControler extends MotorController, Sendable, A
         }
 
         private BreakerSmartMotorControlRequestType requestType;
-        private BreakerSmartMotorControlRequestOutputMode requestOutputMode;
         private boolean enableFOC, enableRequestFallback;
         private double requestValue, feedforwardValue;
         private int pidSlot;
 
-        public BreakerSmartMotorControlRequest(BreakerSmartMotorControlRequestType requestType, BreakerSmartMotorControlRequestOutputMode requestOutputMode, boolean enableFOC, boolean enableRequestFallback, int pidSlot, double requestValue, double feedforwardValue) {
+        public BreakerSmartMotorControlRequest(BreakerSmartMotorControlRequestType requestType, boolean enableFOC, boolean enableRequestFallback, int pidSlot, double requestValue, double feedforwardValue) {
             this.enableFOC = enableFOC;
             this.enableRequestFallback = enableRequestFallback;
             this.feedforwardValue = feedforwardValue;
-            this.requestOutputMode = requestOutputMode;
             this.requestType  = requestType;
             this.requestValue = requestValue;
             this.pidSlot = pidSlot;
@@ -63,9 +56,6 @@ public interface BreakerSmartMotorControler extends MotorController, Sendable, A
             return feedforwardValue;
         }
 
-        public BreakerSmartMotorControlRequestOutputMode getRequestOutputMode() {
-            return requestOutputMode;
-        }
         public BreakerSmartMotorControlRequestType getRequestType() {
             return requestType;
         }
@@ -108,11 +98,6 @@ public interface BreakerSmartMotorControler extends MotorController, Sendable, A
 
         public BreakerSmartMotorControlRequest withPidSlot(int pidSlot) {
             this.pidSlot = pidSlot;
-            return this;
-        }
-
-        public BreakerSmartMotorControlRequest withRequestOutputMode(BreakerSmartMotorControlRequestOutputMode requestOutputMode) {
-            this.requestOutputMode = requestOutputMode;
             return this;
         }
 
