@@ -9,11 +9,13 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveAzimuthEncoder;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerGenericSwerveModuleAngleMotor;
 //import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveModulePIDConfig;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
@@ -24,16 +26,16 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
 /** Add your docs here. */
 public class BreakerNeoSwerveModuleAngleMotor extends BreakerGenericSwerveModuleAngleMotor {
     private CANSparkMax motor;
-    private WPI_CANCoder encoder;
+    private BreakerSwerveAzimuthEncoder encoder;
     private Rotation2d targetAngle;
     private PIDController pid;
-    public BreakerNeoSwerveModuleAngleMotor(CANSparkMax motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
+    public BreakerNeoSwerveModuleAngleMotor(CANSparkMax motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
-
+        
         deviceName = "NEO_Swerve_Angle_Motor_(" + motor.getDeviceId() + ")";
-        BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
-                AbsoluteSensorRange.Signed_PlusMinus180, encoderAbsoluteAngleOffsetDegrees, false);
+        encoder.config(false, encoderAbsoluteAngleOffsetDegrees);
+
         BreakerREVUtil.checkError(motor.enableVoltageCompensation(12.0), "Failed to config " + deviceName + " voltage compensation");
         BreakerREVUtil.checkError(motor.setSmartCurrentLimit(80),  "Failed to config " + deviceName + " smart current limit");
         motor.setInverted(isMotorInverted);
@@ -44,19 +46,19 @@ public class BreakerNeoSwerveModuleAngleMotor extends BreakerGenericSwerveModule
 
     @Override
     public void setTargetAngle(Rotation2d targetAngle) {
-        motor.set(pid.calculate(targetAngle.getDegrees(), encoder.getAbsolutePosition()));
+        motor.set(pid.calculate(targetAngle.getDegrees(), encoder.getAbsolute()));
         this.targetAngle = targetAngle;
         
     }
 
     @Override
-    public double getAblsoluteAngle() {
-        return encoder.getAbsolutePosition();
+    public double getAbsoluteAngle() {
+        return encoder.getAbsolute();
     }
 
     @Override
     public double getRelativeAngle() {
-        return encoder.getPosition();
+        return encoder.getRelative();
     }
     @Override
     public void setBrakeMode(boolean isEnabled) {
@@ -73,7 +75,7 @@ public class BreakerNeoSwerveModuleAngleMotor extends BreakerGenericSwerveModule
         faultStr = "";
         health = DeviceHealth.NOMINAL;
         Pair<DeviceHealth, String> motorPair = BreakerREVUtil.getSparkMaxHealthAndFaults(motor.getFaults());
-        Pair<DeviceHealth, String> encoderPair = BreakerCTREUtil.checkCANCoderFaultsAndConnection(encoder);
+        Pair<DeviceHealth, String> encoderPair = encoder.getFaultData();
         if (encoderPair.getFirst() != DeviceHealth.NOMINAL || encoderPair.getFirst() != DeviceHealth.INOPERABLE) {
             health = DeviceHealth.INOPERABLE;
             if (motorPair.getFirst() != DeviceHealth.NOMINAL) {

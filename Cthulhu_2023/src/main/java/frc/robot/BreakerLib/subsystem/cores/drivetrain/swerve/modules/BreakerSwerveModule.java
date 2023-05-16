@@ -33,7 +33,7 @@ public class BreakerSwerveModule extends BreakerGenericSwerveModule {
 
     @Override
     public double getModuleAbsoluteAngle() {
-        return angleMotor.getRelativeAngle();
+        return angleMotor.getAbsoluteAngle();
     }
 
     @Override

@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveAzimuthEncoder;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerGenericSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre.BreakerFalconSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre.BreakerProFalconSwerveModuleAngleMotor;
@@ -35,7 +36,7 @@ public class BreakerSwerveModuleBuilder {
         return new BreakerSwerveModuleBuilder(config);
     }
 
-    public BreakerSwerveModuleBuilder withFalconAngleMotor(WPI_TalonFX motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
+    public BreakerSwerveModuleBuilder withFalconAngleMotor(WPI_TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
         angleMotor = new BreakerFalconSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, isMotorInverted, config.getAnglePIDConfig());
         return this;
     }
@@ -45,8 +46,8 @@ public class BreakerSwerveModuleBuilder {
         return this;
     }
 
-    public BreakerSwerveModuleBuilder withProFalconAngleMotor(TalonFX motor, CANcoder encoder, double encoderAbsoluteAngleOffsetRotations, boolean isMotorInverted) {
-        angleMotor = new BreakerProFalconSwerveModuleAngleMotor(motor, encoder, config.getAzimuthGearRatio(), encoderAbsoluteAngleOffsetRotations, isMotorInverted, config.getAnglePIDConfig());
+    public BreakerSwerveModuleBuilder withProFalconAngleMotor(TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
+        angleMotor = new BreakerProFalconSwerveModuleAngleMotor(motor, encoder, config.getAzimuthGearRatio(), encoderAbsoluteAngleOffsetDegrees, isMotorInverted, config.getAnglePIDConfig());
         return this;
     }
 
@@ -55,7 +56,7 @@ public class BreakerSwerveModuleBuilder {
         return this;
     }
 
-    public BreakerSwerveModuleBuilder withNEOAngleMotor(CANSparkMax motor, WPI_CANCoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
+    public BreakerSwerveModuleBuilder withNEOAngleMotor(CANSparkMax motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
         angleMotor = new BreakerNeoSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, isMotorInverted, config.getAnglePIDConfig());
         return this;
     }

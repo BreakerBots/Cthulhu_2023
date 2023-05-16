@@ -10,7 +10,7 @@ import frc.robot.BreakerLib.util.test.selftest.BreakerSelfTestableBase;
 /** Add your docs here. */
 public abstract class BreakerGenericSwerveModuleAngleMotor extends BreakerSelfTestableBase {
     public abstract void setTargetAngle(Rotation2d targetAngle);
-    public abstract double getAblsoluteAngle();
+    public abstract double getAbsoluteAngle();
     public abstract double getRelativeAngle(); 
     public abstract void setBrakeMode(boolean isEnabled);
     public abstract Rotation2d getTargetAngle();
