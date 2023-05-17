@@ -4,6 +4,8 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre;
 
+import java.util.Objects;
+
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenixpro.configs.TalonFXConfiguration;
 import com.ctre.phoenixpro.controls.PositionDutyCycle;
@@ -38,20 +40,23 @@ public class BreakerProFalconSwerveModuleAngleMotor extends BreakerGenericSwerve
         positionRequest = new PositionDutyCycle(0.0, true, 0.0, 0, false);
 
         encoder.config(false, encoderAbsoluteAngleOffsetDegrees);
-
+        azimuthControler = null;
         TalonFXConfiguration turnConfig = new TalonFXConfiguration();
         if (encoder.getBaseEncoderType() == CANcoder.class) {
             CANcoder cancoder = (CANcoder) encoder.getBaseEncoder();
-            turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-            turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
-            turnConfig.Feedback.RotorToSensorRatio = azimuthGearRatio;
-            turnConfig.Feedback.SensorToMechanismRatio = 1.0;
-            turnConfig.Slot0.kP = pidConfig.kP;
-            turnConfig.Slot0.kI = pidConfig.kI;
-            turnConfig.Slot0.kD = pidConfig.kD;
-            turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
-            azimuthControler = new BreakerSwerveAzimuthControler((Rotation2d target) -> {motor.setControl(positionRequest.withPosition(target.getRotations()));});
-        } else {
+            if (cancoder.getCANBus() == motor.getCANBus()) {
+                turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+                turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+                turnConfig.Feedback.RotorToSensorRatio = azimuthGearRatio;
+                turnConfig.Feedback.SensorToMechanismRatio = 1.0;
+                turnConfig.Slot0.kP = pidConfig.kP;
+                turnConfig.Slot0.kI = pidConfig.kI;
+                turnConfig.Slot0.kD = pidConfig.kD;
+                turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
+                azimuthControler = new BreakerSwerveAzimuthControler((Rotation2d target) -> {motor.setControl(positionRequest.withPosition(target.getRotations()));});
+            }
+        }
+        if (Objects.isNull(azimuthControler)) {
             azimuthControler = new BreakerSwerveAzimuthControler(motor, encoder, pidConfig);
         }
         turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;

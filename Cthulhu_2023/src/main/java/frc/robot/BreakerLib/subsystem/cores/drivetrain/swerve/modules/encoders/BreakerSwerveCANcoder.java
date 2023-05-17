@@ -51,7 +51,6 @@ public class BreakerSwerveCANcoder implements BreakerSwerveAzimuthEncoder {
     public void config(boolean invertEncoder, double absoluteOffset) {
         BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
         AbsoluteSensorRange.Signed_PlusMinus180, absoluteOffset, invertEncoder);
-       // encoder.configFeedbackCoefficient(0.000244140625, "rot", SensorTimeBase.PerSecond);
     }
 
 }

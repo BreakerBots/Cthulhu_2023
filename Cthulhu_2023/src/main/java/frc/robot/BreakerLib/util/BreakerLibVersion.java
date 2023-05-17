@@ -5,7 +5,7 @@
 package frc.robot.BreakerLib.util;
 
 /** A class representing the current version of the BreakerLib library you are useing, 
- * format is yy.major.minor  (EX: "V23.1.2" -> 2023, major version 1, minor version 2) */
+ * format is yy.major.minor  (EX: "V23.2.1" -> 2023, major version 1, minor version 2) */
 public class BreakerLibVersion {
-    public static final String Version = "V23.1.2";
+    public static final String Version = "V23.2.1";
 }

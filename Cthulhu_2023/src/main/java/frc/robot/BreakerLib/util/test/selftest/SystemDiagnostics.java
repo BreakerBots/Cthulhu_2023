@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenixpro.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.Pair;
@@ -18,6 +20,7 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
 /** A higher level object for use in user susystems that makes BreakerLib's {@link SelfTest} functionality to implament for subsystem-scale classes */
 public class SystemDiagnostics extends BreakerSelfTestableBase {
     private List<BaseMotorController> ctreMotorControllers = new ArrayList<>();
+    private List<TalonFX> phoenixProTalonFXs = new ArrayList<>();
     private List<BreakerSelfTestable> devices = new ArrayList<>();
     private List<CANSparkMax> sparks = new ArrayList<>();
     private Supplier<DeviceHealth> deviceHealthSupplier;
@@ -85,6 +88,18 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
     public void addSparkMaxs(CANSparkMax... sparkMaxsToAdd) {
         for (CANSparkMax spk: sparkMaxsToAdd) {
             addSparkMax(spk);
+        }
+    }
+
+    /** Adds a {@link CANSparkMax} (REV Motor controller) object to this SystemDiagnostic's testing queue */
+    public void addProTalonFX(TalonFX talonToAdd) {
+        phoenixProTalonFXs.add(talonToAdd);
+    }
+
+    /** Adds multipul {@link CANSparkMax} (REV Motor controller) objects to this SystemDiagnostic's testing queue */
+    public void addProTalonFXs(TalonFX... talonsToAdd) {
+        for (TalonFX tal: talonsToAdd) {
+            addProTalonFX(tal);
         }
     }
 
