@@ -4,13 +4,13 @@
 
 package frc.robot.BreakerLib.util.factory;
 
-import com.ctre.phoenixpro.configs.CANcoderConfiguration;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenixpro.signals.SensorDirectionValue;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
-import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenixProUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** Factory for producing CANcoders. */
 public class BreakerProCANCoderFactory {
@@ -38,6 +38,6 @@ public class BreakerProCANCoderFactory {
         config.MagnetSensor.AbsoluteSensorRange = absoluteSensorRange;
         config.MagnetSensor.MagnetOffset = absoluteOffsetRotations;
         config.MagnetSensor.SensorDirection = encoderDirection;
-        BreakerPhoenixProUtil.checkStatusCode(encoder.getConfigurator().apply(config),  " CANcoder " + encoder.getDeviceID() + " general config fail ");
+        BreakerPhoenix6Util.checkStatusCode(encoder.getConfigurator().apply(config),  " CANcoder " + encoder.getDeviceID() + " general config fail ");
     }
 }

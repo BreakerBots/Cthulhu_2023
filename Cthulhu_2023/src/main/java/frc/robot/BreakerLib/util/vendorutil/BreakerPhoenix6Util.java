@@ -6,20 +6,20 @@ package frc.robot.BreakerLib.util.vendorutil;
 
 import java.util.HashMap;
 
-import com.ctre.phoenixpro.StatusCode;
-import com.ctre.phoenixpro.configs.MotorOutputConfigs;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.hardware.Pigeon2;
-import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.hardware.core.CoreTalonFX;
-import com.ctre.phoenixpro.signals.NeutralModeValue;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.core.CoreTalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /** Add your docs here. */
-public class BreakerPhoenixProUtil {
+public class BreakerPhoenix6Util {
 
     /**
    * Logs an error to BreakerLog if designated error is discovered.

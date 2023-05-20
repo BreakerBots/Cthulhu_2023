@@ -4,16 +4,16 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders;
 
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenixpro.signals.SensorDirectionValue;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
 import frc.robot.BreakerLib.util.factory.BreakerProCANCoderFactory;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
-import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenixProUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** Add your docs here. */
 public class BreakerSwerveProCANcoder implements BreakerSwerveAzimuthEncoder {
@@ -34,7 +34,7 @@ public class BreakerSwerveProCANcoder implements BreakerSwerveAzimuthEncoder {
 
     @Override
     public Pair<DeviceHealth, String> getFaultData() {
-        return BreakerPhoenixProUtil.checkCANcoderFaultsAndConnection(encoder);
+        return BreakerPhoenix6Util.checkCANcoderFaultsAndConnection(encoder);
     }
 
     @Override

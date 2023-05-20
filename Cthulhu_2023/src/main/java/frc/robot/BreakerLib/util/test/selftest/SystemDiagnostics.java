@@ -10,17 +10,18 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.can.BaseMotorController;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenixpro.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
 
 /** A higher level object for use in user susystems that makes BreakerLib's {@link SelfTest} functionality to implament for subsystem-scale classes */
 public class SystemDiagnostics extends BreakerSelfTestableBase {
     private List<BaseMotorController> ctreMotorControllers = new ArrayList<>();
-    private List<TalonFX> phoenixProTalonFXs = new ArrayList<>();
+    private List<TalonFX> phoenix6TalonFXs = new ArrayList<>();
     private List<BreakerSelfTestable> devices = new ArrayList<>();
     private List<CANSparkMax> sparks = new ArrayList<>();
     private Supplier<DeviceHealth> deviceHealthSupplier;
@@ -93,7 +94,7 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
 
     /** Adds a {@link CANSparkMax} (REV Motor controller) object to this SystemDiagnostic's testing queue */
     public void addProTalonFX(TalonFX talonToAdd) {
-        phoenixProTalonFXs.add(talonToAdd);
+        phoenix6TalonFXs.add(talonToAdd);
     }
 
     /** Adds multipul {@link CANSparkMax} (REV Motor controller) objects to this SystemDiagnostic's testing queue */
@@ -123,6 +124,16 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
                 Pair<DeviceHealth, String> motorState = BreakerCTREUtil.checkMotorFaultsAndConnection(con);
                 if (motorState.getFirst() != DeviceHealth.NOMINAL) {
                     faultStr += " / CTRE Motor ID (" + con.getBaseID() + "): " + motorState.getSecond();
+                    health = (health == DeviceHealth.INOPERABLE) ? motorState.getFirst() : health;
+                }
+            }
+        }
+
+        if (!phoenix6TalonFXs.isEmpty()) {
+            for (TalonFX tal: phoenix6TalonFXs) {
+                Pair<DeviceHealth, String> motorState = BreakerPhoenix6Util.checkMotorFaultsAndConnection(tal);
+                if (motorState.getFirst() != DeviceHealth.NOMINAL) {
+                    faultStr += " / CTRE Motor ID (" + tal.getDeviceID() + "): " + motorState.getSecond();
                     health = (health == DeviceHealth.INOPERABLE) ? motorState.getFirst() : health;
                 }
             }
