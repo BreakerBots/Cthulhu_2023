@@ -4,18 +4,19 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre;
 
+import java.net.CacheRequest;
 import java.util.Objects;
 
 import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.controls.PositionDutyCycle;
-import com.ctre.phoenixpro.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenixpro.hardware.CANcoder;
-import com.ctre.phoenixpro.hardware.TalonFX;
-import com.ctre.phoenixpro.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenixpro.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenixpro.signals.NeutralModeValue;
-import com.ctre.phoenixpro.signals.SensorDirectionValue;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,7 +26,7 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.ang
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerSwerveAzimuthControler;
 import frc.robot.BreakerLib.util.factory.BreakerProCANCoderFactory;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenixProUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** Add your docs here. */
 public class BreakerProFalconSwerveModuleAngleMotor extends BreakerGenericSwerveModuleAngleMotor {
@@ -62,7 +63,7 @@ public class BreakerProFalconSwerveModuleAngleMotor extends BreakerGenericSwerve
         turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         turnConfig.TorqueCurrent.PeakForwardTorqueCurrent = 80;
         turnConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80;
-        BreakerPhoenixProUtil.checkStatusCode(motor.getConfigurator().apply(turnConfig),
+        BreakerPhoenix6Util.checkStatusCode(motor.getConfigurator().apply(turnConfig),
                 " Failed to config swerve module drive motor ");
     
         motor.setInverted(isMotorInverted);
@@ -90,7 +91,7 @@ public class BreakerProFalconSwerveModuleAngleMotor extends BreakerGenericSwerve
 
     @Override
     public void setBrakeMode(boolean isEnabled) {
-        BreakerPhoenixProUtil.setBrakeMode(motor, isEnabled);
+        BreakerPhoenix6Util.setBrakeMode(motor, isEnabled);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class BreakerProFalconSwerveModuleAngleMotor extends BreakerGenericSwerve
     public void runSelfTest() {
         faultStr = "";
         health = DeviceHealth.NOMINAL;
-        Pair<DeviceHealth, String> motorPair = BreakerPhoenixProUtil.checkMotorFaultsAndConnection(motor);
+        Pair<DeviceHealth, String> motorPair = BreakerPhoenix6Util.checkMotorFaultsAndConnection(motor);
         Pair<DeviceHealth, String> encoderPair = encoder.getFaultData();
         if (motorPair.getFirst() != DeviceHealth.NOMINAL || encoderPair.getFirst() != DeviceHealth.NOMINAL) {
             if (motorPair.getFirst() != DeviceHealth.NOMINAL) {

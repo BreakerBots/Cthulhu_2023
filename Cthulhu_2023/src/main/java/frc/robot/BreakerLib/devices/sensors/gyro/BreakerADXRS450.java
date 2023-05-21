@@ -37,7 +37,7 @@ public class BreakerADXRS450 extends BreakerGenericDevice implements BreakerGene
     }
 
     @Override
-    public double getYawDegrees() {
+    public double getYaw() {
         return gyro.getAngle();
     }
 
@@ -62,7 +62,7 @@ public class BreakerADXRS450 extends BreakerGenericDevice implements BreakerGene
 
     @Override
     public double getRawYaw() {
-        return getYawDegrees();
+        return getYaw();
     }
 
     @Override
@@ -83,6 +83,12 @@ public class BreakerADXRS450 extends BreakerGenericDevice implements BreakerGene
             health = DeviceHealth.INOPERABLE;
             faultStr = " GYRO_NOT_CONNECTED ";
           }
+        
+    }
+
+    @Override
+    public void close() throws Exception {
+        gyro.close();
         
     }
 }

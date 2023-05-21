@@ -500,7 +500,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
      * @param odometryProvider Provider of odometry data.
      * @return this.
      */
-    public BreakerSwerveFieldRelativeMovementPreferences setOdometryProvider(BreakerGenericOdometer odometryProvider) {
+    public BreakerSwerveFieldRelativeMovementPreferences withOdometryProvider(BreakerGenericOdometer odometryProvider) {
       this.odometryProvider = odometryProvider;
       return this;
     }
@@ -510,7 +510,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
      * @param useFieldRelativeMovementAngleOffset Whether you want to use an angle offset for the default forward angle.
      * @return this.
      */
-    public BreakerSwerveFieldRelativeMovementPreferences setUseFieldRelativeMovementAngleOffset(
+    public BreakerSwerveFieldRelativeMovementPreferences withUseFieldRelativeMovementAngleOffset(
         boolean useFieldRelativeMovementAngleOffset) {
       this.useFieldRelativeMovementAngleOffset = useFieldRelativeMovementAngleOffset;
       return this;
@@ -520,8 +520,9 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
      * @param slowModeValue Whether or not you want to apply the drivetrians slow mode scailar or simply default to the global setting.
      * @return this.
      */
-    public void setSlowModeValue(SlowModeValue slowModeValue) {
+    public BreakerSwerveFieldRelativeMovementPreferences withSlowModeValue(SlowModeValue slowModeValue) {
         this.slowModeValue = slowModeValue;
+        return this;
     }
 
     public BreakerGenericOdometer getOdometryProvider(BreakerSwerveDrive drivetrain) {
@@ -536,8 +537,4 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
         return useFieldRelativeMovementAngleOffset;
     }
   }
-
-
-  
-
 }

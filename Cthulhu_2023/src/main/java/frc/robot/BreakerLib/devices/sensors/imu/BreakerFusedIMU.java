@@ -56,29 +56,29 @@ public class BreakerFusedIMU extends BreakerGenericIMU {
     }
 
     @Override
-    public double getPitchDegrees() {
+    public double getPitch() {
         for (int i = 0; i <= imuArr.length; i++) {
-            dataArr[i] = imuArr[i].getPitchDegrees();
+            dataArr[i] = imuArr[i].getPitch();
         }
         return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
-    public double getRollDegrees() {
+    public double getRoll() {
         for (int i = 0; i <= imuArr.length; i++) {
-            dataArr[i] = imuArr[i].getRollDegrees();
+            dataArr[i] = imuArr[i].getRoll();
         }
         return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public Rotation2d getPitchRotation2d() {
-        return Rotation2d.fromDegrees(getPitchDegrees());
+        return Rotation2d.fromDegrees(getPitch());
     }
 
     @Override
     public Rotation2d getRollRotation2d() {
-        return Rotation2d.fromDegrees(getRollDegrees());
+        return Rotation2d.fromDegrees(getRoll());
 
     }
 
@@ -89,7 +89,7 @@ public class BreakerFusedIMU extends BreakerGenericIMU {
 
     @Override
     public Rotation3d getRotation3d() {
-        return new Rotation3d(getRollDegrees(), getPitchDegrees(), getYawDegrees());
+        return new Rotation3d(getRoll(), getPitch(), getYaw());
     }
 
     @Override
@@ -174,16 +174,16 @@ public class BreakerFusedIMU extends BreakerGenericIMU {
     }
 
     @Override
-    public double getYawDegrees() {
+    public double getYaw() {
         for (int i = 0; i <= imuArr.length; i++) {
-            dataArr[i] = imuArr[i].getYawDegrees();
+            dataArr[i] = imuArr[i].getYaw();
         }
         return BreakerMath.getWeightedAvg(dataArr, weightArr);
     }
 
     @Override
     public Rotation2d getYawRotation2d() {
-        return Rotation2d.fromDegrees(getYawDegrees());
+        return Rotation2d.fromDegrees(getYaw());
     }
 
     public void setYaw(double value) {
@@ -256,4 +256,11 @@ public class BreakerFusedIMU extends BreakerGenericIMU {
             imu.runSelfTest();
         }
     }
+
+    @Override
+    public void close() throws Exception {
+        for (BreakerGenericIMU imu: imuArr) {
+            imu.close();
+        }
+    } 
 }

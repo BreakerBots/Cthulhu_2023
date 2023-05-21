@@ -114,28 +114,28 @@ public class BreakerAHRS extends BreakerGenericIMU implements BreakerGenericMagn
         calibrate();
     }
 
-    public double getPitchDegrees() {
+    public double getPitch() {
         return BreakerMath.angleModulus(imu.getPitch());
     }
 
-    public double getYawDegrees() {
+    public double getYaw() {
         return BreakerMath.angleModulus(imu.getYaw());
     }
 
-    public double getRollDegrees() {
+    public double getRoll() {
         return BreakerMath.angleModulus(imu.getRoll());
     }
 
     public Rotation2d getPitchRotation2d() {
-        return Rotation2d.fromDegrees(getPitchDegrees());
+        return Rotation2d.fromDegrees(getPitch());
     }
 
     public Rotation2d getYawRotation2d() {
-        return Rotation2d.fromDegrees(getYawDegrees());
+        return Rotation2d.fromDegrees(getYaw());
     }
 
     public Rotation2d getRollRotation2d() {
-        return Rotation2d.fromDegrees(getRollDegrees());
+        return Rotation2d.fromDegrees(getRoll());
     }
 
     public Rotation3d getRotation3d() {
@@ -144,7 +144,7 @@ public class BreakerAHRS extends BreakerGenericIMU implements BreakerGenericMagn
     }
 
     public double[] getRawAngles() {
-        return new double[] { getPitchDegrees(), getYawDegrees(), getRollDegrees() };
+        return new double[] { getPitch(), getYaw(), getRoll() };
     }
 
     public double getRawYaw() {
@@ -283,6 +283,12 @@ public class BreakerAHRS extends BreakerGenericIMU implements BreakerGenericMagn
     /** Accelerometer range in Gs. */
     public short getRange() {
         return imu.getAccelFullScaleRangeG();
+    }
+
+    @Override
+    public void close() throws Exception {
+       imu.close();
+        
     }
 
 }

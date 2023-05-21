@@ -14,14 +14,14 @@ import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilterOdom
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
 
 /** Estimates swerve drive pose based on vision odometry. */
-public class BreakerSwerveDriveFiducialVisionPoseEstimator
+public class BreakerSwerveDriveFusedVisionPoseEstimator
         extends SubsystemBase implements BreakerGenericOdometer {
     private BreakerGenericVisionOdometer vision;
     private BreakerSwerveDrivePoseEstimator poseEstimator;
 
-    public BreakerSwerveDriveFiducialVisionPoseEstimator(
+    public BreakerSwerveDriveFusedVisionPoseEstimator(
             BreakerSwerveDrive drivetrain,
-            BreakerVisionPoseFilterOdometer vision,
+            BreakerGenericVisionOdometer vision,
             double[] stateStanderdDeveation,
             double[] visionStanderdDeveation) {
         this.vision = vision;
@@ -30,9 +30,9 @@ public class BreakerSwerveDriveFiducialVisionPoseEstimator
                 stateStanderdDeveation, visionStanderdDeveation);
     }
 
-    public BreakerSwerveDriveFiducialVisionPoseEstimator(
+    public BreakerSwerveDriveFusedVisionPoseEstimator(
             BreakerSwerveDrive drivetrain,
-            BreakerVisionPoseFilterOdometer vision,
+            BreakerGenericVisionOdometer vision,
             Pose2d initialPose,
             double[] stateStandardDeviation,
             double[] visionStandardDeviation) {
@@ -41,6 +41,10 @@ public class BreakerSwerveDriveFiducialVisionPoseEstimator
         poseEstimator = new BreakerSwerveDrivePoseEstimator(
                 drivetrain, initialPose,
                 stateStandardDeviation, visionStandardDeviation);
+    }
+
+    public void changeVisionDevs(double visionStrdDevX, double visionStrdDevY, double visionStrdDevTheta) {
+        poseEstimator.changeVisionDevs(visionStrdDevX, visionStrdDevY, visionStrdDevTheta);;
     }
 
     @Override

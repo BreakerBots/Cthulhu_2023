@@ -27,18 +27,18 @@ public class BreakerMultiDeviceIMU extends BreakerGenericIMU {
     }
 
     @Override
-    public double getPitchDegrees() {
-        return gyro.getPitchDegrees();
+    public double getPitch() {
+        return gyro.getPitch();
     }
 
     @Override
-    public double getYawDegrees() {
-        return gyro.getYawDegrees();
+    public double getYaw() {
+        return gyro.getYaw();
     }
 
     @Override
-    public double getRollDegrees() {
-        return gyro.getRollDegrees();
+    public double getRoll() {
+        return gyro.getRoll();
     }
 
     @Override
@@ -176,6 +176,11 @@ public class BreakerMultiDeviceIMU extends BreakerGenericIMU {
     @Override
     public void calibrate() {
         gyro.calibrate();
+    }
+
+    @Override
+    public void close() throws Exception {
+        gyro.close();
     }
 
 }

@@ -25,33 +25,33 @@ public class BreakerPigeon extends BreakerGenericIMU implements BreakerGenericMa
     }
 
     @Override
-    public double getPitchDegrees() {
+    public double getPitch() {
         return BreakerMath.angleModulus(pigeon.getPitch());
     }
 
     @Override
-    public double getYawDegrees() {
+    public double getYaw() {
         return BreakerMath.angleModulus(pigeon.getYaw());
     }
 
     @Override
-    public double getRollDegrees() {
+    public double getRoll() {
         return BreakerMath.angleModulus(pigeon.getRoll());
     }
 
     @Override
     public Rotation2d getPitchRotation2d() {
-        return Rotation2d.fromDegrees(getPitchDegrees());
+        return Rotation2d.fromDegrees(getPitch());
     }
 
     @Override
     public Rotation2d getYawRotation2d() {
-        return Rotation2d.fromDegrees(getYawDegrees());
+        return Rotation2d.fromDegrees(getYaw());
     }
 
     @Override
     public Rotation2d getRollRotation2d() {
-        return Rotation2d.fromDegrees(getRollDegrees());
+        return Rotation2d.fromDegrees(getRoll());
     }
 
     @Override
@@ -257,5 +257,11 @@ public class BreakerPigeon extends BreakerGenericIMU implements BreakerGenericMa
      */
     public void calibrate() {
         pigeon.calibrate();
+    }
+
+    @Override
+    public void close() throws Exception {
+        pigeon.close();
+        
     }
 }

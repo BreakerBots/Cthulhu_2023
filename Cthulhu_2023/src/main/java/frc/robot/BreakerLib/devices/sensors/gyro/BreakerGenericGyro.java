@@ -5,12 +5,13 @@
 package frc.robot.BreakerLib.devices.sensors.gyro;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 /** A base interface for all single axis gyroscopes and gyroscopes capable of Yaw readings */
-public interface BreakerGenericGyro {
+public interface BreakerGenericGyro extends Gyro{
 
     /** @return Yaw angle within +-180 degrees. */
-    public abstract double getYawDegrees();
+    public abstract double getYaw();
 
     /** @return Yaw angle as {@link Rotation2d} within +-180 degrees. */
     public abstract Rotation2d getYawRotation2d();
@@ -21,17 +22,23 @@ public interface BreakerGenericGyro {
     /** @return Biased angular velocity yaw (deg/sec). */
     public abstract double getYawRate();
 
-    /** Resets all angles avalible to 0 degrees */
-    public abstract void reset();
-
-    /** Calibrates gyro. */
-    public abstract void calibrate();
-
     /** @return Raw yaw value without modulus. */
     public abstract double getRawYaw();
 
     /** @return Raw angular velocity yaw. (deg/sec) */
     public abstract double getRawYawRate();
+
+ 
+
+    @Override
+    public default double getAngle() {
+        return getYaw();
+    }
+
+    @Override
+    public default double getRate() {
+        return getYawRate();
+    }
     
 
 }

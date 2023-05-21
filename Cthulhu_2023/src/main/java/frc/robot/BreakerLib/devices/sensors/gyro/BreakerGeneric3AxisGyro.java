@@ -14,10 +14,10 @@ import edu.wpi.first.math.geometry.Rotation3d;
 public interface BreakerGeneric3AxisGyro extends BreakerGenericGyro {
 
   /** @return Pitch angle within +-180 degrees. */
-  public abstract double getPitchDegrees();
+  public abstract double getPitch();
 
   /** @return Roll angle within +-180 degrees. */
-  public abstract double getRollDegrees();
+  public abstract double getRoll();
 
   /** @return Pitch angle as {@link Rotation2d} within +-180 degrees. */
   public abstract Rotation2d getPitchRotation2d();

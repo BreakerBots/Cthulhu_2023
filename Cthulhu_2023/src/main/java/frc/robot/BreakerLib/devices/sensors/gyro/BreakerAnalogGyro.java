@@ -57,7 +57,7 @@ public class BreakerAnalogGyro implements BreakerGenericGyro {
     }
 
     @Override
-    public double getYawDegrees() {
+    public double getYaw() {
         return gyro.getAngle();
     }
 
@@ -83,7 +83,7 @@ public class BreakerAnalogGyro implements BreakerGenericGyro {
 
     @Override
     public double getRawYaw() {
-        return getYawDegrees();
+        return getYaw();
     }
 
     @Override
@@ -94,5 +94,10 @@ public class BreakerAnalogGyro implements BreakerGenericGyro {
     @Override
     public void calibrate() {
         gyro.calibrate();
+    }
+
+    @Override
+    public void close() throws Exception {
+        gyro.close();
     }
 }

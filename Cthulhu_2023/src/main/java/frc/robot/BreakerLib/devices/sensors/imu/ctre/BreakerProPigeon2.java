@@ -4,9 +4,11 @@
 package frc.robot.BreakerLib.devices.sensors.imu.ctre;
 
 import com.ctre.phoenix.sensors.Pigeon2_Faults;
-import com.ctre.phoenixpro.Timestamp.TimestampSource;
-import com.ctre.phoenixpro.configs.Pigeon2Configuration;
-import com.ctre.phoenixpro.hardware.Pigeon2;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.Timestamp.TimestampSource;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Quaternion;
@@ -21,47 +23,50 @@ import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 /* CTRE Pigeon 2 implementing the Breaker device interface and Breaker IMU interface,  */
 public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGenericMagnetometer {
   private Pigeon2 pigeon;
+  private BreakerProPigeon2PeriodicIO periodicIO;
 
   /** Creates a new PigeonIMU 2 object. */
   public BreakerProPigeon2(int deviceID) {
     pigeon = new Pigeon2(deviceID);
     deviceName = "Pigeon2_IMU (" + deviceID + ") ";
+    periodicIO = this.new BreakerProPigeon2PeriodicIO();
   }
 
   /** Creates a new PigeonIMU 2 object. */
   public BreakerProPigeon2(int deviceID, String busName) {
     pigeon = new Pigeon2(deviceID, busName);
     deviceName = "Pigeon2_IMU (" + deviceID + ") ";
+    periodicIO = this.new BreakerProPigeon2PeriodicIO();
   }
 
   @Override
-  public double getPitchDegrees() {
-    return BreakerMath.angleModulus(pigeon.getPitch().getValue());
+  public double getPitch() {
+    return periodicIO.getPitch();
   }
 
   @Override
-  public double getYawDegrees() {
-    return BreakerMath.angleModulus(pigeon.getAngle());
+  public double getYaw() {
+    return periodicIO.getYaw();
   }
 
   @Override
-  public double getRollDegrees() {
-    return BreakerMath.angleModulus(pigeon.getRoll().getValue());
+  public double getRoll() {
+    return periodicIO.getRoll();
   }
 
   @Override
   public Rotation2d getPitchRotation2d() {
-    return Rotation2d.fromDegrees(getPitchDegrees());
+    return Rotation2d.fromDegrees(getPitch());
   }
 
   @Override
   public Rotation2d getYawRotation2d() {
-    return Rotation2d.fromDegrees(getYawDegrees());
+    return Rotation2d.fromDegrees(getYaw());
   }
 
   @Override
   public Rotation2d getRollRotation2d() {
-    return Rotation2d.fromDegrees(getRollDegrees());
+    return Rotation2d.fromDegrees(getRoll());
   }
 
   @Override
@@ -71,7 +76,7 @@ public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGener
 
   @Override
   public double[] getRawAngles() {
-    return new double[]{pigeon.getYaw().getValue(), pigeon.getPitch().getValue(), pigeon.getRoll().getValue()};
+    return new double[]{periodicIO.getRawYaw(), periodicIO.getRawPitch(), periodicIO.getRawRoll()};
   }
 
   @Override
@@ -113,7 +118,7 @@ public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGener
   }
 
   public double[] getRawGyroRates() {
-    return new double[] {pigeon.getAngularVelocityX().getValue(), pigeon.getAngularVelocityY().getValue(), pigeon.getAngularVelocityZ().getValue()};
+    return new double[] {periodicIO.getRawYawRate(), periodicIO.getRawPitchRate(), periodicIO.getRawRollRate()};
   }
 
   @Override
@@ -274,6 +279,61 @@ public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGener
    */
   public void calibrate() {
     pigeon.calibrate();
+  }
+
+  private class BreakerProPigeon2PeriodicIO {
+      private StatusSignal<Double> rawYaw, rawPitch, rawRoll;
+      private StatusSignal<Double> rawYawRate, rawPitchRate, rawRollRate;
+      public BreakerProPigeon2PeriodicIO() {
+        rawYaw = pigeon.getYaw();
+        rawPitch = pigeon.getPitch();
+        rawRoll = pigeon.getRoll();
+        rawYawRate = pigeon.getAngularVelocityZ();
+        rawPitchRate = pigeon.getAngularVelocityX();
+        rawRollRate = pigeon.getAngularVelocityY();
+      }
+
+      public double getYaw() {
+        return BreakerMath.angleModulus(BaseStatusSignal.getLatencyCompensatedValue(rawYaw.refresh(), rawYawRate.refresh()));
+      }
+
+      public double getRoll() {
+        return BreakerMath.angleModulus(BaseStatusSignal.getLatencyCompensatedValue(rawRoll.refresh(), rawRollRate.refresh()));
+      }
+
+      public double getPitch() {
+        return BreakerMath.angleModulus(BaseStatusSignal.getLatencyCompensatedValue(rawPitch.refresh(), rawPitchRate.refresh()));
+      }
+
+      public double getRawYaw() {
+          return rawYaw.refresh().getValue();
+      }
+
+      public double getRawRoll() {
+          return rawRoll.refresh().getValue();
+      }
+
+      public double getRawPitch() {
+          return rawPitch.refresh().getValue();
+      }
+
+      public double getRawPitchRate() {
+          return rawPitchRate.refresh().getValue();
+      }
+
+      public double getRawRollRate() {
+          return rawRollRate.refresh().getValue();
+      }
+
+      public double getRawYawRate() {
+          return rawYawRate.refresh().getValue();
+      }
+  }
+
+  @Override
+  public void close() throws Exception {
+    pigeon.close();
+    
   }
 
 }

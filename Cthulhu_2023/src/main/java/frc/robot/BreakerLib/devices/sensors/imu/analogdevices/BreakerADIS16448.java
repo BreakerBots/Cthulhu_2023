@@ -86,33 +86,33 @@ public class BreakerADIS16448 extends BreakerGenericIMU {
     }
 
     @Override
-    public double getYawDegrees() {
+    public double getYaw() {
         return BreakerMath.angleModulus(yawSupplier.get());
     }
 
     @Override
-    public double getPitchDegrees() {
+    public double getPitch() {
         return BreakerMath.angleModulus(pitchSupplier.get());
     }
 
     @Override
-    public double getRollDegrees() {
+    public double getRoll() {
         return BreakerMath.angleModulus(rollSupplier.get());
     }
 
     @Override
     public Rotation2d getYawRotation2d() {
-        return Rotation2d.fromDegrees(getYawDegrees());
+        return Rotation2d.fromDegrees(getYaw());
     }
 
     @Override
     public Rotation2d getPitchRotation2d() {
-        return Rotation2d.fromDegrees(getPitchDegrees());
+        return Rotation2d.fromDegrees(getPitch());
     }
 
     @Override
     public Rotation2d getRollRotation2d() {
-        return Rotation2d.fromDegrees(getRollDegrees());
+        return Rotation2d.fromDegrees(getRoll());
     }
 
     @Override
@@ -177,7 +177,7 @@ public class BreakerADIS16448 extends BreakerGenericIMU {
 
     @Override
     public Rotation3d getRotation3d() {
-        return new Rotation3d(getRollDegrees(), getPitchDegrees(), getYawDegrees());
+        return new Rotation3d(getRoll(), getPitch(), getYaw());
     }
 
     @Override
@@ -244,6 +244,12 @@ public class BreakerADIS16448 extends BreakerGenericIMU {
     /** Does nothing. */
     public void setYaw(double value) {
         // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void close() throws Exception {
+        imu.close();
         
     }
 }
