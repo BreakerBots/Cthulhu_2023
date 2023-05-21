@@ -215,10 +215,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain
    * @param turnPercent       Turn speed % (-1 to 1).
    */
   public void moveWithPercentInput(double forwardPercent, double horizontalPercent, double turnPercent) {
-    move(
-        (forwardPercent * config.getMaxForwardVel()),
-        (horizontalPercent * config.getMaxSidewaysVel()),
-        (turnPercent * config.getMaxAngleVel()));
+    moveWithPercentInput(forwardPercent, horizontalPercent, turnPercent, SlowModeValue.DEFAULT);
   }
 
     /**
