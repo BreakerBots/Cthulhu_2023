@@ -18,6 +18,7 @@ import frc.robot.BreakerLib.auto.trajectory.BreakerGenericAutoPathFollower;
 import frc.robot.BreakerLib.auto.trajectory.management.BreakerTrajectoryPath;
 import frc.robot.BreakerLib.auto.trajectory.management.conditionalcommand.BreakerConditionalEvent;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain.SlowModeValue;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveMovementPreferences;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 
 /** Add your docs here. */
@@ -90,9 +91,8 @@ public class BreakerLTVUnicycleSwerveAutoPathFollower extends CommandBase implem
         desiredState.velocityMetersPerSecond,
         desiredState.velocityMetersPerSecond);
 
-    config.getDrivetrain().move(targetChassisSpeeds, SlowModeValue.DISABLED);
-
-
+    config.getDrivetrain().move(targetChassisSpeeds, BreakerSwerveMovementPreferences.DEFAULT_ROBOT_RELATIVE_PREFERENCES.withSlowModeValue(SlowModeValue.DISABLED));
+    
     if (remainingEvents.size() > 0) {
       Iterator<BreakerConditionalEvent> iterator = remainingEvents.iterator();
       while (iterator.hasNext()) {

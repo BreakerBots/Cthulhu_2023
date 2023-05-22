@@ -26,36 +26,34 @@ import frc.robot.BreakerLib.position.movement.BreakerMovementState2d;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
 import frc.robot.BreakerLib.position.odometry.swerve.BreakerSwerveDriveFusedVisionPoseEstimator;
 import frc.robot.BreakerLib.position.odometry.vision.BreakerGenericVisionOdometer;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase.BreakerSwerveDriveBaseMovementPreferences.SwerveMovementRefrenceFrame;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase.BreakerSwerveDriveBaseMovementPreferences;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerGenericSwerveModule;
 
 /** Add your docs here. */
 public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
     private BreakerSwerveDriveBaseConfig config;
-    private BreakerGenericOdometer odometer;
     private BreakerSwervePathFollowerConfig pathFollowerConfig;
     private Rotation2d lastSetHeading;
     public BreakerSwerveDriveBase(
             BreakerSwerveDriveBaseConfig config, BreakerGenericGyro gyro,
             BreakerGenericSwerveModule... swerveModules) {
-        this(config, gyro, new BreakerSwerveDriveBaseOdometryConfig(), swerveModules);
+        this(config, gyro, new BreakerSwerveOdometryConfig(), swerveModules);
     }
 
     public BreakerSwerveDriveBase(
             BreakerSwerveDriveBaseConfig config, BreakerGenericGyro gyro, 
-            BreakerSwerveDriveBaseOdometryConfig odometryConfig,
+            BreakerSwerveOdometryConfig odometryConfig,
             BreakerGenericSwerveModule... swerveModules) {
-        super(config, gyro, swerveModules);
+        super(config, odometryConfig, gyro, swerveModules);
         this.config = config;
-        odometer = odometryConfig.getOdometer(this);
-        lastSetHeading = odometer.getOdometryPoseMeters().getRotation();
-        pathFollowerConfig = new BreakerSwervePathFollowerConfig(this, odometer, config.getDriveController(), false);
+        lastSetHeading = getOdometryPoseMeters().getRotation();
+        pathFollowerConfig = new BreakerSwervePathFollowerConfig(this, config.getDriveController(), false);
     }
 
-    public void drive(ChassisSpeeds targetChassisSpeeds, BreakerSwerveDriveBaseMovementPreferences movementPreferences) {
+    @Override
+    public void move(ChassisSpeeds targetChassisSpeeds, BreakerSwerveMovementPreferences movementPreferences) {
         ChassisSpeeds targetVels = targetChassisSpeeds;
-        Rotation2d curAng = odometer.getOdometryPoseMeters().getRotation();
+        Rotation2d curAng = getOdometryPoseMeters().getRotation();
 
         switch(movementPreferences.getSwerveMovementRefrenceFrame()) {
             case FIELD_RELATIVE_WITHOUT_OFFSET:
@@ -86,127 +84,15 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
         setModuleStates(getKinematics().toSwerveModuleStates(targetChassisSpeeds));
     }
 
-    public void drive(ChassisSpeeds targetChassisSpeeds) {
-        drive(targetChassisSpeeds, BreakerSwerveDriveBaseMovementPreferences.DEFAULT_FIELD_RELATIVE_PREFERENCES);
+    @Override
+    public void move(ChassisSpeeds targetChassisSpeeds) {
+        move(targetChassisSpeeds, BreakerSwerveDriveBaseMovementPreferences.FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION);
     }
-
-
-    public void drive(double percentX, double percentY, double precentOmega, BreakerSwerveDriveBaseMovementPreferences movementPreferences) {
-        drive(new ChassisSpeeds(percentX * config.getMaxForwardVel(), percentY * config.getMaxSidewaysVel(), precentOmega * config.getMaxAngleVel()), movementPreferences);
-    } 
     
-    public void drive(double percentX, double percentY, double precentOmega) {
-        drive(new ChassisSpeeds(percentX * config.getMaxForwardVel(), percentY * config.getMaxSidewaysVel(), precentOmega * config.getMaxAngleVel()), BreakerSwerveDriveBaseMovementPreferences.DEFAULT_FIELD_RELATIVE_PREFERENCES);
+    @Override
+    public void move(double percentX, double percentY, double precentOmega) {
+        move(new ChassisSpeeds(percentX * config.getMaxForwardVel(), percentY * config.getMaxSidewaysVel(), precentOmega * config.getMaxAngleVel()), BreakerSwerveDriveBaseMovementPreferences.FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION);
     } 
-
-      /**
-   * Standard drivetrain movement command. Specifies robot velocity in each axis
-   * including robot rotation (rad/sec).
-   * <p>
-   * NOTE: All values are relative to the robot's orientation.
-   * 
-   * @param robotRelativeVelocities ChassisSpeeds object representing the robots
-   *                                velocities in each axis relative to its local
-   *                                reference frame.
-   * @param slowModeValue           Whether or not to apply the set slow mode
-   *                                multiplier to the given speeds or to use global default.
-   */
-  public void move(ChassisSpeeds robotRelativeVelocities, SlowModeValue slowModeValue) {
-    drive(robotRelativeVelocities, BreakerSwerveDriveBaseMovementPreferences.DEFAULT_ROBOT_RELATIVE_PREFERENCES.withSlowModeValue(slowModeValue));
-  }
-
-  /** Sets the target velocity of the robot to 0 in all axes. */
-  public void stop() {
-    drive(new ChassisSpeeds(), BreakerSwerveDriveBaseMovementPreferences.DEFAULT_ROBOT_RELATIVE_PREFERENCES.withHeadingCorrectionEnabled(false));
-  }
-
-    /**
-   * Movement with speeds passed in as a percentage.
-   * 
-   * @param forwardPercent    Forward speed % (-1 to 1).
-   * @param horizontalPercent Sideways speed % (-1 to 1).
-   * @param turnPercent       Turn speed % (-1 to 1).
-   * @param slowModeValue     Weather or not to use slow mode or default to global setting
-   */
-  public void moveWithPercentInput(double forwardPercent, double horizontalPercent, double turnPercent, SlowModeValue slowModeValue) {
-    drive(forwardPercent, horizontalPercent, turnPercent, BreakerSwerveDriveBaseMovementPreferences.DEFAULT_ROBOT_RELATIVE_PREFERENCES.withSlowModeValue(slowModeValue));
-  }
-
-  /**k
-   * Movement with velocities relative to field. Use if using a separate odometry
-   * source.
-   * 
-   * @param forwardVelMetersPerSec              Forward velocity relative to field
-   *                                            (m/s).
-   * @param preferences Field movement preferences to use.
-   */
-  public void moveRelativeToField(ChassisSpeeds fieldRelativeSpeeds,
-      BreakerSwerveFieldRelativeMovementPreferences preferences) {
-    drive(fieldRelativeSpeeds, new BreakerSwerveDriveBaseMovementPreferences(preferences));
-  }
-
-  /**
-   * Movement with velocity values relative to field.
-   * 
-   * @param fieldRelativeSpeeds Field relative speeds to use.
-   */
-  public void moveRelativeToField(ChassisSpeeds fieldRelativeSpeeds) {
-    drive(fieldRelativeSpeeds, BreakerSwerveDriveBaseMovementPreferences.DEFAULT_FIELD_RELATIVE_PREFERENCES);
-  }
-
-  /**
-   * Movement with velocities relative to field. Use if using a separate odometry
-   * source.
-   * 
-   * @param forwardVelMetersPerSec              Forward velocity relative to field
-   *                                            (m/s).
-   * @param horizontalVelMetersPerSec           Sideways velocity relative to
-   *                                            field (m/s).
-   * @param radPerSec                           Rotation velocity relative to
-   *                                            field (rad/sec).
-   * @param odometer                            {@link BreakerGenericOdometer} to
-   *                                            determine field relative position.
-   * @param useFieldRelativeMovementAngleOffset weather or not to use the set
-   *                                            angle offset for the field
-   *                                            relative mobement forward angle
-   *                                            zero point
-   */
-  public void moveRelativeToField(double forwardVelMetersPerSec, double horizontalVelMetersPerSec, double radPerSec,
-      BreakerSwerveFieldRelativeMovementPreferences prefrences) {
-    drive(new ChassisSpeeds(forwardVelMetersPerSec, horizontalVelMetersPerSec, radPerSec), new BreakerSwerveDriveBaseMovementPreferences(prefrences));
-  }
-
-  /**
-   * Movement with velocity percents relative to field. Swerve drive's own
-   * odometry is used.
-   * 
-   * @param forwardPercent    Forward speed percent (-1 to 1).
-   * @param horizontalPercent Horizontal speed percent (-1 to 1).
-   * @param turnPercent       Rotation speed percent (-1 to 1).
-   */
-  public void moveWithPercentInputRelativeToField(double forwardPercent, double horizontalPercent, double turnPercent) {
-    drive(forwardPercent, horizontalPercent, turnPercent, BreakerSwerveDriveBaseMovementPreferences.DEFAULT_FIELD_RELATIVE_PREFERENCES);
-  }
-
-  /**
-   * Movement with velocity percents relative to field. Use if using a separate
-   * odometry source.
-   * 
-   * @param forwardPercent                      Forward speed percent (-1 to 1).
-   * @param horizontalPercent                   Horizontal speed percent (-1 to
-   *                                            1).
-   * @param turnPercent                         Rotation speed percent (-1 to 1).
-   * @param odometer                            {@link BreakerGenericOdometer} to
-   *                                            determine field relative position.
-   * @param useFieldRelativeMovementAngleOffset weather or not to use the set
-   *                                            angle offset for the field
-   *                                            relative mobement forward angle
-   *                                            zero point
-   */
-  public void moveWithPercentInputRelativeToField(double forwardPercent, double horizontalPercent, double turnPercent,
-      BreakerSwerveFieldRelativeMovementPreferences prefrences) {
-        drive(forwardPercent, horizontalPercent, turnPercent, new BreakerSwerveDriveBaseMovementPreferences(prefrences));
-  }
 
     public BreakerSwervePathFollower followPathCommand(PathPlannerTrajectory path) {
         return new BreakerSwervePathFollower(pathFollowerConfig, path, slowModeActive);
@@ -222,68 +108,29 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
     }
 
     @Override
+    public void setOdometer(BreakerGenericOdometer odometer) {
+        super.setOdometer(odometer);
+        lastSetHeading = getOdometryPoseMeters().getRotation();
+    }
+
+    @Override
     public void setOdometryPosition(Pose2d newPose) {
-        odometer.setOdometryPosition(newPose);
+        super.setOdometryPosition(newPose);
         lastSetHeading = newPose.getRotation();
     }
 
-    @Override
-    public Pose2d getOdometryPoseMeters() {
-        return super.getOdometryPoseMeters();
-    }
-
-    @Override
-    public BreakerMovementState2d getMovementState() {
-        return odometer.getMovementState();
-    }
-
-    @Override
-    public ChassisSpeeds getRobotRelativeChassisSpeeds() {
-        return odometer.getRobotRelativeChassisSpeeds();
-    }
-
-    @Override
-    public ChassisSpeeds getFieldRelativeChassisSpeeds() {
-        return odometer.getFieldRelativeChassisSpeeds();
-    }
-
-    public static class BreakerSwerveDriveBaseMovementPreferences {
-        private final SwerveMovementRefrenceFrame swerveMovementRefrenceFrame;
-        private final SlowModeValue slowModeValue;
-        private final boolean headingCorrectionEnabled;
-        public static final BreakerSwerveDriveBaseMovementPreferences DEFAULT_ROBOT_RELATIVE_PREFERENCES = new BreakerSwerveDriveBaseMovementPreferences().withSwerveMovementRefrenceFrame(SwerveMovementRefrenceFrame.ROBOT_RELATIVE);
-        public static final BreakerSwerveDriveBaseMovementPreferences DEFAULT_FIELD_RELATIVE_PREFERENCES = new BreakerSwerveDriveBaseMovementPreferences();
-    
-        /** Uses the drivetrain as odometry provider and uses a field relative movement angle offset. */
-        public BreakerSwerveDriveBaseMovementPreferences() {
-            swerveMovementRefrenceFrame = SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET;
-            slowModeValue = SlowModeValue.DEFAULT;
-            headingCorrectionEnabled = true;
-        }
-
-        public BreakerSwerveDriveBaseMovementPreferences(BreakerSwerveFieldRelativeMovementPreferences legacyPreferences) {
-            this.slowModeValue = legacyPreferences.getSlowModeValue();
-            this.swerveMovementRefrenceFrame = legacyPreferences.getUseFieldRelativeMovementAngleOffset() ? SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET : SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITHOUT_OFFSET;
-            this.headingCorrectionEnabled = false;
-          }
+    public static class BreakerSwerveDriveBaseMovementPreferences extends BreakerSwerveMovementPreferences {
+        public static final BreakerSwerveDriveBaseMovementPreferences FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT, true);
+        public static final BreakerSwerveDriveBaseMovementPreferences FIELD_RELATIVE_WITHOUT_OFFSET_AND_WITH_HEADING_CORRECTION = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITHOUT_OFFSET, SlowModeValue.DEFAULT, true);
+        public static final BreakerSwerveDriveBaseMovementPreferences ROBOT_RELATIVE_WITH_HEADING_CORRECTION = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.ROBOT_RELATIVE, SlowModeValue.DEFAULT, true);
+        // public BreakerSwerveDriveBaseMovementPreferences() {
+        //     super(SwerveMovementRefrenceFrame.ROBOT_RELATIVE, SlowModeValue.DEFAULT, true);
+        // }
     
         public BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame movementRefrenceFrame, SlowModeValue slowModeValue, boolean headingCorrectionEnabled) {
-          this.slowModeValue = slowModeValue;
-          this.swerveMovementRefrenceFrame = movementRefrenceFrame;
-          this.headingCorrectionEnabled = headingCorrectionEnabled;
+          super(movementRefrenceFrame, slowModeValue, headingCorrectionEnabled);
         }
     
-        public BreakerSwerveDriveBaseMovementPreferences withSwerveMovementRefrenceFrame(SwerveMovementRefrenceFrame swerveMovementRefrenceFrame) {
-            return new BreakerSwerveDriveBaseMovementPreferences(swerveMovementRefrenceFrame, this.slowModeValue, this.headingCorrectionEnabled);
-        }
-    
-        /** Sets whether or not you want to apply the drivetrians slow mode scailar or simply default to the global setting.
-         * @param slowModeValue Whether or not you want to apply the drivetrians slow mode scailar or simply default to the global setting.
-         * @return this.
-         */
-        public BreakerSwerveDriveBaseMovementPreferences withSlowModeValue(SlowModeValue slowModeValue) {
-            return new BreakerSwerveDriveBaseMovementPreferences(this.swerveMovementRefrenceFrame, slowModeValue, this.headingCorrectionEnabled);
-        }
 
         public BreakerSwerveDriveBaseMovementPreferences withHeadingCorrectionEnabled(boolean headingCorrectionEnabled) {
             return new BreakerSwerveDriveBaseMovementPreferences(this.swerveMovementRefrenceFrame, this.slowModeValue, headingCorrectionEnabled);
@@ -299,56 +146,6 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
 
         public boolean getHeadingCorrectionEnabled() {
             return headingCorrectionEnabled;
-        }
-
-        public enum SwerveMovementRefrenceFrame {
-            FIELD_RELATIVE_WITH_OFFSET,
-            FIELD_RELATIVE_WITHOUT_OFFSET,
-            ROBOT_RELATIVE
-        }
-    }
-
-    public static class BreakerSwerveDriveBaseOdometryConfig {
-        private BreakerGenericVisionOdometer vision;
-        private Pose2d initalPose;
-        private double[] stateStanderdDeveation, visionStanderdDeveation;
-        private boolean usePoseEstimator;
-
-        public BreakerSwerveDriveBaseOdometryConfig() {
-           this(new Pose2d());
-        }
-
-        public BreakerSwerveDriveBaseOdometryConfig(Pose2d initalPose) {
-            this.initalPose = initalPose;
-            usePoseEstimator = false;
-        }
-
-        public BreakerSwerveDriveBaseOdometryConfig(
-            BreakerGenericVisionOdometer vision,
-            Pose2d initalPose,
-            double[] stateStanderdDeveation,
-            double[] visionStanderdDeveation
-            ) {
-           this.initalPose = initalPose;
-           this.vision = vision;
-           this.stateStanderdDeveation = stateStanderdDeveation;
-           this.visionStanderdDeveation = visionStanderdDeveation;
-           usePoseEstimator = true;
-        }
-
-        public BreakerSwerveDriveBaseOdometryConfig(
-            BreakerGenericVisionOdometer vision,
-            double[] stateStanderdDeveation,
-            double[] visionStanderdDeveation
-            ) {
-            this(vision, new Pose2d(), stateStanderdDeveation, visionStanderdDeveation);
-        }
-
-        public BreakerGenericOdometer getOdometer(BreakerSwerveDrive drivetrain) {
-            if (usePoseEstimator) {
-                return new BreakerSwerveDriveFusedVisionPoseEstimator(drivetrain, vision, initalPose, visionStanderdDeveation, stateStanderdDeveation);
-            }
-            return drivetrain;
         }
     }
 

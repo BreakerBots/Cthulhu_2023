@@ -5,13 +5,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerLegacySwerveDrive;
 
 public class LockOntoAprilTag extends CommandBase {
-  private BreakerSwerveDrive drive;
+  private BreakerLegacySwerveDrive drive;
   //private AprilTagTracker aprilTagTracker;
 
-  public LockOntoAprilTag(BreakerSwerveDrive drive) {
+  public LockOntoAprilTag(BreakerLegacySwerveDrive drive) {
     addRequirements(drive);
     this.drive = drive;
     //this.aprilTagTracker = aprilTagTracker;

@@ -33,9 +33,6 @@ public abstract class BreakerGenericDrivetrain extends BreakerGenericLoopedDevic
     /** @return The {@link BreakerGenericGyro} object used by the drivetrain's intagrated odometry */
     public abstract BreakerGenericGyro getBaseGyro();
 
-    /** Updates the odometer position. */
-    public abstract void updateOdometry();
-
     /** Enables or disables the brake-on-neutral mode of the drivetrains motors */
     public abstract void setDrivetrainBrakeMode(boolean isEnabled);
 

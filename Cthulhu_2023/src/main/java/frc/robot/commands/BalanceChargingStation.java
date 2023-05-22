@@ -6,10 +6,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.physics.vector.BreakerVector3;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain.SlowModeValue;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveMovementPreferences;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.subsystems.Drive;
 
@@ -49,7 +52,7 @@ public class BalanceChargingStation extends CommandBase {
     if (!atSetpoint(gravity)) {
       balanceTimer.stop();
       balanceTimer.reset();
-      drivetrain.move(-xSpeed, ySpeed, 0);
+      drivetrain.move(new ChassisSpeeds(-xSpeed, ySpeed, 0), BreakerSwerveMovementPreferences.DEFAULT_ROBOT_RELATIVE_PREFERENCES.withSlowModeValue(SlowModeValue.DISABLED));
     } else {
       balanceTimer.reset();
       balanceTimer.start();

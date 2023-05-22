@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BreakerLib.auto.waypoint.BreakerPoseWaypointPath;
-import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollowerConfig;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerLegacySwerveDrive;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModuleBuilder;
@@ -35,13 +35,13 @@ import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.MiscConstants.*;
 
 /** Add your docs here. */
-public class Drive extends BreakerSwerveDrive {
+public class Drive extends BreakerSwerveDriveBase {
 
         public static ProfiledPIDController autoAnglePID = new ProfiledPIDController(6.9, 0.0, 0.0,
                         new TrapezoidProfile.Constraints(3.0, 3.0));
         public static PIDController autoDrivePID = new PIDController(6.0, 0.0, 0.0);
         public static BreakerHolonomicDriveController autoDriveController = new BreakerHolonomicDriveController(autoDrivePID, autoAnglePID);
-        public BreakerSwerveWaypointFollowerConfig autoConfig = new BreakerSwerveWaypointFollowerConfig(this, autoDriveController);
+        // public BreakerSwerveWaypointFollowerConfig autoConfig = new BreakerSwerveWaypointFollowerConfig(this, autoDriveController);
 
         private static WPI_TalonFX driveFL = new WPI_TalonFX(FL_DRIVE_ID, CANIVORE_1);
         private static WPI_TalonFX turnFL = new WPI_TalonFX(FL_TURN_ID, CANIVORE_1);
@@ -57,7 +57,7 @@ public class Drive extends BreakerSwerveDrive {
 
         private static WPI_TalonFX driveBR = new WPI_TalonFX(BR_DRIVE_ID, CANIVORE_1);
         private static WPI_TalonFX turnBR = new WPI_TalonFX(BR_TURN_ID, CANIVORE_1);
-        private static BreakerSwerveAzimuthEncoder  encoderBR = new BreakerSwerveCANcoder(new WPI_CANCoder(BR_ENCODER_ID, CANIVORE_1));
+        private static BreakerSwerveAzimuthEncoder encoderBR = new BreakerSwerveCANcoder(new WPI_CANCoder(BR_ENCODER_ID, CANIVORE_1));
 
         private static BreakerSwerveDriveConfig config = new BreakerSwerveDriveConfig(
                 MAX_FORWARD_VELOCITY, MAX_SIDEWAYS_VELOCITY, MAX_ANGLE_VELOCITY,
@@ -89,7 +89,7 @@ public class Drive extends BreakerSwerveDrive {
                 .createSwerveModule(BR_TRANSLATION);
 
         public Drive(BreakerPigeon2 imu) {
-                super(config, imu, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
+                super(config,  imu, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
 
                 autoDriveController.setTolerances(new Pose2d(0.07, 0.07, Rotation2d.fromDegrees(5.0)));
 

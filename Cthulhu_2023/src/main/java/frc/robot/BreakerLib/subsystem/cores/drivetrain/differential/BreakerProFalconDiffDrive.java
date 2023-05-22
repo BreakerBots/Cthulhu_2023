@@ -5,13 +5,13 @@
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.differential;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenixpro.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.devices.sensors.gyro.BreakerGenericGyro;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
-import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenixProUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** A {@link BreakerDiffDrive} instance with TalonFX (Falcon 500) motors running Phoenix Pro firmware */
 public class BreakerProFalconDiffDrive extends BreakerDiffDrive {
@@ -50,14 +50,14 @@ public class BreakerProFalconDiffDrive extends BreakerDiffDrive {
 
         StringBuilder work = new StringBuilder();
         for (TalonFX motorL : leftMotors) {
-            Pair<DeviceHealth, String> motorFaultData = BreakerPhoenixProUtil.checkMotorFaultsAndConnection(motorL);
+            Pair<DeviceHealth, String> motorFaultData = BreakerPhoenix6Util.checkMotorFaultsAndConnection(motorL);
             if (motorFaultData.getFirst() != DeviceHealth.NOMINAL) {
                 health = DeviceHealth.FAULT;
                 work.append(" MOTOR ID (" + motorL.getDeviceID() + ") FAULTS: " + motorFaultData.getSecond());
             }
         }
         for (TalonFX motorR : rightMotors) {
-            Pair<DeviceHealth, String> motorFaultData = BreakerPhoenixProUtil.checkMotorFaultsAndConnection(motorR);
+            Pair<DeviceHealth, String> motorFaultData = BreakerPhoenix6Util.checkMotorFaultsAndConnection(motorR);
             if (motorFaultData.getFirst() != DeviceHealth.NOMINAL) {
                 health = DeviceHealth.FAULT;
                 work.append(" MOTOR ID (" + motorR.getDeviceID() + ") FAULTS: " + motorFaultData.getSecond());
@@ -75,8 +75,8 @@ public class BreakerProFalconDiffDrive extends BreakerDiffDrive {
 
     @Override
     public void setDrivetrainBrakeMode(boolean isEnabled) {
-        BreakerPhoenixProUtil.setBrakeMode(isEnabled, leftMotors);
-        BreakerPhoenixProUtil.setBrakeMode(isEnabled, rightMotors);
+        BreakerPhoenix6Util.setBrakeMode(isEnabled, leftMotors);
+        BreakerPhoenix6Util.setBrakeMode(isEnabled, rightMotors);
     }
 
 }

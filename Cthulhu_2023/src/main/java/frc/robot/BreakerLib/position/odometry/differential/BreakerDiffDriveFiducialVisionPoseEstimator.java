@@ -14,11 +14,11 @@ import frc.robot.BreakerLib.position.odometry.vision.BreakerVisionPoseFilterOdom
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.differential.BreakerDiffDrive;
 
 /** Estimates diff drive pose based on vision odometry. */
-public class BreakerDiffDriveFusedVisionPoseEstimator extends SubsystemBase implements BreakerGenericOdometer {
+public class BreakerDiffDriveFiducialVisionPoseEstimator extends SubsystemBase implements BreakerGenericOdometer {
     private BreakerGenericVisionOdometer vision;
     private BreakerDiffDrivePoseEstimationOdometer poseEstimator;
 
-    public BreakerDiffDriveFusedVisionPoseEstimator(BreakerDiffDrive drivetrain, BreakerGenericVisionOdometer vision,
+    public BreakerDiffDriveFiducialVisionPoseEstimator(BreakerDiffDrive drivetrain, BreakerGenericVisionOdometer vision,
             double[] stateStanderdDeveation, double[] encoderAndGyroStandardDeveation,
             double[] visionStanderdDeveation) {
         this.vision = vision;

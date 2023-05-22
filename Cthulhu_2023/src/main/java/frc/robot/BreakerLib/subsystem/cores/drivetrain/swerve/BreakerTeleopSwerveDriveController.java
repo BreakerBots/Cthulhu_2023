@@ -14,16 +14,14 @@ import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerGenericGame
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
 import frc.robot.BreakerLib.physics.vector.BreakerVector2;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveFieldRelativeMovementPreferences;
 import frc.robot.BreakerLib.util.math.functions.BreakerGenericMathFunction;
 
-/** Controller object for the {@link BreakerSwerveDrive} drivetrain. */
+/** Controller object for the {@link BreakerLegacySwerveDrive} drivetrain. */
 public class BreakerTeleopSwerveDriveController extends CommandBase {
 
   private BreakerGenericGamepad controller;
   private BreakerSwerveDrive baseDrivetrain;
-  private BreakerGenericOdometer odometer;
-  private boolean usesSuppliers, usesCurves, usesExternalOdometer, usesRateLimiters, turnOverride, linearOverride;
+  private boolean usesSuppliers, usesCurves, usesRateLimiters, turnOverride, linearOverride;
   private BreakerGenericMathFunction linearSpeedCurve, turnSpeedCurve;
   private SlewRateLimiter forwardRateLimiter, horizontalRateLimiter, turnRateLimiter;
   private DoubleSupplier forwardSpeedPercentSupplier, horizontalSpeedPercentSupplier, turnSpeedPercentSupplier,
@@ -40,7 +38,6 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     this.baseDrivetrain = baseDrivetrain;
     usesSuppliers = false;
     usesCurves = false;
-    usesExternalOdometer = false;
     usesRateLimiters = false;
     addRequirements(baseDrivetrain);
   }
@@ -62,51 +59,6 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     this.baseDrivetrain = baseDrivetrain;
     usesSuppliers = true;
     usesCurves = false;
-    usesExternalOdometer = false;
-    usesRateLimiters = false;
-    addRequirements(baseDrivetrain);
-  }
-
-  /**
-   * Makes a BreakerSwerveDriveController which uses an odometer and HID input.
-   * 
-   * @param baseDrivetrain Swerve drivetrain.
-   * @param odometer       Odometer to use.
-   * @param controller     Xbox controller to provide input.
-   */
-  public BreakerTeleopSwerveDriveController(BreakerSwerveDrive baseDrivetrain, BreakerGenericOdometer odometer,
-      BreakerGenericGamepad controller) {
-    this.controller = controller;
-    this.baseDrivetrain = baseDrivetrain;
-    this.odometer = odometer;
-    usesSuppliers = false;
-    usesCurves = false;
-    usesExternalOdometer = true;
-    usesRateLimiters = false;
-    addRequirements(baseDrivetrain);
-  }
-
-  /**
-   * Makes a BreakerSwerveDriveController which uses an odometer and percent speed
-   * values.
-   * 
-   * @param baseDrivetrain                 Swerve drivetrain.
-   * @param odometer                       Odometer to use.
-   * @param forwardSpeedPercentSupplier    The forward speed percent supplier.
-   * @param horizontalSpeedPercentSupplier The horizontal speed percent supplier.
-   * @param turnSpeedPercentSupplier       The turn speed percent supplier.
-   */
-  public BreakerTeleopSwerveDriveController(BreakerSwerveDrive baseDrivetrain, BreakerGenericOdometer odometer,
-      DoubleSupplier forwardSpeedPercentSupplier, DoubleSupplier horizontalSpeedPercentSupplier,
-      DoubleSupplier turnSpeedPercentSupplier) {
-    this.forwardSpeedPercentSupplier = forwardSpeedPercentSupplier;
-    this.horizontalSpeedPercentSupplier = horizontalSpeedPercentSupplier;
-    this.turnSpeedPercentSupplier = turnSpeedPercentSupplier;
-    this.baseDrivetrain = baseDrivetrain;
-    this.odometer = odometer;
-    usesSuppliers = true;
-    usesCurves = false;
-    usesExternalOdometer = true;
     usesRateLimiters = false;
     addRequirements(baseDrivetrain);
   }
@@ -236,22 +188,10 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
       turn = overrideTurnSupplier.getAsDouble();
     }
 
-    SmartDashboard.putString("Forward", "" + forward);
-    SmartDashboard.putString("Horizontal", "" + horizontal);
-    SmartDashboard.putString("Rotation", "" + turn);
-
-    // Movement relative to field.
-    if (usesExternalOdometer) {
-      // External odometry source is used.
-      baseDrivetrain.moveWithPercentInputRelativeToField(MathUtil.clamp(forward, -1.0, 1.0),
-          MathUtil.clamp(horizontal, -1.0, 1.0), MathUtil.clamp(turn, -1.0, 1.0), new BreakerSwerveFieldRelativeMovementPreferences().withOdometryProvider(odometer));
-    } else {
-      // Swerve drive's own odometry is used.
-      baseDrivetrain.moveWithPercentInputRelativeToField(MathUtil.clamp(forward, -1.0, 1.0),
-          MathUtil.clamp(horizontal, -1.0, 1.0), MathUtil.clamp(turn, -1.0, 1.0));
-    }
-
     SmartDashboard.putString("Drive input", String.format("\nF: %.2f, H: %.2f, T: %.2f", forward, horizontal, turn));
+
+      // Swerve drive's own odometry is used.
+    baseDrivetrain.move(MathUtil.clamp(forward, -1.0, 1.0), MathUtil.clamp(horizontal, -1.0, 1.0), MathUtil.clamp(turn, -1.0, 1.0));
   }
 
   @Override

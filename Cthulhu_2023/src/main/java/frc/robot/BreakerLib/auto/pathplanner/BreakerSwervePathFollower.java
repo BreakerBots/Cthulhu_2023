@@ -15,7 +15,9 @@ import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.BreakerLib.position.odometry.BreakerGenericOdometer;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain.SlowModeValue;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveFieldRelativeMovementPreferences;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveMovementPreferences;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveMovementPreferences.SwerveMovementRefrenceFrame;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -27,7 +29,7 @@ public class BreakerSwervePathFollower extends CommandBase {
   private PathPlannerTrajectory transformedTrajectory;
   private final BreakerSwervePathFollowerConfig config;
   private final boolean stopAtEnd;
-  private final BreakerSwerveFieldRelativeMovementPreferences driveMoveCallPrefrences;
+  private final BreakerSwerveMovementPreferences driveMoveCallPrefrences;
 
   private static Consumer<PathPlannerTrajectory> logActiveTrajectory = null;
   private static Consumer<Pose2d> logTargetPose = null;
@@ -51,7 +53,7 @@ public class BreakerSwervePathFollower extends CommandBase {
     this.trajectory = trajectory;
     this.config = config;
     this.stopAtEnd = stopAtEnd;
-    driveMoveCallPrefrences = new BreakerSwerveFieldRelativeMovementPreferences(config.getOdometer(), false, SlowModeValue.DISABLED);
+    driveMoveCallPrefrences = new BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITHOUT_OFFSET, SlowModeValue.DISABLED);
     addRequirements(config.getDrivetrain());
     
     if (config.getUseAllianceColor() && trajectory.fromGUI && trajectory.getInitialPose().getX() > 8.27) {
@@ -96,7 +98,7 @@ public class BreakerSwervePathFollower extends CommandBase {
 
     ChassisSpeeds targetChassisSpeeds = this.config.driveController.calculate(currentPose, desiredState);
 
-    this.config.drivetrain.moveRelativeToField(targetChassisSpeeds,  driveMoveCallPrefrences);
+    this.config.drivetrain.move(targetChassisSpeeds, driveMoveCallPrefrences);
 
     if (logTargetPose != null) {
       logTargetPose.accept(
@@ -164,17 +166,10 @@ public class BreakerSwervePathFollower extends CommandBase {
     private BreakerGenericOdometer odometer;
     private PPHolonomicDriveController driveController;
     private boolean useAllianceColor;
-    public BreakerSwervePathFollowerConfig(BreakerSwerveDrive drivetrain, BreakerGenericOdometer odometer, PPHolonomicDriveController driveController, boolean useAllianceColor) {
-      this.driveController = driveController;
-      this.drivetrain = drivetrain;
-      this.odometer = odometer;
-      this.useAllianceColor = useAllianceColor;
-    }
 
     public BreakerSwervePathFollowerConfig(BreakerSwerveDrive drivetrain, PPHolonomicDriveController driveController, boolean useAllianceColor) {
       this.driveController = driveController;
       this.drivetrain = drivetrain;
-      this.odometer = drivetrain;
       this.useAllianceColor = useAllianceColor;
     }
 

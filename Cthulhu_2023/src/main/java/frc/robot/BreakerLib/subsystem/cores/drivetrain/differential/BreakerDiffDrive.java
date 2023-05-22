@@ -264,8 +264,7 @@ public abstract class BreakerDiffDrive extends BreakerGenericDrivetrain {
     prevMovementState = curMovementState;
   }
 
-  @Override
-  public void updateOdometry() {
+  private void updateOdometry() {
     driveOdometer.update(Rotation2d.fromDegrees(gyro.getRawYaw()), getLeftDriveDistanceMeters(),
         getRightDriveDistanceMeters());
     calculateMovementState((Timer.getFPGATimestamp() -
