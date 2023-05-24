@@ -4,10 +4,12 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
 import frc.robot.BreakerLib.util.factory.BreakerProCANCoderFactory;
@@ -24,12 +26,12 @@ public class BreakerSwerveProCANcoder implements BreakerSwerveAzimuthEncoder {
 
     @Override
     public double getRelative() {
-        return encoder.getPosition().getValue() * 360.0;
+        return BaseStatusSignal.getLatencyCompensatedValue(encoder.getPosition(), encoder.getVelocity()) * 360.0;
     }
 
     @Override
     public double getAbsolute() {
-        return encoder.getAbsolutePosition().getValue() * 360.0;
+        return MathUtil.inputModulus(BaseStatusSignal.getLatencyCompensatedValue(encoder.getAbsolutePosition(), encoder.getVelocity()), -0.5, 0.5)  * 360.0;
     }
 
     @Override
