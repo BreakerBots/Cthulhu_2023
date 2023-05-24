@@ -69,7 +69,7 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
 
         if (Math.abs(targetChassisSpeeds.omegaRadiansPerSecond) < config.getAngularVelDeadband()) {
             if (movementPreferences.getHeadingCorrectionEnabled()) {
-                targetVels.omegaRadiansPerSecond = config.thetaController.calculate(curAng.getRadians(), lastSetHeading.getRadians());
+                targetVels.omegaRadiansPerSecond = config.getHeadingCompensationController().calculate(curAng.getRadians(), lastSetHeading.getRadians());
             }
         } else {
             lastSetHeading = curAng;
@@ -90,8 +90,8 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
     }
     
     @Override
-    public void move(double percentX, double percentY, double precentOmega) {
-        move(new ChassisSpeeds(percentX * config.getMaxForwardVel(), percentY * config.getMaxSidewaysVel(), precentOmega * config.getMaxAngleVel()), BreakerSwerveDriveBaseMovementPreferences.FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION);
+    public void move(double percentX, double percentY, double percentOmega) {
+        move(percentsToChassisSpeeds(percentX, percentY, percentOmega), BreakerSwerveDriveBaseMovementPreferences.FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION);
     } 
 
     public BreakerSwervePathFollower followPathCommand(PathPlannerTrajectory path) {
@@ -150,7 +150,7 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
     }
 
     public static class BreakerSwerveDriveBaseConfig extends BreakerSwerveDriveConfig {
-        private PIDController xController, yController, thetaController;
+        private PIDController xController, yController, thetaController, headingCompensationController;
         private PPHolonomicDriveController driveController;
         private double angularVelDeadband;
         public BreakerSwerveDriveBaseConfig(double maxForwardVel, double maxSidewaysVel, double maxAngVel, 
@@ -160,8 +160,10 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
             this.xController = xController;
             this.yController = yController;
             this.thetaController = thetaController;
-            thetaController.enableContinuousInput(-Math.PI, Math.PI);
             this.angularVelDeadband = angularVelDeadband;
+            headingCompensationController = new PIDController(thetaController.getP(), thetaController.getI(), thetaController.getD());
+            headingCompensationController.enableContinuousInput(-Math.PI, Math.PI);
+            thetaController.enableContinuousInput(-Math.PI, Math.PI);
             driveController = new PPHolonomicDriveController(xController, yController, thetaController);
         }
 
@@ -177,12 +179,22 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
             return thetaController;
         }
 
+        public PIDController getHeadingCompensationController() {
+            return headingCompensationController;
+        }
+
         public PPHolonomicDriveController getDriveController() {
             return driveController;
         }
 
         public double getAngularVelDeadband() {
             return angularVelDeadband;
+        }
+
+        @Override
+        public BreakerSwerveDriveBaseConfig setSlowModeMultipliers(double linearMulitplier, double turnMultiplier) {
+            super.setSlowModeMultipliers(linearMulitplier, turnMultiplier);
+            return this;
         }
 
     }

@@ -20,7 +20,6 @@ import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerLegacySwerveDrive;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule;
@@ -59,9 +58,10 @@ public class Drive extends BreakerSwerveDriveBase {
         private static WPI_TalonFX turnBR = new WPI_TalonFX(BR_TURN_ID, CANIVORE_1);
         private static BreakerSwerveAzimuthEncoder encoderBR = new BreakerSwerveCANcoder(new WPI_CANCoder(BR_ENCODER_ID, CANIVORE_1));
 
-        private static BreakerSwerveDriveConfig config = new BreakerSwerveDriveConfig(
+        private static BreakerSwerveDriveBaseConfig config = new BreakerSwerveDriveBaseConfig(
                 MAX_FORWARD_VELOCITY, MAX_SIDEWAYS_VELOCITY, MAX_ANGLE_VELOCITY,
-                MODULE_WHEEL_SPEED_DEADBAND, MAX_ATTAINABLE_MODULE_WHEEL_SPEED)
+                0.01, MODULE_WHEEL_SPEED_DEADBAND, MAX_ATTAINABLE_MODULE_WHEEL_SPEED,
+                new PIDController(4.5, 0.0, 0), new PIDController(4.5, 0.0, 0), new PIDController(4.75, 0.0, 0.0))
                 .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
 
         private static BreakerSwerveModuleConfig falconMk4iConfig = new BreakerSwerveModuleConfig(

@@ -26,10 +26,10 @@ public class TestPath extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     PathPlannerTrajectory examplePath = PathPlanner.loadPath("test path", new PathConstraints(3.75, 3));
-    BreakerSwervePathFollowerConfig config = new BreakerSwervePathFollowerConfig(drive, new PPHolonomicDriveController(
-        new PIDController(4.5, 0.0, 0), new PIDController(4.5, 0.0, 0), new PIDController(4.75, 0.0, 0.0)), false);
+    // BreakerSwervePathFollowerConfig config = new BreakerSwervePathFollowerConfig(drive, new PPHolonomicDriveController(
+    //     new PIDController(4.5, 0.0, 0), new PIDController(4.5, 0.0, 0), new PIDController(4.75, 0.0, 0.0)), false);
     addCommands(
         new BreakerStartAutoPath(drive, new Pose2d(examplePath.getInitialState().poseMeters.getTranslation(), examplePath.getInitialState().holonomicRotation)),
-        new BreakerSwervePathFollower(config, examplePath, true));
+        drive.followPathCommand(examplePath));
   }
 }

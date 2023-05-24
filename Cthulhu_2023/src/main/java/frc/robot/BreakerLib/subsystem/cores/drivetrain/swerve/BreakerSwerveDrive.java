@@ -6,6 +6,7 @@ package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve;
 
 import java.util.Arrays;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -23,7 +24,7 @@ import frc.robot.BreakerLib.position.odometry.swerve.BreakerSwerveDriveFusedVisi
 import frc.robot.BreakerLib.position.odometry.swerve.BreakerSwerveOdometer;
 import frc.robot.BreakerLib.position.odometry.vision.BreakerGenericVisionOdometer;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveMovementPreferences.SwerveMovementRefrenceFrame;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveMovementPreferences.SwerveMovementRefrenceFrame;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerGenericSwerveModule;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
@@ -157,13 +158,20 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     move(targetChassisSpeeds, new BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT));
   }
 
-  public void move(double percentX, double percentY, double precentOmega, BreakerSwerveMovementPreferences movementPreferences) {
-    move(new ChassisSpeeds(percentX * config.getMaxForwardVel(), percentY * config.getMaxSidewaysVel(), precentOmega * config.getMaxAngleVel()), movementPreferences);
+  public void move(double percentX, double percentY, double percentOmega, BreakerSwerveMovementPreferences movementPreferences) {
+    move(percentsToChassisSpeeds(percentX, percentY, percentOmega), movementPreferences);
   } 
 
-  public void move(double percentX, double percentY, double precentOmega) {
-    move(new ChassisSpeeds(percentX * config.getMaxForwardVel(), percentY * config.getMaxSidewaysVel(), precentOmega * config.getMaxAngleVel()), new BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT));
+  public void move(double percentX, double percentY, double percentOmega) {
+    move(percentX, percentY, percentOmega, new BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT));
   } 
+
+  protected ChassisSpeeds percentsToChassisSpeeds(double percentX, double percentY, double percentOmega) {
+    double clampedX = MathUtil.clamp(percentX, -1.0, 1.0);
+    double clampedY = MathUtil.clamp(percentY, -1.0, 1.0);
+    double clampedOmega = MathUtil.clamp(percentOmega, -1.0, 1.0);
+    return new ChassisSpeeds(clampedX * config.getMaxForwardVel(), clampedY  * config.getMaxSidewaysVel(), clampedOmega * config.getMaxAngleVel());
+  }
 
   public SwerveDriveKinematics getKinematics() {
     return kinematics;
@@ -291,6 +299,59 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     return String.format("BreakerSwerveDrive(Health: %s, Movement_State: %s, Swerve_Modules: %s)", health.toString(),
         odometer.getMovementState().toString(), Arrays.toString(swerveModules));
   }
+
+  public static class BreakerSwerveMovementPreferences {
+    protected final SwerveMovementRefrenceFrame swerveMovementRefrenceFrame;
+    protected final SlowModeValue slowModeValue;
+    protected final boolean headingCorrectionEnabled;
+    public static final BreakerSwerveMovementPreferences DEFAULT_ROBOT_RELATIVE_PREFERENCES = new BreakerSwerveMovementPreferences().withSwerveMovementRefrenceFrame(SwerveMovementRefrenceFrame.ROBOT_RELATIVE);
+    public static final BreakerSwerveMovementPreferences DEFAULT_FIELD_RELATIVE_PREFERENCES = new BreakerSwerveMovementPreferences();
+
+    /** Uses the drivetrain as odometry provider and uses a field relative movement angle offset. */
+    public BreakerSwerveMovementPreferences() {
+        this(SwerveMovementRefrenceFrame.ROBOT_RELATIVE, SlowModeValue.DEFAULT, false);
+    }
+
+    public BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame movementRefrenceFrame, SlowModeValue slowModeValue) {
+        this(movementRefrenceFrame, slowModeValue, false);
+    } 
+
+    protected BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame movementRefrenceFrame, SlowModeValue slowModeValue, boolean headingCorrectionEnabled) {
+      this.slowModeValue = slowModeValue;
+      this.swerveMovementRefrenceFrame = movementRefrenceFrame;
+      this.headingCorrectionEnabled = headingCorrectionEnabled;
+    } 
+
+    public BreakerSwerveMovementPreferences withSwerveMovementRefrenceFrame(SwerveMovementRefrenceFrame swerveMovementRefrenceFrame) {
+        return new BreakerSwerveMovementPreferences(swerveMovementRefrenceFrame, this.slowModeValue, this.headingCorrectionEnabled);
+    }
+
+    /** Sets whether or not you want to apply the drivetrians slow mode scailar or simply default to the global setting.
+     * @param slowModeValue Whether or not you want to apply the drivetrians slow mode scailar or simply default to the global setting.
+     * @return this.
+     */
+    public BreakerSwerveMovementPreferences withSlowModeValue(SlowModeValue slowModeValue) {
+        return new BreakerSwerveMovementPreferences(this.swerveMovementRefrenceFrame, slowModeValue, this.headingCorrectionEnabled);
+    }
+
+    public SlowModeValue getSlowModeValue() {
+        return slowModeValue;
+    }
+
+    public SwerveMovementRefrenceFrame getSwerveMovementRefrenceFrame() {
+        return swerveMovementRefrenceFrame;
+    }
+
+    public boolean getHeadingCorrectionEnabled() {
+        return headingCorrectionEnabled;
+    }
+
+    public enum SwerveMovementRefrenceFrame {
+        FIELD_RELATIVE_WITH_OFFSET,
+        FIELD_RELATIVE_WITHOUT_OFFSET,
+        ROBOT_RELATIVE
+    }
+}
 
   public static class BreakerSwerveOdometryConfig {
     private BreakerGenericVisionOdometer vision;
