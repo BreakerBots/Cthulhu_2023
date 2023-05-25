@@ -7,6 +7,7 @@ package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerGenericSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.BreakerGenericSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.util.math.BreakerMath;
@@ -76,7 +77,6 @@ public class BreakerSwerveModule extends BreakerGenericSwerveModule {
     @Override
     public void resetModuleDriveEncoderPosition() {
         driveMotor.resetDistance();
-        
     }
 
     @Override
