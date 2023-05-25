@@ -29,7 +29,7 @@ public class BreakerNeoSwerveModuleAngleMotor extends BreakerGenericSwerveModule
     private BreakerSwerveAzimuthEncoder encoder;
     private Rotation2d targetAngle;
     private PIDController pid;
-    public BreakerNeoSwerveModuleAngleMotor(CANSparkMax motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
+    public BreakerNeoSwerveModuleAngleMotor(CANSparkMax motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, int supplyCurrentLimit, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
         
@@ -37,7 +37,7 @@ public class BreakerNeoSwerveModuleAngleMotor extends BreakerGenericSwerveModule
         encoder.config(false, encoderAbsoluteAngleOffsetDegrees);
 
         BreakerREVUtil.checkError(motor.enableVoltageCompensation(12.0), "Failed to config " + deviceName + " voltage compensation");
-        BreakerREVUtil.checkError(motor.setSmartCurrentLimit(80),  "Failed to config " + deviceName + " smart current limit");
+        BreakerREVUtil.checkError(motor.setSmartCurrentLimit(supplyCurrentLimit),  "Failed to config " + deviceName + " smart current limit");
         motor.setInverted(isMotorInverted);
         pid = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
         pid.enableContinuousInput(-180, 180);

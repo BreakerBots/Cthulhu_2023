@@ -129,6 +129,30 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     }
   }
 
+  /** 
+   * The primary method for controling this drivetrain. Takes in a {@link ChassisSpeeds} object, representing the robot's velocites 
+   * in the X, Y, and Theta, axies relative to your chosen refrence frame. It then converts these into individual velocieies 
+   * and headings for each module based on the prefrences you have provided.
+   * 
+   * @param targetChassisSpeeds   The commanded linear (m/s) and angular (rad/s) velocites of the robot. In robot-relative mode, 
+   *                              positive x is torwards the bow (front) and positive y is torwards port (left) of the robot. 
+   *                              In field-relative mode, torwards X is twords to your odometry heading's zero point, and posiive y 
+   *                              is 90 degrees offset from that and to the left. If you are using field-relative mode with an angle
+   *                              offset (must be bolth set using {@link BreakerSwerveDrive#setFieldRelativeMovementOffsetAngle} 
+   *                              and the proper refrence frame must be selected in your prefrences) the offset angle will be added
+   *                              to your odometry reading when transforming the chassis velosity vector from the field refrence 
+   *                              frame to the robot refrence frame. If SlowMode is enabled in your prefrences, or your prefrences 
+   *                              refer to the drivetrain's global default which happens to be enabled when this method is called,
+   *                              the velocitys you set in each axis are multiplyd by the SlowMode multipler set in this drivetrain's config.
+   * 
+   * @param movementPreferences   The {@link BreakerSwerveMovementPreferences} object that contains the prefrences for this call.
+   *                              NOTE: THIS CLASS ONLY RESPECTS THE PREFRENCES FOUND IN THE {@link BreakerSwerveMovementPreferences}
+   *                              CLASS'S PUBLIC CONSTRUCTORS! Values such as {@link BreakerSwerveMovementPreferences#getHeadingCorrectionEnabled()} 
+   *                              and others like it are not acounted for or supported by this method, and exist to enshure fallback compatablity between
+   *                              this class's movement methods and the child prefrence classes such as {@link BreakerSwerveDriveBaseMovementPreferences}
+   *                              used by inheritng classes like {@link BreakerSwerveDriveBase} that support more features, and vice-versa.
+   */
+
   public void move(ChassisSpeeds targetChassisSpeeds, BreakerSwerveMovementPreferences movementPreferences) {
     ChassisSpeeds targetVels = targetChassisSpeeds;
     Rotation2d curAng = odometer.getOdometryPoseMeters().getRotation();
@@ -154,8 +178,23 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     setModuleStates(getKinematics().toSwerveModuleStates(targetChassisSpeeds));
   }
 
+
+  /** 
+   * The primary method for controling this drivetrain. Takes in a {@link ChassisSpeeds} object, representing the robot's velocites 
+   * in the X, Y, and Theta, axies. This method defaults to useing a field relative velociy refrence frame with the field relative
+   * angle offset applyed if set. SlowMode is set to the drivetrain's global default. 
+   * 
+   * @param targetChassisSpeeds   The commanded linear (m/s) and angular (rad/s) velocites of the robot. In robot-relative mode, 
+   *                              positive x is torwards the bow (front) and positive y is torwards port (left) of the robot. 
+   *                              In field-relative mode, torwards X is twords to your odometry heading's zero point, and posiive y 
+   *                              is 90 degrees offset from that and to the left. If you are using field-relative mode with an angle
+   *                              offset (must be set using {@link BreakerSwerveDrive#setFieldRelativeMovementOffsetAngle}) the offset 
+   *                              angle will be added to your odometry reading when transfrming the chassis velosity vector from the  
+   *                              field refrence frame to the robot refrence frame. If SlowMode is enabled globaly for your drivetrain 
+   *                              the velocitys you set in each axis are multiplyd by the SlowMode multipler set in this drivetrain's config.
+   */
   public void move(ChassisSpeeds targetChassisSpeeds) {
-    move(targetChassisSpeeds, new BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT));
+    move(targetChassisSpeeds, BreakerSwerveMovementPreferences.DEFAULT_FIELD_RELATIVE_PREFERENCES);
   }
 
   public void move(double percentX, double percentY, double percentOmega, BreakerSwerveMovementPreferences movementPreferences) {
@@ -163,7 +202,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
   } 
 
   public void move(double percentX, double percentY, double percentOmega) {
-    move(percentX, percentY, percentOmega, new BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT));
+    move(percentX, percentY, percentOmega, BreakerSwerveMovementPreferences.DEFAULT_FIELD_RELATIVE_PREFERENCES);
   } 
 
   protected ChassisSpeeds percentsToChassisSpeeds(double percentX, double percentY, double percentOmega) {

@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -37,32 +38,32 @@ public class BreakerSwerveModuleBuilder {
     }
 
     public BreakerSwerveModuleBuilder withFalconAngleMotor(WPI_TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
-        angleMotor = new BreakerFalconSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, isMotorInverted, config.getAnglePIDConfig());
+        angleMotor = new BreakerFalconSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, config.getAngleSupplyCurrentLimit(), isMotorInverted, config.getAnglePIDConfig());
         return this;
     }
 
     public BreakerSwerveModuleBuilder withFalconDriveMotor(WPI_TalonFX motor, boolean isMotorInverted) {
-        driveMotor = new BreakerFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
+        driveMotor = new BreakerFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), config.getDriveSupplyCurrentLimit(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
         return this;
     }
 
     public BreakerSwerveModuleBuilder withProFalconAngleMotor(TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
-        angleMotor = new BreakerProFalconSwerveModuleAngleMotor(motor, encoder, config.getAzimuthGearRatio(), encoderAbsoluteAngleOffsetDegrees, isMotorInverted, config.getAnglePIDConfig());
+        angleMotor = new BreakerProFalconSwerveModuleAngleMotor(motor, encoder, config.getAzimuthGearRatio(), encoderAbsoluteAngleOffsetDegrees, config.getAngleSupplyCurrentLimit(), isMotorInverted, config.getAnglePIDConfig());
         return this;
     }
 
     public BreakerSwerveModuleBuilder withProFalconDriveMotor(TalonFX motor, boolean isMotorInverted) {
-        driveMotor = new BreakerProFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
+        driveMotor = new BreakerProFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), config.getDriveSupplyCurrentLimit(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
         return this;
     }
 
     public BreakerSwerveModuleBuilder withNEOAngleMotor(CANSparkMax motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
-        angleMotor = new BreakerNeoSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, isMotorInverted, config.getAnglePIDConfig());
+        angleMotor = new BreakerNeoSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, (int) config.getAngleSupplyCurrentLimit(), isMotorInverted, config.getAnglePIDConfig());
         return this;
     }
 
     public BreakerSwerveModuleBuilder withNEODriveMotor(CANSparkMax motor, boolean isMotorInverted) {
-        driveMotor = new BreakerNeoSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
+        driveMotor = new BreakerNeoSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), (int) config.getDriveSupplyCurrentLimit(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
         return this;
     }
 
@@ -71,15 +72,17 @@ public class BreakerSwerveModuleBuilder {
     }
 
     public static class BreakerSwerveModuleConfig {
-        private double driveGearRatio, azimuthGearRatio, wheelDiameter;
+        private double driveGearRatio, azimuthGearRatio, wheelDiameter, angleSupplyCurrentLimit, driveSupplyCurrentLimit;
         private BreakerSwerveMotorPIDConfig anglePIDConfig, drivePIDConfig;
         private BreakerArbitraryFeedforwardProvider driveArbFF;
-        public BreakerSwerveModuleConfig(double driveGearRatio, double azimuthGearRatio, double wheelDiameter, BreakerSwerveMotorPIDConfig anglePIDConfig, BreakerSwerveMotorPIDConfig drivePIDConfig, BreakerArbitraryFeedforwardProvider driveArbFF) {
+        public BreakerSwerveModuleConfig(double driveGearRatio, double azimuthGearRatio, double wheelDiameter, double angleSupplyCurrentLimit, double driveSupplyCurrentLimit, BreakerSwerveMotorPIDConfig anglePIDConfig, BreakerSwerveMotorPIDConfig drivePIDConfig, BreakerArbitraryFeedforwardProvider driveArbFF) {
             this.driveGearRatio = driveGearRatio;
             this.azimuthGearRatio = azimuthGearRatio;
             this.wheelDiameter = wheelDiameter;
             this.drivePIDConfig = drivePIDConfig;
             this.anglePIDConfig = anglePIDConfig;
+            this.angleSupplyCurrentLimit = angleSupplyCurrentLimit;
+            this.driveSupplyCurrentLimit = driveSupplyCurrentLimit;
             this.driveArbFF = driveArbFF;
         }
 
@@ -105,6 +108,14 @@ public class BreakerSwerveModuleBuilder {
 
         public double getWheelDiameter() {
             return wheelDiameter;
+        }
+
+        public double getAngleSupplyCurrentLimit() {
+            return angleSupplyCurrentLimit;
+        }
+
+        public double getDriveSupplyCurrentLimit() {
+            return driveSupplyCurrentLimit;
         }
     }
 }

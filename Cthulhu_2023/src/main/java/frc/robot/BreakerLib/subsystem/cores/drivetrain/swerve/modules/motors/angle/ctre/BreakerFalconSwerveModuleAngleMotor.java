@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -18,6 +19,8 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveAzimuthEncoder;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerGenericSwerveModuleAngleMotor;
@@ -34,11 +37,10 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
     private BreakerSwerveAzimuthEncoder encoder;
     private Rotation2d targetAngle;
     private BreakerSwerveAzimuthControler azimuthControler;
-    public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
+    public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, double supplyCurrentLimit, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
         encoder.config(false, encoderAbsoluteAngleOffsetDegrees);
-
         TalonFXConfiguration turnConfig = new TalonFXConfiguration();
         if (encoder.getBaseEncoderType() == WPI_CANCoder.class) {
             WPI_CANCoder cancoder = (WPI_CANCoder)encoder.getBaseEncoder();
@@ -60,7 +62,7 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
         turnConfig.peakOutputForward = 1.0;
         turnConfig.peakOutputReverse = -1.0;
         turnConfig.voltageCompSaturation = 12.0;
-        turnConfig.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 80.0, 80.0, 1.5);
+        turnConfig.supplyCurrLimit = new SupplyCurrentLimitConfiguration(true, supplyCurrentLimit, encoderAbsoluteAngleOffsetDegrees, supplyCurrentLimit);
         BreakerCTREUtil.checkError(motor.configAllSettings(turnConfig),
                 " Failed to config swerve module turn motor ");
         motor.selectProfileSlot(0, 0);

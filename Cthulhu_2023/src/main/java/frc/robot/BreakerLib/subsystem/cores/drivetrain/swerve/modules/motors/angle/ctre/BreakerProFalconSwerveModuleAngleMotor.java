@@ -35,7 +35,7 @@ public class BreakerProFalconSwerveModuleAngleMotor extends BreakerGenericSwerve
     private Rotation2d targetAngle;
     private BreakerSwerveAzimuthControler azimuthControler;
     private final PositionDutyCycle positionRequest;
-    public BreakerProFalconSwerveModuleAngleMotor(TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, double azimuthGearRatio, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
+    public BreakerProFalconSwerveModuleAngleMotor(TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, double azimuthGearRatio, double supplyCurrentLimit, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
         positionRequest = new PositionDutyCycle(0.0, true, 0.0, 0, false);
@@ -61,8 +61,10 @@ public class BreakerProFalconSwerveModuleAngleMotor extends BreakerGenericSwerve
             azimuthControler = new BreakerSwerveAzimuthControler(motor, encoder, pidConfig);
         }
         turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        turnConfig.TorqueCurrent.PeakForwardTorqueCurrent = 80;
-        turnConfig.TorqueCurrent.PeakReverseTorqueCurrent = -80;
+        turnConfig.CurrentLimits.SupplyCurrentLimit = supplyCurrentLimit;
+        turnConfig.CurrentLimits.SupplyCurrentThreshold = supplyCurrentLimit;
+        turnConfig.CurrentLimits.SupplyTimeThreshold = 1.5;
+        turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         BreakerPhoenix6Util.checkStatusCode(motor.getConfigurator().apply(turnConfig),
                 " Failed to config swerve module drive motor ");
     

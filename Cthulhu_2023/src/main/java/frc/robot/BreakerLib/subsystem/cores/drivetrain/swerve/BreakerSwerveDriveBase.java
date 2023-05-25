@@ -88,10 +88,16 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
     public void move(ChassisSpeeds targetChassisSpeeds) {
         move(targetChassisSpeeds, BreakerSwerveDriveBaseMovementPreferences.FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION);
     }
+
+    @Override
+    public void move(double percentX, double percentY, double percentOmega,
+            BreakerSwerveMovementPreferences movementPreferences) {
+        move(percentsToChassisSpeeds(percentX, percentY, percentOmega), BreakerSwerveDriveBaseMovementPreferences.FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION);
+    }
     
     @Override
     public void move(double percentX, double percentY, double percentOmega) {
-        move(percentsToChassisSpeeds(percentX, percentY, percentOmega), BreakerSwerveDriveBaseMovementPreferences.FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION);
+        move(percentX, percentY, percentOmega, BreakerSwerveDriveBaseMovementPreferences.FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION);
     } 
 
     public BreakerSwervePathFollower followPathCommand(PathPlannerTrajectory path) {

@@ -21,7 +21,7 @@ public class BreakerNeoSwerveModuleDriveMotor extends BreakerGenericSwerveModule
     private CANSparkMax motor;
     private double driveGearRatio, wheelDiameter, targetVelocity;
     private BreakerArbitraryFeedforwardProvider arbFF;
-    public BreakerNeoSwerveModuleDriveMotor(CANSparkMax motor, double driveGearRatio, double wheelDiameter, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
+    public BreakerNeoSwerveModuleDriveMotor(CANSparkMax motor, double driveGearRatio, double wheelDiameter, int supplyCurrentLimit, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.driveGearRatio = driveGearRatio;
         this.wheelDiameter = wheelDiameter;
@@ -34,7 +34,7 @@ public class BreakerNeoSwerveModuleDriveMotor extends BreakerGenericSwerveModule
         drivePID.setFF(pidConfig.kF);
 
         BreakerREVUtil.checkError(motor.enableVoltageCompensation(12.0), "Failed to config " + deviceName + " voltage compensation");
-        BreakerREVUtil.checkError(motor.setSmartCurrentLimit(80),  "Failed to config " + deviceName + " smart current limit");
+        BreakerREVUtil.checkError(motor.setSmartCurrentLimit(supplyCurrentLimit),  "Failed to config " + deviceName + " smart current limit");
         motor.setInverted(isMotorInverted);
         motor.setIdleMode(IdleMode.kBrake);
     }

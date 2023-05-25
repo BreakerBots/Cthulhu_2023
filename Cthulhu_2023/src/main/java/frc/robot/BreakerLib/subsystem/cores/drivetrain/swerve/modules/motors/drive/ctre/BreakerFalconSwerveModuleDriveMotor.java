@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -27,7 +28,7 @@ public class BreakerFalconSwerveModuleDriveMotor extends BreakerGenericSwerveMod
     private WPI_TalonFX motor;
     private double driveGearRatio, wheelDiameter, targetVelocity;
     private BreakerArbitraryFeedforwardProvider arbFF;
-    public BreakerFalconSwerveModuleDriveMotor(WPI_TalonFX motor, double driveGearRatio, double wheelDiameter, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
+    public BreakerFalconSwerveModuleDriveMotor(WPI_TalonFX motor, double driveGearRatio, double wheelDiameter, double supplyCurrentLimit, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.driveGearRatio = driveGearRatio;
         this.wheelDiameter = wheelDiameter;
@@ -43,7 +44,7 @@ public class BreakerFalconSwerveModuleDriveMotor extends BreakerGenericSwerveMod
         driveConfig.peakOutputForward = 1.0;
         driveConfig.peakOutputReverse = -1.0;
         driveConfig.voltageCompSaturation = 12.0;
-        driveConfig.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 80.0, 80.0, 1.5);
+        driveConfig.supplyCurrLimit = new SupplyCurrentLimitConfiguration(true, supplyCurrentLimit, supplyCurrentLimit, 1.5);
         BreakerCTREUtil.checkError(motor.configAllSettings(driveConfig),
                 " Failed to config swerve module drive motor ");
         motor.selectProfileSlot(1, 0);

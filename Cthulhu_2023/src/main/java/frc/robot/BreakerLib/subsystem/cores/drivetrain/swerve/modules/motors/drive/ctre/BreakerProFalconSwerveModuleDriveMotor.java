@@ -4,6 +4,7 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.AudioConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -32,7 +33,7 @@ public class BreakerProFalconSwerveModuleDriveMotor extends BreakerGenericSwerve
     private final VelocityDutyCycle velocityRequest;
     private final double wheelCircumfrenceMeters;
     private BreakerArbitraryFeedforwardProvider arbFF;
-    public BreakerProFalconSwerveModuleDriveMotor(TalonFX motor, double driveGearRatio, double wheelDiameter, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
+    public BreakerProFalconSwerveModuleDriveMotor(TalonFX motor, double driveGearRatio, double wheelDiameter, double supplyCurrentLimit, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.driveGearRatio = driveGearRatio;
         this.wheelDiameter = wheelDiameter;
@@ -47,8 +48,10 @@ public class BreakerProFalconSwerveModuleDriveMotor extends BreakerGenericSwerve
         driveConfig.Slot1.kI = pidConfig.kI;
         driveConfig.Slot1.kD = pidConfig.kD;
         driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = 40;
-        driveConfig.TorqueCurrent.PeakReverseTorqueCurrent = -40;
+        driveConfig.CurrentLimits.SupplyCurrentLimit = supplyCurrentLimit;
+        driveConfig.CurrentLimits.SupplyCurrentThreshold = supplyCurrentLimit;
+        driveConfig.CurrentLimits.SupplyTimeThreshold = 1.5;
+        driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         BreakerPhoenix6Util.checkStatusCode(motor.getConfigurator().apply(driveConfig),
                 " Failed to config swerve module drive motor ");
     
@@ -82,7 +85,7 @@ public class BreakerProFalconSwerveModuleDriveMotor extends BreakerGenericSwerve
 
     @Override
     public double getDistance() {
-        return motor.getPosition().getValue() * wheelCircumfrenceMeters;
+        return BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(), motor.getVelocity()) * wheelCircumfrenceMeters;
     }
 
     @Override

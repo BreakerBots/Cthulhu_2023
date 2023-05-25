@@ -65,7 +65,7 @@ public class Drive extends BreakerSwerveDriveBase {
                 .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
 
         private static BreakerSwerveModuleConfig falconMk4iConfig = new BreakerSwerveModuleConfig(
-                DRIVE_MOTOR_GEAR_RATIO_TO_ONE, 1.0, WHEEL_DIAMETER, MODULE_ANGLE_PID_CONFIG, 
+                DRIVE_MOTOR_GEAR_RATIO_TO_ONE, 1.0, WHEEL_DIAMETER, 40.0, 80.0, MODULE_ANGLE_PID_CONFIG, 
                 MODULE_VELOCITY_PID_CONFIG, MODULE_VELOCITY_FF);
 
         private static BreakerSwerveModule frontLeftModule = BreakerSwerveModuleBuilder.getInstance(falconMk4iConfig)
