@@ -101,7 +101,7 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
     } 
 
     public BreakerSwervePathFollower followPathCommand(PathPlannerTrajectory path) {
-        return new BreakerSwervePathFollower(pathFollowerConfig, path, slowModeActive);
+        return new BreakerSwervePathFollower(pathFollowerConfig, path, true);
     }
 
     public FollowPathWithEvents followPathWithEventsCommand(PathPlannerTrajectory path, HashMap<String, Command> eventMap) {

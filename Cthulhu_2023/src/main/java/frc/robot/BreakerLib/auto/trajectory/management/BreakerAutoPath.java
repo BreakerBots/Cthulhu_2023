@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** Represnets a Auto Path, contans the path's base {@link Command} and its name */
 public class BreakerAutoPath {
 
-    private Command autoPath;
-    private String pathName;
+    protected Command autoPath;
+    protected String pathName;
 
     /** Creates a BreakerAutoPath.
      * 
@@ -21,6 +21,9 @@ public class BreakerAutoPath {
         this.autoPath = autoPath;
         this.pathName = pathName;
     }
+
+
+    protected BreakerAutoPath() {}
 
     public String getPathName() {
         return pathName;
