@@ -160,6 +160,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     switch(movementPreferences.getSwerveMovementRefrenceFrame()) {
         case FIELD_RELATIVE_WITHOUT_OFFSET:
             targetVels = ChassisSpeeds.fromFieldRelativeSpeeds(targetChassisSpeeds, curAng);
+            break;
         case FIELD_RELATIVE_WITH_OFFSET:
             targetVels = ChassisSpeeds.fromFieldRelativeSpeeds(targetChassisSpeeds,
                 curAng.plus(fieldRelativeMovementOffset));
@@ -175,7 +176,7 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
         targetVels.omegaRadiansPerSecond *= config.getSlowModeTurnMultiplier();
     }
 
-    setModuleStates(getKinematics().toSwerveModuleStates(targetChassisSpeeds));
+    setModuleStates(getKinematics().toSwerveModuleStates(targetVels));
   }
 
 
@@ -343,12 +344,12 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
     protected final SwerveMovementRefrenceFrame swerveMovementRefrenceFrame;
     protected final SlowModeValue slowModeValue;
     protected final boolean headingCorrectionEnabled;
-    public static final BreakerSwerveMovementPreferences DEFAULT_ROBOT_RELATIVE_PREFERENCES = new BreakerSwerveMovementPreferences().withSwerveMovementRefrenceFrame(SwerveMovementRefrenceFrame.ROBOT_RELATIVE);
-    public static final BreakerSwerveMovementPreferences DEFAULT_FIELD_RELATIVE_PREFERENCES = new BreakerSwerveMovementPreferences();
+    public static final BreakerSwerveMovementPreferences DEFAULT_ROBOT_RELATIVE_PREFERENCES = new BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame.ROBOT_RELATIVE, SlowModeValue.DEFAULT, false);
+    public static final BreakerSwerveMovementPreferences DEFAULT_FIELD_RELATIVE_PREFERENCES = new BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT, false);
 
     /** Uses the drivetrain as odometry provider and uses a field relative movement angle offset. */
     public BreakerSwerveMovementPreferences() {
-        this(SwerveMovementRefrenceFrame.ROBOT_RELATIVE, SlowModeValue.DEFAULT, false);
+        this(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT, false);
     }
 
     public BreakerSwerveMovementPreferences(SwerveMovementRefrenceFrame movementRefrenceFrame, SlowModeValue slowModeValue) {

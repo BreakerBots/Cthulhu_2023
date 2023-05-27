@@ -33,7 +33,7 @@ public class BreakerSwerveAutoRoutine extends BreakerAutoPath  {
 
     }
 
-    public void add(PathPlannerTrajectory trajectory) {
-        commandGroup.addCommands(new BreakerSwervePathFollower(pathFollowerConfig, trajectory, true));
+    // public void add(PathPlannerTrajectory trajectory) {
+    //     commandGroup.addCommands(new BreakerSwervePathFollower(pathFollowerConfig, trajectory, true));
 
 }

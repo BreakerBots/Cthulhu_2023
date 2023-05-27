@@ -90,7 +90,7 @@ public class BreakerSwervePathFollower extends CommandBase {
     double currentTime = this.timer.get();
     PathPlannerState desiredState = (PathPlannerState) transformedTrajectory.sample(currentTime);
 
-    Pose2d currentPose = this.config.odometer.getOdometryPoseMeters();
+    Pose2d currentPose = this.config.getDrivetrain().getOdometryPoseMeters();
 
     PathPlannerServer.sendPathFollowingData(
         new Pose2d(desiredState.poseMeters.getTranslation(), desiredState.holonomicRotation),
@@ -163,7 +163,6 @@ public class BreakerSwervePathFollower extends CommandBase {
 
   public static class BreakerSwervePathFollowerConfig {
     private BreakerSwerveDrive drivetrain;
-    private BreakerGenericOdometer odometer;
     private PPHolonomicDriveController driveController;
     private boolean useAllianceColor;
 
@@ -179,10 +178,6 @@ public class BreakerSwervePathFollower extends CommandBase {
 
     public BreakerSwerveDrive getDrivetrain() {
         return drivetrain;
-    }
-
-    public BreakerGenericOdometer getOdometer() {
-        return odometer;
     }
 
     public boolean getUseAllianceColor() {

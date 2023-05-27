@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BreakerLib.auto.pathplanner.BreakerSwervePathFollower;
 import frc.robot.BreakerLib.auto.pathplanner.BreakerSwervePathFollower.BreakerSwervePathFollowerConfig;
@@ -52,12 +54,12 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
 
     @Override
     public void move(ChassisSpeeds targetChassisSpeeds, BreakerSwerveMovementPreferences movementPreferences) {
-        ChassisSpeeds targetVels = targetChassisSpeeds;
+        ChassisSpeeds targetVels = new ChassisSpeeds(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond, targetChassisSpeeds.omegaRadiansPerSecond);
         Rotation2d curAng = getOdometryPoseMeters().getRotation();
-
         switch(movementPreferences.getSwerveMovementRefrenceFrame()) {
             case FIELD_RELATIVE_WITHOUT_OFFSET:
                 targetVels = ChassisSpeeds.fromFieldRelativeSpeeds(targetChassisSpeeds, curAng);
+                break;
             case FIELD_RELATIVE_WITH_OFFSET:
                 targetVels = ChassisSpeeds.fromFieldRelativeSpeeds(targetChassisSpeeds,
                     curAng.plus(getFieldRelativeMovementOffsetAngle()));
@@ -81,7 +83,7 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
             targetVels.omegaRadiansPerSecond *= config.getSlowModeTurnMultiplier();
         }
 
-        setModuleStates(getKinematics().toSwerveModuleStates(targetChassisSpeeds));
+        setModuleStates(getKinematics().toSwerveModuleStates(targetVels));
     }
 
     @Override
@@ -125,6 +127,14 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
         lastSetHeading = newPose.getRotation();
     }
 
+    @Override
+    public void periodic() {
+        super.periodic();
+        if (DriverStation.isDisabled()) {
+            lastSetHeading = getOdometryPoseMeters().getRotation();
+        }
+    }
+
     public static class BreakerSwerveDriveBaseMovementPreferences extends BreakerSwerveMovementPreferences {
         public static final BreakerSwerveDriveBaseMovementPreferences FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT, true);
         public static final BreakerSwerveDriveBaseMovementPreferences FIELD_RELATIVE_WITHOUT_OFFSET_AND_WITH_HEADING_CORRECTION = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITHOUT_OFFSET, SlowModeValue.DEFAULT, true);
@@ -142,17 +152,17 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
             return new BreakerSwerveDriveBaseMovementPreferences(this.swerveMovementRefrenceFrame, this.slowModeValue, headingCorrectionEnabled);
         }
     
-        public SlowModeValue getSlowModeValue() {
-            return slowModeValue;
-        }
+        // public SlowModeValue getSlowModeValue() {
+        //     return slowModeValue;
+        // }
 
-        public SwerveMovementRefrenceFrame getSwerveMovementRefrenceFrame() {
-            return swerveMovementRefrenceFrame;
-        }
+        // public SwerveMovementRefrenceFrame getSwerveMovementRefrenceFrame() {
+        //     return swerveMovementRefrenceFrame;
+        // }
 
-        public boolean getHeadingCorrectionEnabled() {
-            return headingCorrectionEnabled;
-        }
+        // public boolean getHeadingCorrectionEnabled() {
+        //     return headingCorrectionEnabled;
+        // }
     }
 
     public static class BreakerSwerveDriveBaseConfig extends BreakerSwerveDriveConfig {
