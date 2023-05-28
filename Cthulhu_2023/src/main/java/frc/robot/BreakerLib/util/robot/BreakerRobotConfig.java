@@ -14,8 +14,6 @@ public class BreakerRobotConfig {
     private boolean networkTablesLogging;
     private boolean autoRegisterDevices;
     private boolean useBrakeModeManager;
-    private BreakerFalconOrchestra orchestra;
-    private boolean usesOrchestra;
     private BreakerAutoPath[] autoPaths;
     private boolean usesPaths;
     private BreakerRobotStartConfig startConfig;
@@ -45,9 +43,6 @@ public class BreakerRobotConfig {
         this.autoRegisterDevices = true;
         this.useBrakeModeManager = true;
 
-        this.orchestra = new BreakerFalconOrchestra();
-        usesOrchestra = false;
-
         this.autoPaths = new BreakerAutoPath[0];
         usesPaths = false;
     }
@@ -69,16 +64,6 @@ public class BreakerRobotConfig {
      */
     public void setStartConfig(BreakerRobotStartConfig startConfig) {
         this.startConfig = startConfig;
-    }
-
-    /**
-     * Sets up use of Falcon Orchestra to play music.
-     * 
-     * @param orchestra Orchestra object to use.
-     */
-    public void setOrchestra(BreakerFalconOrchestra orchestra) {
-        this.orchestra = orchestra;
-        usesOrchestra = true;
     }
 
     /**
@@ -133,11 +118,6 @@ public class BreakerRobotConfig {
         return useBrakeModeManager;
     }
 
-    /** @return Falcon Orchestra. */
-    public BreakerFalconOrchestra getOrchestra() {
-        return orchestra;
-    }
-
     /** @return Number of seconds between self-checks. */
     public double getSecondsBetweenSelfChecks() {
         return secondsBetweenSelfChecks;
@@ -146,11 +126,6 @@ public class BreakerRobotConfig {
     /** @return If NetworkTables are logged. */
     public boolean networkTablesLoggingEnabled() {
         return networkTablesLogging;
-    }
-
-    /** @return If orchestra is enabled. */
-    public boolean usesOrchestra() {
-        return usesOrchestra;
     }
 
     /** @return If auto paths are enabled. */

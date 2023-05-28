@@ -17,7 +17,7 @@ public class BreakerFalconOrchestra extends SubsystemBase {
     private String curSong;
     private boolean loopSong, playingMusic;
 
-    private String[] playlist = new String[]{BreakerSounds.megalovania};
+    private String[] playlist = new String[]{};
     private int index;
     private boolean loopAtEnd = true, autoplay = true;
 

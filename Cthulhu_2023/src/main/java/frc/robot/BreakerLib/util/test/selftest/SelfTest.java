@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.cosmetic.music.BreakerFalconOrchestra;
-import frc.robot.BreakerLib.devices.cosmetic.music.BreakerSounds;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 
 /**
@@ -24,38 +23,18 @@ public class SelfTest extends SubsystemBase {
   private static List<BreakerSelfTestable> devices = new ArrayList<BreakerSelfTestable>();
   private static int cyclesbetweenPerSelfCecks = 250;
   private static boolean lastCheckPassed = true;
-  private static BreakerFalconOrchestra orchestra;
-  private static boolean usesOrchestra = false;
   private static boolean autoRegesterDevices = true;
   private static boolean selfTestEnabled = true;
 
   /** Configures an enables a SelfTest check cycle */
   public SelfTest(double secondsBetweenPeriodicSelfChecks) {
     SelfTest.cyclesbetweenPerSelfCecks = (int) (secondsBetweenPeriodicSelfChecks * 50);
-    SelfTest.usesOrchestra = false;
     SelfTest.autoRegesterDevices = true;
   }
 
   /** Configures an enables a SelfTest check cycle */
   public SelfTest(double secondsBetweenPeriodicSelfChecks, boolean autoRegesterDevices) {
     SelfTest.cyclesbetweenPerSelfCecks = (int) (secondsBetweenPeriodicSelfChecks * 50);
-    SelfTest.usesOrchestra = false;
-    SelfTest.autoRegesterDevices = autoRegesterDevices;
-  }
-
-  /** Configures an enables a SelfTest check cycle */
-  public SelfTest(double secondsBetweenPeriodicSelfChecks, BreakerFalconOrchestra orchestra) {
-    SelfTest.cyclesbetweenPerSelfCecks = (int) (secondsBetweenPeriodicSelfChecks * 50);
-    SelfTest.orchestra = orchestra;
-    SelfTest.usesOrchestra = true;
-  }
-
-  /** Configures an enables a SelfTest check cycle */
-  public SelfTest(double secondsBetweenPeriodicSelfChecks, BreakerFalconOrchestra orchestra,
-      boolean autoRegesterDevices) {
-    SelfTest.cyclesbetweenPerSelfCecks = (int) (secondsBetweenPeriodicSelfChecks * 50);
-    SelfTest.orchestra = orchestra;
-    SelfTest.usesOrchestra = true;
     SelfTest.autoRegesterDevices = autoRegesterDevices;
   }
 
@@ -94,12 +73,6 @@ public class SelfTest extends SubsystemBase {
   public static void autoRegisterDevices(BreakerSelfTestable... devices) {
     if (autoRegesterDevices) {
       addDevices(devices);
-    }
-  }
-
-  private static void runAlarm() {
-    if (usesOrchestra) {
-      orchestra.loopSong(BreakerSounds.GeneralAlarmSound);
     }
   }
 
@@ -174,7 +147,6 @@ public class SelfTest extends SubsystemBase {
       for (BreakerSelfTestable faultDiv : faultDevices) {
         work.append(" | " + faultDiv.getDeviceName() + "-" + faultDiv.getFaults() + " | ");
       }
-      runAlarm();
     } else {
       work.append(" SELF TEST PASSED ");
       lastCheckPassed = true;

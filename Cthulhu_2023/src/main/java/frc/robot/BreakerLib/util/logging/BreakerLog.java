@@ -6,7 +6,6 @@ package frc.robot.BreakerLib.util.logging;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import frc.robot.BreakerLib.devices.cosmetic.music.BreakerFalconOrchestra;
-import frc.robot.BreakerLib.devices.cosmetic.music.BreakerSounds;
 import frc.robot.BreakerLib.util.BreakerLibVersion;
 import frc.robot.BreakerLib.util.BreakerRoboRIO;
 import frc.robot.BreakerLib.util.BreakerRoboRIO.RobotOperatingMode;
@@ -62,9 +61,6 @@ public class BreakerLog {
    */
   public static void logRobotChangedMode(RobotOperatingMode newMode) {
     DataLogManager.log("| ---- ROBOT MODE CHANGED TO: " + newMode + " ---- |");
-    if (usesOrchestra && BreakerRoboRIO.robotModeHasChanged() && newMode != RobotOperatingMode.DISABLED) {
-      orchestra.playSong(BreakerSounds.enableSound);
-    }
   }
 
   /** Logs given event. */

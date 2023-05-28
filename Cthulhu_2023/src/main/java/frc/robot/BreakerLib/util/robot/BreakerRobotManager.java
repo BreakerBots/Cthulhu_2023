@@ -20,7 +20,6 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.brakemode.BreakerAutoBrak
 public class BreakerRobotManager {
     private static SelfTest test;
     private static BreakerAutoManager autoManager;
-    private static BreakerFalconOrchestra orchestra;
     private static BreakerAutoBrakeManager brakeModeManager;
     private static BreakerGenericDrivetrain baseDrivetrain;
 
@@ -33,17 +32,10 @@ public class BreakerRobotManager {
      * @param robotConfig Robot configuration.
      */
     public static void setup(BreakerGenericDrivetrain baseDrivetrain, BreakerRobotConfig robotConfig) {
-        if (robotConfig.usesOrchestra()) {
-            BreakerLog.startLog(robotConfig.networkTablesLoggingEnabled(), robotConfig.getOrchestra());
-            test = new SelfTest(robotConfig.getSecondsBetweenSelfChecks(),
-                    robotConfig.getOrchestra(), robotConfig.getAutoRegisterDevices());
-        } else {
             BreakerLog.startLog(robotConfig.networkTablesLoggingEnabled());
             test = new SelfTest(robotConfig.getSecondsBetweenSelfChecks(),
                     robotConfig.getAutoRegisterDevices());
-        }
         BreakerRobotManager.baseDrivetrain = baseDrivetrain;
-        BreakerRobotManager.orchestra = robotConfig.getOrchestra();
         BreakerRobotManager.autoManager = robotConfig.usesPaths() ? new BreakerAutoManager(robotConfig.getAutoPaths())
                 : new BreakerAutoManager();
         BreakerRobotManager.brakeModeManager = new BreakerAutoBrakeManager(
@@ -54,10 +46,6 @@ public class BreakerRobotManager {
     /** @return Brake mode manager object. */
     public static BreakerAutoBrakeManager getBrakeModeManager() {
         return brakeModeManager;
-    }
-
-    public static BreakerFalconOrchestra getOrchestra() {
-        return orchestra;
     }
 
     /** @return SelfTest object. */

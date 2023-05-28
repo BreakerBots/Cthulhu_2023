@@ -4,6 +4,7 @@
 
 package frc.robot.BreakerLib.util.vendorutil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.ctre.phoenix6.StatusCode;
@@ -34,12 +35,12 @@ public class BreakerPhoenix6Util {
   }
 
 
-  public static void setBrakeMode(boolean isEnabled, TalonFX... motors) {
-    for (TalonFX motor: motors) {
+  public static void setBrakeMode(boolean isEnabled, CoreTalonFX... motors) {
+    for (CoreTalonFX motor: motors) {
       setBrakeMode(motor, isEnabled);
     }
   }
-  public static void setBrakeMode(TalonFX motor, boolean isEnabled) {
+  public static void setBrakeMode(CoreTalonFX motor, boolean isEnabled) {
     MotorOutputConfigs moc = new MotorOutputConfigs();
     checkStatusCode(motor.getConfigurator().refresh(moc), "Failded to refresh TalonFX motor config");
     moc.NeutralMode = isEnabled ? NeutralModeValue.Brake : NeutralModeValue.Coast;
@@ -51,7 +52,7 @@ public class BreakerPhoenix6Util {
    * @return Pair<DeviceHealth, String>
    */
   public static Pair<DeviceHealth, String> checkMotorFaultsAndConnection(CoreTalonFX motor) {
-    Pair<DeviceHealth, String> pair = getMotorHealthAndFaults(motor.getFaultField().getValue());
+    Pair<DeviceHealth, String> pair = getMotorHealthAndFaults(motor);
     String retStr = pair.getSecond();
     DeviceHealth retHealth = pair.getFirst();
     if (motor.getVersion().getValue() == 0) {
@@ -67,23 +68,22 @@ public class BreakerPhoenix6Util {
    * @param motorFaults Motor controller faults.
    * @return Motor controller device health and error type (if any).
    */
-  public static Pair<DeviceHealth, String> getMotorHealthAndFaults(int bitField) {
-    HashMap<Integer, Pair<DeviceHealth, String>> map = new HashMap<>();
-    map.put(0, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " device_under_6.5v "));
-    // map.put(1, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " device_limit_switch_hit "));
-    // map.put(2, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " device_limit_switch_hit "));
-    // map.put(3, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " device_limit_switch_hit "));
-    // map.put(4, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " device_limit_switch_hit "));
-    map.put(5, new Pair<DeviceHealth, String>(DeviceHealth.INOPERABLE, " hardware_failure "));
-    map.put(6, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " device_activated_or_reset_while_robot_on "));
-    map.put(9, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " device_activated_or_reset_while_robot_on "));
-    map.put(7, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " sensor_overflow "));
-    map.put(8, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " sensor_out_of_phase "));
-    map.put(10, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " remote_sensor_not_detected "));
-    map.put(11, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " API_or_firmware_error "));
-    map.put(12, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " supply_voltage_above_rated_max "));
-    map.put(13, new Pair<DeviceHealth, String>(DeviceHealth.FAULT, " unstable_supply_voltage "));
-    return BreakerVendorUtil.getDeviceHealthAndFaults(bitField, map);
+  public static Pair<DeviceHealth, String> getMotorHealthAndFaults(CoreTalonFX motor) {
+    FaultCase[] faultCases = new FaultCase[] {
+      new FaultCase(motor.getFault_Hardware().getValue(), DeviceHealth.INOPERABLE, " hardware_failure "),
+      new FaultCase(motor.getFault_DeviceTemp().getValue(), DeviceHealth.INOPERABLE, " device_temperature_exceeded_limit "),
+      new FaultCase(motor.getFault_ProcTemp().getValue(), DeviceHealth.INOPERABLE, " processor_temperature_exceeded_limit "),
+      new FaultCase(motor.getFault_Undervoltage().getValue(), DeviceHealth.FAULT, " device_under_6.5v "),
+      new FaultCase(motor.getFault_OverSupplyV().getValue(), DeviceHealth.FAULT, " supply_voltage_above_rated_max "),
+      new FaultCase(motor.getFault_UnstableSupplyV().getValue(), DeviceHealth.FAULT, " unstable_supply_voltage "),
+      new FaultCase(motor.getFault_BootDuringEnable().getValue(), DeviceHealth.FAULT, " device_boot_or_reset_while_robot_enabled "),
+      new FaultCase(motor.getFault_MissingRemoteSensor().getValue(), DeviceHealth.FAULT, " remote_sensor_not_detected "),
+      new FaultCase(motor.getFault_FusedSensorOutOfSync().getValue(), DeviceHealth.FAULT, " fused_sensor_out_of_sync "),
+      new FaultCase(motor.getFault_UsingFusedCANcoderWhileUnlicensed().getValue(), DeviceHealth.FAULT, " using_fused_CANcoder_feature_while_unlicensed "),
+      new FaultCase(motor.getFault_UnlicensedFeatureInUse().getValue(), DeviceHealth.FAULT, " unlicensed_feature_in_use "),
+    };
+
+    return getDeviceHealthAndFaults(faultCases);
   }
 
    /**
@@ -92,11 +92,17 @@ public class BreakerPhoenix6Util {
    * @param encoderFaults CANCoder faults.
    * @return CANCoder device health and error type (if any).
    */
-  public static Pair<DeviceHealth, String> getCANcoderHealthAndFaults(int bitField) {
-    HashMap<Integer, Pair<DeviceHealth, String>> map = new HashMap<>();
-    map.put(0, new Pair<DeviceHealth, String>(DeviceHealth.INOPERABLE, " hardware_failure "));
-    map.put(4, new Pair<DeviceHealth, String>(DeviceHealth.INOPERABLE, " magnet_too_weak "));
-    return BreakerVendorUtil.getDeviceHealthAndFaults(bitField, map);
+  public static Pair<DeviceHealth, String> getCANcoderHealthAndFaults(CANcoder canCoder) {
+
+    FaultCase[] faultCases = new FaultCase[] {
+      new FaultCase(canCoder.getFault_Hardware().getValue(), DeviceHealth.INOPERABLE, " hardware_failure "),
+      new FaultCase(canCoder.getFault_BadMagnet().getValue(), DeviceHealth.INOPERABLE, " magnet_too_weak "),
+      new FaultCase(canCoder.getFault_Undervoltage().getValue(), DeviceHealth.FAULT, " device_under_6.5v "),
+      new FaultCase(canCoder.getFault_BootDuringEnable().getValue(), DeviceHealth.FAULT, " device_boot_or_reset_while_robot_enabled "),
+      new FaultCase(canCoder.getFault_UnlicensedFeatureInUse().getValue(), DeviceHealth.FAULT, " unlicensed_feature_in_use "),
+    };
+
+    return getDeviceHealthAndFaults(faultCases);
   }
 
   /**
@@ -104,7 +110,7 @@ public class BreakerPhoenix6Util {
    * @return Pair<DeviceHealth, String>
    */
   public static Pair<DeviceHealth, String> checkCANcoderFaultsAndConnection(CANcoder canCoder) {
-    Pair<DeviceHealth, String> pair = getCANcoderHealthAndFaults(canCoder.getFaultField().getValue());
+    Pair<DeviceHealth, String> pair = getCANcoderHealthAndFaults(canCoder);
     String retStr = pair.getSecond();
     DeviceHealth retHealth = pair.getFirst();
     if (canCoder.getVersion().getValue() == 0) {
@@ -114,6 +120,31 @@ public class BreakerPhoenix6Util {
     return new Pair<DeviceHealth, String>(retHealth, retStr);
   }
 
+  private static Pair<DeviceHealth, String> getDeviceHealthAndFaults(FaultCase... faultCases) {
+    StringBuilder work = new StringBuilder();
+    DeviceHealth health = DeviceHealth.NOMINAL;
+    for (FaultCase faultCase: faultCases) {
+      if (faultCase.flag) {
+        work.append(faultCase.messsage);
+        if (health.ordinal() < faultCase.effect.ordinal()) {
+          health = faultCase.effect;
+        }
+      }
+    }
+    return new Pair<DeviceHealth,String>(health, work.toString());
+  }
+
+
+  private static class FaultCase {
+    public boolean flag;
+    public DeviceHealth effect;
+    public String messsage;
+    public FaultCase(boolean flag, DeviceHealth effect, String messsage) {
+      this.flag = flag;
+      this.effect = effect;
+      this.messsage = messsage;
+    }
+  }
 
   
 }
