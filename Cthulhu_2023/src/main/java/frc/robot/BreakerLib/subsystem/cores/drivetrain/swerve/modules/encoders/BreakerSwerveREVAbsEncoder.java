@@ -18,14 +18,6 @@ public class BreakerSwerveREVAbsEncoder implements BreakerSwerveAzimuthEncoder {
 
     private AbsoluteEncoder revEncoder;
 
-    /**
-     * Creates a REV absolute encoder connected by roboRIO DIO.
-     * 
-     * @param port DIO port in use by the encoder.
-     */
-    public BreakerSwerveREVAbsEncoder(int port) {
-    }
-
     /** Creates a REV absolute encoder connected to a SPARK MAX.
      * 
      * @param spark SPARK MAX the encoder is connected to.
@@ -60,12 +52,11 @@ public class BreakerSwerveREVAbsEncoder implements BreakerSwerveAzimuthEncoder {
 
     @Override
     public Class<?> getBaseEncoderType() {
-        // TODO Auto-generated method stub
-        return null;
+        return AbsoluteEncoder.class;
     }
 
     @Override
     public Object getBaseEncoder() {
-        // TODO Auto-generated method stub
-        return null;
-    }}
+        return revEncoder;
+    }
+}
