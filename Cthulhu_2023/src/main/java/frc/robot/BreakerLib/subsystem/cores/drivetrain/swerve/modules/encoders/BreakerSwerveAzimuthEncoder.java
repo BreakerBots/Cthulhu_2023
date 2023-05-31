@@ -14,12 +14,20 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 /** Add your docs here. */
 public interface BreakerSwerveAzimuthEncoder {
 
-    // Unused, should be removed. More fitting for a quad encoder.
+    // Unused, probably should be removed. More fitting for a quad encoder.
     public abstract double getRelative();
 
+    /** @return Absolute anglular position in degrees [-180, 180]. */
     public abstract double getAbsolute();
 
-    public abstract void config(boolean clockwisePosative, double absoluteOffset);
+    /**
+     * Configures the encoder.
+     * 
+     * @param clockwisePositive Sets whether clockwise rotation is positive or
+     *                          negative.
+     * @param offset            Angle offset in degrees.
+     */
+    public abstract void config(boolean clockwisePositive, double offset);
 
     public abstract Pair<DeviceHealth, String> getFaultData();
 

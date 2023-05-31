@@ -4,27 +4,23 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.BaseTalon;
+
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
-/**
- * PWM-controlled duty cycle encoders (absolute encoders).
- * 
- * Devices to use include the following:
- * - CTRE Mag Encoder (connected to DIO)
- * - Rev Through Bore
- * - US Digital MA3 and other simple PWM encoders.
- */
-public class BreakerPWMDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
+/** CTRE Mag Encoder connected via a Talon SRX. */
+public class BreakerTalonDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
 
-    private DutyCycleEncoder dcEncoder;
+    private BaseTalon encoderTalon;
     private double offset = 0;
     private int invertSign = 1;
 
-    public BreakerPWMDutyCycleEncoder(int channel) {
-        dcEncoder = new DutyCycleEncoder(channel);
+    public BreakerTalonDutyCycleEncoder(BaseTalon encoderTalon) {
+        this.encoderTalon = encoderTalon;
+        encoderTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
     }
 
     @Override
@@ -35,7 +31,8 @@ public class BreakerPWMDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
 
     @Override
     public double getAbsolute() {
-        return invertSign * BreakerMath.angleModulus(dcEncoder.get() * 360 + offset);
+        return invertSign
+                * BreakerMath.angleModulus(encoderTalon.getSelectedSensorPosition() * (360.0 / 4096.0) + offset);
     }
 
     @Override
@@ -52,11 +49,13 @@ public class BreakerPWMDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
 
     @Override
     public Class<?> getBaseEncoderType() {
-        return dcEncoder.getClass();
+        // TODO Auto-generated method stub
+        return encoderTalon.getClass();
     }
 
     @Override
     public Object getBaseEncoder() {
-        return dcEncoder;
+        // TODO Auto-generated method stub
+        return encoderTalon;
     }
 }

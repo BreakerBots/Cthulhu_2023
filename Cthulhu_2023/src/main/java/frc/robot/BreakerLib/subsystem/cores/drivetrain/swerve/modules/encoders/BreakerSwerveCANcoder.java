@@ -48,9 +48,9 @@ public class BreakerSwerveCANcoder implements BreakerSwerveAzimuthEncoder {
     }
 
     @Override
-    public void config(boolean invertEncoder, double absoluteOffset) {
+    public void config(boolean invertEncoder, double offset) {
         BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
-        AbsoluteSensorRange.Signed_PlusMinus180, absoluteOffset, invertEncoder);
+        AbsoluteSensorRange.Signed_PlusMinus180, offset, invertEncoder);
     }
 
 }
