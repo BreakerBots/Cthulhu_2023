@@ -26,6 +26,7 @@ import frc.robot.BreakerLib.devices.cosmetic.led.BreakerRevBlinkin.AdvancedPatte
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
+import frc.robot.BreakerLib.subsystem.cores.arm.BreakerFalconArm;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerTeleopSwerveDriveController;
 import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
@@ -63,7 +64,10 @@ public class RobotContainer {
       new Translation2d(0.799, 0.317));
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
-  private final SebArm armSys = new SebArm(controllerSys);
+
+  private BreakerFalconArm arm = new BreakerFalconArm();
+
+  // private final SebArm armSys = new SebArm(controllerSys);
   private final RollerIntake intakeSys = new RollerIntake();
   private static boolean isInCubeMode = true;
   // private final Arm armSys = new Arm();
@@ -99,24 +103,25 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    controllerSys.getStartButton().onTrue(new
-    InstantCommand(RobotContainer::toggleisInCubeMode));
+    controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
+
+    controllerSys.getButtonY().onTrue(new InstantCommand(() -> arm.setGoal(arm.getPosDeg())));
 
     controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
     controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
-    controllerSys.getButtonY().onTrue(new ParallelCommandGroup(
-        new InstantCommand(() -> armSys.setArmState(SebArm.State.PICKUP_HIGH)),
-        new InstantCommand(intakeSys::start)));
-    controllerSys.getButtonX().onTrue(new ParallelCommandGroup(
-        armSys.pickupLowCommand(),
-        new InstantCommand(intakeSys::start)));
+    // controllerSys.getButtonY().onTrue(new ParallelCommandGroup(
+    // new InstantCommand(() -> armSys.setArmState(SebArm.State.PICKUP_HIGH)),
+    // new InstantCommand(intakeSys::start)));
+    // controllerSys.getButtonX().onTrue(new ParallelCommandGroup(
+    // armSys.pickupLowCommand(),
+    // new InstantCommand(intakeSys::start)));
 
     controllerSys.getLeftBumper().onTrue(new InstantCommand(intakeSys::start));
-    controllerSys.getRightBumper().onTrue(new ParallelCommandGroup(
-        armSys.stowCommand(),
-        new InstantCommand(intakeSys::stop)));
-    controllerSys.getDPad().getUp().onTrue(new InstantCommand(armSys::placeMid));
-    controllerSys.getDPad().getLeft().onTrue(armSys.setTargetCommand(Rotation2d.fromDegrees(90)));
+    // controllerSys.getRightBumper().onTrue(new ParallelCommandGroup(
+    // armSys.stowCommand(),
+    // new InstantCommand(intakeSys::stop)));
+    // controllerSys.getDPad().getUp().onTrue(new InstantCommand(armSys::placeMid));
+    // controllerSys.getDPad().getLeft().onTrue(armSys.setTargetCommand(Rotation2d.fromDegrees(90)));
     // controllerSys.getButtonY().onTrue(new InstantCommand(() ->
     // armSys.setTarget(Rotation2d.fromDegrees(-45))));
     // controllerSys.getButtonX().onTrue(new InstantCommand(() ->
@@ -134,16 +139,22 @@ public class RobotContainer {
     BreakerRobotConfig robotConfig = new BreakerRobotConfig(new BreakerRobotStartConfig(5104, "BreakerBots",
         "Cthulhu", 2023, "v1", "Yousif Alkhalaf, Roman Abrahamson, Sebastian Rueda"));
 
-        robotConfig.setAutoPaths(
-          // new BreakerAutoPath("GatePlace2", new GatePlace2(drivetrainSys, imuSys, intakeSys, armSys)),
-          // new BreakerAutoPath("GatePlaceLeaveThenBalance", new GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
-          // new BreakerAutoPath("MidPlaceLeaveThenBalance", new MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
-          // new BreakerAutoPath("SubPlaceLeaveThenBalance", new SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
-          // new BreakerAutoPath("MidBalance", new MidBalance(drivetrainSys, imuSys, armSys, intakeSys)),
-          // new BreakerAutoPath("LeaveOnly", new LeaveOnly(drivetrainSys, imuSys)),
-          // new BreakerAutoPath("PlaceLow", new InstantCommand(intakeSys::eject)),
-          // new BreakerAutoPath("PlaceMidOnly", new PlaceMidOnly(drivetrainSys, armSys, intakeSys)),
-          new BreakerAutoPath("Pathplanner_Test", new TestPath(drivetrainSys)));
+    robotConfig.setAutoPaths(
+        // new BreakerAutoPath("GatePlace2", new GatePlace2(drivetrainSys, imuSys,
+        // intakeSys, armSys)),
+        // new BreakerAutoPath("GatePlaceLeaveThenBalance", new
+        // GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+        // new BreakerAutoPath("MidPlaceLeaveThenBalance", new
+        // MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+        // new BreakerAutoPath("SubPlaceLeaveThenBalance", new
+        // SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+        // new BreakerAutoPath("MidBalance", new MidBalance(drivetrainSys, imuSys,
+        // armSys, intakeSys)),
+        // new BreakerAutoPath("LeaveOnly", new LeaveOnly(drivetrainSys, imuSys)),
+        // new BreakerAutoPath("PlaceLow", new InstantCommand(intakeSys::eject)),
+        // new BreakerAutoPath("PlaceMidOnly", new PlaceMidOnly(drivetrainSys, armSys,
+        // intakeSys)),
+        new BreakerAutoPath("Pathplanner_Test", new TestPath(drivetrainSys)));
     BreakerRobotManager.setup(drivetrainSys, robotConfig);
   }
 
