@@ -11,6 +11,8 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -105,7 +107,8 @@ public class RobotContainer {
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
 
-    controllerSys.getButtonY().onTrue(new InstantCommand(() -> arm.setGoal(arm.getPosDeg())));
+    controllerSys.getButtonY().onTrue(new InstantCommand(() -> arm.setGoal(new State(Units.degreesToRadians(45), 0))));
+    controllerSys.getButtonX().onTrue(new InstantCommand(() -> arm.setGoal(new State(Units.degreesToRadians(0), 0))));
 
     controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
     controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
