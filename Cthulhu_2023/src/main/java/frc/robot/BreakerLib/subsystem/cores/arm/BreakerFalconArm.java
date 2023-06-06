@@ -31,12 +31,14 @@ import frc.robot.BreakerLib.util.BreakerRoboRIO.RobotOperatingMode;
 import static frc.robot.Constants.ArmConstants.*;
 import static frc.robot.Constants.MiscConstants.CANIVORE_1;
 
+import java.util.Map;
+
 /** Add your docs here. */
 public class BreakerFalconArm extends ProfiledPIDSubsystem {
 
     public static final double kS = 0.0;
-    public static final double kG = 0.64858;
-    public static final double kV = 3;
+    public static final double kG = 0.64855;
+    public static final double kV = 0;
     public static final double kA = 0.0;
     public static final double kP = 0;
     public static final double kI = 0.0;
@@ -95,9 +97,7 @@ public class BreakerFalconArm extends ProfiledPIDSubsystem {
 
     public void periodic() {
         SmartDashboard.putNumber("Current Angle", getPosDeg());
-        SmartDashboard.putNumber("Target Angle", Units.radiansToDegrees(m_controller.getGoal().position));
-        SmartDashboard.putNumber("Setpoint Angle", Units.radiansToDegrees(m_controller.getSetpoint().position));
-        SmartDashboard.putNumber("Setpoint Vel", Units.radiansToDegrees(m_controller.getSetpoint().velocity));
+        SmartDashboard.putNumber("Target Angle", m_controller.getGoal().position);
         SmartDashboard.putNumber("Motor Out", motor0.getMotorOutputVoltage());
 
         if (m_enabled) {
