@@ -37,7 +37,7 @@ import java.util.Map;
 public class BreakerFalconArm extends ProfiledPIDSubsystem {
 
     public static final double kS = 0.0;
-    public static final double kG = 0.64855;
+    public static final double kG = 0.675;
     public static final double kV = 0;
     public static final double kA = 0.0;
     public static final double kP = 0;
@@ -54,7 +54,8 @@ public class BreakerFalconArm extends ProfiledPIDSubsystem {
 
     public BreakerFalconArm() {
 
-        super(pid, 0);
+        super(pid);
+        setGoal(getMeasurement());
         motor1.follow(motor0);
 
         motor0.setNeutralMode(NeutralMode.Coast);
