@@ -55,6 +55,7 @@ public class BreakerFalconArm extends ProfiledPIDSubsystem {
     public BreakerFalconArm() {
 
         super(pid);
+        enable();
         setGoal(getMeasurement());
         motor1.follow(motor0);
 
@@ -72,7 +73,6 @@ public class BreakerFalconArm extends ProfiledPIDSubsystem {
         encoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
         encoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
 
-        enable();
     }
 
     @Override
