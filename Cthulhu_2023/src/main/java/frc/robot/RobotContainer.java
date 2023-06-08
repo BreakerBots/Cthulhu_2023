@@ -1,4 +1,6 @@
-// Prototyping a new example RobotContainer setup. 
+// Prototyping a new example RobotContainer setup.
+
+// Working Kraken code
 
 package frc.robot;
 
@@ -32,6 +34,7 @@ import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
+import frc.robot.Constants.MiscConstants;
 import frc.robot.commands.BalanceChargingStation;
 // import frc.robot.commands.autos.InNOut;
 // import frc.robot.commands.autos.LeaveOnly;
@@ -57,8 +60,7 @@ import frc.robot.subsystems.SebArm;
  */
 public class RobotContainer {
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
-
-  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
+  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID, MiscConstants.CANIVORE_1);
   private final Drive drivetrainSys = new Drive(imuSys);
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186),
       new Translation2d(0.799, 0.317));
