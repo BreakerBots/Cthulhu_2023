@@ -4,55 +4,58 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /**
- * PWM-controlled duty cycle encoders (absolute encoders).
+ * PWM-controlled duty cycle encoders.
  * 
  * Devices to use include the following:
- * - CTRE Mag Encoder (connected to DIO)
+ * - CTRE Mag Encoder (connected to Rio)
  * - Rev Through Bore
  * - US Digital MA3 and other simple PWM encoders.
  */
 public class BreakerPWMDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
 
     private DutyCycleEncoder dcEncoder;
-    private double offset = 0;
-    private int invertSign = 1;
-
-    public BreakerPWMDutyCycleEncoder(int channel) {
+    private double offset;
+    public BreakerPWMDutyCycleEncoder(int channel, int connectedFrequencyThreshold, double dutyCycleMin, double dutyCycleMax) {
         dcEncoder = new DutyCycleEncoder(channel);
+        dcEncoder.setDutyCycleRange(dutyCycleMin, dutyCycleMax);
+        dcEncoder.setDistancePerRotation(360.0);
+        dcEncoder.setConnectedFrequencyThreshold(connectedFrequencyThreshold);
     }
 
     @Override
     public double getRelative() {
-        // TODO Auto-generated method stub
-        return 0;
+        return dcEncoder.getDistance() + offset;
     }
 
     @Override
     public double getAbsolute() {
-        return invertSign * BreakerMath.angleModulus(dcEncoder.get() * 360 + offset);
+        return MathUtil.inputModulus(dcEncoder.getDistance() + offset, -180.0, 180.0);
     }
 
     @Override
     public void config(boolean clockwisePositive, double offset) {
-        invertSign = clockwisePositive ? 1 : -1;
+        dcEncoder.setDistancePerRotation(clockwisePositive ? 360.0 : -360.0);
         this.offset = offset;
     }
 
     @Override
     public Pair<DeviceHealth, String> getFaultData() {
-        // TODO Auto-generated method stub
-        return null;
+        if (!dcEncoder.isConnected()) {
+            return new Pair<DeviceHealth,String>(DeviceHealth.INOPERABLE, " pwm_encoder_disconnected ");
+        }
+       return new Pair<DeviceHealth,String>(DeviceHealth.NOMINAL, "");
     }
 
     @Override
     public Class<?> getBaseEncoderType() {
-        return dcEncoder.getClass();
+        return DutyCycleEncoder.class;
     }
 
     @Override

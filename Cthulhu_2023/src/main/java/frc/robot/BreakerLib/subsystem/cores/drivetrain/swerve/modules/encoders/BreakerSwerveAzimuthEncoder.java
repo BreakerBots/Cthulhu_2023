@@ -9,12 +9,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
-// Preferably this becomes a general duty cycle encoder interface.
-
 /** Add your docs here. */
 public interface BreakerSwerveAzimuthEncoder {
 
-    // Unused, probably should be removed. More fitting for a quad encoder.
+    /** @return Relative anglular position in degrees, (180 -> 181) */
     public abstract double getRelative();
 
     /** @return Absolute anglular position in degrees [-180, 180]. */

@@ -26,7 +26,6 @@ import frc.robot.BreakerLib.devices.cosmetic.led.BreakerRevBlinkin.AdvancedPatte
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
-import frc.robot.BreakerLib.subsystem.cores.arm.BreakerFalconArm;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerTeleopSwerveDriveController;
 import frc.robot.BreakerLib.util.math.functions.BreakerBezierCurve;
 import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
@@ -37,6 +36,7 @@ import frc.robot.commands.BalanceChargingStation;
 // import frc.robot.commands.autos.LeaveOnly;
 // import frc.robot.commands.autos.MidBalance;
 import frc.robot.commands.autos.pathplanner.TestPath;
+import frc.robot.subsystems.FalconArm;
 // import frc.robot.commands.autos.pose.GatePlaceLeaveThenBalance;
 // import frc.robot.commands.autos.pose.GatePlace2;
 // import frc.robot.commands.autos.pose.MidPlaceLeaveThenBalance;
@@ -65,7 +65,7 @@ public class RobotContainer {
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
 
-  private BreakerFalconArm arm = new BreakerFalconArm();
+  private FalconArm arm = new FalconArm();
 
   // private final SebArm armSys = new SebArm(controllerSys);
   private final RollerIntake intakeSys = new RollerIntake();

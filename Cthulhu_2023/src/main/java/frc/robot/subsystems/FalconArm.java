@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.BreakerLib.subsystem.cores.arm;
+package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.LimitSwitchNormal;
 import com.ctre.phoenix.motorcontrol.LimitSwitchSource;
@@ -34,7 +34,7 @@ import static frc.robot.Constants.MiscConstants.CANIVORE_1;
 import java.util.Map;
 
 /** Add your docs here. */
-public class BreakerFalconArm extends ProfiledPIDSubsystem {
+public class FalconArm extends ProfiledPIDSubsystem {
 
     public static final double kS = 0.0;
     public static final double kG = 0.675;
@@ -52,7 +52,7 @@ public class BreakerFalconArm extends ProfiledPIDSubsystem {
     private ArmFeedforward armFF = new ArmFeedforward(kS, kG, kV, kA);
     private static ProfiledPIDController pid = new ProfiledPIDController(kP, kI, kD, constraints);
 
-    public BreakerFalconArm() {
+    public FalconArm() {
 
         super(pid);
         enable();

@@ -4,40 +4,34 @@
 
 // package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders;
 
-// import com.revrobotics.AbsoluteEncoder;
-// import com.revrobotics.CANSparkMax;
-// import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+// import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+// import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 
 // import edu.wpi.first.math.Pair;
 // import frc.robot.BreakerLib.util.math.BreakerMath;
 // import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
-// /**
-//  * Code representation of the REV Through Bore Encoder for use in swerve drive.
-//  */
-// public class BreakerSwerveSparkDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
+// /** CTRE Mag Encoder connected via a Talon SRX. */
+// public class BreakerTalonSRXDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
 
-//     private AbsoluteEncoder revEncoder;
+//     private BaseTalon encoderTalon;
 //     private double offset = 0;
 //     private int invertSign = 1;
 
-//     /**
-//      * Creates a REV absolute encoder connected to a SPARK MAX.
-//      * 
-//      * @param spark SPARK MAX the encoder is connected to.
-//      */
-//     public BreakerSwerveSparkDutyCycleEncoder(CANSparkMax spark) {
-//         revEncoder = spark.getAbsoluteEncoder(Type.kDutyCycle);
+//     public BreakerTalonSRXDutyCycleEncoder(BaseTalon encoderTalon) {
+//         this.encoderTalon = encoderTalon;
+//         encoderTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
 //     }
 
 //     @Override
 //     public double getRelative() {
-//         return invertSign * ((revEncoder.getPosition() * 360) + offset);
+//         return 0;
 //     }
 
 //     @Override
 //     public double getAbsolute() {
-//         return invertSign * BreakerMath.angleModulus(revEncoder.getPosition() * 360 + offset);
+//         return invertSign
+//                 * BreakerMath.angleModulus(encoderTalon.getSelectedSensorPosition() * (360.0 / 4096.0) + offset);
 //     }
 
 //     @Override
@@ -54,11 +48,13 @@
 
 //     @Override
 //     public Class<?> getBaseEncoderType() {
-//         return AbsoluteEncoder.class;
+//         // TODO Auto-generated method stub
+//         return encoderTalon.getClass();
 //     }
 
 //     @Override
 //     public Object getBaseEncoder() {
-//         return revEncoder;
+//         // TODO Auto-generated method stub
+//         return encoderTalon;
 //     }
 // }
