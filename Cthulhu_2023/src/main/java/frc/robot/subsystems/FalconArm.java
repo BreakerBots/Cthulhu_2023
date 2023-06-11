@@ -33,7 +33,6 @@ import static frc.robot.Constants.MiscConstants.CANIVORE_1;
 
 import java.util.Map;
 
-/** How is this any better than before? if you are doig PID only, at least use the motor's onboard pid */
 public class FalconArm extends ProfiledPIDSubsystem {
 
     public static final double kS = 0.0;
