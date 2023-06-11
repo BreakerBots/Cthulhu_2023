@@ -4,69 +4,40 @@
 
 package frc.robot.BreakerLib.util.factory;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.ctre.phoenix.sensors.WPI_CANCoder;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** Factory for producing CANcoders. */
 public class BreakerCANCoderFactory {
 
     /**
-     * Creates CANCoder on default bus.
-     * 
-     * @param deviceID CAN ID
-     * @param initializationStrategy Boot to zero or boot to absolute position.
-     * @param absoluteSensorRange Unsigned 0 to 360 deg or signed +-180 deg.
-     * @param absoluteOffsetDegrees Offset of encoder in degrees.
-     * @param encoderDirection False = counterclockwise rotation is positive (facing towards LED).
-     * 
-     * @return CANCoder with desired settings.
      */
-    public static WPI_CANCoder createCANCoder(int deviceID, SensorInitializationStrategy initializationStrategy,
-            AbsoluteSensorRange absoluteSensorRange, double absoluteOffsetDegrees, boolean encoderDirection) {
-        WPI_CANCoder encoder = new WPI_CANCoder(deviceID);
-        configExistingCANCoder(encoder, initializationStrategy, absoluteSensorRange, absoluteOffsetDegrees,
-                encoderDirection);
+    public static CANcoder createCANCoder(int deviceID, AbsoluteSensorRangeValue absoluteSensorRange, double absoluteOffsetRotations, SensorDirectionValue encoderDirection) {
+        
+        return createCANCoder(deviceID, "rio", absoluteSensorRange, absoluteOffsetRotations, encoderDirection);
+    }
+
+    /**
+     */
+    public static CANcoder createCANCoder(int deviceID, String busName,
+        AbsoluteSensorRangeValue absoluteSensorRange, double absoluteOffsetRotations, SensorDirectionValue encoderDirection) {
+        CANcoder encoder = new CANcoder(deviceID, busName);
+        configExistingCANCoder(encoder, absoluteSensorRange, absoluteOffsetRotations, encoderDirection);
         return encoder;
     }
 
     /**
-     * Creates CANCoder on specified bus.
-     * 
-     * @param deviceID CAN ID
-     * @param busName CANivore device name/serial # or "rio" for RoboRIO bus.
-     * 
-     * @return CANCoder with desired settings.
      */
-    public static WPI_CANCoder createCANCoder(int deviceID, String busName,
-            SensorInitializationStrategy initializationStrategy, AbsoluteSensorRange absoluteSensorRange,
-            double absoluteOffsetDegrees, boolean encoderDirection) {
-        WPI_CANCoder encoder = new WPI_CANCoder(deviceID, busName);
-        configExistingCANCoder(encoder, initializationStrategy, absoluteSensorRange, absoluteOffsetDegrees,
-                encoderDirection);
-        return encoder;
-    }
-
-    /**
-     * Configure pre-existing CANCoder.
-     * 
-     * @param encoder CANCoder to config.
-     * @param initializationStrategy Boot to zero or boot to absolute position.
-     * @param absoluteSensorRange Unsigned 0 to 360 deg or signed +-180 deg.
-     * @param absoluteOffsetDegrees Offset of encoder in degrees.
-     * @param encoderDirection False = counterclockwise rotation is positive (facing towards LED).
-     */
-    public static void configExistingCANCoder(WPI_CANCoder encoder, SensorInitializationStrategy initializationStrategy,
-            AbsoluteSensorRange absoluteSensorRange, double absoluteOffsetDegrees, boolean encoderDirection) {
-        BreakerCTREUtil.checkError(encoder.configAbsoluteSensorRange(absoluteSensorRange),
-                " CANCoder " + encoder.getDeviceID() + " ABS sensor range config fail ");
-        BreakerCTREUtil.checkError(encoder.configSensorInitializationStrategy(initializationStrategy),
-                " CANCoder " + encoder.getDeviceID() + " init stratagy config fail ");
-        BreakerCTREUtil.checkError(encoder.configMagnetOffset(absoluteOffsetDegrees),
-                " CANCoder " + encoder.getDeviceID() + " mag offset angle config fail ");
-        BreakerCTREUtil.checkError(encoder.configSensorDirection(encoderDirection),
-                " CANCoder " + encoder.getDeviceID() + " sensor direction config fail ");
+    public static void configExistingCANCoder(CANcoder encoder, AbsoluteSensorRangeValue absoluteSensorRange, double absoluteOffsetRotations, SensorDirectionValue encoderDirection) {
+        CANcoderConfiguration config =  new CANcoderConfiguration();
+        config.MagnetSensor.AbsoluteSensorRange = absoluteSensorRange;
+        config.MagnetSensor.MagnetOffset = absoluteOffsetRotations;
+        config.MagnetSensor.SensorDirection = encoderDirection;
+        BreakerPhoenix6Util.checkStatusCode(encoder.getConfigurator().apply(config),  " CANcoder " + encoder.getDeviceID() + " general config fail ");
     }
 }

@@ -16,11 +16,13 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwe
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveAzimuthEncoder;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerGenericSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre.BreakerFalconSwerveModuleAngleMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre.BreakerLegacyFalconSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre.BreakerProFalconSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.rev.BreakerNeoSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.BreakerGenericSwerveModuleDriveMotor;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre.BreakerFalconSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre.BreakerLegacyFalconSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre.BreakerProFalconSwerveModuleDriveMotor;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre.BreakerFalconSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.rev.BreakerNeoSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
 
@@ -37,12 +39,24 @@ public class BreakerSwerveModuleBuilder {
         return new BreakerSwerveModuleBuilder(config);
     }
 
-    public BreakerSwerveModuleBuilder withFalconAngleMotor(WPI_TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
-        angleMotor = new BreakerFalconSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, config.getAngleSupplyCurrentLimit(), isMotorInverted, config.getAnglePIDConfig());
+    @Deprecated
+    public BreakerSwerveModuleBuilder withLegacyFalconAngleMotor(WPI_TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
+        angleMotor = new BreakerLegacyFalconSwerveModuleAngleMotor(motor, encoder, encoderAbsoluteAngleOffsetDegrees, config.getAngleSupplyCurrentLimit(), isMotorInverted, config.getAnglePIDConfig());
         return this;
     }
 
-    public BreakerSwerveModuleBuilder withFalconDriveMotor(WPI_TalonFX motor, boolean isMotorInverted) {
+    @Deprecated
+    public BreakerSwerveModuleBuilder withLegacyFalconDriveMotor(WPI_TalonFX motor, boolean isMotorInverted) {
+        driveMotor = new BreakerLegacyFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), config.getDriveSupplyCurrentLimit(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
+        return this;
+    }
+
+    public BreakerSwerveModuleBuilder withFalconAngleMotor(TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, boolean isMotorInverted) {
+        angleMotor = new BreakerFalconSwerveModuleAngleMotor(motor, encoder, config.getAzimuthGearRatio(), encoderAbsoluteAngleOffsetDegrees, config.getAngleSupplyCurrentLimit(), isMotorInverted, config.getAnglePIDConfig());
+        return this;
+    }
+
+    public BreakerSwerveModuleBuilder withFalconDriveMotor(TalonFX motor, boolean isMotorInverted) {
         driveMotor = new BreakerFalconSwerveModuleDriveMotor(motor, config.getDriveGearRatio(), config.getWheelDiameter(), config.getDriveSupplyCurrentLimit(), isMotorInverted, config.getDriveArbFF(), config.getDrivePIDConfig());
         return this;
     }

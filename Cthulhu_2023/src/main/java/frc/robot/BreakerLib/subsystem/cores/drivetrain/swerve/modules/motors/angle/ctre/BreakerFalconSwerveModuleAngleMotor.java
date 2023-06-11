@@ -4,71 +4,71 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.ctre;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
-import com.ctre.phoenix.sensors.WPI_CANCoder;
+import java.net.CacheRequest;
+import java.util.Objects;
+
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
-import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveAzimuthEncoder;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerGenericSwerveModuleAngleMotor;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.BreakerSwerveAzimuthControler;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
-import frc.robot.BreakerLib.util.math.BreakerMath;
-import frc.robot.BreakerLib.util.math.BreakerUnits;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** Add your docs here. */
 public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveModuleAngleMotor {
-    private WPI_TalonFX motor;
+    private TalonFX motor;
     private BreakerSwerveAzimuthEncoder encoder;
     private Rotation2d targetAngle;
     private BreakerSwerveAzimuthControler azimuthControler;
-    public BreakerFalconSwerveModuleAngleMotor(WPI_TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, double supplyCurrentLimit, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
+    private final PositionDutyCycle positionRequest;
+    public BreakerFalconSwerveModuleAngleMotor(TalonFX motor, BreakerSwerveAzimuthEncoder encoder, double encoderAbsoluteAngleOffsetDegrees, double azimuthGearRatio, double supplyCurrentLimit, boolean isMotorInverted,  BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.encoder = encoder;
+        positionRequest = new PositionDutyCycle(0.0, false, 0.0, 0, false);
+
         encoder.config(false, encoderAbsoluteAngleOffsetDegrees);
+        azimuthControler = null;
         TalonFXConfiguration turnConfig = new TalonFXConfiguration();
-        if (encoder.getBaseEncoderType() == WPI_CANCoder.class) {
-            WPI_CANCoder cancoder = (WPI_CANCoder) encoder.getBaseEncoder();
-            turnConfig.remoteFilter0.remoteSensorDeviceID = cancoder.getDeviceID();
-            turnConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
-            turnConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.RemoteSensor0;
-            turnConfig.slot0.kP = pidConfig.kP;
-            turnConfig.slot0.kI = pidConfig.kI;
-            turnConfig.slot0.kD =pidConfig.kD;
-            turnConfig.slot0.closedLoopPeakOutput = 1.0;
-            azimuthControler = new BreakerSwerveAzimuthControler((Rotation2d target) -> {
-                double relTgtAng = BreakerMath.absoluteAngleToContinuousRelativeAngleDegrees(getRelativeAngle(),
-                Rotation2d.fromDegrees(getAbsoluteAngle()), target);
-                motor.set(TalonFXControlMode.Position, BreakerUnits.degreesToCANCoderNativeUnits(relTgtAng));
-            });
-        } else {
+        if (encoder.getBaseEncoderType() == CANcoder.class) {
+            CANcoder cancoder = (CANcoder) encoder.getBaseEncoder();
+            if (cancoder.getCANBus() == motor.getCANBus()) {
+                turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+                turnConfig.Feedback.FeedbackRemoteSensorID = cancoder.getDeviceID();
+                turnConfig.Feedback.RotorToSensorRatio = azimuthGearRatio;
+                turnConfig.Feedback.SensorToMechanismRatio = 1.0;
+                turnConfig.Slot0.kP = pidConfig.kP;
+                turnConfig.Slot0.kI = pidConfig.kI;
+                turnConfig.Slot0.kD = pidConfig.kD;
+                turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
+                azimuthControler = new BreakerSwerveAzimuthControler((Rotation2d target) -> {motor.setControl(positionRequest.withPosition(target.getRotations()));});
+            }
+        }
+        if (Objects.isNull(azimuthControler)) {
             azimuthControler = new BreakerSwerveAzimuthControler(motor, encoder, pidConfig);
         }
-        turnConfig.peakOutputForward = 1.0;
-        turnConfig.peakOutputReverse = -1.0;
-        turnConfig.voltageCompSaturation = 12.0;
-        turnConfig.supplyCurrLimit = new SupplyCurrentLimitConfiguration(true, supplyCurrentLimit, encoderAbsoluteAngleOffsetDegrees, supplyCurrentLimit);
-        BreakerCTREUtil.checkError(motor.configAllSettings(turnConfig),
-                " Failed to config swerve module turn motor ");
-        motor.selectProfileSlot(0, 0);
-        motor.setSensorPhase(true);
+        turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        turnConfig.CurrentLimits.SupplyCurrentLimit = supplyCurrentLimit;
+        turnConfig.CurrentLimits.SupplyCurrentThreshold = supplyCurrentLimit;
+        turnConfig.CurrentLimits.SupplyTimeThreshold = 1.5;
+        turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        BreakerPhoenix6Util.checkStatusCode(motor.getConfigurator().apply(turnConfig),
+                " Failed to config swerve module drive motor ");
+    
         motor.setInverted(isMotorInverted);
-        motor.setNeutralMode(NeutralMode.Brake);
         azimuthControler.setTargetAngle(new Rotation2d());
         targetAngle = new Rotation2d();
         deviceName = "TalonFX_Swerve_Angle_Motor_(" + motor.getDeviceID() + ")";
@@ -90,9 +90,10 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
     public double getRelativeAngle() {
         return encoder.getRelative();
     }
+
     @Override
     public void setBrakeMode(boolean isEnabled) {
-       motor.setNeutralMode(isEnabled ? NeutralMode.Brake : NeutralMode.Coast);
+        BreakerPhoenix6Util.setBrakeMode(motor, isEnabled);
     }
 
     @Override
@@ -104,10 +105,9 @@ public class BreakerFalconSwerveModuleAngleMotor extends BreakerGenericSwerveMod
     public void runSelfTest() {
         faultStr = "";
         health = DeviceHealth.NOMINAL;
-        Pair<DeviceHealth, String> motorPair = BreakerCTREUtil.checkMotorFaultsAndConnection(motor);
+        Pair<DeviceHealth, String> motorPair = BreakerPhoenix6Util.checkMotorFaultsAndConnection(motor);
         Pair<DeviceHealth, String> encoderPair = encoder.getFaultData();
-        if (encoderPair.getFirst() != DeviceHealth.NOMINAL || encoderPair.getFirst() != DeviceHealth.INOPERABLE) {
-            health = DeviceHealth.INOPERABLE;
+        if (motorPair.getFirst() != DeviceHealth.NOMINAL || encoderPair.getFirst() != DeviceHealth.NOMINAL) {
             if (motorPair.getFirst() != DeviceHealth.NOMINAL) {
                 faultStr += " ANGLE_MOTOR_FAULTS : " + motorPair.getSecond();
             }

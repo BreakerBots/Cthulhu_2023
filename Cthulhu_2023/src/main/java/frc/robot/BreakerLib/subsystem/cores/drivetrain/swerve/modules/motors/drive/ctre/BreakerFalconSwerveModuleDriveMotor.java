@@ -4,59 +4,65 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.ctre;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.configs.AudioConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.util.Units;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.drive.BreakerGenericSwerveModuleDriveMotor;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
-import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** Add your docs here. */
 public class BreakerFalconSwerveModuleDriveMotor extends BreakerGenericSwerveModuleDriveMotor {
-    private WPI_TalonFX motor;
+    private TalonFX motor;
     private double driveGearRatio, wheelDiameter, targetVelocity;
+    private final VelocityDutyCycle velocityRequest;
+    private final double wheelCircumfrenceMeters;
     private BreakerArbitraryFeedforwardProvider arbFF;
-    public BreakerFalconSwerveModuleDriveMotor(WPI_TalonFX motor, double driveGearRatio, double wheelDiameter, double supplyCurrentLimit, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
+    public BreakerFalconSwerveModuleDriveMotor(TalonFX motor, double driveGearRatio, double wheelDiameter, double supplyCurrentLimit, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.driveGearRatio = driveGearRatio;
         this.wheelDiameter = wheelDiameter;
         this.arbFF = arbFF;
+        wheelCircumfrenceMeters = Units.inchesToMeters(wheelDiameter*Math.PI);
         targetVelocity = 0.0;
+        velocityRequest = new VelocityDutyCycle(0.0, false, 0.0, 1, false);
         TalonFXConfiguration driveConfig = new TalonFXConfiguration();
-        driveConfig.primaryPID.selectedFeedbackSensor = FeedbackDevice.IntegratedSensor;
-        driveConfig.slot1.kP = pidConfig.kP;
-        driveConfig.slot1.kI = pidConfig.kI;
-        driveConfig.slot1.kD = pidConfig.kD;
-        driveConfig.slot1.kF = pidConfig.kF;
-        driveConfig.slot1.closedLoopPeakOutput = 1.0;
-        driveConfig.peakOutputForward = 1.0;
-        driveConfig.peakOutputReverse = -1.0;
-        driveConfig.voltageCompSaturation = 12.0;
-        driveConfig.supplyCurrLimit = new SupplyCurrentLimitConfiguration(true, supplyCurrentLimit, supplyCurrentLimit, 1.5);
-        BreakerCTREUtil.checkError(motor.configAllSettings(driveConfig),
+        driveConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+        driveConfig.Feedback.SensorToMechanismRatio = driveGearRatio;
+        driveConfig.Slot1.kP = pidConfig.kP;
+        driveConfig.Slot1.kI = pidConfig.kI;
+        driveConfig.Slot1.kD = pidConfig.kD;
+        driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        driveConfig.CurrentLimits.SupplyCurrentLimit = supplyCurrentLimit;
+        driveConfig.CurrentLimits.SupplyCurrentThreshold = supplyCurrentLimit;
+        driveConfig.CurrentLimits.SupplyTimeThreshold = 1.5;
+        driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        BreakerPhoenix6Util.checkStatusCode(motor.getConfigurator().apply(driveConfig),
                 " Failed to config swerve module drive motor ");
-        motor.selectProfileSlot(1, 0);
+    
         motor.setInverted(isMotorInverted);
-        motor.setNeutralMode(NeutralMode.Brake);
-        motor.set(ControlMode.Velocity, 0.0);
+        motor.setControl(velocityRequest);
     }
 
     @Override
     public void runSelfTest() {
         faultStr = "";
-        Pair<DeviceHealth, String> pair = BreakerCTREUtil.checkMotorFaultsAndConnection(motor);
+        Pair<DeviceHealth, String> pair = BreakerPhoenix6Util.checkMotorFaultsAndConnection(motor);
         health = pair.getFirst();
         if (health != DeviceHealth.NOMINAL) {
             faultStr = " DRIVE_MOTOR_FAULTS : " + pair.getSecond();
@@ -66,40 +72,36 @@ public class BreakerFalconSwerveModuleDriveMotor extends BreakerGenericSwerveMod
     @Override
     public void setTargetVelocity(double targetMetersPerSecond) {
         targetVelocity = targetMetersPerSecond;
-        motor.set(TalonFXControlMode.Velocity, getMetersPerSecToNativeVelUnits(targetMetersPerSecond),
-        DemandType.ArbitraryFeedForward, arbFF.getArbitraryFeedforwardValue(targetMetersPerSecond));
+        motor.setControl(
+        velocityRequest.withVelocity(targetMetersPerSecond / wheelCircumfrenceMeters)
+            .withFeedForward(arbFF.getArbitraryFeedforwardValue(targetMetersPerSecond))
+            );
     }
 
     @Override
     public double getVelocity() {
-        return Units.inchesToMeters(BreakerMath.ticksToInches(motor.getSelectedSensorVelocity() * 10,
-        BreakerMath.getTicksPerInch(2048, driveGearRatio, wheelDiameter)));
+        return motor.getVelocity().getValue() * wheelCircumfrenceMeters;
     }
 
     @Override
     public double getDistance() {
-        return Units.inchesToMeters(BreakerMath.ticksToInches(motor.getSelectedSensorPosition(),
-            BreakerMath.getTicksPerInch(2048, driveGearRatio, wheelDiameter)));
+        return BaseStatusSignal.getLatencyCompensatedValue(motor.getPosition(), motor.getVelocity()) * wheelCircumfrenceMeters;
     }
 
     @Override
     public void resetDistance() {
-        motor.setSelectedSensorPosition(0);
+        BreakerPhoenix6Util.checkStatusCode(motor.setRotorPosition(0),
+                " Failed to reset swerve module rive motor position ");
+        ;
     }
 
     @Override
     public void setBrakeMode(boolean isEnabled) {
-        motor.setNeutralMode(isEnabled ? NeutralMode.Brake : NeutralMode.Coast);
-        
+        BreakerPhoenix6Util.setBrakeMode(motor, isEnabled);
     }
 
     @Override
     public double getTargetVelocity() {
         return targetVelocity;
-    }
-
-    private double getMetersPerSecToNativeVelUnits(double speedMetersPerSec) {
-        return (speedMetersPerSec / 10) * Units.inchesToMeters(
-                BreakerMath.getTicksPerInch(2048, driveGearRatio, wheelDiameter));
     }
 }

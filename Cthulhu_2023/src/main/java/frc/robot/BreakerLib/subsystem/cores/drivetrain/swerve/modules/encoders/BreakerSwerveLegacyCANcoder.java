@@ -11,14 +11,15 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 
 import edu.wpi.first.math.Pair;
-import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
+import frc.robot.BreakerLib.util.factory.BreakerLegacyCANCoderFactory;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 
 /** Add your docs here. */
-public class BreakerSwerveCANcoder implements BreakerSwerveAzimuthEncoder {
+@Deprecated
+public class BreakerSwerveLegacyCANcoder implements BreakerSwerveAzimuthEncoder {
     private WPI_CANCoder encoder;
-    public BreakerSwerveCANcoder(WPI_CANCoder encoder) {
+    public BreakerSwerveLegacyCANcoder(WPI_CANCoder encoder) {
         this.encoder = encoder;
     }
 
@@ -49,7 +50,7 @@ public class BreakerSwerveCANcoder implements BreakerSwerveAzimuthEncoder {
 
     @Override
     public void config(boolean invertEncoder, double offset) {
-        BreakerCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
+        BreakerLegacyCANCoderFactory.configExistingCANCoder(encoder, SensorInitializationStrategy.BootToAbsolutePosition,
         AbsoluteSensorRange.Signed_PlusMinus180, offset, invertEncoder);
     }
 

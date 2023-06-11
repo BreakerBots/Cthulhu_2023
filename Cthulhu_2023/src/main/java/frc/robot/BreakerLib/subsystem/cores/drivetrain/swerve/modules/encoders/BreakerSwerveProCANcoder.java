@@ -11,8 +11,8 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
+import frc.robot.BreakerLib.util.factory.BreakerLegacyCANCoderFactory;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
-import frc.robot.BreakerLib.util.factory.BreakerProCANCoderFactory;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
 import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
@@ -51,7 +51,7 @@ public class BreakerSwerveProCANcoder implements BreakerSwerveAzimuthEncoder {
 
     @Override
     public void config(boolean invertEncoder, double absoluteOffset) {
-        BreakerProCANCoderFactory.configExistingCANCoder(encoder, AbsoluteSensorRangeValue.Signed_PlusMinusHalf, absoluteOffset / 360.0, SensorDirectionValue.CounterClockwise_Positive);
+        BreakerCANCoderFactory.configExistingCANCoder(encoder, AbsoluteSensorRangeValue.Signed_PlusMinusHalf, absoluteOffset / 360.0, SensorDirectionValue.CounterClockwise_Positive);
     }
 
 }
