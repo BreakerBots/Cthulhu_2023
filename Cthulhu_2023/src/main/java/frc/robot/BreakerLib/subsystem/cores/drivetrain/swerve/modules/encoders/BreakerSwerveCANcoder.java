@@ -11,16 +11,15 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
-import frc.robot.BreakerLib.util.factory.BreakerLegacyCANCoderFactory;
 import frc.robot.BreakerLib.util.factory.BreakerCANCoderFactory;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** Add your docs here. */
-public class BreakerSwerveProCANcoder implements BreakerSwerveAzimuthEncoder {
+public class BreakerSwerveCANcoder implements BreakerSwerveAzimuthEncoder {
     private CANcoder encoder;
-    public BreakerSwerveProCANcoder(CANcoder encoder) {
+    public BreakerSwerveCANcoder(CANcoder encoder) {
         this.encoder = encoder;
     }
 

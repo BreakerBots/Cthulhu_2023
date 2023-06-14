@@ -9,7 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.devices.sensors.gyro.BreakerGenericGyro;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 /** A {@link BreakerDiffDrive} instance with TalonFX (Falcon 500) motors */
 @Deprecated
@@ -49,14 +49,14 @@ public class BreakerLegacyFalconDiffDrive extends BreakerDiffDrive {
 
         StringBuilder work = new StringBuilder();
         for (WPI_TalonFX motorL : leftMotors) {
-            Pair<DeviceHealth, String> motorFaultData = BreakerCTREUtil.checkMotorFaultsAndConnection(motorL);
+            Pair<DeviceHealth, String> motorFaultData = BreakerPhoenix5Util.checkMotorFaultsAndConnection(motorL);
             if (motorFaultData.getFirst() != DeviceHealth.NOMINAL) {
                 health = DeviceHealth.FAULT;
                 work.append(" MOTOR ID (" + motorL.getDeviceID() + ") FAULTS: " + motorFaultData.getSecond());
             }
         }
         for (WPI_TalonFX motorR : rightMotors) {
-            Pair<DeviceHealth, String> motorFaultData = BreakerCTREUtil.checkMotorFaultsAndConnection(motorR);
+            Pair<DeviceHealth, String> motorFaultData = BreakerPhoenix5Util.checkMotorFaultsAndConnection(motorR);
             if (motorFaultData.getFirst() != DeviceHealth.NOMINAL) {
                 health = DeviceHealth.FAULT;
                 work.append(" MOTOR ID (" + motorR.getDeviceID() + ") FAULTS: " + motorFaultData.getSecond());
@@ -74,8 +74,8 @@ public class BreakerLegacyFalconDiffDrive extends BreakerDiffDrive {
 
     @Override
     public void setDrivetrainBrakeMode(boolean isEnabled) {
-        BreakerCTREUtil.setBrakeMode(isEnabled, leftMotors);
-        BreakerCTREUtil.setBrakeMode(isEnabled, rightMotors);
+        BreakerPhoenix5Util.setBrakeMode(isEnabled, leftMotors);
+        BreakerPhoenix5Util.setBrakeMode(isEnabled, rightMotors);
     }
 
 }

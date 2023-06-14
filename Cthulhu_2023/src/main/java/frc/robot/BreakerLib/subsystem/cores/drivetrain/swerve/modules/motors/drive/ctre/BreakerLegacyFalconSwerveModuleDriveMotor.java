@@ -21,7 +21,7 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.dri
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 /** Add your docs here. */
 @Deprecated
@@ -46,7 +46,7 @@ public class BreakerLegacyFalconSwerveModuleDriveMotor extends BreakerGenericSwe
         driveConfig.peakOutputReverse = -1.0;
         driveConfig.voltageCompSaturation = 12.0;
         driveConfig.supplyCurrLimit = new SupplyCurrentLimitConfiguration(true, supplyCurrentLimit, supplyCurrentLimit, 1.5);
-        BreakerCTREUtil.checkError(motor.configAllSettings(driveConfig),
+        BreakerPhoenix5Util.checkError(motor.configAllSettings(driveConfig),
                 " Failed to config swerve module drive motor ");
         motor.selectProfileSlot(1, 0);
         motor.setInverted(isMotorInverted);
@@ -57,7 +57,7 @@ public class BreakerLegacyFalconSwerveModuleDriveMotor extends BreakerGenericSwe
     @Override
     public void runSelfTest() {
         faultStr = "";
-        Pair<DeviceHealth, String> pair = BreakerCTREUtil.checkMotorFaultsAndConnection(motor);
+        Pair<DeviceHealth, String> pair = BreakerPhoenix5Util.checkMotorFaultsAndConnection(motor);
         health = pair.getFirst();
         if (health != DeviceHealth.NOMINAL) {
             faultStr = " DRIVE_MOTOR_FAULTS : " + pair.getSecond();

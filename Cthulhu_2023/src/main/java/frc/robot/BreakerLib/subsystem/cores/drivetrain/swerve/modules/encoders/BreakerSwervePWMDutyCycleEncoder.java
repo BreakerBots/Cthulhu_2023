@@ -18,11 +18,11 @@ import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
  * - Rev Through Bore
  * - US Digital MA3 and other simple PWM encoders.
  */
-public class BreakerPWMDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
+public class BreakerSwervePWMDutyCycleEncoder implements BreakerSwerveAzimuthEncoder {
 
     private DutyCycleEncoder dcEncoder;
     private double offset;
-    public BreakerPWMDutyCycleEncoder(int channel, int connectedFrequencyThreshold, double dutyCycleMin, double dutyCycleMax) {
+    public BreakerSwervePWMDutyCycleEncoder(int channel, int connectedFrequencyThreshold, double dutyCycleMin, double dutyCycleMax) {
         dcEncoder = new DutyCycleEncoder(channel);
         dcEncoder.setDutyCycleRange(dutyCycleMin, dutyCycleMax);
         dcEncoder.setDistancePerRotation(360.0);

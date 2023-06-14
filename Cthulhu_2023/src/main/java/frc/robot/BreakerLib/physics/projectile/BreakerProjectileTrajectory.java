@@ -4,6 +4,7 @@
 
 package frc.robot.BreakerLib.physics.projectile;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -16,89 +17,77 @@ import frc.robot.BreakerLib.util.math.BreakerUnits;
  * relative (EX: Z is up))
  */
 public class BreakerProjectileTrajectory {
-    private BreakerProjectile projectile;
     private BreakerVector3 initialVels;
     private Translation3d  launchPoint;
 
-    public BreakerProjectileTrajectory(BreakerProjectile projectile, BreakerVector3 initialVels,
-            Translation3d launchPoint) {
-        this.projectile = projectile;
+    public BreakerProjectileTrajectory(BreakerVector3 initialVels, Translation3d launchPoint) {
         this.initialVels = initialVels;
         this.launchPoint = launchPoint;
     }
 
-    /** Max height of projectile in meters. */
-    public double getMaxHeight() {
-        return (projectile.getTerminalVelSq() / (2 * BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G)) * Math.log(
-                (Math.pow(initialVels.getMagnatudeZ(), 2) + projectile.getTerminalVelSq()) / projectile.getTerminalVelSq());
+    public BreakerProjectileTrajectory(double initialVel, Pose3d launchPose) {
+        this.initialVels = BreakerVector3.fromMagnitudeAndvectorRotation(initialVel, launchPose.getRotation());
+        launchPoint = launchPose.getTranslation();
+    }
+    
+
+    private double getLinearDislacementAtGivenTime(double initialVel, double time) {
+        return initialVel * time;
     }
 
-    /** Time that a projectile reaches its maximum height. */
-    public double getApogeeTime() {
-        return (projectile.getTerminalVel() / BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G)
-                * Math.atan(initialVels.getMagnatudeZ() / projectile.getTerminalVel());
+    private double getVeticalDisplacementAtGivenTime(double initialVel, double time) {
+        return (initialVel * time) - ((0.5 * BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G) * (time * time));
     }
 
-    /** 2D position of target at given time, in seconds (TBD) */
-    public Translation2d get2dTranslationAtGivenTime(double time) {
-        double x = getHorizontalDistInGivenAxisAtGivenTime(time, initialVels.getMagnitudeX());
-        double y = getHorizontalDistInGivenAxisAtGivenTime(time, initialVels.getMagnitudeY());
-        return new Translation2d(x, y).plus(launchPoint.toTranslation2d());
+    public Translation3d getDispalcementAtGivenTime(double time) {
+        return new Translation3d(getLinearDislacementAtGivenTime(initialVels.getMagnitudeX(), time), getLinearDislacementAtGivenTime(initialVels.getMagnitudeY(), time), getVeticalDisplacementAtGivenTime(initialVels.getMagnatudeZ(), time));
     }
 
-    /** x = (Vt^2 / g) * ln( (Vt^2 + g * Uo * t) / Vt^2 ) */
-    private double getHorizontalDistInGivenAxisAtGivenTime(double time, double initialForce) {
-        return (projectile.getTerminalVelSq() / BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G) * Math.log(
-                (projectile.getTerminalVelSq() + (BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G * initialForce * time))
-                        / projectile.getTerminalVelSq());
+    public Translation3d getPositionAtGivenTime(double time) {
+        return launchPoint.plus(getDispalcementAtGivenTime(time));
     }
 
-    /** t = ((e^(d / Vt^2 / g) * Vt^2) - Vt^2) / g / Uo */
-    private double getTimeAtGivenDistance(double distance, double initialForce) {
-        double exp = Math.exp(distance / (projectile.getTerminalVelSq() / BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G));
-        double vtExp = (projectile.getTerminalVelSq() * exp) - projectile.getTerminalVelSq();
-        return vtExp / BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G / initialForce;
+    public Translation2d getDispalcement2dAtGivenTime(double time) {
+        return new Translation2d(getLinearDislacementAtGivenTime(initialVels.getMagnitudeX(), time), getLinearDislacementAtGivenTime(initialVels.getMagnitudeY(), time));
     }
 
-    public double getTimeOfFightToTarget(Translation2d targedLocation) {
-        return getTimeAtGivenDistance(targedLocation.getDistance(launchPoint.toTranslation2d()),
-                Math.hypot(initialVels.getMagnitudeX(), initialVels.getMagnitudeY()));
+    public Translation2d getPosition2dAtGivenTime(double time) {
+        return getPositionAtGivenTime(time).toTranslation2d();
     }
 
-    private double getVelInGivenAxisAtGivenTime(double time, double initialForce) {
-        return projectile.getTerminalVelSq() * initialForce
-                / (projectile.getTerminalVelSq() + BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G * initialForce * time);
+    public BreakerVector3 getVelocityVectorAtGivenTime(double time) {
+        return new BreakerVector3(initialVels.getMagnitudeX(), initialVels.getMagnitudeY(), initialVels.getMagnatudeZ() - ((0.5 * BreakerUnits.METERS_PER_SECOND_SQUARED_IN_G) * (time * time)));
     }
 
-    public BreakerVector3 getForceVectorAtGivenTime(double time) {
-        double x = getVelInGivenAxisAtGivenTime(time, initialVels.getMagnitudeX());
-        double y = getVelInGivenAxisAtGivenTime(time, initialVels.getMagnitudeY());
-        double z = getVelInGivenAxisAtGivenTime(time, initialVels.getMagnatudeZ());
-        return new BreakerVector3(x, y, z);
+    public double getTimeToGivenDisplacement2d(double displacement) {
+        return displacement / initialVels.toBreakerVector2().getMagnitude();
     }
 
     /** Creates a corrected 2D pose for the target (I.E. where you should aim) based on chassis movement. */
     public Translation2d getMovingLaunchCorrectionAsNewTargetLocation(ChassisSpeeds fieldRelativeSpeeds,
             Translation2d targetLocation) {
-        BreakerProjectileTrajectory trajectory = new BreakerProjectileTrajectory(projectile,
+        BreakerProjectileTrajectory trajectory = new BreakerProjectileTrajectory(
                 new BreakerVector3(initialVels.getMagnitudeX() + fieldRelativeSpeeds.vxMetersPerSecond,
                         initialVels.getMagnitudeY() + fieldRelativeSpeeds.vyMetersPerSecond, initialVels.getMagnatudeZ()),
                 launchPoint);
-        Translation2d correctedLocation = targetLocation
-                .minus(trajectory.get2dTranslationAtGivenTime(getTimeOfFightToTarget(targetLocation)));
-        return targetLocation.plus(correctedLocation);
+        double displacementToTarget = launchPoint.toTranslation2d().getDistance(targetLocation);
+        double timeToTarget = getTimeToGivenDisplacement2d(displacementToTarget);
+        Translation2d predictedImpactPos = trajectory.getDispalcement2dAtGivenTime(timeToTarget);
+        Translation2d tgtDiff = predictedImpactPos.minus(targetLocation);
+        return targetLocation.minus(tgtDiff);
     }
 
     /** Creates a corrected 3D vector for the projectile (I.E. corrected launch forces) based on movement of chassis. */
     public BreakerVector3 getMovingLaunchCorrectionAsNewLaunchForces(ChassisSpeeds fieldRelativeSpeeds,
             Translation2d targetLocation) {
-        BreakerProjectileTrajectory trajectory = new BreakerProjectileTrajectory(projectile,
+        BreakerProjectileTrajectory trajectory = new BreakerProjectileTrajectory(
                 new BreakerVector3(initialVels.getMagnitudeX() + fieldRelativeSpeeds.vxMetersPerSecond,
                         initialVels.getMagnitudeY() + fieldRelativeSpeeds.vyMetersPerSecond, initialVels.getMagnatudeZ()),
                 launchPoint);
-        double baseExpectedImpactTime = getTimeOfFightToTarget(targetLocation);
-        BreakerVector3 baseExpectedImpactVec = getForceVectorAtGivenTime(baseExpectedImpactTime);
-        BreakerVector3 predictedImpactVec = trajectory.getForceVectorAtGivenTime(baseExpectedImpactTime);
+        double displacementToTarget = launchPoint.toTranslation2d().getDistance(targetLocation);
+        double baseExpectedImpactTime = getTimeToGivenDisplacement2d(displacementToTarget);
+        BreakerVector3 baseExpectedImpactVec = getVelocityVectorAtGivenTime(baseExpectedImpactTime);
+        BreakerVector3 predictedImpactVec = trajectory.getVelocityVectorAtGivenTime(baseExpectedImpactTime);
         BreakerVector3 correctionVec = baseExpectedImpactVec.minus(predictedImpactVec);
         return initialVels.plus(correctionVec);
     }

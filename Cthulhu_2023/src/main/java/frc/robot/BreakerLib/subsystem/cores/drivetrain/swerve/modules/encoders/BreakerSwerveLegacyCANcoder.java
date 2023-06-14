@@ -13,7 +13,7 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.util.factory.BreakerLegacyCANCoderFactory;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 /** Add your docs here. */
 @Deprecated
@@ -35,7 +35,7 @@ public class BreakerSwerveLegacyCANcoder implements BreakerSwerveAzimuthEncoder 
 
     @Override
     public Pair<DeviceHealth, String> getFaultData() {
-        return BreakerCTREUtil.checkCANCoderFaultsAndConnection(encoder);
+        return BreakerPhoenix5Util.checkCANCoderFaultsAndConnection(encoder);
     }
 
     @Override

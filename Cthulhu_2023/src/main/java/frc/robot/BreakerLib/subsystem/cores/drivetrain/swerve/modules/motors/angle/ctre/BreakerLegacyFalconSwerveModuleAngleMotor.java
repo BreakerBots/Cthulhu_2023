@@ -29,7 +29,7 @@ import frc.robot.BreakerLib.util.factory.BreakerLegacyCANCoderFactory;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.math.BreakerUnits;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 /** Add your docs here. */
 @Deprecated
@@ -64,7 +64,7 @@ public class BreakerLegacyFalconSwerveModuleAngleMotor extends BreakerGenericSwe
         turnConfig.peakOutputReverse = -1.0;
         turnConfig.voltageCompSaturation = 12.0;
         turnConfig.supplyCurrLimit = new SupplyCurrentLimitConfiguration(true, supplyCurrentLimit, encoderAbsoluteAngleOffsetDegrees, supplyCurrentLimit);
-        BreakerCTREUtil.checkError(motor.configAllSettings(turnConfig),
+        BreakerPhoenix5Util.checkError(motor.configAllSettings(turnConfig),
                 " Failed to config swerve module turn motor ");
         motor.selectProfileSlot(0, 0);
         motor.setSensorPhase(true);
@@ -105,7 +105,7 @@ public class BreakerLegacyFalconSwerveModuleAngleMotor extends BreakerGenericSwe
     public void runSelfTest() {
         faultStr = "";
         health = DeviceHealth.NOMINAL;
-        Pair<DeviceHealth, String> motorPair = BreakerCTREUtil.checkMotorFaultsAndConnection(motor);
+        Pair<DeviceHealth, String> motorPair = BreakerPhoenix5Util.checkMotorFaultsAndConnection(motor);
         Pair<DeviceHealth, String> encoderPair = encoder.getFaultData();
         if (encoderPair.getFirst() != DeviceHealth.NOMINAL || encoderPair.getFirst() != DeviceHealth.INOPERABLE) {
             health = DeviceHealth.INOPERABLE;

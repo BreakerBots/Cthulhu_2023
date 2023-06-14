@@ -20,7 +20,7 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.ang
 //import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveModulePIDConfig;
 import frc.robot.BreakerLib.util.factory.BreakerLegacyCANCoderFactory;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
 
 /** Add your docs here. */

@@ -18,15 +18,16 @@ import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 import frc.robot.BreakerLib.util.test.suites.flywheel.BreakerFlywheelTestSuite;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 /** A class representing a robot's shooter flywheel and its assocated controle loop */
-public class BreakerFalconFlywheel extends BreakerGenericFlywheel {
+@Deprecated
+public class BreakerLegacyFalconFlywheel extends BreakerGenericFlywheel {
     private WPI_TalonFX lFlyMotor;
     private WPI_TalonFX[] motors;
     
 
-    public BreakerFalconFlywheel(BreakerFlywheelConfig config, WPI_TalonFX... flywheelMotors) {
+    public BreakerLegacyFalconFlywheel(BreakerFlywheelConfig config, WPI_TalonFX... flywheelMotors) {
         super(config);
 
         lFlyMotor = flywheelMotors[0];
@@ -43,7 +44,7 @@ public class BreakerFalconFlywheel extends BreakerGenericFlywheel {
         talonConfig.peakOutputReverse = -1.0;
         talonConfig.voltageCompSaturation = 12.0;
         talonConfig.statorCurrLimit = new StatorCurrentLimitConfiguration(true, 80.0, 80.0, 1.5);
-        BreakerCTREUtil.checkError(lFlyMotor.configAllSettings(talonConfig),
+        BreakerPhoenix5Util.checkError(lFlyMotor.configAllSettings(talonConfig),
                 " Failed to config swerve module drive motor ");
         lFlyMotor.selectProfileSlot(0, 0);
         lFlyMotor.set(ControlMode.Velocity, 0.0);
@@ -92,7 +93,7 @@ public class BreakerFalconFlywheel extends BreakerGenericFlywheel {
        faultStr = "";
        health = DeviceHealth.NOMINAL;
        for (WPI_TalonFX mot: motors) {
-           Pair<DeviceHealth, String> faultData = BreakerCTREUtil.checkMotorFaultsAndConnection(mot);
+           Pair<DeviceHealth, String> faultData = BreakerPhoenix5Util.checkMotorFaultsAndConnection(mot);
            if (faultData.getFirst() != DeviceHealth.NOMINAL) {
                faultStr += faultData.getSecond();
                health = health != DeviceHealth.NOMINAL ? faultData.getFirst() : health;

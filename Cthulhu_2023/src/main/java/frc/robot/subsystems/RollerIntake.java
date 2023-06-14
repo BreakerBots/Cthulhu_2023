@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 public class RollerIntake extends SubsystemBase{
 
@@ -22,7 +22,7 @@ public class RollerIntake extends SubsystemBase{
     SystemDiagnostics diag = new SystemDiagnostics("RollerIntake");
     diag.addCTREMotorController(motor);
 
-    BreakerCTREUtil.checkError(motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15.0, 15.0, 1.5)),
+    BreakerPhoenix5Util.checkError(motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15.0, 15.0, 1.5)),
             " Failed to config swerve module turn motor ");
   }
 

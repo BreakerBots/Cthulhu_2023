@@ -62,12 +62,6 @@ public class BreakerPhoenix6Util {
     return new Pair<DeviceHealth, String>(retHealth, retStr);
   }
 
-   /**
-   * Get CTRE motor controller faults and device health.
-   * 
-   * @param motorFaults Motor controller faults.
-   * @return Motor controller device health and error type (if any).
-   */
   public static Pair<DeviceHealth, String> getMotorHealthAndFaults(CoreTalonFX motor) {
     FaultCase[] faultCases = new FaultCase[] {
       new FaultCase(motor.getFault_Hardware().getValue(), DeviceHealth.INOPERABLE, " hardware_failure "),
@@ -86,12 +80,6 @@ public class BreakerPhoenix6Util {
     return getDeviceHealthAndFaults(faultCases);
   }
 
-   /**
-   * Get CANCoder faults and device health.
-   * 
-   * @param encoderFaults CANCoder faults.
-   * @return CANCoder device health and error type (if any).
-   */
   public static Pair<DeviceHealth, String> getCANcoderHealthAndFaults(CANcoder canCoder) {
 
     FaultCase[] faultCases = new FaultCase[] {

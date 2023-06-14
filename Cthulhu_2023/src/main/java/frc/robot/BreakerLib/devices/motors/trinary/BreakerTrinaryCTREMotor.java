@@ -11,7 +11,7 @@ import edu.wpi.first.math.Pair;
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 /** Falcon motor with simple forward/reverse/off controls */
 public class BreakerTrinaryCTREMotor extends BreakerGenericTrinaryMotor {
@@ -85,7 +85,7 @@ public class BreakerTrinaryCTREMotor extends BreakerGenericTrinaryMotor {
     public void runSelfTest() {
         faultStr = "";
         health = DeviceHealth.NOMINAL;
-        Pair<DeviceHealth, String> faultPair = BreakerCTREUtil.checkMotorFaultsAndConnection(motor);
+        Pair<DeviceHealth, String> faultPair = BreakerPhoenix5Util.checkMotorFaultsAndConnection(motor);
         if (faultPair.getFirst() != DeviceHealth.NOMINAL) {
             health = faultPair.getFirst();
             faultStr = faultPair.getSecond();

@@ -20,7 +20,7 @@ import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
 
 /** Util class for CTRE devices */
-public class BreakerCTREUtil {
+public class BreakerPhoenix5Util {
 
   /**
    * Sets brake mode for given CTRE motors.

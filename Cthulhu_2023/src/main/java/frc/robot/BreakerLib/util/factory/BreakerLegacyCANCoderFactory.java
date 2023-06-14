@@ -8,7 +8,7 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 /** Factory for producing CANcoders. */
 @Deprecated
@@ -61,13 +61,13 @@ public class BreakerLegacyCANCoderFactory {
      */
     public static void configExistingCANCoder(WPI_CANCoder encoder, SensorInitializationStrategy initializationStrategy,
             AbsoluteSensorRange absoluteSensorRange, double absoluteOffsetDegrees, boolean encoderDirection) {
-        BreakerCTREUtil.checkError(encoder.configAbsoluteSensorRange(absoluteSensorRange),
+        BreakerPhoenix5Util.checkError(encoder.configAbsoluteSensorRange(absoluteSensorRange),
                 " CANCoder " + encoder.getDeviceID() + " ABS sensor range config fail ");
-        BreakerCTREUtil.checkError(encoder.configSensorInitializationStrategy(initializationStrategy),
+        BreakerPhoenix5Util.checkError(encoder.configSensorInitializationStrategy(initializationStrategy),
                 " CANCoder " + encoder.getDeviceID() + " init stratagy config fail ");
-        BreakerCTREUtil.checkError(encoder.configMagnetOffset(absoluteOffsetDegrees),
+        BreakerPhoenix5Util.checkError(encoder.configMagnetOffset(absoluteOffsetDegrees),
                 " CANCoder " + encoder.getDeviceID() + " mag offset angle config fail ");
-        BreakerCTREUtil.checkError(encoder.configSensorDirection(encoderDirection),
+        BreakerPhoenix5Util.checkError(encoder.configSensorDirection(encoderDirection),
                 " CANCoder " + encoder.getDeviceID() + " sensor direction config fail ");
     }
 }

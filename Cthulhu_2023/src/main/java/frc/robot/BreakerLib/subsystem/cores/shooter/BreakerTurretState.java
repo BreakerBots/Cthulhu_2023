@@ -9,20 +9,31 @@ import edu.wpi.first.math.geometry.Rotation3d;
 
 /** Add your docs here. */
 public class BreakerTurretState {
-    private Rotation2d azimuthAngle, altitudeAngle;
+    private Rotation2d azimuthAngle, pitchAngle;
     private double flywheelRPM;
-    public BreakerTurretState(Rotation2d azimuthAngle, Rotation2d altitudeAngle, double flywheelRPM) {
-        this.altitudeAngle = altitudeAngle;
+    public BreakerTurretState(Rotation2d azimuthAngle, Rotation2d pitchAngle, double flywheelRPM) {
+        this.pitchAngle = pitchAngle;
         this.azimuthAngle = azimuthAngle;
         this.flywheelRPM = flywheelRPM;
     }
 
+    public Rotation2d getAzimuthAngle() {
+        return azimuthAngle;
+    }
+
+    public double getFlywheelRPM() {
+        return flywheelRPM;
+    }
+
+    public Rotation2d getPitchAngle() {
+        return pitchAngle;
+    }
     
     /** 
      * @param robotRot
      * @return BreakerTurretState
      */
     public BreakerTurretState toRobotRelativeState(Rotation3d robotRot) {
-        return new BreakerTurretState(azimuthAngle.plus(robotRot.toRotation2d()), altitudeAngle.plus(new Rotation2d(robotRot.getY())), flywheelRPM);
+        return new BreakerTurretState(azimuthAngle.plus(robotRot.toRotation2d()), pitchAngle.plus(new Rotation2d(robotRot.getY())), flywheelRPM);
     }
 }

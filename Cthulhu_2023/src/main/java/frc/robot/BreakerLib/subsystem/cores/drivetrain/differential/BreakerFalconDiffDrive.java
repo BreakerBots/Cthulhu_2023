@@ -13,7 +13,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.BreakerLib.devices.sensors.gyro.BreakerGenericGyro;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /** A {@link BreakerDiffDrive} instance with TalonFX (Falcon 500) motors running Phoenix Pro firmware */

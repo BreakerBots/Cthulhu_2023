@@ -16,7 +16,7 @@ import frc.robot.BreakerLib.util.BreakerRoboRIO.RobotOperatingMode;
 import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
 import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 
 /** CTRE CANdle LED controller. */
 public class BreakerCANdle extends BreakerGenericLoopedDevice implements BreakerGenericLED {
@@ -147,7 +147,7 @@ public class BreakerCANdle extends BreakerGenericLoopedDevice implements Breaker
         CANdleFaults faultsC = new CANdleFaults();
         candle.getFaults(faultsC);
         if (faultsC.hasAnyFault()) {
-            Pair<DeviceHealth, String> faultData = BreakerCTREUtil.getCANdleHealthAndFaults(faultsC);
+            Pair<DeviceHealth, String> faultData = BreakerPhoenix5Util.getCANdleHealthAndFaults(faultsC);
             faultStr = faultData.getSecond();
             health = faultData.getFirst();
         } else {

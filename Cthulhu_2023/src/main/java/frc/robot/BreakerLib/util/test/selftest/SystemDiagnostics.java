@@ -14,7 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.Pair;
-import frc.robot.BreakerLib.util.vendorutil.BreakerCTREUtil;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix5Util;
 import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
 
@@ -121,7 +121,7 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
 
         if (!ctreMotorControllers.isEmpty()) {
             for (BaseMotorController con: ctreMotorControllers) {
-                Pair<DeviceHealth, String> motorState = BreakerCTREUtil.checkMotorFaultsAndConnection(con);
+                Pair<DeviceHealth, String> motorState = BreakerPhoenix5Util.checkMotorFaultsAndConnection(con);
                 if (motorState.getFirst() != DeviceHealth.NOMINAL) {
                     faultStr += " / CTRE Motor ID (" + con.getBaseID() + "): " + motorState.getSecond();
                     health = (health == DeviceHealth.INOPERABLE) ? motorState.getFirst() : health;
