@@ -26,7 +26,7 @@ public class BreakerProjectileTrajectory {
     }
 
     public BreakerProjectileTrajectory(double initialVel, Pose3d launchPose) {
-        this.initialVels = BreakerVector3.fromMagnitudeAndvectorRotation(initialVel, launchPose.getRotation());
+        this.initialVels = new BreakerVector3(initialVel, launchPose.getRotation());
         launchPoint = launchPose.getTranslation();
     }
     

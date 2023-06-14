@@ -44,43 +44,32 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
         vectorRotation = new Rotation3d();
     }
 
-    /** Private constructor for BreakerVector3 with all the fixings. */
-    private BreakerVector3(double magnatudeX, double magnatudeY, double magnatudeZ, double magnitude,
-            Rotation3d vectorRotation) {
-        this.magnatudeX = magnatudeX;
-        this.magnatudeY = magnatudeY;
-        this.magnatudeZ = magnatudeZ;
-        this.magnitude = magnitude;
-        this.vectorRotation = vectorRotation;
-    }
-
     /**
      * Creates a BreakerVector3 from given magnitude and force rotation.
      * 
      * @param magnitude     Total force of the vector.
      * @param vectorRotation Rotation of forces.
      */
-    public static BreakerVector3 fromMagnitudeAndvectorRotation(double magnitude, Rotation3d vectorRotation) {
-        double x = magnitude * (Math.cos(vectorRotation.getZ()) * Math.cos(vectorRotation.getY()));
-        double y = magnitude * (Math.sin(vectorRotation.getZ()) * Math.cos(vectorRotation.getY()));
-        double z = magnitude * (Math.sin(vectorRotation.getY()));
-        return new BreakerVector3(x, y, z, magnitude, vectorRotation);
+    public BreakerVector3(double magnitude, Rotation3d vectorRotation) {
+        magnatudeX = magnitude * (Math.cos(vectorRotation.getZ()) * Math.cos(vectorRotation.getY()));
+        magnatudeY = magnitude * (Math.sin(vectorRotation.getZ()) * Math.cos(vectorRotation.getY()));
+        magnatudeZ = magnitude * (Math.sin(vectorRotation.getY()));
+        this.magnitude = magnitude;
+        this.vectorRotation = vectorRotation;
     }
 
     /** converts an instance of WPILib's translation3d class into a vector.
      *  This exists because of the Tranlation2d classes suppport of various vector opperations */
-    public static BreakerVector3 fromTranslation(Translation3d translationToVectorize) {
-        return new BreakerVector3(translationToVectorize.getX(), translationToVectorize.getY(), translationToVectorize.getY());
+    public BreakerVector3(Translation3d translationToVectorize) {
+        this(translationToVectorize.getX(), translationToVectorize.getY(), translationToVectorize.getY());
     }
 
-    
     /** 
      * @return double
      */
     public double getMagnitudeX() {
         return magnatudeX;
     }
-
     
     /** 
      * @return double
@@ -88,15 +77,13 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
     public double getMagnitudeY() {
         return magnatudeY;
     }
-
-    
+  
     /** 
      * @return double
      */
     public double getMagnatudeZ() {
         return magnatudeZ;
     }
-
     
     /** 
      * @return double
@@ -104,7 +91,6 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
     public double getMagnitude() {
         return magnitude;
     }
-
     
     /** 
      * @return Rotation3d
@@ -113,16 +99,14 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
         return vectorRotation;
     }
 
-    
     /** 
      * @param rotation
      * @return BreakerVector3
      */
     public BreakerVector3 rotateBy(Rotation3d rotation) {
-        return BreakerVector3.fromMagnitudeAndvectorRotation(magnitude, vectorRotation.plus(rotation));
+        return new BreakerVector3(magnitude, vectorRotation.plus(rotation));
     }
 
-    
     /** 
      * @param outher
      * @return BreakerVector3
@@ -130,7 +114,6 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
     public BreakerVector3 minus(BreakerVector3 outher) {
         return new BreakerVector3(magnatudeX - outher.magnatudeX, magnatudeY - outher.magnatudeY, magnatudeZ - outher.magnatudeZ);
     }
-
     
     /** 
      * @param outher
@@ -139,7 +122,6 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
     public BreakerVector3 plus(BreakerVector3 outher) {
         return new BreakerVector3(magnatudeX + outher.magnatudeX, magnatudeY + outher.magnatudeY, magnatudeZ + outher.magnatudeZ);
     }
-
     
     /** 
      * @return BreakerVector3
@@ -147,7 +129,6 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
     public BreakerVector3 unaryMinus()  {
         return new BreakerVector3(-magnatudeX, -magnatudeY, -magnatudeZ);
     }
-
     
     /** 
      * @param scalar
@@ -156,7 +137,6 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
     public BreakerVector3 times(double scalar) {
         return new BreakerVector3(magnatudeX * scalar, magnatudeY * scalar, magnatudeZ * scalar);
     }
-
     
     /** 
      * @param scalar
@@ -165,7 +145,6 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
     public BreakerVector3 div(double scalar) {
         return new BreakerVector3(magnatudeX / scalar,  magnatudeY / scalar, magnatudeY / scalar);
     }
-    
     
     /** 
      * @return Translation3d
@@ -178,17 +157,13 @@ public class BreakerVector3 implements BreakerInterpolable<BreakerVector3> {
         return new BreakerVector2(magnatudeX, magnatudeY);
     }
 
-    
     /** 
      * @return BreakerVector3
      */
     public BreakerVector3 getUnitVector() {
-        return BreakerVector3.fromMagnitudeAndvectorRotation(1, vectorRotation);
+        return new BreakerVector3(1, vectorRotation);
     }
 
-
-
-    
     /** 
      * @param endValue
      * @param t

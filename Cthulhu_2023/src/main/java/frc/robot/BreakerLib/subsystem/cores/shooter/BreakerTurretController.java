@@ -28,7 +28,8 @@ public class BreakerTurretController {
      *  @param rpmToProjectileLaunchVelocity Interpolating table that relates flywheel RPM to the launch velocity of the projectile.
       */
     public BreakerTurretController(BreakerInterpolatingTreeMap<Double,BreakerVector2> firingTable, BreakerInterpolatingTreeMap<Double, BreakerInterpolableDouble> rpmToProjectileLaunchVelocity) {
-
+        this.firingTable = firingTable;
+        this.rpmToProjectileLaunchVelocity = rpmToProjectileLaunchVelocity;
     }
 
     
@@ -55,7 +56,7 @@ public class BreakerTurretController {
         Rotation2d pitAng = new Rotation2d(firingSolution.getMagnitudeX());
         
         double launchVel = rpmToProjectileLaunchVelocity.getInterpolatedValue(firingSolution.getMagnitudeY()).getValue();
-        BreakerVector3 launchVec = BreakerVector3.fromMagnitudeAndvectorRotation(launchVel, new Rotation3d(0.0, pitAng.getRadians(), azAng.getRadians()));
+        BreakerVector3 launchVec = new BreakerVector3(launchVel, new Rotation3d(0.0, pitAng.getRadians(), azAng.getRadians()));
         BreakerProjectileTrajectory predictedTrajectory = new BreakerProjectileTrajectory(launchVec, projectileLaunchPointRelativeToField);
         Translation2d correctedTargetTrans2d = predictedTrajectory.getMovingLaunchCorrectionAsNewTargetLocation(fieldRelativeChassisSpeeds, targetPointRelativeToField.toTranslation2d());
         Translation3d correctedTargetTrans3d = new Translation3d(correctedTargetTrans2d.getX(), correctedTargetTrans2d.getY(), targetPointRelativeToField.getZ());
