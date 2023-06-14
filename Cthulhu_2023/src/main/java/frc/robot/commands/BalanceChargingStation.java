@@ -47,8 +47,8 @@ public class BalanceChargingStation extends CommandBase {
   @Override
   public void execute() {
     BreakerVector3 gravity = imu.getGravityVector();
-    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getMagnitudeY(), 0.0), -0.5, 0.5);
-    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getMagnitudeX(), 0.0), -0.5, 0.5);
+    double xSpeed = MathUtil.clamp(xPID.calculate(gravity.getY(), 0.0), -0.5, 0.5);
+    double ySpeed = MathUtil.clamp(yPID.calculate(gravity.getX(), 0.0), -0.5, 0.5);
     if (!atSetpoint(gravity)) {
       balanceTimer.stop();
       balanceTimer.reset();
@@ -58,11 +58,11 @@ public class BalanceChargingStation extends CommandBase {
       balanceTimer.start();
       drivetrain.stop();
     }
-    System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", gravity.getMagnitudeY(), xSpeed, ySpeed);
+    System.out.printf("\nAcc: %.2f, Spd_X: %.2f, Spd_Y: %.2f", gravity.getY(), xSpeed, ySpeed);
   }
 
   private boolean atSetpoint(BreakerVector3 vec) {
-    return BreakerMath.epsilonEquals(vec.getMagnitudeX(), 0, 0.07) && BreakerMath.epsilonEquals(vec.getMagnitudeY(), 0, 0.07);
+    return BreakerMath.epsilonEquals(vec.getX(), 0, 0.07) && BreakerMath.epsilonEquals(vec.getY(), 0, 0.07);
   }
 
   // Called once the command ends or is interrupted.

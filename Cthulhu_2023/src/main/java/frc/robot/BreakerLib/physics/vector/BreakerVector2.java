@@ -81,7 +81,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
     /** 
      * @return double
      */
-    public double getMagnitudeX() {
+    public double getX() {
         return magnitudeX;
     }
 
@@ -89,7 +89,7 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
     /** 
      * @return double
      */
-    public double getMagnitudeY() {
+    public double getY() {
         return magnitudeY;
     }
 
@@ -183,8 +183,8 @@ public class BreakerVector2 implements BreakerInterpolable<BreakerVector2> {
      */
     @Override
     public BreakerVector2 interpolate(BreakerVector2 endValue, double t) {
-        double interX = MathUtil.interpolate(magnitudeX, endValue.getMagnitudeX(), t);
-        double interY = MathUtil.interpolate(magnitudeY, endValue.getMagnitudeY(), t);
+        double interX = MathUtil.interpolate(magnitudeX, endValue.getX(), t);
+        double interY = MathUtil.interpolate(magnitudeY, endValue.getY(), t);
         return new BreakerVector2(interX, interY);
     }
 

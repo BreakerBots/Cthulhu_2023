@@ -53,9 +53,9 @@ public class BreakerTurretController {
         BreakerVector2 firingSolution = firingTable.getInterpolatedValue(distance);
 
         Rotation2d azAng = BreakerMath.getPointAngleRelativeToOtherPoint(projectileLaunchPointRelativeToField.toTranslation2d(), targetPointRelativeToField.toTranslation2d());
-        Rotation2d pitAng = new Rotation2d(firingSolution.getMagnitudeX());
+        Rotation2d pitAng = new Rotation2d(firingSolution.getX());
         
-        double launchVel = rpmToProjectileLaunchVelocity.getInterpolatedValue(firingSolution.getMagnitudeY()).getValue();
+        double launchVel = rpmToProjectileLaunchVelocity.getInterpolatedValue(firingSolution.getY()).getValue();
         BreakerVector3 launchVec = new BreakerVector3(launchVel, new Rotation3d(0.0, pitAng.getRadians(), azAng.getRadians()));
         BreakerProjectileTrajectory predictedTrajectory = new BreakerProjectileTrajectory(launchVec, projectileLaunchPointRelativeToField);
         Translation2d correctedTargetTrans2d = predictedTrajectory.getMovingLaunchCorrectionAsNewTargetLocation(fieldRelativeChassisSpeeds, targetPointRelativeToField.toTranslation2d());

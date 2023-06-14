@@ -236,18 +236,18 @@ public class BreakerMath {
         Breaker3AxisForces acceleration = new Breaker3AxisForces(
                 new BreakerVector2(
                         (1000 / timeToLastUpdateMiliseconds) * (speeds.vxMetersPerSecond
-                                - prevMovementState.getDerivativefromIndex(0).getLinearForces().getMagnitudeX()),
+                                - prevMovementState.getDerivativefromIndex(0).getLinearForces().getX()),
                         (1000 / timeToLastUpdateMiliseconds) * (speeds.vyMetersPerSecond
-                                - prevMovementState.getDerivativefromIndex(0).getLinearForces().getMagnitudeY())),
+                                - prevMovementState.getDerivativefromIndex(0).getLinearForces().getY())),
                 (1000 / timeToLastUpdateMiliseconds)
                         * (speeds.omegaRadiansPerSecond
                                 - prevMovementState.getDerivativefromIndex(0).getAngularForce()));
         Breaker3AxisForces jerk = new Breaker3AxisForces(
                 new BreakerVector2(
-                        (1000 / timeToLastUpdateMiliseconds) * (acceleration.getLinearForces().getMagnitudeX()
-                                - prevMovementState.getDerivativefromIndex(1).getLinearForces().getMagnitudeY()),
-                        (1000 / timeToLastUpdateMiliseconds) * (acceleration.getLinearForces().getMagnitudeY()
-                                - prevMovementState.getDerivativefromIndex(1).getLinearForces().getMagnitudeY())),
+                        (1000 / timeToLastUpdateMiliseconds) * (acceleration.getLinearForces().getX()
+                                - prevMovementState.getDerivativefromIndex(1).getLinearForces().getY()),
+                        (1000 / timeToLastUpdateMiliseconds) * (acceleration.getLinearForces().getY()
+                                - prevMovementState.getDerivativefromIndex(1).getLinearForces().getY())),
                 (1000 / timeToLastUpdateMiliseconds) * (acceleration.getAngularForce()
                         - prevMovementState.getDerivativefromIndex(1).getAngularForce()));
         return new BreakerMovementState2d(currentPose,

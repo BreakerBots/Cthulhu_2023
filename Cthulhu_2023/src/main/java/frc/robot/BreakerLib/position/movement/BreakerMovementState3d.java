@@ -41,16 +41,16 @@ public class BreakerMovementState3d {
     }
 
     public Pose3d estimateFuturePose(double deltaTimeSeconds) {
-        double prevDirX = derivitivesOfPosition[derivitivesOfPosition.length - 1].getLinearForces().getMagnitudeX();
-        double prevDirY = derivitivesOfPosition[derivitivesOfPosition.length - 1].getLinearForces().getMagnitudeY();
-        double prevDirZ = derivitivesOfPosition[derivitivesOfPosition.length - 1].getLinearForces().getMagnatudeZ();
+        double prevDirX = derivitivesOfPosition[derivitivesOfPosition.length - 1].getLinearForces().getX();
+        double prevDirY = derivitivesOfPosition[derivitivesOfPosition.length - 1].getLinearForces().getY();
+        double prevDirZ = derivitivesOfPosition[derivitivesOfPosition.length - 1].getLinearForces().getZ();
         double prevDirYaw = derivitivesOfPosition[derivitivesOfPosition.length - 1].getAngularForces().getMagnitudeYaw();
         double prevDirPitch = derivitivesOfPosition[derivitivesOfPosition.length - 1].getAngularForces().getMagnitudePitch();
         double prevDirRoll = derivitivesOfPosition[derivitivesOfPosition.length - 1].getAngularForces().getMagnitudeRoll();
         for (int i = derivitivesOfPosition.length - 1; i >= 0; i++) {
-            prevDirX = derivitivesOfPosition[i].getLinearForces().getMagnitudeX() + (prevDirX * deltaTimeSeconds);
-            prevDirY = derivitivesOfPosition[i].getLinearForces().getMagnitudeY() + (prevDirY * deltaTimeSeconds);
-            prevDirZ = derivitivesOfPosition[i].getLinearForces().getMagnatudeZ() + (prevDirZ * deltaTimeSeconds);
+            prevDirX = derivitivesOfPosition[i].getLinearForces().getX() + (prevDirX * deltaTimeSeconds);
+            prevDirY = derivitivesOfPosition[i].getLinearForces().getY() + (prevDirY * deltaTimeSeconds);
+            prevDirZ = derivitivesOfPosition[i].getLinearForces().getZ() + (prevDirZ * deltaTimeSeconds);
             prevDirYaw = derivitivesOfPosition[i].getAngularForces().getMagnitudeYaw() + (prevDirYaw * deltaTimeSeconds);
             prevDirPitch = derivitivesOfPosition[i].getAngularForces().getMagnitudePitch() + (prevDirPitch * deltaTimeSeconds);
             prevDirRoll = derivitivesOfPosition[i].getAngularForces().getMagnitudeRoll() + (prevDirRoll * deltaTimeSeconds);

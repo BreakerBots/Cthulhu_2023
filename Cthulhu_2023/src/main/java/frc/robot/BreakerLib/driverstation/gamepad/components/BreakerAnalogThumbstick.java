@@ -74,12 +74,12 @@ public class BreakerAnalogThumbstick {
 
     /** @return X-axis value. */
     public double getX() {
-        return getVector().getMagnitudeX();
+        return getVector().getX();
     }
 
     /** @return Y-axis value. */
     public double getY() {
-        return getVector().getMagnitudeY();
+        return getVector().getY();
     }
 
     /** @return If stick inputs outside of the deadband are detected. */

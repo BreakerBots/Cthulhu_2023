@@ -44,7 +44,7 @@ public class BreakerHolonomicDriveController {
         curPose = currentPose;
         tgtPose = targetPose;
         calculateHasBeenRun = true;
-        return new ChassisSpeeds(vec.getMagnitudeX(), vec.getMagnitudeY(), angleController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians()));
+        return new ChassisSpeeds(vec.getX(), vec.getY(), angleController.calculate(currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians()));
     }
 
     public boolean atTargetPose() {

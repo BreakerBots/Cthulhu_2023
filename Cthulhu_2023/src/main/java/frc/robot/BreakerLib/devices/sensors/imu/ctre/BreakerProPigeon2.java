@@ -185,7 +185,7 @@ public class BreakerProPigeon2 extends BreakerGenericIMU implements BreakerGener
 
   public double[] getBiasedAccelerometerVals() {
     BreakerVector3 vec = new BreakerVector3(getRawAccelX(), getRawAccelY(), getRawAccelZ()).minus(getGravityVector());
-    return new double[] {vec.getMagnitudeX(), vec.getMagnitudeY(), vec.getMagnatudeZ()};
+    return new double[] {vec.getX(), vec.getY(), vec.getZ()};
   }
 
   /** @return Biased accelerometer x-value in G. */

@@ -168,8 +168,8 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     if (usesCurves) {
       BreakerVector2 vec = new BreakerVector2(horizontal, forward);
       BreakerVector2 corVec = new BreakerVector2(vec.getVectorRotation(),  linearSpeedCurve.getSignRelativeValueAtX(vec.getMagnitude()));
-      forward = corVec.getMagnitudeY();
-      horizontal = corVec.getMagnitudeX();
+      forward = corVec.getY();
+      horizontal = corVec.getX();
       turn = turnSpeedCurve.getSignRelativeValueAtX(turn);
     }
 
