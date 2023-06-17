@@ -20,7 +20,7 @@ public class RollerIntake extends SubsystemBase{
   /** Creates a new Intake. */
   public RollerIntake() {
     SystemDiagnostics diag = new SystemDiagnostics("RollerIntake");
-    diag.addCTREMotorController(motor);
+    diag.addPhoenix5MotorController(motor);
 
     BreakerPhoenix5Util.checkError(motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15.0, 15.0, 1.5)),
             " Failed to config swerve module turn motor ");

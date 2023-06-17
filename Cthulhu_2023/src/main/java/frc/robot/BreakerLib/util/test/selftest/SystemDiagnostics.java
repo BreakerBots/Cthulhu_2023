@@ -20,7 +20,7 @@ import frc.robot.BreakerLib.util.vendorutil.BreakerREVUtil;
 
 /** A higher level object for use in user susystems that makes BreakerLib's {@link SelfTest} functionality to implament for subsystem-scale classes */
 public class SystemDiagnostics extends BreakerSelfTestableBase {
-    private List<BaseMotorController> ctreMotorControllers = new ArrayList<>();
+    private List<BaseMotorController> phoenix5MotorControllers = new ArrayList<>();
     private List<TalonFX> phoenix6TalonFXs = new ArrayList<>();
     private List<BreakerSelfTestable> devices = new ArrayList<>();
     private List<CANSparkMax> sparks = new ArrayList<>();
@@ -69,14 +69,14 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
     }
 
     /** Adds a {@link BaseMotorController} (CTRE Motor controller) object to this SystemDiagnostic's testing queue */
-    public void addCTREMotorController(BaseMotorController motorControllerToAdd) {
-        ctreMotorControllers.add(motorControllerToAdd);
+    public void addPhoenix5MotorController(BaseMotorController motorControllerToAdd) {
+        phoenix5MotorControllers.add(motorControllerToAdd);
     }
 
     /** Adds multipul {@link BaseMotorController} (CTRE Motor controller) objects to this SystemDiagnostic's testing queue */
-    public void addCTREMotorControllers(BaseMotorController... motorControllersToAdd) {
+    public void addPhoenix5MotorControllers(BaseMotorController... motorControllersToAdd) {
         for (BaseMotorController con: motorControllersToAdd) {
-            addCTREMotorController(con);
+            addPhoenix5MotorController(con);
         }
     }
 
@@ -93,14 +93,14 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
     }
 
     /** Adds a {@link CANSparkMax} (REV Motor controller) object to this SystemDiagnostic's testing queue */
-    public void addProTalonFX(TalonFX talonToAdd) {
+    public void addPhoenix6TalonFX(TalonFX talonToAdd) {
         phoenix6TalonFXs.add(talonToAdd);
     }
 
     /** Adds multipul {@link CANSparkMax} (REV Motor controller) objects to this SystemDiagnostic's testing queue */
-    public void addProTalonFXs(TalonFX... talonsToAdd) {
+    public void addPhoenix6TalonFXs(TalonFX... talonsToAdd) {
         for (TalonFX tal: talonsToAdd) {
-            addProTalonFX(tal);
+            addPhoenix6TalonFX(tal);
         }
     }
 
@@ -119,8 +119,8 @@ public class SystemDiagnostics extends BreakerSelfTestableBase {
             }
         }
 
-        if (!ctreMotorControllers.isEmpty()) {
-            for (BaseMotorController con: ctreMotorControllers) {
+        if (!phoenix5MotorControllers.isEmpty()) {
+            for (BaseMotorController con: phoenix5MotorControllers) {
                 Pair<DeviceHealth, String> motorState = BreakerPhoenix5Util.checkMotorFaultsAndConnection(con);
                 if (motorState.getFirst() != DeviceHealth.NOMINAL) {
                     faultStr += " / CTRE Motor ID (" + con.getBaseID() + "): " + motorState.getSecond();
