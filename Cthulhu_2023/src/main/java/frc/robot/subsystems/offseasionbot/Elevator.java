@@ -42,6 +42,7 @@ public class Elevator extends SubsystemBase {
     private final Supplier<ForwardLimitValue> forwardLimit;
     private final Supplier<ReverseLimitValue> reverseLimit;
     private final Supplier<Double> elevatorPosition;
+    private final Supplier<Double> elevatorVelocity;
 
     private final SystemDiagnostics diagnostics;
 
@@ -103,6 +104,7 @@ public class Elevator extends SubsystemBase {
         forwardLimit = leftMotor.getForwardLimit().asSupplier();
         reverseLimit = leftMotor.getReverseLimit().asSupplier();
         elevatorPosition = leftMotor.getPosition().asSupplier();
+        elevatorVelocity = leftMotor.getVelocity().asSupplier();
 
         diagnostics = new SystemDiagnostics("Elevator");
         diagnostics.addPhoenix6TalonFXs(leftMotor, rightMotor);
@@ -128,6 +130,10 @@ public class Elevator extends SubsystemBase {
 
     public double getHight() {
         return elevatorPosition.get();
+    }
+
+    public double getVelocity() {
+        return elevatorVelocity.get();
     }
 
     public boolean atTargetHight() {
