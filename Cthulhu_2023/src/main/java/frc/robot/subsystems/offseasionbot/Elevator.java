@@ -23,6 +23,7 @@ import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -120,7 +121,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setManual(double dutyCycle) {
-        manualControllDutyCycle = dutyCycle;
+        manualControllDutyCycle = MathUtil.clamp(dutyCycle, -1.0, 1.0);
         currentState = ElevatorState.MANUAL;
     }
 
@@ -221,20 +222,19 @@ public class Elevator extends SubsystemBase {
     }
 
     public static final class ElevatorConstants {
-        static final int LEFT_MOTOR_ID = 0;
-        static final int RIGHT_MOTOR_ID = 0;
-        static final double SUPPLY_CUR_LIMIT = 60.0;
-        static final double SUPPLY_CUR_LIMIT_TIME = 1.5;
+        public static final int LEFT_MOTOR_ID = 0;
+        public static final int RIGHT_MOTOR_ID = 0;
+        public static final double SUPPLY_CUR_LIMIT = 60.0;
+        public static final double SUPPLY_CUR_LIMIT_TIME = 1.5;
 
-        static final double CALIBRAION_DUTY_CYCLE = -0.06;
-        static final double HIGHT_TOLARENCE = 0.01;
+        public static final double CALIBRAION_DUTY_CYCLE = -0.06;
+        public static final double HIGHT_TOLARENCE = 0.01;
 
-        static final double MOTOR_ROT_TO_METERS_SCAILAR = 1.0;
-        static final double MAX_HIGHT = 0.0;
-        static final double MAX_ROT = MAX_HIGHT / MOTOR_ROT_TO_METERS_SCAILAR;
-        static final double MIN_HIGHT = 0.0;
-        static final double MIN_ROT = MIN_HIGHT / MOTOR_ROT_TO_METERS_SCAILAR;
-        
+        public static final double MOTOR_ROT_TO_METERS_SCAILAR = 1.0;
+        public static final double MAX_HIGHT = 0.0;
+        public static final double MAX_ROT = MAX_HIGHT / MOTOR_ROT_TO_METERS_SCAILAR;
+        public static final double MIN_HIGHT = 0.0;
+        public static final double MIN_ROT = MIN_HIGHT / MOTOR_ROT_TO_METERS_SCAILAR;
         
     }
 }

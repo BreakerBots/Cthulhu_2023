@@ -14,6 +14,7 @@ public class ElevatorMoveToHight extends CommandBase {
   public ElevatorMoveToHight(Elevator elevator, double targetHightMeters) {
     this.elevator = elevator;
     this.targetHightMeters = targetHightMeters;
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
