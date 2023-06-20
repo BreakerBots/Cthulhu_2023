@@ -65,11 +65,11 @@ public class Elevator extends SubsystemBase {
         config.MotionMagic.MotionMagicAcceleration= 0.0;
         config.MotionMagic.MotionMagicJerk = 0.0;
 
-        config.Slot0.kD = 0.0;
-        config.Slot0.kI = 0.0;
-        config.Slot0.kP = 0.0;
-        config.Slot0.kS = 0.0;
-        config.Slot0.kV = 0.0;
+        config.Slot0.kP = ElevatorConstants.PIDF_KP;
+        config.Slot0.kI = ElevatorConstants.PIDF_KI;
+        config.Slot0.kD = ElevatorConstants.PIDF_KD;
+        config.Slot0.kS = ElevatorConstants.PIDF_KS;
+        config.Slot0.kV = ElevatorConstants.PIDF_KV;
 
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
         config.Feedback.SensorToMechanismRatio = ElevatorConstants.MOTOR_ROT_TO_METERS_SCAILAR;
@@ -224,6 +224,11 @@ public class Elevator extends SubsystemBase {
     public static final class ElevatorConstants {
         public static final int LEFT_MOTOR_ID = 0;
         public static final int RIGHT_MOTOR_ID = 0;
+        public static final double PIDF_KP = 0;
+        public static final double PIDF_KI = 0;
+        public static final double PIDF_KD = 0;
+        public static final double PIDF_KS = 0;
+        public static final double PIDF_KV = 0;
         public static final double SUPPLY_CUR_LIMIT = 60.0;
         public static final double SUPPLY_CUR_LIMIT_TIME = 1.5;
 

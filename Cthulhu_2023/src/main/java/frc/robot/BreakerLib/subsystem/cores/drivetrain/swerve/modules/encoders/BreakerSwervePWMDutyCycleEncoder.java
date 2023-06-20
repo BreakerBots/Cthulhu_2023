@@ -40,8 +40,8 @@ public class BreakerSwervePWMDutyCycleEncoder implements BreakerSwerveAzimuthEnc
     }
 
     @Override
-    public void config(boolean clockwisePositive, double offset) {
-        dcEncoder.setDistancePerRotation(clockwisePositive ? 360.0 : -360.0);
+    public void config(boolean invertEncoder, double offset) {
+        dcEncoder.setDistancePerRotation(invertEncoder ? -360.0 : 360.0 );
         this.offset = offset;
     }
 

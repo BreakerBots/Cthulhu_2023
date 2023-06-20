@@ -21,11 +21,10 @@ public interface BreakerSwerveAzimuthEncoder {
     /**
      * Configures the encoder.
      * 
-     * @param clockwisePositive Sets whether clockwise rotation is positive or
-     *                          negative.
+     * @param clockwisePositive Sets whether roation that would normaly be read as positive should be negative
      * @param offset            Angle offset in degrees.
      */
-    public abstract void config(boolean clockwisePositive, double offset);
+    public abstract void config(boolean invertEncoder, double offset);
 
     public abstract Pair<DeviceHealth, String> getFaultData();
 

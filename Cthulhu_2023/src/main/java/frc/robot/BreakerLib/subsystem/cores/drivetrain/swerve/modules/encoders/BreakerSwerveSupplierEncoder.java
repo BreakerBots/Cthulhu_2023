@@ -36,8 +36,8 @@ public class BreakerSwerveSupplierEncoder implements BreakerSwerveAzimuthEncoder
     }
 
     @Override
-    public void config(boolean clockwisePositive, double offset) {
-        invert = clockwisePositive ? 1 : -1;
+    public void config(boolean invertEncoder, double offset) {
+        invert = invertEncoder ? -1 : 1;
         this.offset = offset;
     }
 

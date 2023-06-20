@@ -14,9 +14,6 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 /** Global log manager for all your data logging and printing needs */
 public class BreakerLog {
 
-  private static boolean usesOrchestra = false;
-  private static BreakerFalconOrchestra orchestra;
-
   /**
    * Commences logging.
    * 
@@ -26,21 +23,6 @@ public class BreakerLog {
   public static void startLog(boolean autologNetworkTables) {
     DataLogManager.logNetworkTables(autologNetworkTables);
     DataLogManager.start();
-    BreakerLog.usesOrchestra = false;
-  }
-
-  /**
-   * Commences logging and turns on Orchestra-controlled robot sounds.
-   * 
-   * @param autologNetworkTables True to log NetworkTables data, false to not log
-   *                             data.
-   * @param orchestra            BreakerFalconOrchestra to use.
-   */
-  public static void startLog(boolean autologNetworkTables, BreakerFalconOrchestra orchestra) {
-    DataLogManager.logNetworkTables(autologNetworkTables);
-    DataLogManager.start();
-    BreakerLog.usesOrchestra = true;
-    BreakerLog.orchestra = orchestra;
   }
 
   /** Startup message for robot. */
