@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.offseasionbot;
+package frc.robot.commands.offseasonbot;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.offseasionbot.Elevator;
@@ -26,6 +26,6 @@ public class ElevatorMoveToHight extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.atTargetHight();
+    return elevator.atTargetHeight();
   }
 }

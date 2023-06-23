@@ -42,16 +42,15 @@ public class Elevator extends SubsystemBase {
 
     private final Supplier<ForwardLimitValue> forwardLimit;
     private final Supplier<ReverseLimitValue> reverseLimit;
-    private final Supplier<Double> elevatorPosition;
-    private final Supplier<Double> elevatorVelocity;
+    private final Supplier<Double> elevatorPosition, elevatorVelocity;
 
     private final SystemDiagnostics diagnostics;
 
-    private ElevatorState currentState = ElevatorState.CALIBRATEING;
+    private ElevatorState currentState = ElevatorState.CALIBRATING;
     private boolean hasBeenCalibrated = false;
    
-    private double targetHightMeters;
-    private double manualControllDutyCycle;
+    private double targetHeightMeters;
+    private double manualControlDutyCycle;
 
    
     public Elevator() {
@@ -72,7 +71,7 @@ public class Elevator extends SubsystemBase {
         config.Slot0.kV = ElevatorConstants.PIDF_KV;
 
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-        config.Feedback.SensorToMechanismRatio = ElevatorConstants.MOTOR_ROT_TO_METERS_SCAILAR;
+        config.Feedback.SensorToMechanismRatio = ElevatorConstants.MOTOR_ROT_TO_METERS_SCALAR;
 
         config.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
         config.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
@@ -95,7 +94,7 @@ public class Elevator extends SubsystemBase {
         leftMotor.getConfigurator().apply(config);
         rightMotor.getConfigurator().apply(config);
 
-        targetHightMeters = ElevatorConstants.MIN_HIGHT;
+        targetHeightMeters = ElevatorConstants.MIN_HEIGHT;
 
         motionMagicRequest = new MotionMagicDutyCycle(0, false, 0, 0, false);
         dutyCycleRequest = new DutyCycleOut(0, false, false);
@@ -115,21 +114,21 @@ public class Elevator extends SubsystemBase {
         return currentState;
     }
 
-    public void setTarget(double hightMeters) {
-        targetHightMeters = hightMeters;
+    public void setTarget(double heightMeters) {
+        targetHeightMeters = heightMeters;
         currentState = ElevatorState.AUTOMATIC;
     }
 
     public void setManual(double dutyCycle) {
-        manualControllDutyCycle = MathUtil.clamp(dutyCycle, -1.0, 1.0);
+        manualControlDutyCycle = MathUtil.clamp(dutyCycle, -1.0, 1.0);
         currentState = ElevatorState.MANUAL;
     }
 
     public void calibrate() {
-        currentState = ElevatorState.CALIBRATEING;
+        currentState = ElevatorState.CALIBRATING;
     }
 
-    public double getHight() {
+    public double getHeight() {
         return elevatorPosition.get();
     }
 
@@ -137,12 +136,12 @@ public class Elevator extends SubsystemBase {
         return elevatorVelocity.get();
     }
 
-    public boolean atTargetHight() {
-        return BreakerMath.epsilonEquals(getHight(), targetHightMeters, ElevatorConstants.HIGHT_TOLARENCE) && currentState == ElevatorState.AUTOMATIC;
+    public boolean atTargetHeight() {
+        return BreakerMath.epsilonEquals(getHeight(), targetHeightMeters, ElevatorConstants.HIGHT_TOLARENCE) && currentState == ElevatorState.AUTOMATIC;
     }
 
-    public double getTargetHightMeters() {
-        return targetHightMeters;
+    public double getTargetHeightMeters() {
+        return targetHeightMeters;
     }
 
     public boolean getForwardLimitTriggered() {
@@ -165,6 +164,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
 
+        // Elevator calibrates by hitting limit switch and resetting
         if (getForwardLimitTriggered() || getReverseLimitTriggered()) {
             hasBeenCalibrated = true; 
         }
@@ -182,20 +182,20 @@ public class Elevator extends SubsystemBase {
         }
 
         if (DriverStation.isDisabled() || currentState != ElevatorState.AUTOMATIC) {
-            targetHightMeters = getHight();
+            targetHeightMeters = getHeight();
         }
 
         switch (currentState) { 
             case AUTOMATIC:
-                if (targetHightMeters != motionMagicRequest.Position) {
-                    leftMotor.setControl(motionMagicRequest.withPosition(Math.min(Math.max(targetHightMeters, ElevatorConstants.MIN_HIGHT), ElevatorConstants.MAX_HIGHT)));
+                if (targetHeightMeters != motionMagicRequest.Position) {
+                    leftMotor.setControl(motionMagicRequest.withPosition(Math.min(Math.max(targetHeightMeters, ElevatorConstants.MIN_HEIGHT), ElevatorConstants.MAX_HEIGHT)));
                 }
                 break;
             case MANUAL:
-                leftMotor.setControl(dutyCycleRequest.withOutput(manualControllDutyCycle));
+                leftMotor.setControl(dutyCycleRequest.withOutput(manualControlDutyCycle));
                 break;
-            case CALIBRATEING:
-                leftMotor.setControl(dutyCycleRequest.withOutput(ElevatorConstants.CALIBRAION_DUTY_CYCLE));
+            case CALIBRATING:
+                leftMotor.setControl(dutyCycleRequest.withOutput(ElevatorConstants.CALIBRATION_DUTY_CYCLE));
                 if (getReverseLimitTriggered()) {
                     currentState = ElevatorState.AUTOMATIC;
                     hasBeenCalibrated = true;
@@ -214,7 +214,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private static enum ElevatorState {
-        CALIBRATEING,
+        CALIBRATING,
         AUTOMATIC,
         MANUAL,
         LOCKED,
@@ -232,14 +232,14 @@ public class Elevator extends SubsystemBase {
         public static final double SUPPLY_CUR_LIMIT = 60.0;
         public static final double SUPPLY_CUR_LIMIT_TIME = 1.5;
 
-        public static final double CALIBRAION_DUTY_CYCLE = -0.06;
+        public static final double CALIBRATION_DUTY_CYCLE = -0.06;
         public static final double HIGHT_TOLARENCE = 0.01;
 
-        public static final double MOTOR_ROT_TO_METERS_SCAILAR = 1.0;
-        public static final double MAX_HIGHT = 0.0;
-        public static final double MAX_ROT = MAX_HIGHT / MOTOR_ROT_TO_METERS_SCAILAR;
-        public static final double MIN_HIGHT = 0.0;
-        public static final double MIN_ROT = MIN_HIGHT / MOTOR_ROT_TO_METERS_SCAILAR;
+        public static final double MOTOR_ROT_TO_METERS_SCALAR = 1.0;
+        public static final double MAX_HEIGHT = 0.0;
+        public static final double MAX_ROT = MAX_HEIGHT / MOTOR_ROT_TO_METERS_SCALAR;
+        public static final double MIN_HEIGHT = 0.0;
+        public static final double MIN_ROT = MIN_HEIGHT / MOTOR_ROT_TO_METERS_SCALAR;
         
     }
 }

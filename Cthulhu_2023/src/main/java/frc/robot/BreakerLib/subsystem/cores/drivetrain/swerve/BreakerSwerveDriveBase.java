@@ -69,7 +69,7 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
                 break;
         }
 
-        if (Math.abs(targetChassisSpeeds.omegaRadiansPerSecond) < config.getAngularVelDeadband()) {
+        if (Math.abs(targetChassisSpeeds.omegaRadiansPerSecond) < config.getHeadingCompensationAngularVelDeadband() && Math.hypot(targetChassisSpeeds.vxMetersPerSecond, targetChassisSpeeds.vyMetersPerSecond) > config.getHeadingCompensationMinActiveLinearSpeed()) {
             if (movementPreferences.getHeadingCorrectionEnabled()) {
                 targetVels.omegaRadiansPerSecond = config.getHeadingCompensationController().calculate(curAng.getRadians(), lastSetHeading.getRadians());
             }
@@ -168,15 +168,16 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
     public static class BreakerSwerveDriveBaseConfig extends BreakerSwerveDriveConfig {
         private PIDController xController, yController, thetaController, headingCompensationController;
         private PPHolonomicDriveController driveController;
-        private double angularVelDeadband;
+        private double headingCompensationAngularVelDeadband, headingCompensationMinActiveLinearSpeed;
         public BreakerSwerveDriveBaseConfig(double maxForwardVel, double maxSidewaysVel, double maxAngVel, 
-                double angularVelDeadband, double moduleWheelSpeedDeadband, double maxAttainableModuleWheelSpeed,
+                double headingCompensationAngularVelDeadband, double headingCompensationMinActiveLinearSpeed, double moduleWheelSpeedDeadband, double maxAttainableModuleWheelSpeed,
                 PIDController xController, PIDController yController, PIDController thetaController) {
             super(maxForwardVel, maxSidewaysVel, maxAngVel, moduleWheelSpeedDeadband, maxAttainableModuleWheelSpeed);
             this.xController = xController;
             this.yController = yController;
             this.thetaController = thetaController;
-            this.angularVelDeadband = angularVelDeadband;
+            this.headingCompensationAngularVelDeadband = headingCompensationAngularVelDeadband;
+            this.headingCompensationMinActiveLinearSpeed = headingCompensationMinActiveLinearSpeed;
             headingCompensationController = new PIDController(thetaController.getP(), thetaController.getI(), thetaController.getD());
             headingCompensationController.enableContinuousInput(-Math.PI, Math.PI);
             thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -199,12 +200,18 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
             return headingCompensationController;
         }
 
+
+
         public PPHolonomicDriveController getDriveController() {
             return driveController;
         }
 
-        public double getAngularVelDeadband() {
-            return angularVelDeadband;
+        public double getHeadingCompensationAngularVelDeadband() {
+            return headingCompensationAngularVelDeadband;
+        }
+
+        public double getHeadingCompensationMinActiveLinearSpeed() {
+            return headingCompensationMinActiveLinearSpeed;
         }
 
         @Override

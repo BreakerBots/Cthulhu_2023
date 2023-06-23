@@ -60,7 +60,7 @@ public class Drive extends BreakerSwerveDriveBase {
 
         private static BreakerSwerveDriveBaseConfig config = new BreakerSwerveDriveBaseConfig(
                 MAX_FORWARD_VELOCITY, MAX_SIDEWAYS_VELOCITY, MAX_ANGLE_VELOCITY,
-                0.01, MODULE_WHEEL_SPEED_DEADBAND, MAX_ATTAINABLE_MODULE_WHEEL_SPEED,
+                0.005, 0.01, MODULE_WHEEL_SPEED_DEADBAND, MAX_ATTAINABLE_MODULE_WHEEL_SPEED,
                 new PIDController(4.5, 0.0, 0), new PIDController(4.5, 0.0, 0), new PIDController(2.75, 0.0, 0.0))
                 .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
 
