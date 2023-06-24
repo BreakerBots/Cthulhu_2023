@@ -11,6 +11,9 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.BreakerLib.devices.vision.BreakerGenericFiducialTarget;
 import frc.robot.BreakerLib.util.vendorutil.LimelightHelpers;
 import frc.robot.BreakerLib.util.vendorutil.LimelightHelpers.LimelightResults;
 
@@ -23,12 +26,118 @@ public class BreakerLimelight {
     }
 
     public Pair<Pose3d, Double> getFiducialRobotPoseAndLatancy() {
-        double[] data = NetworkTableInstance.getDefault().getTable("limelight").getEntry("<variablename>").getDoubleArray(new double[6]);
-        return new Pair<Pose3d,Double>(new Pose3d(new Translation3d(data[0], data[1], data[2]), new Rotation3d(data[3], data[4], data[5])), data[6]);
+        double[] data = NetworkTableInstance.getDefault().getTable("limelight").getEntry("botpose").getDoubleArray(new double[6]);
+        return new Pair<Pose3d,Double>(new Pose3d(new Translation3d(data[0], data[1], data[2]), new Rotation3d(data[3], data[4], data[5])), data[6] / 1000.0);
     }
+
+    public Pair<Pose3d, Double> getAllianceFiducialRobotPoseAndLatancy() {
+        double[] data = NetworkTableInstance.getDefault().getTable("limelight").getEntry(DriverStation.getAlliance() == Alliance.Red ? "botpose_wpired" : "botpose_wpiblue").getDoubleArray(new double[6]);
+        return new Pair<Pose3d,Double>(new Pose3d(new Translation3d(data[0], data[1], data[2]), new Rotation3d(data[3], data[4], data[5])), data[6] / 1000.0);
+    }
+
+
 
     public LimelightResults getLatestResults() {
         return LimelightHelpers.getLatestResults(limelightName);
+    }
+
+    public class BreakerLimelightMegaTagTarget implements BreakerGenericFiducialTarget {
+        public BreakerLimelightMegaTagTarget() {
+
+        }
+
+        @Override
+        public double getLastTargetFoundTimestamp() {
+            return 0;
+        }
+
+        @Override
+        public double getTargetDataAge() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public Pose3d getCameraPose3d() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        @Override
+        public Pose3d getRobotPose3d() {
+            return null;
+        }
+
+        @Override
+        public double getYaw() {
+            return 0;
+        }
+
+        @Override
+        public double getPitch() {
+            return 0;
+        }
+
+        @Override
+        public double getRobotRelativeYaw() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public double getRobotRelativePitch() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public double getSkew() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public double getArea() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public boolean getAssignedTargetFound() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public boolean isAssignedTargetVisible() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        @Override
+        public double getDistance2D() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public double getDistance() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getFiducialID() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public double getPoseAmbiguity() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+        
     }
 
 
