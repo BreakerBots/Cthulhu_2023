@@ -10,15 +10,18 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.BreakerLib.devices.vision.BreakerGenericFiducialTarget;
+import frc.robot.BreakerLib.position.movement.BreakerMovementState2d;
+import frc.robot.BreakerLib.position.odometry.vision.BreakerGenericVisionOdometer;
 import frc.robot.BreakerLib.util.vendorutil.LimelightHelpers;
 import frc.robot.BreakerLib.util.vendorutil.LimelightHelpers.LimelightResults;
 
 /** Add your docs here. */
-public class BreakerLimelight {
+public class BreakerLimelight implements BreakerGenericVisionOdometer {
     private final String limelightName;
     public BreakerLimelight(String limelightName) {
         this.limelightName = limelightName;
@@ -138,6 +141,48 @@ public class BreakerLimelight {
             return 0;
         }
         
+    }
+
+    @Override
+    public void setOdometryPosition(Pose2d newPose) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Pose2d getOdometryPoseMeters() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public BreakerMovementState2d getMovementState() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ChassisSpeeds getRobotRelativeChassisSpeeds() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public double getDataTimestamp() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean isAnyTargetVisable() {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 

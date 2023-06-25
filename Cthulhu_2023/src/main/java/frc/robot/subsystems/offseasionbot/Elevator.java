@@ -242,12 +242,33 @@ public class Elevator extends SubsystemBase {
         
     }
 
-    private static enum ElevatorState {
+    public static enum ElevatorState {
         CALIBRATING,
         AUTOMATIC,
         MANUAL,
         LOCKED,
         NEUTRAL
+    }
+
+    public static enum ElevatorTarget {
+        PLACE_HYBRID(0.0),
+        PLACE_CONE_MID(0.0),
+        PLACE_CONE_HIGH(0.0),
+        PLACE_CUBE_MID(0.0),
+        PLACE_CUBE_HIGH(0.0),
+        PICKUP_GROUND(0.0),
+        PICKUP_SINGLE_SUBSTATION(0.0),
+        PICKUP_DOUBLE_SUBSTATION(0.0),
+        STOW(0.0);
+
+        private final double targetHeight;
+        private ElevatorTarget(double targetHeight) {
+            this.targetHeight = targetHeight;
+        }
+
+        public double getTargetHeight() {
+            return targetHeight;
+        }
     }
 
     public static final class ElevatorConstants {
@@ -289,6 +310,9 @@ public class Elevator extends SubsystemBase {
         //Misc
         public static final double CALIBRATION_DUTY_CYCLE = -0.06;
         public static final double HIGHT_TOLARENCE = 0.01;
+
+        //Command configs
+        public static final double MOVE_TO_HEIGHT_COMMAND_TIMEOUT = 5.0;
     
     }
 
