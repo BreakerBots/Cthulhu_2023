@@ -31,6 +31,18 @@ public class BreakerVision implements BreakerGenericOdometer {
         odometer = new BreakerVisionPoseFilterOdometer(poseFilter);
     }
 
+    public BreakerVision(double poseFilterTrustCoef, double poseFilterMaxUncertanty, double distanceScailFactor, double maxDistance, BreakerPhotonCamera[] cameras, Pair<Integer, Pose3d>[] fiducialTargetIDsAndPoses) {
+        targets = new BreakerFiducialPhotonTarget[fiducialTargetIDsAndPoses.length];
+        this.cameras = cameras;
+        for (int i = 0; i < fiducialTargetIDsAndPoses.length; i++) {
+            Pair<Integer, Pose3d> dataPair = fiducialTargetIDsAndPoses[i];
+            targets[i] = new BreakerFiducialPhotonTarget(dataPair.getFirst(), dataPair.getSecond(), cameras);
+        }
+
+        poseFilter = new BreakerVisionPoseFilter(poseFilterTrustCoef, poseFilterMaxUncertanty, distanceScailFactor, maxDistance, targets);
+        odometer = new BreakerVisionPoseFilterOdometer(poseFilter);
+    }
+
     
     /** 
      * @return BreakerPhotonCamera[]
