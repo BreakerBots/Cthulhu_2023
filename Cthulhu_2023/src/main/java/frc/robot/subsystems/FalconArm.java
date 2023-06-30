@@ -39,9 +39,9 @@ public class FalconArm extends ProfiledPIDSubsystem {
     public static final double kG = 0.675;
     public static final double kV = 0;
     public static final double kA = 0.0;
-    public static final double kP = 0;
+    public static final double kP = 0.016;
     public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static final double kD = 0.0002;
 
     public static final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2, 0.5);
 
@@ -61,7 +61,6 @@ public class FalconArm extends ProfiledPIDSubsystem {
         motor0.setNeutralMode(NeutralMode.Coast);
         motor1.setNeutralMode(NeutralMode.Coast);
 
-        motor1.setStatusFramePeriod(0, 0, 0);
         motor0.setInverted(TalonFXInvertType.Clockwise);
         motor1.setInverted(TalonFXInvertType.FollowMaster);
         motor0.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen);

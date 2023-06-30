@@ -436,6 +436,4 @@ public class BreakerSwerveDrive extends BreakerGenericDrivetrain implements Brea
         return new BreakerSwerveOdometer(drivetrain, initalPose);
     }
 }
-
-
 }

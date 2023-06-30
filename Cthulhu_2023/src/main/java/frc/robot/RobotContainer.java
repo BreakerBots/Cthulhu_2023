@@ -45,6 +45,7 @@ import frc.robot.subsystems.FalconArm;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.RollerIntake;
 import frc.robot.subsystems.SebArm;
+import frc.robot.subsystems.SebArm.State;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -105,7 +106,7 @@ public class RobotContainer {
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
     controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
 
-    controllerSys.getButtonY().onTrue(new InstantCommand(() -> arm.setGoal(arm.getPosDeg())));
+    controllerSys.getButtonY().onTrue(new InstantCommand(() -> arm.setGoal(State.PICKUP_HIGH.rot.getDegrees())));
 
     controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
     controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
