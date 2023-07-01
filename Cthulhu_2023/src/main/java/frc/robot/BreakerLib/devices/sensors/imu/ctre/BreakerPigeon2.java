@@ -4,9 +4,14 @@
 package frc.robot.BreakerLib.devices.sensors.imu.ctre;
 
 import com.ctre.phoenix.sensors.Pigeon2_Faults;
-import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.Timestamp.TimestampSource;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -14,39 +19,41 @@ import frc.robot.BreakerLib.devices.sensors.BreakerGenericMagnetometer;
 import frc.robot.BreakerLib.devices.sensors.imu.BreakerGenericIMU;
 import frc.robot.BreakerLib.physics.vector.BreakerVector3;
 import frc.robot.BreakerLib.util.math.BreakerMath;
-import frc.robot.BreakerLib.util.power.BreakerPowerManagementConfig;
-import frc.robot.BreakerLib.util.power.DevicePowerMode;
 import frc.robot.BreakerLib.util.test.selftest.DeviceHealth;
+import frc.robot.BreakerLib.util.vendorutil.BreakerPhoenix6Util;
 
 /* CTRE Pigeon 2 implementing the Breaker device interface and Breaker IMU interface,  */
 public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericMagnetometer {
-  private WPI_Pigeon2 pigeon;
+  private Pigeon2 pigeon;
+  private BreakerPigeon2PeriodicIO periodicIO;
 
   /** Creates a new PigeonIMU 2 object. */
   public BreakerPigeon2(int deviceID) {
-    pigeon = new WPI_Pigeon2(deviceID);
+    pigeon = new Pigeon2(deviceID);
     deviceName = "Pigeon2_IMU (" + deviceID + ") ";
+    periodicIO = this.new BreakerPigeon2PeriodicIO();
   }
 
   /** Creates a new PigeonIMU 2 object. */
   public BreakerPigeon2(int deviceID, String busName) {
-    pigeon = new WPI_Pigeon2(deviceID, busName);
+    pigeon = new Pigeon2(deviceID, busName);
     deviceName = "Pigeon2_IMU (" + deviceID + ") ";
+    periodicIO = this.new BreakerPigeon2PeriodicIO();
   }
 
   @Override
   public double getPitch() {
-    return BreakerMath.angleModulus(pigeon.getPitch());
+    return periodicIO.getPitch();
   }
 
   @Override
   public double getYaw() {
-    return BreakerMath.angleModulus(pigeon.getYaw());
+    return periodicIO.getYaw();
   }
 
   @Override
   public double getRoll() {
-    return BreakerMath.angleModulus(pigeon.getRoll());
+    return periodicIO.getRoll();
   }
 
   @Override
@@ -71,9 +78,7 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
 
   @Override
   public double[] getRawAngles() {
-    double[] RawYPR = new double[3];
-    pigeon.getYawPitchRoll(RawYPR);
-    return RawYPR;
+    return new double[]{periodicIO.getRawYaw(), periodicIO.getRawPitch(), periodicIO.getRawRoll()};
   }
 
   @Override
@@ -106,7 +111,6 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
   /** Does nothing. */
   @Override
   public void setRoll(double value) {
-
   }
 
   /** Sets yaw to 0 */
@@ -116,9 +120,7 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
   }
 
   public double[] getRawGyroRates() {
-    double[] rawRates = new double[3];
-    pigeon.getRawGyro(rawRates);
-    return rawRates;
+    return new double[] {periodicIO.getRawYawRate(), periodicIO.getRawPitchRate(), periodicIO.getRawRollRate()};
   }
 
   @Override
@@ -153,47 +155,54 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
 
   @Override
   public double[] getRawAccelerometerVals() {
-    double[] newVals = new double[3];
-    for (int i = 0; i < 3; i++) {
-      newVals[i] = (BreakerMath.fixedToFloat(getRawAccelerometerValsShort()[i], 14) * 0.000508);
-    }
-    return newVals;
-  }
-
-  public short[] getRawAccelerometerValsShort() {
-    short[] accelVals = new short[3];
-    pigeon.getBiasedAccelerometer(accelVals);
-    return accelVals;
+    return new double[] {pigeon.getAccelerationX().getValue(), pigeon.getAccelerationY().getValue(), pigeon.getAccelerationZ().getValue()};
   }
 
   @Override
-  /** @return Unbiased accelerometer x-value in G */
+  /** @return Unbiased accelerometer x-value in G. */
   public double getRawAccelX() {
-    return (BreakerMath.fixedToFloat(getRawAccelerometerValsShort()[0], 14) * 0.000508);
+    return pigeon.getAccelerationX().getValue();
   }
 
   @Override
   /** @return Unbiased accelerometer y-value in G. */
   public double getRawAccelY() {
-    return (BreakerMath.fixedToFloat(getRawAccelerometerValsShort()[1], 14) * 0.000508);
+    return pigeon.getAccelerationY().getValue();
   }
 
   @Override
   /** @return Unbiased accelerometer z-value in G. */
   public double getRawAccelZ() {
-    return (BreakerMath.fixedToFloat(getRawAccelerometerValsShort()[2], 14) * 0.000508);
+    return pigeon.getAccelerationZ().getValue();
   }
 
   /** @return Pigeon's runtime in seconds (max of 255) */
   public int getPigeonUpTime() {
-
-    return pigeon.getUpTime();
+    return pigeon.getUpTime().getValue().intValue();
   }
 
   public BreakerVector3 getGravityVector() {
-    double[] gravVec = new double[3];
-    pigeon.getGravityVector(gravVec);
-    return new BreakerVector3(gravVec[0], gravVec[1], gravVec[2]);
+    return new BreakerVector3(pigeon.getGravityVectorX().getValue(), pigeon.getGravityVectorY().getValue(), pigeon.getGravityVectorZ().getValue());
+  }
+
+  public double[] getBiasedAccelerometerVals() {
+    BreakerVector3 vec = new BreakerVector3(getRawAccelX(), getRawAccelY(), getRawAccelZ()).minus(getGravityVector());
+    return new double[] {vec.getX(), vec.getY(), vec.getZ()};
+  }
+
+  /** @return Biased accelerometer x-value in G. */
+  public double getBaisedAccelX() {
+    return getBiasedAccelerometerVals()[0];
+  }
+
+  /** @return Biased accelerometer y-value in G. */
+  public double getBaisedAccelY() {
+    return getBiasedAccelerometerVals()[1];
+  }
+
+  /** @return Biased accelerometer z-value in G. */
+  public double getBiasedAccelZ() {
+    return getBiasedAccelerometerVals()[2];
   }
 
   @Override
@@ -206,69 +215,45 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
   public void runSelfTest() {
     faultStr = "";
     health = DeviceHealth.NOMINAL;
-    Pigeon2_Faults curFaults = new Pigeon2_Faults();
-    pigeon.getFaults(curFaults);
-
-    if (curFaults.HardwareFault) {
-      health = DeviceHealth.INOPERABLE;
-      faultStr += " hardware_fault ";
-    }
-    if (curFaults.MagnetometerFault) {
-      health = DeviceHealth.INOPERABLE;
-      faultStr += " mag_fault ";
-    }
-    if (curFaults.GyroFault) {
-      health = DeviceHealth.INOPERABLE;
-      faultStr += "  gyro_fault ";
-    }
-    if (curFaults.AccelFault) {
-      health = DeviceHealth.INOPERABLE;
-      faultStr += " accel_fault ";
-    }
-    if (curFaults.UnderVoltage) {
-      health = (health != DeviceHealth.INOPERABLE) ? DeviceHealth.FAULT : health;
-      faultStr += " under_6.5V ";
-    }
-    if (pigeon.getFirmwareVersion() == -1) {
-      health = DeviceHealth.INOPERABLE;
-      faultStr += " device_disconnected ";
+    Pair<DeviceHealth, String> pair = BreakerPhoenix6Util.checkPigeon2FaultsAndConnection(pigeon);
+    if (pair.getFirst() != DeviceHealth.NOMINAL) {
+      health = pair.getFirst();
+      faultStr = pair.getSecond();
     }
   }
 
   @Override
   public double[] getRawFieldStrengths() {
-    short[] rawShorts = new short[] { 3 };
-    pigeon.getRawMagnetometer(rawShorts);
-    return new double[] { (double) rawShorts[0] * 0.6, (double) rawShorts[1] * 0.6, (double) rawShorts[2] * 0.6 };
+    return new double[] {pigeon.getRawMagneticFieldX().getValue(), pigeon.getRawMagneticFieldY().getValue(), pigeon.getRawMagneticFieldZ().getValue()};
   }
 
   @Override
   public double[] getBiasedFieldStrengths() {
-    short[] rawShorts = new short[] { 3 };
-    pigeon.getBiasedMagnetometer(rawShorts);
-    return new double[] { (double) rawShorts[0] * 0.6, (double) rawShorts[1] * 0.6, (double) rawShorts[2] * 0.6 };
+    return new double[] {pigeon.getMagneticFieldX().getValue(), pigeon.getMagneticFieldY().getValue(), pigeon.getMagneticFieldZ().getValue()};
+
   }
 
   @Override
+  /** not supported by phoenix 6 */
   public double getCompassFieldStrength() {
-    return pigeon.getCompassFieldStrength();
+    return 0.0;
   }
 
   @Override
+  /** not supported by phoenix 6 */
   public double getCompassHeading() {
-    return MathUtil.angleModulus(pigeon.getCompassHeading());
+    return 0.0;
   }
 
   @Override
+  /** not supported by phoenix 6 */
   public double getRawCompassHeading() {
-    return pigeon.getCompassHeading();
+    return 0.0;
   }
 
   @Override
   public Quaternion getQuaternion() {
-    double[] quat = new double[4];
-    pigeon.get6dQuaternion(quat);
-    return new Quaternion(quat[0], quat[1], quat[2], quat[3]);
+    return new Quaternion(pigeon.getQuatW().getValue(), pigeon.getQuatX().getValue(), pigeon.getQuatY().getValue(), pigeon.getQuatZ().getValue());
   }
 
   /**
@@ -277,6 +262,55 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
    */
   public void calibrate() {
     pigeon.calibrate();
+  }
+
+  private class BreakerPigeon2PeriodicIO {
+      private StatusSignal<Double> rawYaw, rawPitch, rawRoll;
+      private StatusSignal<Double> rawYawRate, rawPitchRate, rawRollRate;
+      public BreakerPigeon2PeriodicIO() {
+        rawYaw = pigeon.getYaw();
+        rawPitch = pigeon.getPitch();
+        rawRoll = pigeon.getRoll();
+        rawYawRate = pigeon.getAngularVelocityZ();
+        rawPitchRate = pigeon.getAngularVelocityX();
+        rawRollRate = pigeon.getAngularVelocityY();
+      }
+
+      public double getYaw() {
+        return BreakerMath.angleModulus(BaseStatusSignal.getLatencyCompensatedValue(rawYaw.refresh(), rawYawRate.refresh()));
+      }
+
+      public double getRoll() {
+        return BreakerMath.angleModulus(BaseStatusSignal.getLatencyCompensatedValue(rawRoll.refresh(), rawRollRate.refresh()));
+      }
+
+      public double getPitch() {
+        return BreakerMath.angleModulus(BaseStatusSignal.getLatencyCompensatedValue(rawPitch.refresh(), rawPitchRate.refresh()));
+      }
+
+      public double getRawYaw() {
+          return rawYaw.refresh().getValue();
+      }
+
+      public double getRawRoll() {
+          return rawRoll.refresh().getValue();
+      }
+
+      public double getRawPitch() {
+          return rawPitch.refresh().getValue();
+      }
+
+      public double getRawPitchRate() {
+          return rawPitchRate.refresh().getValue();
+      }
+
+      public double getRawRollRate() {
+          return rawRollRate.refresh().getValue();
+      }
+
+      public double getRawYawRate() {
+          return rawYawRate.refresh().getValue();
+      }
   }
 
   @Override

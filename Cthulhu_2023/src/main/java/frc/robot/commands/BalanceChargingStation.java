@@ -9,7 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
+import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerLegacyPigeon2;
 import frc.robot.BreakerLib.physics.vector.BreakerVector3;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain.SlowModeValue;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveMovementPreferences;
@@ -18,13 +18,13 @@ import frc.robot.subsystems.Drive;
 
 public class BalanceChargingStation extends CommandBase {
   /** Creates a new BalanceChargingStation. */
-  private BreakerPigeon2 imu;
+  private BreakerLegacyPigeon2 imu;
   private PIDController xPID , yPID;
   //private Odometer odometer;
   private Drive drivetrain;
   private final Timer balanceTimer = new Timer();
   
-  public BalanceChargingStation(Drive drivetrain, BreakerPigeon2 imu) { /* Odometer odometer */
+  public BalanceChargingStation(Drive drivetrain, BreakerLegacyPigeon2 imu) { /* Odometer odometer */
     // Use addRequirements() here to declare subsystem dependencies.
     this.imu = imu;
     //this.odometer = odometer;

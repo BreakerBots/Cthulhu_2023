@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.sensors.BreakerBeamBreak;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
+import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -195,27 +196,6 @@ public class Intake extends SubsystemBase {
     // NEUTRAL
   }
 
-  public static final class IntakeConstants {
-    public static final int ACTUATOR_ID = 0;
-    public static final int ROLLER_ID = 0;
-    public static final int BEAM_BRAKE_DIO_PORT = 0;
-    public static final boolean BEAM_BRAKE_BROKEN_ON_TRUE = true;
 
-    public static final double ACTUATOR_CURRENT_LIMIT = 0;
-    public static final double ACTUATOR_CURRENT_LIMIT_TIME = 0;
-    public static final double ROLLER_CURRENT_LIMIT = 0;
-    public static final double ROLLER_CURRENT_LIMIT_TIME = 0;
-
-    public static final double ACTUATOR_EXTEND_DUTY_CYCLE = 0;
-    public static final double ACTUATOR_RETRACT_DUTY_CYCLE = 0;
-
-    public static final double INTAKE_DUTY_CYCLE = 0;
-    public static final double INTAKE_GRIP_DUTY_CYCLE = 0;
-    public static final double EXTAKE_DUTY_CYCLE = 0;
-
-    public static final double EJECT_COMMAND_WAIT_FOR_EXTEND_TIMEOUT = 0;
-    public static final double EJECT_COMMAND_CUTOFF_TRALING_DELAY = 0;
-    public static final double EJECT_COMMAND_CUTOFF_TIMEOUT = 0;
-  }
 
 }

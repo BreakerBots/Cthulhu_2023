@@ -38,7 +38,7 @@ public class BreakerProFalconSwerveModuleDriveMotor extends BreakerGenericSwerve
         this.driveGearRatio = driveGearRatio;
         this.wheelDiameter = wheelDiameter;
         this.arbFF = arbFF;
-        wheelCircumfrenceMeters = Units.inchesToMeters(wheelDiameter*Math.PI);
+        wheelCircumfrenceMeters = wheelDiameter*Math.PI;
         targetVelocity = 0.0;
         velocityRequest = new VelocityDutyCycle(0.0, true, 0.0, 1, false);
         TalonFXConfiguration driveConfig = new TalonFXConfiguration();

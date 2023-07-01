@@ -47,6 +47,37 @@ public class BreakerPhoenix6Util {
     checkStatusCode(motor.getConfigurator().apply(moc), "Failded to apply TalonFX brake mode motor config");
   }
 
+  public static Pair<DeviceHealth, String> checkPigeon2FaultsAndConnection(Pigeon2 pigeon2) {
+    Pair<DeviceHealth, String> pair = getPigeon2HealthAndFaults(pigeon2);
+    String retStr = pair.getSecond();
+    DeviceHealth retHealth = pair.getFirst();
+    if (pigeon2.getVersion().getValue() == 0) {
+      retStr += " device_disconnected ";
+      retHealth = DeviceHealth.INOPERABLE;
+    }
+    return new Pair<DeviceHealth, String>(retHealth, retStr);
+  }
+
+  
+  public static Pair<DeviceHealth, String> getPigeon2HealthAndFaults(Pigeon2 pigeon2) {
+    FaultCase[] faultCases = new FaultCase[] {
+      new FaultCase(pigeon2.getFault_Hardware().getValue(), DeviceHealth.INOPERABLE, " hardware_failure "),
+      new FaultCase(pigeon2.getFault_BootupGyroscope().getValue(),  DeviceHealth.INOPERABLE, " gyroscope_bootup_check_failed "),
+      new FaultCase(pigeon2.getFault_BootupAccelerometer().getValue(),  DeviceHealth.INOPERABLE, " accelerometer_bootup_check_failed "),
+      new FaultCase(pigeon2.getFault_BootupMagnetometer().getValue(),  DeviceHealth.INOPERABLE, " magnetometer_bootup_check_failed "),
+      new FaultCase(pigeon2.getFault_Undervoltage().getValue(),  DeviceHealth.FAULT, " device_supply_voltage_below_6.5v "),
+      new FaultCase(pigeon2.getFault_DataAcquiredLate().getValue(),  DeviceHealth.FAULT, " motion_stack_data_acquisition_slower_than_expected "),
+      new FaultCase(pigeon2.getFault_LoopTimeSlow().getValue(),  DeviceHealth.FAULT, " motion_stack_loop_time_slower_than_expected "),
+      new FaultCase(pigeon2.getFault_SaturatedGyrosscope().getValue(),  DeviceHealth.FAULT, " gyroscope_values_saturated "),
+      new FaultCase(pigeon2.getFault_SaturatedAccelometer().getValue(),  DeviceHealth.FAULT, " accelometer_values_saturated "),
+      new FaultCase(pigeon2.getFault_SaturatedMagneter().getValue(),  DeviceHealth.FAULT, " magnetometer_values_saturated "),
+      new FaultCase(pigeon2.getFault_BootDuringEnable().getValue(),  DeviceHealth.FAULT, " device_boot_or_reset_while_robot_enabled ")
+    };
+
+    return getDeviceHealthAndFaults(faultCases);
+  }
+
+
   /**
    * @param motor
    * @return Pair<DeviceHealth, String>

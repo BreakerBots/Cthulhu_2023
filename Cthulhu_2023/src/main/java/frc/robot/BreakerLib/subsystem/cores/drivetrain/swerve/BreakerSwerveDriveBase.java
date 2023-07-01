@@ -139,9 +139,6 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
         public static final BreakerSwerveDriveBaseMovementPreferences FIELD_RELATIVE_WITH_OFFSET_AND_HEADING_CORRECTION = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITH_OFFSET, SlowModeValue.DEFAULT, true);
         public static final BreakerSwerveDriveBaseMovementPreferences FIELD_RELATIVE_WITHOUT_OFFSET_AND_WITH_HEADING_CORRECTION = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITHOUT_OFFSET, SlowModeValue.DEFAULT, true);
         public static final BreakerSwerveDriveBaseMovementPreferences ROBOT_RELATIVE_WITH_HEADING_CORRECTION = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.ROBOT_RELATIVE, SlowModeValue.DEFAULT, true);
-        // public BreakerSwerveDriveBaseMovementPreferences() {
-        //     super(SwerveMovementRefrenceFrame.ROBOT_RELATIVE, SlowModeValue.DEFAULT, true);
-        // }
     
         public BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame movementRefrenceFrame, SlowModeValue slowModeValue, boolean headingCorrectionEnabled) {
           super(movementRefrenceFrame, slowModeValue, headingCorrectionEnabled);
@@ -151,18 +148,7 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
         public BreakerSwerveDriveBaseMovementPreferences withHeadingCorrectionEnabled(boolean headingCorrectionEnabled) {
             return new BreakerSwerveDriveBaseMovementPreferences(this.swerveMovementRefrenceFrame, this.slowModeValue, headingCorrectionEnabled);
         }
-    
-        // public SlowModeValue getSlowModeValue() {
-        //     return slowModeValue;
-        // }
 
-        // public SwerveMovementRefrenceFrame getSwerveMovementRefrenceFrame() {
-        //     return swerveMovementRefrenceFrame;
-        // }
-
-        // public boolean getHeadingCorrectionEnabled() {
-        //     return headingCorrectionEnabled;
-        // }
     }
 
     public static class BreakerSwerveDriveBaseConfig extends BreakerSwerveDriveConfig {
@@ -199,8 +185,6 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
         public PIDController getHeadingCompensationController() {
             return headingCompensationController;
         }
-
-
 
         public PPHolonomicDriveController getDriveController() {
             return driveController;

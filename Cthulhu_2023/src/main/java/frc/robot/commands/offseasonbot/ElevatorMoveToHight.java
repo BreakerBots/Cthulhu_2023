@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.subsystems.offseasionbot.Elevator;
-import frc.robot.subsystems.offseasionbot.Elevator.ElevatorConstants;
+import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.ElevatorConstants;
 
 public class ElevatorMoveToHight extends CommandBase {
   /** Creates a new ElevatorMoveToHight. */

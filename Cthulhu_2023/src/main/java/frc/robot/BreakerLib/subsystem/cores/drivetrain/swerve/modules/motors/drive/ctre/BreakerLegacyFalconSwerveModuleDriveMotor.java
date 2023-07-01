@@ -32,7 +32,7 @@ public class BreakerLegacyFalconSwerveModuleDriveMotor extends BreakerGenericSwe
     public BreakerLegacyFalconSwerveModuleDriveMotor(WPI_TalonFX motor, double driveGearRatio, double wheelDiameter, double supplyCurrentLimit, boolean isMotorInverted, BreakerArbitraryFeedforwardProvider arbFF, BreakerSwerveMotorPIDConfig pidConfig) {
         this.motor = motor;
         this.driveGearRatio = driveGearRatio;
-        this.wheelDiameter = wheelDiameter;
+        this.wheelDiameter = Units.metersToInches(wheelDiameter);
         this.arbFF = arbFF;
         targetVelocity = 0.0;
         TalonFXConfiguration driveConfig = new TalonFXConfiguration();

@@ -23,7 +23,7 @@ import frc.robot.BreakerLib.auto.trajectory.management.BreakerAutoPath;
 import frc.robot.BreakerLib.devices.cosmetic.led.BreakerRevBlinkin;
 import frc.robot.BreakerLib.devices.cosmetic.led.BreakerRevBlinkin.AdvancedPattern;
 import frc.robot.BreakerLib.devices.cosmetic.led.BreakerRevBlinkin.AdvancedPatternPalette;
-import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
+import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerLegacyPigeon2;
 import frc.robot.BreakerLib.driverstation.gamepad.components.BreakerGamepadAnalogDeadbandConfig;
 import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerTeleopSwerveDriveController;
@@ -59,7 +59,7 @@ import frc.robot.subsystems.SebArm.State;
 public class RobotContainer {
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
 
-  private final BreakerPigeon2 imuSys = new BreakerPigeon2(IMU_ID);
+  private final BreakerLegacyPigeon2 imuSys = new BreakerLegacyPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
   private final BreakerBezierCurve driveCurve = new BreakerBezierCurve(new Translation2d(0.707, 0.186),
       new Translation2d(0.799, 0.317));

@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
+import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.ElevatorConstants;
 
 /** Add your docs here. */
 public class Elevator extends SubsystemBase {
@@ -271,51 +272,7 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public static final class ElevatorConstants {
-        //General Motor Configs
-        public static final int LEFT_MOTOR_ID = 0;
-        public static final int RIGHT_MOTOR_ID = 0;
-        public static final double SUPPLY_CUR_LIMIT = 60.0;
-        public static final double SUPPLY_CUR_LIMIT_TIME = 1.5;
-
-        //Motion Magic Configs
-        public static final double MOTION_MAGIC_CRUISE_VEL = 0;
-        public static final double MOTION_MAGIC_ACCEL = 0;
-        public static final double MOTION_MAGIC_JERK = 0;
-
-        //PIDF Configs
-        public static final double PIDF_KP = 0;
-        public static final double PIDF_KI = 0;
-        public static final double PIDF_KD = 0;
-        public static final double PIDF_KS = 0;
-        public static final double PIDF_KV = 0;
-
-        //Gearing
-        public static final double MOTOR_TO_DRUM_GEARING = 100.0; //to one
-        public static final double DRUM_RADIUS_METERS = 0.02;
-        public static final double DRUM_CIRCUMFERENCE_METERS = 2*Math.PI*DRUM_RADIUS_METERS;
-        public static final double MOTOR_ROT_TO_METERS_SCALAR = DRUM_CIRCUMFERENCE_METERS / MOTOR_TO_DRUM_GEARING;
-
-        //Physical Limits
-        public static final double MAX_HEIGHT = 1.0;
-        public static final double MAX_ROT = MAX_HEIGHT / MOTOR_ROT_TO_METERS_SCALAR;
-        public static final double MIN_HEIGHT = 0.0;
-        public static final double MIN_ROT = MIN_HEIGHT / MOTOR_ROT_TO_METERS_SCALAR;
-
-        //Sim Configs
-        public static final double CARRIAGE_MASS_KG = 15.0;
-        public static final boolean SIM_GRAVITY = false;
-        public static final ChassisReference MOTOR_CHASSIS_REF = ChassisReference.CounterClockwise_Positive;
-        
-        //Misc
-        public static final double CALIBRATION_DUTY_CYCLE = -0.06;
-        public static final double HIGHT_TOLARENCE = 0.01;
-
-        //Command configs
-        public static final double MOVE_TO_HEIGHT_COMMAND_TIMEOUT = 5.0;
-    
-    }
-
+   
     private class ElevatorSimManager {
         private ElevatorSim sim;
         private TalonFXSimState simState;

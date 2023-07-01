@@ -12,13 +12,14 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BreakerLib.auto.waypoint.BreakerPoseWaypointPath;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
-import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
+import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerLegacyPigeon2;
 import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveConfig;
@@ -65,7 +66,7 @@ public class Drive extends BreakerSwerveDriveBase {
                 .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
 
         private static BreakerSwerveModuleConfig falconMk4iConfig = new BreakerSwerveModuleConfig(
-                DRIVE_MOTOR_GEAR_RATIO_TO_ONE, 1.0, WHEEL_DIAMETER, 40.0, 80.0, MODULE_ANGLE_PID_CONFIG, 
+                DRIVE_MOTOR_GEAR_RATIO_TO_ONE, 1.0, Units.inchesToMeters(WHEEL_DIAMETER), 40.0, 80.0, MODULE_ANGLE_PID_CONFIG, 
                 MODULE_VELOCITY_PID_CONFIG, MODULE_VELOCITY_FF);
 
         private static BreakerSwerveModule frontLeftModule = BreakerSwerveModuleBuilder.getInstance(falconMk4iConfig)
@@ -88,7 +89,7 @@ public class Drive extends BreakerSwerveDriveBase {
                 .withLegacyFalconDriveMotor(driveBR, false)
                 .createSwerveModule(BR_TRANSLATION);
 
-        public Drive(BreakerPigeon2 imu) {
+        public Drive(BreakerLegacyPigeon2 imu) {
                 super(config,  imu, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
 
                 autoDriveController.setTolerances(new Pose2d(0.07, 0.07, Rotation2d.fromDegrees(5.0)));

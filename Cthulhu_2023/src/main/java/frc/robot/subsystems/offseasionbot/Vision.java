@@ -63,15 +63,5 @@ public class Vision extends SubsystemBase implements BreakerGenericVisionOdomete
     return vision.getBaseVisionOdometer().isAnyTargetVisable();
   }
 
-  public static class VisionConstants {
-    public static final String FRONT_CAMERA_NAME = "frontCam";
-    public static final String LEFT_CAMERA_NAME = "leftCam";
-    public static final String RIGHT_CAMERA_NAME = "rightCam";
-    public static final String BACK_CAMERA_NAME = "backCam";
 
-    public static final Transform3d FRONT_CAMERA_POSE = new Transform3d();
-    public static final Transform3d LEFT_CAMERA_POSE = new Transform3d();
-    public static final Transform3d RIGHT_CAMERA_POSE = new Transform3d();
-    public static final Transform3d BACK_CAMERA_POSE = new Transform3d();
-  }
 }

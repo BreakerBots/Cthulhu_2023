@@ -59,12 +59,12 @@ public class BreakerNeoSwerveModuleDriveMotor extends BreakerGenericSwerveModule
 
     @Override
     public double getVelocity() {
-        return Units.inchesToMeters(((motor.getEncoder().getVelocity() / driveGearRatio) * (wheelDiameter * Math.PI)) / 60.0);
+        return ((motor.getEncoder().getVelocity() / driveGearRatio) * (wheelDiameter * Math.PI)) / 60.0;
     }
 
     @Override
     public double getDistance() {
-        return Units.inchesToMeters(((motor.getEncoder().getPosition() / driveGearRatio) * (wheelDiameter * Math.PI)) / 60.0);
+        return ((motor.getEncoder().getPosition() / driveGearRatio) * (wheelDiameter * Math.PI)) / 60.0;
     }
 
     @Override
@@ -83,6 +83,6 @@ public class BreakerNeoSwerveModuleDriveMotor extends BreakerGenericSwerveModule
     }
 
     private double getMetersPerSecToNativeVelUnits(double speedMetersPerSec) {
-        return (Units.metersToInches(speedMetersPerSec * 60.0) * driveGearRatio) / (wheelDiameter * Math.PI);
+        return ((speedMetersPerSec * 60.0) * driveGearRatio) / (wheelDiameter * Math.PI);
     }
 }
