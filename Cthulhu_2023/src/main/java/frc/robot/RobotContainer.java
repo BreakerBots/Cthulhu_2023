@@ -58,6 +58,7 @@ import frc.robot.subsystems.SebArm.State;
  */
 public class RobotContainer {
   private static final BreakerXboxController controllerSys = new BreakerXboxController(0);
+  private static final BreakerXboxController armControllerSys = new BreakerXboxController(1);
 
   private final BreakerLegacyPigeon2 imuSys = new BreakerLegacyPigeon2(IMU_ID);
   private final Drive drivetrainSys = new Drive(imuSys);
@@ -66,9 +67,9 @@ public class RobotContainer {
   private final BreakerTeleopSwerveDriveController manualDriveCommand = new BreakerTeleopSwerveDriveController(
       drivetrainSys, controllerSys).addSpeedCurves(driveCurve, driveCurve);
 
-  private FalconArm arm = new FalconArm();
+  //private FalconArm arm = new FalconArm();
 
-  // private final SebArm armSys = new SebArm(controllerSys);
+   private final SebArm armSys = new SebArm(controllerSys);
   private final RollerIntake intakeSys = new RollerIntake();
   private static boolean isInCubeMode = true;
   // private final Arm armSys = new Arm();
@@ -104,38 +105,23 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     controllerSys.getBackButton().onTrue(new InstantCommand(drivetrainSys::resetOdometryRotation));
-    controllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
+    armControllerSys.getStartButton().onTrue(new InstantCommand(RobotContainer::toggleisInCubeMode));
+    armControllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
+    armControllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
+    armControllerSys.getButtonY().onTrue(new ParallelCommandGroup(
+    new InstantCommand(() -> armSys.setArmState(SebArm.State.PICKUP_HIGH)),
+    new InstantCommand(intakeSys::start)));
+    armControllerSys.getButtonX().onTrue(new ParallelCommandGroup(
+    armSys.pickupLowCommand(),
+    new InstantCommand(intakeSys::start)));
 
-    controllerSys.getButtonY().onTrue(new InstantCommand(() -> arm.setGoal(State.PICKUP_HIGH.rot.getDegrees())));
+    armControllerSys.getLeftBumper().onTrue(new InstantCommand(intakeSys::start));
+    armControllerSys.getRightBumper().onTrue(new ParallelCommandGroup(
+    armSys.stowCommand(),
+    new InstantCommand(intakeSys::stop)));
+    armControllerSys.getDPad().getUp().onTrue(new InstantCommand(armSys::placeMid));
 
-    controllerSys.getButtonB().onTrue(new InstantCommand(intakeSys::stop));
-    controllerSys.getButtonA().onTrue(new InstantCommand(intakeSys::eject));
-    // controllerSys.getButtonY().onTrue(new ParallelCommandGroup(
-    // new InstantCommand(() -> armSys.setArmState(SebArm.State.PICKUP_HIGH)),
-    // new InstantCommand(intakeSys::start)));
-    // controllerSys.getButtonX().onTrue(new ParallelCommandGroup(
-    // armSys.pickupLowCommand(),
-    // new InstantCommand(intakeSys::start)));
-
-    controllerSys.getLeftBumper().onTrue(new InstantCommand(intakeSys::start));
-    // controllerSys.getRightBumper().onTrue(new ParallelCommandGroup(
-    // armSys.stowCommand(),
-    // new InstantCommand(intakeSys::stop)));
-    // controllerSys.getDPad().getUp().onTrue(new InstantCommand(armSys::placeMid));
-    // controllerSys.getDPad().getLeft().onTrue(armSys.setTargetCommand(Rotation2d.fromDegrees(90)));
-    // controllerSys.getButtonY().onTrue(new InstantCommand(() ->
-    // armSys.setTarget(Rotation2d.fromDegrees(-45))));
-    // controllerSys.getButtonX().onTrue(new InstantCommand(() ->
-    // armSys.setTarget(Rotation2d.fromDegrees(90))));
-    // controllerSys.getButtonA().onTrue(new InstantCommand(() ->
-    // armSys.setTarget(Rotation2d.fromDegrees(210))));
-
-    // controllerSys.getStartButton().onTrue(new
-    // InstantCommand(rollerIntake::runSelectedIntakeMode));
-    // controllerSys.getStartButton().onTrue(new
-    // InstantCommand(rollerIntake::toggleConeModeSelected));
   }
-
   private void robotManagerSetup() {
     BreakerRobotConfig robotConfig = new BreakerRobotConfig(new BreakerRobotStartConfig(5104, "BreakerBots",
         "Cthulhu", 2023, "v1", "Yousif Alkhalaf, Roman Abrahamson, Sebastian Rueda"));
