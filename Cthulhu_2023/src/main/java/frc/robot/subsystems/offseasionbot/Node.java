@@ -26,6 +26,10 @@ public enum Node {
         private NodeCoulmn(Pose2d blueBaseAllignmentPose) {
             this.blueBaseAllignmentPose = blueBaseAllignmentPose;
         }
+
+        public Pose2d getBlueBaseAllignmentPose() {
+            return blueBaseAllignmentPose;
+        }
     }
 
     public enum NodeHeight {
