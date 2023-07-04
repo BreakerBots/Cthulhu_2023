@@ -39,12 +39,13 @@ public class BreakerSwerveDriveBase extends BreakerSwerveDrive {
     public BreakerSwerveDriveBase(
             BreakerSwerveDriveBaseConfig config, BreakerGenericGyro gyro,
             BreakerGenericSwerveModule... swerveModules) {
-        this(config, gyro, new BreakerSwerveOdometryConfig(), swerveModules);
+        this(config, new BreakerSwerveOdometryConfig(), gyro, swerveModules);
     }
 
     public BreakerSwerveDriveBase(
-            BreakerSwerveDriveBaseConfig config, BreakerGenericGyro gyro, 
-            BreakerSwerveOdometryConfig odometryConfig,
+            BreakerSwerveDriveBaseConfig config, 
+            BreakerSwerveOdometryConfig odometryConfig, 
+            BreakerGenericGyro gyro, 
             BreakerGenericSwerveModule... swerveModules) {
         super(config, odometryConfig, gyro, swerveModules);
         this.config = config;

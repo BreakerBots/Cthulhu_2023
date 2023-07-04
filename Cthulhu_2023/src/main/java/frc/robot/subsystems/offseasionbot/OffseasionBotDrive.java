@@ -8,17 +8,17 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import frc.robot.BreakerLib.devices.sensors.gyro.BreakerGenericGyro;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerGenericSwerveModule;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModuleBuilder;
-import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModuleBuilder.BreakerSwerveModuleConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveAzimuthEncoder;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveCANcoder;
+import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.PoseEstimationConstants;
+
 import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.DriveConstants.*;
+import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.PoseEstimationConstants.*;
 import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.MiscConstants.CANIVORE_1;;
 
 /** Add your docs here. */
@@ -63,8 +63,8 @@ public class OffseasionBotDrive extends BreakerSwerveDriveBase {
     private static Field2d field = new Field2d();
     
 
-    public OffseasionBotDrive(BreakerPigeon2 pigeon) {
-        super(DRIVE_BASE_CONFIG, pigeon, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
+    public OffseasionBotDrive(BreakerPigeon2 pigeon, Vision vision) {
+        super(DRIVE_BASE_CONFIG, new BreakerSwerveOdometryConfig(vision, ENCODER_ODOMETRY_STANDARD_DEVATIONS, VISION_ODOMETRY_STANDARD_DEVATIONS), pigeon, frontLeftModule, frontRightModule, backLeftModule, backRightModule);
 
         BreakerDashboard.getMainTab().add(field);
         

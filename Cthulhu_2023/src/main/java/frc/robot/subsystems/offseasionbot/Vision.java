@@ -25,7 +25,6 @@ public class Vision extends SubsystemBase implements BreakerGenericVisionOdomete
     rightCam = new BreakerPhotonCamera(getName(), null);
     backCam = new BreakerPhotonCamera(getName(), null);
     vision = new BreakerVision(getDataTimestamp(), getDataTimestamp(), getDataTimestamp(), getDataTimestamp(), new BreakerPhotonCamera[]{frontCam, leftCam, rightCam, backCam}, null);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   @Override

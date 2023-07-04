@@ -64,6 +64,8 @@ public class Elevator extends SubsystemBase {
 
     private ElevatorSimManager simManager;
 
+    private boolean isForceStoped = false;
+
    
     public Elevator() {
         leftMotor = new TalonFX(ElevatorConstants.LEFT_MOTOR_ID, "placeholder");
@@ -137,7 +139,6 @@ public class Elevator extends SubsystemBase {
     public void setManual(double dutyCycle) {
         manualControlDutyCycle = MathUtil.clamp(dutyCycle, -1.0, 1.0);
         currentState = ElevatorState.MANUAL;
-        // System.out.println(manualControlDutyCycle);
     }
 
     public void calibrate() {
@@ -176,6 +177,20 @@ public class Elevator extends SubsystemBase {
         currentState = ElevatorState.LOCKED;
     }
 
+    /** */
+    public void forceStop() {
+        isForceStoped = true;
+        BreakerLog.logEvent("ELEVATOR FORCE STOPED - Elevator now unresponsive and locked");
+    }
+
+    public void endForceStop() {
+        isForceStoped = false;
+        BreakerLog.logEvent("ELEVATOR FORCE STOP ENDED - Elevator now responsive and functional");
+    }
+
+    public boolean isForceStoped() {
+        return isForceStoped;
+    }
 
     @Override
     public void simulationPeriodic() {
@@ -202,44 +217,50 @@ public class Elevator extends SubsystemBase {
                     setNeutral();
                 }
             }
-        }
+        } 
         
 
         if (DriverStation.isDisabled() || currentState != ElevatorState.AUTOMATIC) {
             targetHeightMeters = getHeight();
         }
 
-        switch (currentState) { 
-            case AUTOMATIC:
-                if (targetHeightMeters != motionMagicRequest.Position) {
-                    leftMotor.setControl(motionMagicRequest.withPosition(Math.min(Math.max(targetHeightMeters, ElevatorConstants.MIN_HEIGHT), ElevatorConstants.MAX_HEIGHT)));
-                }
-                break;
-            case MANUAL:
-                leftMotor.setControl(dutyCycleRequest.withOutput(manualControlDutyCycle));
-                break;
-            case CALIBRATING:
-                if (RobotBase.isReal()) {
-                    leftMotor.setControl(dutyCycleRequest.withOutput(ElevatorConstants.CALIBRATION_DUTY_CYCLE));
-                    if (getReverseLimitTriggered()) {
-                        currentState = ElevatorState.AUTOMATIC;
-                        hasBeenCalibrated = true;
-                        BreakerLog.logSuperstructureEvent("Elevator zero-point calibration sucessfull");
+        if (!isForceStoped) {
+            switch (currentState) { 
+                case AUTOMATIC:
+                    if (targetHeightMeters != motionMagicRequest.Position) {
+                        leftMotor.setControl(motionMagicRequest.withPosition(Math.min(Math.max(targetHeightMeters, ElevatorConstants.MIN_HEIGHT), ElevatorConstants.MAX_HEIGHT)));
                     }
-                } else {
-                    currentState = ElevatorState.AUTOMATIC;
-                        hasBeenCalibrated = true;
-                        BreakerLog.logSuperstructureEvent("Elevator calibation not supported in sim, action fallthrough");
-                }
-                break;
-            case NEUTRAL:
-                leftMotor.setControl(neutralRequest);
-                break;
-            case LOCKED:
-            default:
-                leftMotor.setControl(lockRequest);
-                break;
+                    break;
+                case MANUAL:
+                    leftMotor.setControl(dutyCycleRequest.withOutput(manualControlDutyCycle));
+                    break;
+                case CALIBRATING:
+                    if (RobotBase.isReal()) {
+                        leftMotor.setControl(dutyCycleRequest.withOutput(ElevatorConstants.CALIBRATION_DUTY_CYCLE));
+                        if (getReverseLimitTriggered()) {
+                            currentState = ElevatorState.AUTOMATIC;
+                            hasBeenCalibrated = true;
+                            BreakerLog.logSuperstructureEvent("Elevator zero-point calibration sucessfull");
+                        }
+                    } else {
+                        currentState = ElevatorState.AUTOMATIC;
+                            hasBeenCalibrated = true;
+                            BreakerLog.logSuperstructureEvent("Elevator calibation not supported in sim, action fallthrough");
+                    }
+                    break;
+                case NEUTRAL:
+                    leftMotor.setControl(neutralRequest);
+                    break;
+                case LOCKED:
+                default:
+                    leftMotor.setControl(lockRequest);
+                    break;
+            }
+        } else {
+            leftMotor.setControl(lockRequest);
+            rightMotor.setControl(lockRequest);
         }
+        
         
     }
 
@@ -257,7 +278,8 @@ public class Elevator extends SubsystemBase {
         PLACE_CONE_HIGH(0.0),
         PLACE_CUBE_MID(0.0),
         PLACE_CUBE_HIGH(0.0),
-        PICKUP_GROUND(0.0),
+        PICKUP_GROUND_CONE(0.0),
+        PICKUP_GROUND_CUBE(0.0),
         PICKUP_SINGLE_SUBSTATION(0.0),
         PICKUP_DOUBLE_SUBSTATION(0.0),
         STOW(0.0);

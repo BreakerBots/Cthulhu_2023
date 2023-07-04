@@ -6,10 +6,14 @@ package frc.robot.subsystems.offseasionbot;
 
 import com.ctre.phoenix6.sim.ChassisReference;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveOdometryConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase.BreakerSwerveDriveBaseConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModuleBuilder.BreakerSwerveModuleConfig;
@@ -156,7 +160,7 @@ public class OffseasionBotConstants {
         public static final ChassisReference MOTOR_CHASSIS_REF = ChassisReference.CounterClockwise_Positive;
         
         //Misc
-        public static final double CALIBRATION_DUTY_CYCLE = -0.06;
+        public static final double CALIBRATION_DUTY_CYCLE = -0.1;
         public static final double HIGHT_TOLARENCE = 0.01;
 
         //Command configs
@@ -197,10 +201,26 @@ public class OffseasionBotConstants {
         public static final Transform3d LEFT_CAMERA_POSE = new Transform3d();
         public static final Transform3d RIGHT_CAMERA_POSE = new Transform3d();
         public static final Transform3d BACK_CAMERA_POSE = new Transform3d();
+
+        // public static final Pair<Integer, Pose3d>[] APRILTAG_IDS_AND_LOCATIONS = new Pair<Integer, Pose3d>[] {
+        //     AprilTagFieldLayout
+        //     new Pair<Integer, Pose3d>(0, );
+        // }
     }
 
     public static final class MiscConstants {
         public static final int IMU_ID = 5;
         public static final String CANIVORE_1 = "CANivore_1";
+    }
+
+    public static final class PoseEstimationConstants {
+        public static final double ENCODER_ODOMETRY_STANDARD_DEVATION_X_METERS = 0.15;
+        public static final double ENCODER_ODOMETRY_STANDARD_DEVATION_Y_METERS = 0.15;
+        public static final double ENCODER_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS = Math.toRadians(0.5);
+        public static final double[] ENCODER_ODOMETRY_STANDARD_DEVATIONS = new double[] {ENCODER_ODOMETRY_STANDARD_DEVATION_X_METERS, ENCODER_ODOMETRY_STANDARD_DEVATION_Y_METERS, ENCODER_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS};
+        public static final double VISION_ODOMETRY_STANDARD_DEVATION_X_METERS = 0.03;
+        public static final double VISION_ODOMETRY_STANDARD_DEVATION_Y_METERS = 0.03;
+        public static final double VISION_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS = Math.toRadians(5);
+        public static final double[] VISION_ODOMETRY_STANDARD_DEVATIONS = new double[] {VISION_ODOMETRY_STANDARD_DEVATION_X_METERS, VISION_ODOMETRY_STANDARD_DEVATION_Y_METERS, VISION_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS};
     }
 }
