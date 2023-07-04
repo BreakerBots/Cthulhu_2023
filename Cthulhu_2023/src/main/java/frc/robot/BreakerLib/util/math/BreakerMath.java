@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import javax.lang.model.type.MirroredTypeException;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -303,6 +305,39 @@ public class BreakerMath {
     public static double absoluteAngleToContinuousRelativeAngleDegrees(double curRelativeAngle,
             Rotation2d curAbsoluteAngle, Rotation2d tgtAngle) {
         return curRelativeAngle + (tgtAngle.minus(curAbsoluteAngle).getDegrees());
+    }
+
+    public static Pose2d mirrorPose(Pose2d pose, double translationalAxisOfSymetry, MirrorAxis2d translationMirrorType, MirrorAxis2d rotationMirrorType) {
+       return new Pose2d(mirrorTranslation(pose.getTranslation(), translationalAxisOfSymetry, translationMirrorType), mirrorRotation(null, rotationMirrorType));
+    }
+
+    public static enum MirrorAxis2d {
+        X,
+        Y,
+        X_AND_Y
+    } 
+
+    public static Translation2d mirrorTranslation(Translation2d translation, double axisOfSymetry, MirrorAxis2d mirrorType) {
+        if (mirrorType == MirrorAxis2d.Y) {
+            double distance = axisOfSymetry - translation.getX();
+            return new Translation2d(axisOfSymetry + distance, translation.getY());
+        } else if (mirrorType == MirrorAxis2d.X) {
+            double distance = axisOfSymetry - translation.getY();
+            return new Translation2d(translation.getX(), axisOfSymetry + distance);
+        }
+        double distanceX = axisOfSymetry - translation.getX();
+        double distanceY = axisOfSymetry - translation.getY();
+        return new Translation2d(axisOfSymetry + distanceX, axisOfSymetry + distanceY);
+    }
+
+    public static Rotation2d mirrorRotation(Rotation2d angle, MirrorAxis2d mirrorType) {
+        if (mirrorType == MirrorAxis2d.Y) {
+            return new Rotation2d(-angle.getCos(), angle.getSin());
+        } else if (mirrorType == MirrorAxis2d.X) {
+            return new Rotation2d(angle.getCos(), -angle.getSin());
+        }
+        return new Rotation2d(-angle.getCos(), -angle.getSin());
+        
     }
 
 }

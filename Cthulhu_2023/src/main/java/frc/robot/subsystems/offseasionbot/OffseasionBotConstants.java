@@ -189,7 +189,11 @@ public class OffseasionBotConstants {
         public static final double EJECT_COMMAND_WAIT_FOR_EXTEND_TIMEOUT = 0;
         public static final double EJECT_COMMAND_CUTOFF_TRALING_DELAY = 0;
         public static final double EJECT_COMMAND_CUTOFF_TIMEOUT = 0;
-      }
+    }
+
+    public static class FieldConstants {
+        public static final double FIELD_LENGTH_X = 0.0;
+    }
 
     public static class VisionConstants {
         public static final String FRONT_CAMERA_NAME = "frontCam";
@@ -203,7 +207,6 @@ public class OffseasionBotConstants {
         public static final Transform3d BACK_CAMERA_POSE = new Transform3d();
 
         // public static final Pair<Integer, Pose3d>[] APRILTAG_IDS_AND_LOCATIONS = new Pair<Integer, Pose3d>[] {
-        //     AprilTagFieldLayout
         //     new Pair<Integer, Pose3d>(0, );
         // }
     }

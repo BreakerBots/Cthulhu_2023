@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.BreakerLib.util.math.BreakerMath;
+import frc.robot.BreakerLib.util.math.BreakerMath.MirrorAxis2d;
 
 /** Add your docs here. */
 public class BreakerPoseWaypointPath {
@@ -62,11 +63,7 @@ public class BreakerPoseWaypointPath {
     public BreakerPoseWaypointPath mirror(double axisOfSymmetry) {
         Pose2d[] result = new Pose2d[waypoints.length];
         for (int i = 0; i < waypoints.length; i++) {
-            double distance = axisOfSymmetry - waypoints[i].getX();
-            double mirroredAng = MathUtil
-                    .angleModulus(waypoints[i].getRotation().plus(Rotation2d.fromDegrees(180)).getRadians());
-            result[i] = new Pose2d(new Translation2d(axisOfSymmetry + distance, waypoints[i].getY()),
-                    Rotation2d.fromRadians(mirroredAng));
+            result[i] = BreakerMath.mirrorPose(waypoints[i], axisOfSymmetry, MirrorAxis2d.Y, MirrorAxis2d.Y);
         }
         return new BreakerPoseWaypointPath(maxVelocity, result);
     }

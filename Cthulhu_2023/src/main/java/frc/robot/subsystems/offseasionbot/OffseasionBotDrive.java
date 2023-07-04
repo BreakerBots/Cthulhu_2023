@@ -7,6 +7,9 @@ package frc.robot.subsystems.offseasionbot;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.BreakerLib.driverstation.dashboard.BreakerDashboard;
@@ -15,10 +18,17 @@ import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwe
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModuleBuilder;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveAzimuthEncoder;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders.BreakerSwerveCANcoder;
+import frc.robot.BreakerLib.util.logging.BreakerLog;
+import frc.robot.BreakerLib.util.math.BreakerMath;
+import frc.robot.BreakerLib.util.math.BreakerMath.MirrorAxis2d;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.PoseEstimationConstants;
 
 import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.DriveConstants.*;
 import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.PoseEstimationConstants.*;
+
+import java.util.Optional;
+
 import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.MiscConstants.CANIVORE_1;;
 
 /** Add your docs here. */
@@ -77,6 +87,23 @@ public class OffseasionBotDrive extends BreakerSwerveDriveBase {
         BreakerDashboard.getDiagnosticsTab().add("FR Module", frontRightModule);
         BreakerDashboard.getDiagnosticsTab().add("BL Module", backLeftModule);
         BreakerDashboard.getDiagnosticsTab().add("BR Module", backRightModule);
+    }
+
+    @Override
+    public void setOdometryPosition(Pose2d newPose) {
+        Optional<Alliance> ally = AllianceManager.getAlliance();
+        if (ally.isPresent()) {
+            if (ally.get() == Alliance.Red) {
+                newPose = BreakerMath.mirrorPose(newPose, FieldConstants.FIELD_LENGTH_X/2.0, MirrorAxis2d.Y, MirrorAxis2d.Y);
+            }
+        } else {
+            BreakerLog.logError("Drivetrain odometry position can not be set without attaced DS or FMS to provide alliance data");
+        }   
+    }
+
+    @Override
+    public Pose2d getOdometryPoseMeters() {
+        
     }
 
     @Override
