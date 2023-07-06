@@ -29,7 +29,8 @@ import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.PoseEsti
 
 import java.util.Optional;
 
-import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.MiscConstants.CANIVORE_1;;
+import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.MiscConstants.CANIVORE_1;
+import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.FieldConstants.*;
 
 /** Add your docs here. */
 public class OffseasionBotDrive extends BreakerSwerveDriveBase {
@@ -92,18 +93,24 @@ public class OffseasionBotDrive extends BreakerSwerveDriveBase {
     @Override
     public void setOdometryPosition(Pose2d newPose) {
         Optional<Alliance> ally = AllianceManager.getAlliance();
-        if (ally.isPresent()) {
-            if (ally.get() == Alliance.Red) {
-                newPose = BreakerMath.mirrorPose(newPose, FieldConstants.FIELD_LENGTH_X/2.0, MirrorAxis2d.Y, MirrorAxis2d.Y);
-            }
-        } else {
-            BreakerLog.logError("Drivetrain odometry position can not be set without attaced DS or FMS to provide alliance data");
-        }   
+        if (ally.get() == Alliance.Red) {
+            newPose = BreakerMath.mirrorPose(newPose, FIELD_LENGTH_X/2.0, MirrorAxis2d.Y, MirrorAxis2d.Y);
+        } 
+        super.setOdometryPosition(newPose);
     }
 
     @Override
     public Pose2d getOdometryPoseMeters() {
-        
+        Optional<Alliance> ally = AllianceManager.getAlliance();
+        Pose2d pose = super.getOdometryPoseMeters();
+        if (ally.get() == Alliance.Red) {
+            pose =  BreakerMath.mirrorPose(pose, FIELD_LENGTH_X/2.0, MirrorAxis2d.Y, MirrorAxis2d.Y);
+        }
+        return pose;
+    }
+
+    public Pose2d getAbsoluteOdometryPoseMeters() {
+        return super.getOdometryPoseMeters();
     }
 
     @Override

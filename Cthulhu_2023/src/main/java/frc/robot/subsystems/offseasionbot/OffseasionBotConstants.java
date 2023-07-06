@@ -214,6 +214,7 @@ public class OffseasionBotConstants {
     public static final class MiscConstants {
         public static final int IMU_ID = 5;
         public static final String CANIVORE_1 = "CANivore_1";
+        public static final double AUTO_BALANCE_MIN
     }
 
     public static final class PoseEstimationConstants {
