@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.devices.sensors.BreakerBeamBreak;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
-import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.IntakeConstants;
+import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */

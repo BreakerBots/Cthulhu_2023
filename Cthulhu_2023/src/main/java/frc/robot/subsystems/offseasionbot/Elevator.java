@@ -39,7 +39,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.test.selftest.SystemDiagnostics;
-import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.ElevatorConstants;
+import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.ElevatorConstants;
 
 /** Add your docs here. */
 public class Elevator extends SubsystemBase {

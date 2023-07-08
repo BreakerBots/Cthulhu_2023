@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.offseasionbot;
+package frc.robot.subsystems.offseasionbot.non_subsystems;
 
 import com.ctre.phoenix6.sim.ChassisReference;
 
@@ -214,7 +214,7 @@ public class OffseasionBotConstants {
     public static final class MiscConstants {
         public static final int IMU_ID = 5;
         public static final String CANIVORE_1 = "CANivore_1";
-        public static final double AUTO_BALANCE_MIN
+        // public static final double AUTO_BALANCE_MIN
     }
 
     public static final class PoseEstimationConstants {

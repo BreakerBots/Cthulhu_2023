@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.subsystems.offseasionbot.Intake;
 import frc.robot.subsystems.offseasionbot.Intake.ActuatorState;
-import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.IntakeConstants;
+import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.IntakeConstants;
 
 public class EjectGamePiece extends SequentialCommandGroup {
   /** Creates a new EjectGamePiece. */

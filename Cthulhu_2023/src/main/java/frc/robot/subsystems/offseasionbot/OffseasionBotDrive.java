@@ -22,15 +22,15 @@ import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.BreakerLib.util.math.BreakerMath;
 import frc.robot.BreakerLib.util.math.BreakerMath.MirrorAxis2d;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.subsystems.offseasionbot.OffseasionBotConstants.PoseEstimationConstants;
+import frc.robot.subsystems.offseasionbot.non_subsystems.AllianceManager;
+import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.PoseEstimationConstants;
 
-import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.DriveConstants.*;
-import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.PoseEstimationConstants.*;
+import static frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.DriveConstants.*;
+import static frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.FieldConstants.*;
+import static frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.MiscConstants.CANIVORE_1;
+import static frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.PoseEstimationConstants.*;
 
 import java.util.Optional;
-
-import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.MiscConstants.CANIVORE_1;
-import static frc.robot.subsystems.offseasionbot.OffseasionBotConstants.FieldConstants.*;
 
 /** Add your docs here. */
 public class OffseasionBotDrive extends BreakerSwerveDriveBase {
