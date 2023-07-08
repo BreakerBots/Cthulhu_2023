@@ -227,4 +227,15 @@ public class OffseasionBotConstants {
         public static final double VISION_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS = Math.toRadians(5);
         public static final double[] VISION_ODOMETRY_STANDARD_DEVATIONS = new double[] {VISION_ODOMETRY_STANDARD_DEVATION_X_METERS, VISION_ODOMETRY_STANDARD_DEVATION_Y_METERS, VISION_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS};
     }
+
+    public static final class ScoreingConstants {
+        public static final int LEFT_NODE_GROUP_CENTRAL_COULMN_ORDINAL = 1;
+        public static final int CENTER_NODE_GROUP_CENTRAL_COULMN_ORDINAL = 4;
+        public static final int RIGHT_NODE_GROUP_CENTRAL_COULMN_ORDINAL = 7;
+    }
+
+    public static final class OperatorConstants {
+        public static final int OPERATOR_PAD_PORT = 1;
+        public static final int 
+    }
 }
