@@ -5,10 +5,23 @@
 package frc.robot.subsystems.offseasionbot.non_subsystems;
 
 
+import com.ctre.phoenix6.controls.StaticBrake;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
+import frc.robot.BreakerLib.driverstation.gamepad.controllers.BreakerXboxController;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerTeleopSwerveDriveController;
+import frc.robot.commands.offseasonbot.StowElevatorIntakeAssembly;
 import frc.robot.commands.offseasonbot.TeleopScoreGamePiece;
+import frc.robot.commands.offseasonbot.drive.TeleopSnapDriveToCardinalHeading;
+import frc.robot.commands.offseasonbot.drive.TeleopSnapDriveToCardinalHeading.SwerveCardinal;
+import frc.robot.subsystems.offseasionbot.Elevator;
+import frc.robot.subsystems.offseasionbot.Intake;
+import frc.robot.subsystems.offseasionbot.OffseasionBotDrive;
+import frc.robot.subsystems.offseasionbot.Vision;
+import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.MiscConstants;
 import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.OperatorConstants;
 
 /**
@@ -18,13 +31,22 @@ import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class OffseasionBotRobotContainer {
-    private static final OperatorController operatorControllerSys = new OperatorController(OperatorConstants.OPERATOR_PAD_PORT);
-  // The robot's subsystema and commands are defined here...
+    private static final BreakerXboxController driverControllerSys = new BreakerXboxController(0);
+    private static final OperatorControlPad operatorControlPadSys = new OperatorControlPad(OperatorConstants.OPERATOR_PAD_PORT);
+
+    private static final Vision visionSys = new Vision();
+    private static final BreakerPigeon2 imuSys = new BreakerPigeon2(MiscConstants.IMU_ID, MiscConstants.CANIVORE_1);
+
+    private static final OffseasionBotDrive drivetrainSys = new OffseasionBotDrive(imuSys, visionSys);
+    private static final Elevator elevatorSys = new Elevator();
+    private static final Intake intakeSys = new Intake();
+  
+    private static final BreakerTeleopSwerveDriveController teleopDriveController = new BreakerTeleopSwerveDriveController(drivetrainSys, driverControllerSys);
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public OffseasionBotRobotContainer() {
-
+    drivetrainSys.setDefaultCommand(teleopDriveController);
     configureBindings();
   }
 
@@ -38,7 +60,18 @@ public class OffseasionBotRobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    operatorControllerSys.getScoringCommandRequestTrigger().onTrue(new TeleopScoreGamePiece(operatorControllerSys));
+    //driver controls
+    driverControllerSys.getDPad().getUp().onTrue(new TeleopSnapDriveToCardinalHeading(SwerveCardinal.FRONT, drivetrainSys, teleopDriveController));
+    driverControllerSys.getDPad().getLeft().onTrue(new TeleopSnapDriveToCardinalHeading(SwerveCardinal.LEFT, drivetrainSys, teleopDriveController));
+    driverControllerSys.getDPad().getRight().onTrue(new TeleopSnapDriveToCardinalHeading(SwerveCardinal.RIGHT, drivetrainSys, teleopDriveController));
+    driverControllerSys.getDPad().getDown().onTrue(new TeleopSnapDriveToCardinalHeading(SwerveCardinal.BACK, drivetrainSys, teleopDriveController));
+
+    driverControllerSys.getLeftBumper().or(driverControllerSys.getRightBumper()).onTrue(new StowElevatorIntakeAssembly(elevatorSys, intakeSys, true));
+
+    driverControllerSys.
+
+    //operator controls
+    operatorControlPadSys.getScoringCommandRequestTrigger().onTrue(new TeleopScoreGamePiece(operatorControlPadSys, drivetrainSys, elevatorSys));
 
   }
 

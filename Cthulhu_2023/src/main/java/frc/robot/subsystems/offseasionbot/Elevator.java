@@ -280,8 +280,10 @@ public class Elevator extends SubsystemBase {
         PLACE_CUBE_HIGH(0.0),
         PICKUP_GROUND_CONE(0.0),
         PICKUP_GROUND_CUBE(0.0),
-        PICKUP_SINGLE_SUBSTATION(0.0),
-        PICKUP_DOUBLE_SUBSTATION(0.0),
+        PICKUP_SINGLE_SUBSTATION_CONE(0.0),
+        PICKUP_SINGLE_SUBSTATION_CUBE(0.0),
+        PICKUP_DOUBLE_SUBSTATION_CONE(0.0),
+        PICKUP_DOUBLE_SUBSTATION_CUBE(0.0),
         STOW(0.0);
 
         private final double targetHeight;

@@ -113,6 +113,10 @@ public class OffseasionBotDrive extends BreakerSwerveDriveBase {
         return super.getOdometryPoseMeters();
     }
 
+    public void setAbsoluteOdometryPosition(Pose2d newPose) {
+        super.setOdometryPosition(newPose);
+    }
+
     @Override
     public void periodic() {
         field.setRobotPose(getOdometryPoseMeters());

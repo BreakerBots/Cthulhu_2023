@@ -2,12 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.offseasonbot;
+package frc.robot.commands.offseasonbot.elevator;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.subsystems.offseasionbot.Elevator;
+import frc.robot.subsystems.offseasionbot.Elevator.ElevatorState;
+import frc.robot.subsystems.offseasionbot.Elevator.ElevatorTarget;
 import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.ElevatorConstants;
 
 public class ElevatorMoveToHight extends CommandBase {
@@ -19,6 +21,10 @@ public class ElevatorMoveToHight extends CommandBase {
     this.elevator = elevator;
     this.targetHightMeters = targetHightMeters;
     addRequirements(elevator);
+  }
+
+  public ElevatorMoveToHight(Elevator elevator, ElevatorTarget target) {
+    this(elevator, target.getTargetHeight());
   }
 
   // Called when the command is initially scheduled.

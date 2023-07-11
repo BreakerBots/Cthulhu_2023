@@ -11,15 +11,17 @@ import edu.wpi.first.math.geometry.Pose2d;
 
  /** Add your docs here. */
 public enum Node {
-    C0_L,
-    C0_M,
-    C0_H;
+    C0_L(NodeCoulmn.C0, NodeHeight.LOW, NodeType.HYBRID),
+    C0_M(NodeCoulmn.C0, NodeHeight.MID, NodeType.CONE),
+    C0_H(NodeCoulmn.C0, NodeHeight.HIGH, NodeType.CONE);
 
     private NodeCoulmn coulmn;
     private NodeHeight height; 
     private NodeType type;
-    public Node(NodeCoulmn coulmn, NodeHeight height, NodeType type) {
-
+    private Node(NodeCoulmn coulmn, NodeHeight height, NodeType type) {
+        this.coulmn = coulmn;
+        this.height = height;
+        this.type = type;
     }
 
     public NodeCoulmn getCoulmn() {

@@ -5,24 +5,20 @@
 package frc.robot.commands.offseasonbot;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.offseasonbot.elevator.ElevatorMoveToHight;
-import frc.robot.commands.offseasonbot.intake.SetIntakeActuatorMotorState;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.offseasonbot.intake.SetIntakeRollerState;
 import frc.robot.subsystems.offseasionbot.Elevator;
 import frc.robot.subsystems.offseasionbot.Intake;
 import frc.robot.subsystems.offseasionbot.Elevator.ElevatorTarget;
 import frc.robot.subsystems.offseasionbot.Intake.ActuatorMotorState;
+import frc.robot.subsystems.offseasionbot.Intake.RollerState;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SetElevatorIntakeAssemblyState extends ParallelCommandGroup {
-  /** Creates a new SetElevatorIntakeAssemblyState. */
-  public SetElevatorIntakeAssemblyState(Elevator elevator, Intake intake, ElevatorTarget elevatorTarget, ActuatorMotorState intakeActuatorstate, boolean verifyIntakeAcutation) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-      new ElevatorMoveToHight(elevator, elevatorTarget),
-      new SetIntakeActuatorMotorState(intake, intakeActuatorstate, !verifyIntakeAcutation)
-    );
+public class StowElevatorIntakeAssembly extends SetElevatorIntakeAssemblyState {
+  /** Creates a new StowElevatorIntakeAssembly. */
+  public StowElevatorIntakeAssembly(Elevator elevator, Intake intake, boolean verifyIntakeAcutation) {
+     super(elevator, intake, ElevatorTarget.STOW, ActuatorMotorState.RETRACTING, verifyIntakeAcutation);
   }
 }

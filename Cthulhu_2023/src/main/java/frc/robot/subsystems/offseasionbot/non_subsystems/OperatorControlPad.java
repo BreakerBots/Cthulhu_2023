@@ -17,7 +17,7 @@ import static frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotCon
 import java.util.Optional;
 
 /** Add your docs here. */
-public class OperatorController {
+public class OperatorControlPad {
     private final GenericHID hid;
     private final JoystickButton leftNodeGroupButton, centerNodeGroupButton, rightNodeGroupButton;
     private final JoystickButton leftHighNodeButton, centerHighNodeButton, rightHighNodeButton;
@@ -27,16 +27,30 @@ public class OperatorController {
     private final Trigger highNodeSelectedTrigger, midNodeSelectedTrigger, lowNodeSelectedTrigger;
     private final Trigger nodeHeightSelectedTrigger, nodeCoulmnSelectedTrigger;
     private final Trigger scoringCommandRequestTrigger, nodeGroupSelectedTrigger, inGroupNodeSelectedTrigger;
-    public OperatorController(int port) {
+    public OperatorControlPad(int port) {
         hid = new GenericHID(OPERATOR_PAD_PORT);
-        leftNodeGroupButton = new JoystickButton(hid, );
-        centerNodeGroupButton = new JoystickButton(hid, );
-        rightNodeGroupButton = new JoystickButton(hid, );
+        leftNodeGroupButton = new JoystickButton(hid, 0);
+        centerNodeGroupButton = new JoystickButton(hid, 0);
+        rightNodeGroupButton = new JoystickButton(hid, 0);
+
+        leftHighNodeButton = new JoystickButton(hid, port);
+        leftMidNodeButton = new JoystickButton(hid, port);
+        leftLowNodeButton = new JoystickButton(hid, port);
+
+        centerHighNodeButton = new JoystickButton(hid, port);
+        centerMidNodeButton = new JoystickButton(hid, port);
+        centerLowNodeButton = new JoystickButton(hid, port);
+
+        rightHighNodeButton = new JoystickButton(hid, port);
+        rightMidNodeButton = new JoystickButton(hid, port);
+        rightLowNodeButton = new JoystickButton(hid, port);
+
+
       
         leftNodeSelectedTrigger = leftHighNodeButton.or(leftMidNodeButton).or(leftLowNodeButton);
         centerNodeSelectedTrigger = centerHighNodeButton.or(centerMidNodeButton).or(centerLowNodeButton);
         rightNodeSelectedTrigger = rightHighNodeButton.or(rightMidNodeButton).or(rightLowNodeButton);
-        nodeCoulmnSelectedTrigger = leftNodeSelectedTrigger.or(centerNodeSelectedTrigger).or(rightNodeSelectedTrigger)
+        nodeCoulmnSelectedTrigger = leftNodeSelectedTrigger.or(centerNodeSelectedTrigger).or(rightNodeSelectedTrigger);
 
         highNodeSelectedTrigger = leftHighNodeButton.or(centerHighNodeButton).or(rightHighNodeButton);
         midNodeSelectedTrigger = leftMidNodeButton.or(centerMidNodeButton).or(rightMidNodeButton);

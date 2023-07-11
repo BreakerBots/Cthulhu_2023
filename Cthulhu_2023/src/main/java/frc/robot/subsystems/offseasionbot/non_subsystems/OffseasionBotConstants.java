@@ -9,10 +9,13 @@ import com.ctre.phoenix6.sim.ChassisReference;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveOdometryConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase.BreakerSwerveDriveBaseConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
@@ -121,6 +124,18 @@ public class OffseasionBotConstants {
         MODULE_WHEEL_SPEED_DEADBAND, MAX_ATTAINABLE_MODULE_WHEEL_SPEED, 
         X_PID, Y_PID, THETA_PID)
         .setSlowModeMultipliers(SLOW_MODE_LINEAR_MULTIPLIER, SLOW_MODE_TURN_MULTIPLIER);
+
+        //heading snap constants
+        public static final double HEADING_SNAP_POSITIONAL_TOLERENCE_RAD = Math.toRadians(2.5);
+        public static final double HEADING_SNAP_VELOCITY_TOLERENCE_RAD_PER_SEC = Math.toRadians(1.5);
+        public static final double HEADING_SNAP_TIMEOUT_SEC = 5.0;
+
+        //
+        public static final PIDController BHDC_LINEAR_PID = new PIDController(Math.hypot(X_PID_KP, Y_PID_KP), Math.hypot(X_PID_KI, Y_PID_KI), Math.hypot(X_PID_KD, Y_PID_KD));
+        public static final double BDHC_MAX_ANGULAR_ACCEL = 3.0;
+        public static final ProfiledPIDController BHDC_THETA_PID = new ProfiledPIDController(THETA_PID_KP, THETA_PID_KI, THETA_PID_KD, new Constraints(MAX_ANGULAR_VEL, BDHC_MAX_ANGULAR_ACCEL));
+        public static final BreakerHolonomicDriveController BREAKER_HOLONOMIC_DRIVE_CONTROLLER = new BreakerHolonomicDriveController(BHDC_LINEAR_PID, BHDC_THETA_PID);
+
     }
 
     public static final class ElevatorConstants {
@@ -189,6 +204,8 @@ public class OffseasionBotConstants {
         public static final double EJECT_COMMAND_WAIT_FOR_EXTEND_TIMEOUT = 0;
         public static final double EJECT_COMMAND_CUTOFF_TRALING_DELAY = 0;
         public static final double EJECT_COMMAND_CUTOFF_TIMEOUT = 0;
+
+        public static final double ACTUATOR_SET_STATE_COMMAND_TIMEOUT_SEC = 5.0;
     }
 
     public static class FieldConstants {
@@ -224,7 +241,7 @@ public class OffseasionBotConstants {
         public static final double[] ENCODER_ODOMETRY_STANDARD_DEVATIONS = new double[] {ENCODER_ODOMETRY_STANDARD_DEVATION_X_METERS, ENCODER_ODOMETRY_STANDARD_DEVATION_Y_METERS, ENCODER_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS};
         public static final double VISION_ODOMETRY_STANDARD_DEVATION_X_METERS = 0.03;
         public static final double VISION_ODOMETRY_STANDARD_DEVATION_Y_METERS = 0.03;
-        public static final double VISION_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS = Math.toRadians(5);
+        public static final double VISION_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS = Math.toRadians(5.0);
         public static final double[] VISION_ODOMETRY_STANDARD_DEVATIONS = new double[] {VISION_ODOMETRY_STANDARD_DEVATION_X_METERS, VISION_ODOMETRY_STANDARD_DEVATION_Y_METERS, VISION_ODOMETRY_STANDARD_DEVATION_HEADING_RADIANS};
     }
 
@@ -235,7 +252,8 @@ public class OffseasionBotConstants {
     }
 
     public static final class OperatorConstants {
+        
         public static final int OPERATOR_PAD_PORT = 1;
-        public static final int 
+
     }
 }
