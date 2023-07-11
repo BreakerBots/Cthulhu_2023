@@ -23,6 +23,11 @@ public class OperatorControlPad {
     private final JoystickButton leftHighNodeButton, centerHighNodeButton, rightHighNodeButton;
     private final JoystickButton leftMidNodeButton, centerMidNodeButton, rightMidNodeButton;
     private final JoystickButton leftLowNodeButton, centerLowNodeButton, rightLowNodeButton;
+    private final JoystickButton intakeGroundCubeButton, intakeGroundConeButton;
+    private final JoystickButton intakeSingleSubstationCubeButton, intakeSingleSubstationConeButton;
+    private final JoystickButton intakeDoubleSubstationCubeButton, intakeDoubleSubstationConeButton;
+    private final JoystickButton elevatorStowButton;
+    private final JoystickButton ejectGamePieceButton, rollerExtakeButton;
     private final Trigger leftNodeSelectedTrigger, centerNodeSelectedTrigger, rightNodeSelectedTrigger;
     private final Trigger highNodeSelectedTrigger, midNodeSelectedTrigger, lowNodeSelectedTrigger;
     private final Trigger nodeHeightSelectedTrigger, nodeCoulmnSelectedTrigger;
@@ -113,6 +118,42 @@ public class OperatorControlPad {
 
     public Trigger getScoringCommandRequestTrigger() {
         return scoringCommandRequestTrigger;
+    }
+
+    public JoystickButton getElevatorStowButton() {
+        return elevatorStowButton;
+    }
+
+    public JoystickButton getIntakeGroundConeButton() {
+        return intakeGroundConeButton;
+    }
+
+    public JoystickButton getIntakeGroundCubeButton() {
+        return intakeGroundCubeButton;
+    }
+
+    public JoystickButton getIntakeSingleSubstationCubeButton() {
+        return intakeSingleSubstationCubeButton;
+    }
+
+    public JoystickButton getIntakeSingleSubstationConeButton() {
+        return intakeSingleSubstationConeButton;
+    }
+
+    public JoystickButton getIntakeDoubleSubstationConeButton() {
+        return intakeDoubleSubstationConeButton;
+    }
+
+    public JoystickButton getIntakeDoubleSubstationCubeButton() {
+        return intakeDoubleSubstationCubeButton;
+    }
+
+    public JoystickButton getEjectGamePieceButton() {
+        return ejectGamePieceButton;
+    }
+
+    public JoystickButton getRollerExtakeButton() {
+        return rollerExtakeButton;
     }
 
     public Optional<Node> getSelectedScoringNode() {

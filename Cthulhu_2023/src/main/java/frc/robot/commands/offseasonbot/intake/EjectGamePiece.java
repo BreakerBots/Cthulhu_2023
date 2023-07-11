@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
+import frc.robot.commands.offseasonbot.intake.SetIntakeRollerState.IntakeRollerStateRequest;
 import frc.robot.subsystems.offseasionbot.Intake;
+import frc.robot.subsystems.offseasionbot.Intake.ActuatorMotorState;
 import frc.robot.subsystems.offseasionbot.Intake.ActuatorState;
 import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.IntakeConstants;
 
@@ -21,11 +23,10 @@ public class EjectGamePiece extends SequentialCommandGroup {
   public EjectGamePiece(Intake intake) {
     addCommands(
       new InstantCommand(() -> BreakerLog.logSuperstructureEvent("GAME PIECE EJECTION PROCEDURE STARTED")),
-      new InstantCommand(intake::extend, intake),
-      new ParallelRaceGroup(new WaitCommand(IntakeConstants.EJECT_COMMAND_WAIT_FOR_EXTEND_TIMEOUT), new WaitUntilCommand(() -> intake.getActuatorState() == ActuatorState.EXTENDED)),
-      new InstantCommand(intake::extake, intake),
+      new SetIntakeActuatorMotorState(intake, ActuatorMotorState.EXTENDING, true),
+      new SetIntakeRollerState(intake, IntakeRollerStateRequest.EXTAKE),
       new ParallelRaceGroup(new SequentialCommandGroup(new WaitUntilCommand(() -> !intake.hasGamePiece()), new WaitCommand(IntakeConstants.EJECT_COMMAND_CUTOFF_TRALING_DELAY)), new WaitCommand(IntakeConstants.EJECT_COMMAND_CUTOFF_TIMEOUT)),
-      new InstantCommand(intake::stopRoller, intake),
+      new SetIntakeRollerState(intake, IntakeRollerStateRequest.STOP),
       new InstantCommand(() -> {if (intake.hasGamePiece()) { BreakerLog.logSuperstructureEvent("GAME PIECE EJECTION PROCEDURE FAILED, GAME PIECE NOT PROPERLY EJECTED, COMMMAND TIMED OUT"); } else { BreakerLog.logSuperstructureEvent("GAME PIECE EJECTION PROCEDURE SUCESSFULL, GAME PIECE EJECTED");}})
     );
   }

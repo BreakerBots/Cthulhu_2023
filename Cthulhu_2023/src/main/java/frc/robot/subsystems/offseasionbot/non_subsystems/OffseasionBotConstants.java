@@ -201,11 +201,10 @@ public class OffseasionBotConstants {
         public static final double INTAKE_GRIP_DUTY_CYCLE = 0;
         public static final double EXTAKE_DUTY_CYCLE = 0;
     
-        public static final double EJECT_COMMAND_WAIT_FOR_EXTEND_TIMEOUT = 0;
         public static final double EJECT_COMMAND_CUTOFF_TRALING_DELAY = 0;
         public static final double EJECT_COMMAND_CUTOFF_TIMEOUT = 0;
 
-        public static final double ACTUATOR_SET_STATE_COMMAND_TIMEOUT_SEC = 5.0;
+        public static final double ACTUATOR_SET_STATE_COMMAND_TIMEOUT_SEC = 3.0;
     }
 
     public static class FieldConstants {

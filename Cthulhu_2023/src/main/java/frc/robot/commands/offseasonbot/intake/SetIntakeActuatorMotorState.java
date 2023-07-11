@@ -6,6 +6,7 @@ package frc.robot.commands.offseasonbot.intake;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.subsystems.offseasionbot.Intake;
 import frc.robot.subsystems.offseasionbot.Intake.ActuatorMotorState;
 import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.IntakeConstants;
@@ -46,7 +47,7 @@ public class SetIntakeActuatorMotorState extends CommandBase {
     timer.stop();
     timer.reset();
     if (interrupted) {
-
+      BreakerLog.logEvent("setIntakeActuatorMotorState command instance FAILED, command timed out or was cancled");
     }
   }
 

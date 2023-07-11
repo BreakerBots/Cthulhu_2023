@@ -8,13 +8,17 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.BreakerLib.util.logging.BreakerLog;
 import frc.robot.commands.offseasonbot.drive.MoveToPose;
+import frc.robot.commands.offseasonbot.elevator.ElevatorMoveToHight;
 import frc.robot.subsystems.offseasionbot.Elevator;
 import frc.robot.subsystems.offseasionbot.OffseasionBotDrive;
+import frc.robot.subsystems.offseasionbot.Elevator.ElevatorTarget;
 import frc.robot.subsystems.offseasionbot.non_subsystems.Node;
 import frc.robot.subsystems.offseasionbot.non_subsystems.OperatorControlPad;
+import frc.robot.subsystems.offseasionbot.non_subsystems.Node.NodeType;
 
 public class TeleopScoreGamePiece extends CommandBase {
   /** Creates a new ScoreGamePiece. */
@@ -36,15 +40,29 @@ public class TeleopScoreGamePiece extends CommandBase {
       selectedNode = selectedNodeOptional.get();
       BreakerLog.logEvent(String.format("TeleopScoreGamePiece instance selected node indentified, scoreing sequince starting (node: %s)", selectedNode.toString()));
 
-      selectedNode.ge
+      
 
-
-      scoreingSequince = new SequentialCommandGroup(new MoveToPose(selectedNode.getAllignmentPose(), drivetrain), , );
+      new ParallelCommandGroup(new MoveToPose(selectedNode.getAllignmentPose(), drivetrain), new ElevatorMoveToHight(elevator, null))
+      scoreingSequince = new SequentialCommandGroup(, , );
     } else {
       this.cancel();
       BreakerLog.logEvent("TeleopScoreGamePiece instance FAILED, no node selected");
     }
   
+  }
+
+  private ElevatorTarget getElevatorTarget() {
+    switch (selectedNode.getHeight()) {
+      case HIGH:
+        break;
+      case MID:
+        break;
+      case LOW:
+      default:
+
+        break;
+      
+    }
   }
   // Called once the command ends or is interrupted.
   @Override
