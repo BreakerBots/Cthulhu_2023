@@ -5,6 +5,9 @@
 package frc.robot.subsystems.offseasionbot.non_subsystems;
 
 
+import java.util.HashMap;
+
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.controls.StaticBrake;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,6 +21,7 @@ import frc.robot.commands.offseasonbot.IntakeFromGround;
 import frc.robot.commands.offseasonbot.IntakeFromSingleSubstation;
 import frc.robot.commands.offseasonbot.StowElevatorIntakeAssembly;
 import frc.robot.commands.offseasonbot.TeleopScoreGamePiece;
+import frc.robot.commands.offseasonbot.drive.TeleopBalanceChargingStation;
 import frc.robot.commands.offseasonbot.drive.TeleopSnapDriveToCardinalHeading;
 import frc.robot.commands.offseasonbot.drive.TeleopSnapDriveToCardinalHeading.SwerveCardinal;
 import frc.robot.commands.offseasonbot.intake.EjectGamePiece;
@@ -27,6 +31,7 @@ import frc.robot.subsystems.offseasionbot.Elevator;
 import frc.robot.subsystems.offseasionbot.Intake;
 import frc.robot.subsystems.offseasionbot.OffseasionBotDrive;
 import frc.robot.subsystems.offseasionbot.Vision;
+import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.AutonomousConstants;
 import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.MiscConstants;
 import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.OperatorConstants;
 
@@ -53,7 +58,18 @@ public class OffseasionBotRobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public OffseasionBotRobotContainer() {
     drivetrainSys.setDefaultCommand(teleopDriveController);
+    
     configureBindings();
+    configureAutonomousActionMap();
+    configureIMU();
+  }
+
+  public void configureIMU() {
+    MountPoseConfigs mountPoseConfigs = new MountPoseConfigs();
+    mountPoseConfigs.MountPosePitch = MiscConstants.IMU_MOUNT_POSE_PITCH;
+    mountPoseConfigs.MountPoseYaw = MiscConstants.IMU_MOUNT_POSE_YAW;
+    mountPoseConfigs.MountPoseRoll = MiscConstants.IMU_MOUNT_POSE_ROLL;
+    imuSys.getConfigurator().apply(mountPoseConfigs);
   }
 
   /**
@@ -73,7 +89,7 @@ public class OffseasionBotRobotContainer {
     driverControllerSys.getDPad().getDown().onTrue(new TeleopSnapDriveToCardinalHeading(SwerveCardinal.BACK, drivetrainSys, teleopDriveController));
 
     //scoreing controls
-    operatorControlPadSys.getScoringCommandRequestTrigger().onTrue(new TeleopScoreGamePiece(operatorControlPadSys, drivetrainSys, elevatorSys));
+    operatorControlPadSys.getScoringCommandRequestTrigger().onTrue(new TeleopScoreGamePiece(operatorControlPadSys, driverControllerSys ,drivetrainSys, elevatorSys, intakeSys));
 
     //stow elevator (driver controls: LB / RB = stow) (operator controls: 20 = stow)
     driverControllerSys.getLeftBumper()
@@ -83,15 +99,15 @@ public class OffseasionBotRobotContainer {
 
     //intake from ground, (driver controls: X = cube, Y = cone) (operator controls: 14 = cube, 15 = cone)
     driverControllerSys.getButtonY().or(operatorControlPadSys.getIntakeGroundConeButton()).onTrue(new IntakeFromGround(elevatorSys, intakeSys, true, GamePieceType2.CONE));
-    driverControllerSys.getButtonX().or(operatorControlPadSys.getIntakeGroundCubeButton()).onTrue(new IntakeFromGround(elevatorSys, intakeSys, true, GamePieceType2.CUBE));
+    driverControllerSys.getButtonX().or(operatorControlPadSys.getIntakeGroundCubeButton()).toggleOnTrue(teleopDriveController).onTrue(new IntakeFromGround(elevatorSys, intakeSys, true, GamePieceType2.CUBE));
 
     //intake from single sub, (operator controls: 9 = cube, 10 = cone)
-    operatorControlPadSys.getIntakeSingleSubstationConeButton().onTrue(new IntakeFromSingleSubstation(elevatorSys, intakeSys, false, GamePieceType2.CONE));
-    operatorControlPadSys.getIntakeSingleSubstationCubeButton().onTrue(new IntakeFromSingleSubstation(elevatorSys, intakeSys, false, GamePieceType2.CUBE));
+    operatorControlPadSys.getIntakeSingleSubstationConeButton().onTrue(new IntakeFromSingleSubstation(elevatorSys, intakeSys, true, GamePieceType2.CONE));
+    operatorControlPadSys.getIntakeSingleSubstationCubeButton().onTrue(new IntakeFromSingleSubstation(elevatorSys, intakeSys, true, GamePieceType2.CUBE));
 
     //intake from double sub, (operator controls: 4 = cube, 5 = cone)
-    operatorControlPadSys.getIntakeDoubleSubstationConeButton().onTrue(new IntakeFromDoubleSubstation(elevatorSys, intakeSys, false, GamePieceType2.CONE));
-    operatorControlPadSys.getIntakeDoubleSubstationCubeButton().onTrue(new IntakeFromDoubleSubstation(elevatorSys, intakeSys, false, GamePieceType2.CUBE));
+    operatorControlPadSys.getIntakeDoubleSubstationConeButton().onTrue(new IntakeFromDoubleSubstation(elevatorSys, intakeSys, true, GamePieceType2.CONE));
+    operatorControlPadSys.getIntakeDoubleSubstationCubeButton().onTrue(new IntakeFromDoubleSubstation(elevatorSys, intakeSys, true, GamePieceType2.CUBE));
 
     //intake roller controls, (driver controls: A = intake, B = stop) (operator controls: 19 = extake)
     driverControllerSys.getButtonA().onTrue(new SetIntakeRollerState(intakeSys, IntakeRollerStateRequest.INTAKE));
@@ -101,6 +117,14 @@ public class OffseasionBotRobotContainer {
     //game piece eject, (operator controls: fire button)
     operatorControlPadSys.getEjectGamePieceButton().onTrue(new EjectGamePiece(intakeSys));
 
+    //teleop autobalance
+    driverControllerSys.getStartButton().toggleOnTrue(new TeleopBalanceChargingStation(drivetrainSys, imuSys, teleopDriveController, driverControllerSys, false, false));
+
+  }
+
+  private void configureAutonomousActionMap() {
+    AutonomousConstants.AUTONOMOUS_ACTION_MAP.put("EJECT_GAME_PIECE", new EjectGamePiece(intakeSys));
+    
   }
 
   /**

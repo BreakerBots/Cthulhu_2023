@@ -7,7 +7,9 @@ import com.ctre.phoenix.sensors.Pigeon2_Faults;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.Timestamp.TimestampSource;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.Pigeon2Configurator;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
@@ -39,6 +41,11 @@ public class BreakerPigeon2 extends BreakerGenericIMU implements BreakerGenericM
     pigeon = new Pigeon2(deviceID, busName);
     deviceName = "Pigeon2_IMU (" + deviceID + ") ";
     periodicIO = this.new BreakerPigeon2PeriodicIO();
+
+  }
+
+  public Pigeon2Configurator getConfigurator() {
+    return pigeon.getConfigurator();
   }
 
   @Override

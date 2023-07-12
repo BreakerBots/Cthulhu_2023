@@ -340,4 +340,16 @@ public class BreakerMath {
         
     }
 
+    public static boolean epsilonEqualsPose2d(Pose2d pose0, Pose2d pose1, Pose2d maxDeviation) {
+        return epsilonEquals(pose0.getX(), pose1.getX(), maxDeviation.getX()) && 
+                epsilonEquals(pose0.getY(), pose1.getY(), maxDeviation.getY()) && 
+                epsilonEquals(pose0.getRotation().getRadians(), pose1.getRotation().getRadians(), maxDeviation.getRotation().getRadians());
+    }
+
+    public static boolean epsilonEqualsChassisSpeeds(ChassisSpeeds chassisSpeeds0, ChassisSpeeds chassisSpeeds1, ChassisSpeeds maxDeviation) {
+        return epsilonEquals(chassisSpeeds0.vxMetersPerSecond, chassisSpeeds1.vxMetersPerSecond, maxDeviation.vxMetersPerSecond) && 
+                epsilonEquals(chassisSpeeds0.vyMetersPerSecond, chassisSpeeds1.vyMetersPerSecond, maxDeviation.vyMetersPerSecond) && 
+                epsilonEquals(chassisSpeeds0.omegaRadiansPerSecond, chassisSpeeds1.omegaRadiansPerSecond, maxDeviation.omegaRadiansPerSecond);
+    }
+
 }

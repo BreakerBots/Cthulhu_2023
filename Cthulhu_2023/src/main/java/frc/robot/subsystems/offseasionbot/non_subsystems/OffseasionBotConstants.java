@@ -4,20 +4,30 @@
 
 package frc.robot.subsystems.offseasionbot.non_subsystems;
 
+import java.util.HashMap;
+
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.sim.ChassisReference;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.BreakerGenericDrivetrain.SlowModeValue;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveOdometryConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDrive.BreakerSwerveMovementPreferences.SwerveMovementRefrenceFrame;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase.BreakerSwerveDriveBaseConfig;
+import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.BreakerSwerveDriveBase.BreakerSwerveDriveBaseMovementPreferences;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModule.BreakerSwerveMotorPIDConfig;
 import frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.BreakerSwerveModuleBuilder.BreakerSwerveModuleConfig;
 import frc.robot.BreakerLib.util.BreakerArbitraryFeedforwardProvider;
@@ -130,11 +140,39 @@ public class OffseasionBotConstants {
         public static final double HEADING_SNAP_VELOCITY_TOLERENCE_RAD_PER_SEC = Math.toRadians(1.5);
         public static final double HEADING_SNAP_TIMEOUT_SEC = 5.0;
 
-        //
+        //Auto Balance constants
+        public static final double BALANCE_ROLL_PID_KP = 0.04;
+        public static final double BALANCE_ROLL_PID_KI = 0.0;
+        public static final double BALANCE_ROLL_PID_KD = 0.0001;
+        public static final PIDController BALANCE_ROLL_PID = new PIDController(BALANCE_ROLL_PID_KP, BALANCE_ROLL_PID_KI, BALANCE_ROLL_PID_KD);
+        public static final double BALANCE_ROLL_POSITION_TOLERENCE = 2.0;
+        public static final double BALANCE_ROLL_VELOSITY_TOLERENCE = 1.0;
+
+        public static final double BALANCE_PITCH_PID_KP = 0.04;
+        public static final double BALANCE_PITCH_PID_KI = 0.0;
+        public static final double BALANCE_PITCH_PID_KD = 0.0001;
+        public static final PIDController BALANCE_PITCH_PID = new PIDController(BALANCE_PITCH_PID_KP, BALANCE_PITCH_PID_KI, BALANCE_PITCH_PID_KD);
+        public static final double BALANCE_PITCH_POSITION_TOLERENCE = 2.0;
+        public static final double BALANCE_PITCH_VELOSITY_TOLERENCE = 1.0;
+
+        public static final BreakerSwerveDriveBaseMovementPreferences AUTO_BALANCE_MOVEMENT_PREFERENCES = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITHOUT_OFFSET, SlowModeValue.DISABLED, true);
+        public static final double AUTO_BALANCE_TIMEOUT_SEC = 15;
+
+        //MoveToPose command constants
         public static final PIDController BHDC_LINEAR_PID = new PIDController(Math.hypot(X_PID_KP, Y_PID_KP), Math.hypot(X_PID_KI, Y_PID_KI), Math.hypot(X_PID_KD, Y_PID_KD));
         public static final double BDHC_MAX_ANGULAR_ACCEL = 3.0;
         public static final ProfiledPIDController BHDC_THETA_PID = new ProfiledPIDController(THETA_PID_KP, THETA_PID_KI, THETA_PID_KD, new Constraints(MAX_ANGULAR_VEL, BDHC_MAX_ANGULAR_ACCEL));
         public static final BreakerHolonomicDriveController BREAKER_HOLONOMIC_DRIVE_CONTROLLER = new BreakerHolonomicDriveController(BHDC_LINEAR_PID, BHDC_THETA_PID);
+        public static final double BHDC_POSE_TOL_X = 0.03;
+        public static final double BHDC_POSE_TOL_Y = 0.03;
+        public static final Rotation2d BHDC_POSE_TOL_T = Rotation2d.fromDegrees(3.0);
+        public static final Pose2d BHDC_POSE_TOLERENCE = new Pose2d(BHDC_POSE_TOL_X, BHDC_POSE_TOL_Y, BHDC_POSE_TOL_T);
+        public static final double BHDC_VEL_TOL_X = 0.005;
+        public static final double BHDC_VEL_TOL_Y = 0.005;
+        public static final double BHDC_VEL_TOL_T = Math.toRadians(5.0);
+        public static final ChassisSpeeds BHDC_VELOCITY_TOLERENCE = new ChassisSpeeds(BHDC_VEL_TOL_X, BHDC_VEL_TOL_Y, BHDC_VEL_TOL_T);
+        public static final double MOVE_TO_POSE_TIMEOUT_SEC = 25.0;
+        public static final BreakerSwerveDriveBaseMovementPreferences MOVE_TO_POSE_MOVEMENT_PREFERENCES = new BreakerSwerveDriveBaseMovementPreferences(SwerveMovementRefrenceFrame.FIELD_RELATIVE_WITHOUT_OFFSET, SlowModeValue.DISABLED, false);
 
     }
 
@@ -229,6 +267,9 @@ public class OffseasionBotConstants {
 
     public static final class MiscConstants {
         public static final int IMU_ID = 5;
+        public static final double IMU_MOUNT_POSE_PITCH = 0.0;
+        public static final double IMU_MOUNT_POSE_YAW = 0.0;
+        public static final double IMU_MOUNT_POSE_ROLL = 0.0;
         public static final String CANIVORE_1 = "CANivore_1";
         // public static final double AUTO_BALANCE_MIN
     }
@@ -248,11 +289,16 @@ public class OffseasionBotConstants {
         public static final int LEFT_NODE_GROUP_CENTRAL_COULMN_ORDINAL = 1;
         public static final int CENTER_NODE_GROUP_CENTRAL_COULMN_ORDINAL = 4;
         public static final int RIGHT_NODE_GROUP_CENTRAL_COULMN_ORDINAL = 7;
+        public static final double TELEOP_SCOREING_MOVE_TO_POSE_MAX_LINEAR_VEL = 3.0;
     }
 
     public static final class OperatorConstants {
         
         public static final int OPERATOR_PAD_PORT = 1;
 
+    }
+
+    public static final class AutonomousConstants {
+        public static final HashMap<String, Command> AUTONOMOUS_ACTION_MAP = new HashMap<>();
     }
 }

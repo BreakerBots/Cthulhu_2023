@@ -21,7 +21,7 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
 
   private BreakerGenericGamepad controller;
   private BreakerSwerveDrive baseDrivetrain;
-  private boolean usesSuppliers, usesCurves, usesRateLimiters, turnOverride, linearOverride;
+  private boolean usesSuppliers, usesCurves, usesRateLimiters, turnOverride, forwardOverride, horizontalOverride;
   private BreakerGenericMathFunction linearSpeedCurve, turnSpeedCurve;
   private SlewRateLimiter forwardRateLimiter, horizontalRateLimiter, turnRateLimiter;
   private DoubleSupplier forwardSpeedPercentSupplier, horizontalSpeedPercentSupplier, turnSpeedPercentSupplier,
@@ -39,6 +39,9 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     usesSuppliers = false;
     usesCurves = false;
     usesRateLimiters = false;
+    forwardOverride = false;
+    horizontalOverride = false;
+    turnOverride = false;
     addRequirements(baseDrivetrain);
   }
 
@@ -60,6 +63,9 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     usesSuppliers = true;
     usesCurves = false;
     usesRateLimiters = false;
+    forwardOverride = false;
+    horizontalOverride = false;
+    turnOverride = false;
     addRequirements(baseDrivetrain);
   }
 
@@ -95,9 +101,20 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
    * @param horizontalSupplier Horizontal speed percent supplier.
    */
   public void overrideLinearInput(DoubleSupplier forwardSupplier, DoubleSupplier horizontalSupplier) {
-    linearOverride = true;
+    forwardOverride = true;
+    horizontalOverride = true;
     overrideHorizontalSupplier = horizontalSupplier;
     overrideForwardSupplier = forwardSupplier;
+  }
+
+  public void overrideForwardInput(DoubleSupplier forwardSupplier) {
+    forwardOverride = true;
+    overrideForwardSupplier = forwardSupplier;
+  }
+
+  public void overrideHorizontalInput(DoubleSupplier horizontalSupplier) {
+    horizontalOverride = true;
+    overrideHorizontalSupplier = horizontalSupplier;
   }
 
   /**
@@ -113,9 +130,19 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     overrideLinearInput(horizontalSupplier, forwardSupplier);
   }
 
+  public void endForwardOverride() {
+    forwardOverride = false;
+  }
+
+  public void endHorizonalOverride() {
+    horizontalOverride = false;
+  }
+
+
   /** Disables override of linear drive input with percent suppliers. */
   public void endLinearOverride() {
-    linearOverride = false;
+    endForwardOverride();
+    endHorizonalOverride();
   }
 
   /** Disables override of rotation input with a percent supplier. */
@@ -131,9 +158,12 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
     endTurnOverride();
   }
 
-  /** @return If linear input is being overwritten. */
-  public boolean isLinearInputOverridden() {
-    return linearOverride;
+  public boolean isForwardInputOverridden() {
+      return forwardOverride;
+  }
+
+  public boolean isHorizontalInputOverridden() {
+      return horizontalOverride;
   }
 
   /** @return If turn input is being overwritten. */
@@ -179,8 +209,11 @@ public class BreakerTeleopSwerveDriveController extends CommandBase {
       turn = turnRateLimiter.calculate(turn);
     }
 
-    if (linearOverride) {
+    if (forwardOverride) {
       forward = overrideForwardSupplier.getAsDouble();
+    }
+
+    if (horizontalOverride) {
       horizontal = overrideHorizontalSupplier.getAsDouble();
     }
 

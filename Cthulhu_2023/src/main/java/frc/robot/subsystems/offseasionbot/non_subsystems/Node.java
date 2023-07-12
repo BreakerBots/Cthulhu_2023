@@ -37,7 +37,7 @@ public enum Node {
     }
 
     public Pose2d getAllignmentPose() {
-        return new Pose2d(coulmn.getBlueBaseAllignmentPose().getX() + height.getAllignmentOffset(), coulmn.getBlueBaseAllignmentPose().getY(), coulmn.getBlueBaseAllignmentPose().getRotation());
+        return new Pose2d(coulmn.getBlueBaseAllignmentPose().getX() + height.getAllignmentOffset() + type.getAllignmentOffset(), coulmn.getBlueBaseAllignmentPose().getY(), coulmn.getBlueBaseAllignmentPose().getRotation());
     }
  
     public static Optional<Node> fromCoulmnAndHeight(NodeCoulmn tgtCoulmn, NodeHeight tgtHeight) {
@@ -93,9 +93,17 @@ public enum Node {
     }
 
     public enum NodeType {
-        HYBRID,
-        CONE,
-        CUBE
+        HYBRID(0.0),
+        CONE(0.0),
+        CUBE(0.0);
+        private double allignmentOffset;
+        private NodeType(double allignmentOffset) {
+            this.allignmentOffset = allignmentOffset;
+        }
+
+        public double getAllignmentOffset() {
+            return allignmentOffset;
+        }
     }
 
 
