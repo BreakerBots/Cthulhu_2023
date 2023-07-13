@@ -227,26 +227,26 @@ public class OffseasionBotConstants {
         public static final int BEAM_BRAKE_DIO_PORT = 0;
         public static final boolean BEAM_BRAKE_BROKEN_ON_TRUE = true;
     
-        public static final double ACTUATOR_CURRENT_LIMIT = 0;
-        public static final double ACTUATOR_CURRENT_LIMIT_TIME = 0;
-        public static final double ROLLER_CURRENT_LIMIT = 0;
-        public static final double ROLLER_CURRENT_LIMIT_TIME = 0;
+        public static final double ACTUATOR_CURRENT_LIMIT = 25;
+        public static final double ACTUATOR_CURRENT_LIMIT_TIME = 1.5;
+        public static final double ROLLER_CURRENT_LIMIT = 25;
+        public static final double ROLLER_CURRENT_LIMIT_TIME = 1.5;
     
-        public static final double ACTUATOR_EXTEND_DUTY_CYCLE = 0;
-        public static final double ACTUATOR_RETRACT_DUTY_CYCLE = 0;
+        public static final double ACTUATOR_EXTEND_DUTY_CYCLE = 0.45;
+        public static final double ACTUATOR_RETRACT_DUTY_CYCLE = -0.45;
     
-        public static final double INTAKE_DUTY_CYCLE = 0;
-        public static final double INTAKE_GRIP_DUTY_CYCLE = 0;
-        public static final double EXTAKE_DUTY_CYCLE = 0;
+        public static final double INTAKE_DUTY_CYCLE = -0.5;
+        public static final double INTAKE_GRIP_DUTY_CYCLE = -0.2;
+        public static final double EXTAKE_DUTY_CYCLE = 0.75;
     
-        public static final double EJECT_COMMAND_CUTOFF_TRALING_DELAY = 0;
-        public static final double EJECT_COMMAND_CUTOFF_TIMEOUT = 0;
+        public static final double EJECT_COMMAND_CUTOFF_TRALING_DELAY = 1.0;
+        public static final double EJECT_COMMAND_CUTOFF_TIMEOUT = 4.0;
 
         public static final double ACTUATOR_SET_STATE_COMMAND_TIMEOUT_SEC = 3.0;
     }
 
     public static class FieldConstants {
-        public static final double FIELD_LENGTH_X = 0.0;
+        public static final double FIELD_LENGTH_X = 16.4846;
     }
 
     public static class VisionConstants {

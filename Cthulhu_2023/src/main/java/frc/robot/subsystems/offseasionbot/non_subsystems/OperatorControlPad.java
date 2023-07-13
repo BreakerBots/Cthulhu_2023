@@ -27,6 +27,7 @@ public class OperatorControlPad {
     private final JoystickButton intakeSingleSubstationCubeButton, intakeSingleSubstationConeButton;
     private final JoystickButton intakeDoubleSubstationCubeButton, intakeDoubleSubstationConeButton;
     private final JoystickButton elevatorStowButton;
+    private final JoystickButton scrollClick;
     private final JoystickButton ejectGamePieceButton, rollerExtakeButton;
     private final Trigger leftNodeSelectedTrigger, centerNodeSelectedTrigger, rightNodeSelectedTrigger;
     private final Trigger highNodeSelectedTrigger, midNodeSelectedTrigger, lowNodeSelectedTrigger;
@@ -154,6 +155,11 @@ public class OperatorControlPad {
 
     public JoystickButton getRollerExtakeButton() {
         return rollerExtakeButton;
+    }
+
+
+    public JoystickButton getScrollClick() {
+        return scrollClick;
     }
 
     public Optional<Node> getSelectedScoringNode() {

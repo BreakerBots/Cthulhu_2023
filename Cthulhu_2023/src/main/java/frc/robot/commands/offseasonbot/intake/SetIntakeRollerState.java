@@ -25,7 +25,13 @@ public class SetIntakeRollerState extends InstantCommand {
   public void initialize() {
     switch(stateRequest) {
       case EXTAKE:
-      
+        BreakerLog.logEvent("Intake roller start requested (request: EXTAKE)");
+        if (intake.getActuatorMotorState() == ActuatorMotorState.EXTENDING) {
+          intake.extake();
+          BreakerLog.logSuperstructureEvent("INTAKE ROLLER EXTAKE REQUEST SUCESSSFULL, ROLLER STARTED EXTAKEING (request: EXTAKE)");
+        } else {
+          BreakerLog.logEvent("Intake roller extake request FAILED, roller can not enter an extake state while the intake is retracted (request: EXTAKE)");
+        }
         break;
       case INTAKE:
         BreakerLog.logEvent("Intake roller start requested (request: INTAKEING)");

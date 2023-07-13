@@ -44,7 +44,11 @@ public class TeleopScoreGamePiece extends CommandBase {
   private Intake intake;
   private SequentialCommandGroup scoreingSequince;
   public TeleopScoreGamePiece(OperatorControlPad operatorControlPad, BreakerXboxController driverController, OffseasionBotDrive drivetrain, Elevator elevator, Intake intake) {
-    // Use addRequirements() here to declare subsystem dependencies.
+    this.operatorControlPad = operatorControlPad;
+    this.driverController = driverController;
+    this.drivetrain = drivetrain;
+    this.elevator = elevator;
+    this.intake = intake;
   }
 
   // Called when the command is initially scheduled.
@@ -64,12 +68,22 @@ public class TeleopScoreGamePiece extends CommandBase {
           new MoveToPose(selectedNode.getAllignmentPose(), ScoreingConstants.TELEOP_SCOREING_MOVE_TO_POSE_MAX_LINEAR_VEL, drivetrain), 
           new ElevatorMoveToHight(elevator, getElevatorTarget())
         ),
-        new ConditionalCommand(new EjectGamePiece(intake), new InstantCommand(this::cancel), () -> preEjectCheck(elevatorTgt)));
+        new ConditionalCommand(new EjectGamePiece(intake), new InstantCommand(this::cancel), () -> preEjectCheck(elevatorTgt)),
+        new InstantCommand(this::postEjectCheck)
+        );
     } else {
       this.cancel();
       BreakerLog.logEvent("TeleopScoreGamePiece instance FAILED, no node selected");
     }
   
+  }
+
+  @Override
+  public void execute() {
+      if (operatorControlPad.getScrollClick().getAsBoolean()) {
+        BreakerLog.logEvent("TeleopScoreGamePiece instance MANUALY CANCLED, command has ended");
+        this.cancel();
+      }
   }
 
   private boolean preEjectCheck(ElevatorTarget elevatorTarget) {
@@ -81,6 +95,15 @@ public class TeleopScoreGamePiece extends CommandBase {
     }
     return check;
 
+  }
+
+  private void postEjectCheck() {
+    if (intake.hasGamePiece()) {
+      BreakerLog.logEvent("TeleopScoreGamePiece instance FAILED, post eject check failed, game piece not sucessfully ejected");
+      this.cancel();
+    } else {
+      BreakerLog.logEvent("TeleopScoreGamePiece instance SUCESFULL, post eject check passed, game piece sucessfully ejected");
+    }
   }
  
   private ElevatorTarget getElevatorTarget() {
