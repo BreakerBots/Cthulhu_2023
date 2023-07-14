@@ -4,11 +4,15 @@
 
 package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.motors.angle.rev;
 
+import java.util.Objects;
+
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
@@ -38,23 +42,33 @@ public class BreakerNeoSwerveModuleAngleMotor extends BreakerGenericSwerveModule
         
         deviceName = "NEO_Swerve_Angle_Motor_(" + motor.getDeviceId() + ")";
 
+        motor.setInverted(isMotorInverted);
         encoder.config(false, encoderAbsoluteAngleOffsetDegrees);
         azimuthControler = null;
         if (encoder.getBaseEncoderType() == BreakerSwerveNeoSparkDutyCycleEncoder.class) {
-            SparkMaxPIDController spark motor.getPIDController().set
+            SparkMaxPIDController sparkPID = motor.getPIDController();
+            sparkPID.setP(pidConfig.kP);
+            sparkPID.setI(pidConfig.kI);
+            sparkPID.setD(pidConfig.kD);
+            sparkPID.setPositionPIDWrappingEnabled(true);
+            sparkPID.setPositionPIDWrappingMaxInput(0.5);
+            sparkPID.setPositionPIDWrappingMinInput(-0.5);
+            sparkPID.setFeedbackDevice(motor.getEncoder());
+            azimuthControler = new BreakerSwerveAzimuthControler((Rotation2d tgt) -> {sparkPID.setReference(tgt.getRotations(), ControlType.kPosition);} );
+        }
+
+        if (Objects.isNull(azimuthControler)) {
             azimuthControler = new BreakerSwerveAzimuthControler(motor, encoder, pidConfig);
         }
+
         BreakerREVUtil.checkError(motor.enableVoltageCompensation(12.0), "Failed to config " + deviceName + " voltage compensation");
         BreakerREVUtil.checkError(motor.setSmartCurrentLimit(supplyCurrentLimit),  "Failed to config " + deviceName + " smart current limit");
-        motor.setInverted(isMotorInverted);
-        pid = new PIDController(pidConfig.kP, pidConfig.kI, pidConfig.kD);
-        pid.enableContinuousInput(-180, 180);
         targetAngle = new Rotation2d();
     }
 
     @Override
     public void setTargetAngle(Rotation2d targetAngle) {
-        motor.set(pid.calculate(targetAngle.getDegrees(), encoder.getAbsolute()));
+        azimuthControler.setTargetAngle(targetAngle);
         this.targetAngle = targetAngle;
         
     }

@@ -7,6 +7,7 @@ package frc.robot.BreakerLib.subsystem.cores.drivetrain.swerve.modules.encoders;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
@@ -68,7 +69,7 @@ public class BreakerSwerveNeoSparkDutyCycleEncoder extends SubsystemBase impleme
 
     @Override
     public Object getBaseEncoder() {
-        return dutyCycleEncoder;
+        return internalEncoder;
     }
 
     @Override
