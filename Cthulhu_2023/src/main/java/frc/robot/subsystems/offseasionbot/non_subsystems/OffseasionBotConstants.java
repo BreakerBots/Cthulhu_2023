@@ -226,11 +226,12 @@ public class OffseasionBotConstants {
         public static final int ROLLER_ID = 41;
         public static final int BEAM_BRAKE_DIO_PORT = 0;
         public static final boolean BEAM_BRAKE_BROKEN_ON_TRUE = true;
+
+        public static final boolean INVERT_ACTUATOR = false;
+        public static final boolean INVERT_ROLLER= false;
     
-        public static final double ACTUATOR_CURRENT_LIMIT = 25;
-        public static final double ACTUATOR_CURRENT_LIMIT_TIME = 1.5;
-        public static final double ROLLER_CURRENT_LIMIT = 25;
-        public static final double ROLLER_CURRENT_LIMIT_TIME = 1.5;
+        public static final int ACTUATOR_CURRENT_LIMIT = 25;
+        public static final int ROLLER_CURRENT_LIMIT = 25;
     
         public static final double ACTUATOR_EXTEND_DUTY_CYCLE = 0.45;
         public static final double ACTUATOR_RETRACT_DUTY_CYCLE = -0.45;

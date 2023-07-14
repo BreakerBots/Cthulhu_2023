@@ -11,9 +11,42 @@ import edu.wpi.first.math.geometry.Pose2d;
 
  /** Add your docs here. */
 public enum Node {
+    //-------------------- LEFT GROUP --------------------
     C0_L(NodeCoulmn.C0, NodeHeight.LOW, NodeType.HYBRID),
     C0_M(NodeCoulmn.C0, NodeHeight.MID, NodeType.CONE),
-    C0_H(NodeCoulmn.C0, NodeHeight.HIGH, NodeType.CONE);
+    C0_H(NodeCoulmn.C0, NodeHeight.HIGH, NodeType.CONE),
+
+    C1_L(NodeCoulmn.C1, NodeHeight.LOW, NodeType.HYBRID),
+    C1_M(NodeCoulmn.C1, NodeHeight.MID, NodeType.CUBE),
+    C1_H(NodeCoulmn.C1, NodeHeight.HIGH, NodeType.CUBE),
+
+    C2_L(NodeCoulmn.C2, NodeHeight.LOW, NodeType.HYBRID),
+    C2_M(NodeCoulmn.C2, NodeHeight.MID, NodeType.CONE),
+    C2_H(NodeCoulmn.C2, NodeHeight.HIGH, NodeType.CONE),
+    //-------------------- CENTER GROUP --------------------
+    C3_L(NodeCoulmn.C3, NodeHeight.LOW, NodeType.HYBRID),
+    C3_M(NodeCoulmn.C3, NodeHeight.MID, NodeType.CONE),
+    C3_H(NodeCoulmn.C3, NodeHeight.HIGH, NodeType.CONE),
+
+    C4_L(NodeCoulmn.C4, NodeHeight.LOW, NodeType.HYBRID),
+    C4_M(NodeCoulmn.C4, NodeHeight.MID, NodeType.CUBE),
+    C4_H(NodeCoulmn.C4, NodeHeight.HIGH, NodeType.CUBE),
+
+    C5_L(NodeCoulmn.C5, NodeHeight.LOW, NodeType.HYBRID),
+    C5_M(NodeCoulmn.C5, NodeHeight.MID, NodeType.CONE),
+    C5_H(NodeCoulmn.C5, NodeHeight.HIGH, NodeType.CONE),
+    //-------------------- RIGHT GROUP --------------------
+    C6_L(NodeCoulmn.C6, NodeHeight.LOW, NodeType.HYBRID),
+    C6_M(NodeCoulmn.C6, NodeHeight.MID, NodeType.CONE),
+    C6_H(NodeCoulmn.C6, NodeHeight.HIGH, NodeType.CONE),
+
+    C7_L(NodeCoulmn.C7, NodeHeight.LOW, NodeType.HYBRID),
+    C7_M(NodeCoulmn.C7, NodeHeight.MID, NodeType.CUBE),
+    C7_H(NodeCoulmn.C7, NodeHeight.HIGH, NodeType.CUBE),
+
+    C8_L(NodeCoulmn.C8, NodeHeight.LOW, NodeType.HYBRID),
+    C8_M(NodeCoulmn.C8, NodeHeight.MID, NodeType.CONE),
+    C8_H(NodeCoulmn.C8, NodeHeight.HIGH, NodeType.CONE);
 
     private NodeCoulmn coulmn;
     private NodeHeight height; 

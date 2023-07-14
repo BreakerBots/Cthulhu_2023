@@ -16,6 +16,10 @@ import com.ctre.phoenix6.signals.ForwardLimitValue;
 import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,50 +29,44 @@ import frc.robot.subsystems.offseasionbot.non_subsystems.OffseasionBotConstants.
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private final TalonFX actuatorMotor;
-  private final TalonFX rollerMotor;
+  private final CANSparkMax actuatorMotor;
+  private final CANSparkMax rollerMotor;
   private final BreakerBeamBreak beamBreak;
 
-  private final DutyCycleOut dutyCycleRequest;
-  private final NeutralOut neutralRequest;
+  private final SparkMaxLimitSwitch extendLimitSwitch;
+  private final SparkMaxLimitSwitch retractLimitSwich;
 
   private RollerState rollerState;
   private ActuatorMotorState actuatorMotorState;
 
   private final SystemDiagnostics diagnostics;
   public Intake() {
-    actuatorMotor = new TalonFX(IntakeConstants.ACTUATOR_ID, "placeholder");
-    rollerMotor = new TalonFX(IntakeConstants.ROLLER_ID, "placeholder");
+    actuatorMotor = new CANSparkMax(IntakeConstants.ACTUATOR_ID, MotorType.kBrushless);
+    rollerMotor = new CANSparkMax(IntakeConstants.ROLLER_ID, MotorType.kBrushless);
     beamBreak = new BreakerBeamBreak(IntakeConstants.BEAM_BRAKE_DIO_PORT, IntakeConstants.BEAM_BRAKE_BROKEN_ON_TRUE);
     
-    TalonFXConfiguration actuatorConfig = new TalonFXConfiguration();
-    actuatorConfig.HardwareLimitSwitch.ForwardLimitSource = ForwardLimitSourceValue.LimitSwitchPin;
-    actuatorConfig.HardwareLimitSwitch.ForwardLimitType = ForwardLimitTypeValue.NormallyOpen;
-    actuatorConfig.HardwareLimitSwitch.ForwardLimitEnable = true;
-    actuatorConfig.HardwareLimitSwitch.ReverseLimitSource = ReverseLimitSourceValue.LimitSwitchPin;
-    actuatorConfig.HardwareLimitSwitch.ReverseLimitType = ReverseLimitTypeValue.NormallyOpen;
-    actuatorConfig.HardwareLimitSwitch.ReverseLimitEnable = true;
-    actuatorConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.ACTUATOR_CURRENT_LIMIT;
-    actuatorConfig.CurrentLimits.SupplyTimeThreshold = IntakeConstants.ACTUATOR_CURRENT_LIMIT_TIME;
-    actuatorConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    actuatorMotor.setSmartCurrentLimit(IntakeConstants.ACTUATOR_CURRENT_LIMIT);
+    actuatorMotor.setInverted(IntakeConstants.INVERT_ACTUATOR);
+    actuatorMotor.setIdleMode(IdleMode.kBrake);
+    actuatorMotor.enableVoltageCompensation(12.0);
+    actuatorMotor.burnFlash();
 
-    actuatorMotor.getConfigurator().apply(actuatorConfig);
+    rollerMotor.setSmartCurrentLimit(IntakeConstants.ROLLER_CURRENT_LIMIT);
+    rollerMotor.setInverted(IntakeConstants.INVERT_ROLLER);
+    rollerMotor.setIdleMode(IdleMode.kBrake);
+    rollerMotor.enableVoltageCompensation(12.0);
+    rollerMotor.burnFlash();
 
-    TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
-    rollerConfig.CurrentLimits.SupplyCurrentLimit = IntakeConstants.ROLLER_CURRENT_LIMIT;
-    rollerConfig.CurrentLimits.SupplyTimeThreshold = IntakeConstants.ROLLER_CURRENT_LIMIT_TIME;
-    rollerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-
-    rollerMotor.getConfigurator().apply(rollerConfig);
-
+    extendLimitSwitch = actuatorMotor.getForwardLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+    extendLimitSwitch.enableLimitSwitch(true);
+    retractLimitSwich = actuatorMotor.getReverseLimitSwitch(SparkMaxLimitSwitch.Type.kNormallyOpen);
+    retractLimitSwich.enableLimitSwitch(true);
+    
     rollerState = RollerState.NEUTRAL;
     actuatorMotorState = getActuatorState() == ActuatorState.EXTENDED ? ActuatorMotorState.EXTENDING : ActuatorMotorState.RETRACTING;
 
-    dutyCycleRequest = new DutyCycleOut(0, false, false);
-    neutralRequest = new NeutralOut();
-
     diagnostics = new SystemDiagnostics("Intake");
-    diagnostics.addPhoenix6TalonFXs(actuatorMotor, rollerMotor);
+    diagnostics.addSparkMaxs(actuatorMotor, rollerMotor);
   }
 
   public boolean hasGamePiece() {
@@ -84,13 +82,13 @@ public class Intake extends SubsystemBase {
   }
 
   public ActuatorState getActuatorState() {
-    boolean fwdLimit = actuatorMotor.getForwardLimit().getValue() == ForwardLimitValue.ClosedToGround;
-    boolean revLimit = actuatorMotor.getReverseLimit().getValue() == ReverseLimitValue.ClosedToGround;
-    if (fwdLimit && !revLimit) {
+    boolean extLimit = extendLimitSwitch.isPressed();
+    boolean retLimit = retractLimitSwich.isPressed();
+    if (extLimit && !retLimit) {
       return ActuatorState.EXTENDED;
-    } else if (!fwdLimit && revLimit) {
+    } else if (!extLimit && retLimit) {
       return ActuatorState.RETRACTED;
-    } else if (!fwdLimit && !revLimit) {
+    } else if (!extLimit && !retLimit) {
       return ActuatorState.TRANSIT;
     } 
     return ActuatorState.ERROR;
@@ -99,26 +97,26 @@ public class Intake extends SubsystemBase {
   public void intake() {
     if (actuatorMotorState == ActuatorMotorState.EXTENDING && !beamBreak.isBroken()) {
       rollerState = RollerState.INTAKEING;
-      rollerMotor.setControl(dutyCycleRequest.withOutput(IntakeConstants.INTAKE_DUTY_CYCLE));
+      rollerMotor.set(IntakeConstants.INTAKE_DUTY_CYCLE);
     }
   }
 
   public void extake() {
     if (actuatorMotorState == ActuatorMotorState.EXTENDING) {
       rollerState = RollerState.EXTAKEING;
-      rollerMotor.setControl(dutyCycleRequest.withOutput(IntakeConstants.EXTAKE_DUTY_CYCLE));
+      rollerMotor.set(IntakeConstants.INTAKE_DUTY_CYCLE);
     }
   }
 
   private void gripp() {
-    rollerMotor.setControl(dutyCycleRequest.withOutput(IntakeConstants.INTAKE_GRIP_DUTY_CYCLE));
+    rollerMotor.set(IntakeConstants.INTAKE_GRIP_DUTY_CYCLE);
     rollerState = RollerState.GRIPPING;
   }
 
   public void stopRoller() {
     if (!beamBreak.isBroken()) {
       rollerState = RollerState.NEUTRAL;
-      rollerMotor.setControl(neutralRequest);
+      rollerMotor.stopMotor();
     }
   }
 
@@ -144,13 +142,13 @@ public class Intake extends SubsystemBase {
   private void privateSetActuatorMotorState(ActuatorMotorState newState) {
     switch(newState) {
       case EXTENDING:
-        actuatorMotor.setControl(dutyCycleRequest.withOutput(IntakeConstants.ACTUATOR_EXTEND_DUTY_CYCLE));
+        actuatorMotor.set(IntakeConstants.ACTUATOR_EXTEND_DUTY_CYCLE);
         break;
       case RETRACTING:
-        actuatorMotor.setControl(dutyCycleRequest.withOutput(IntakeConstants.ACTUATOR_RETRACT_DUTY_CYCLE));
+        actuatorMotor.set(IntakeConstants.ACTUATOR_RETRACT_DUTY_CYCLE);
         break;
       default:
-        actuatorMotor.setControl(neutralRequest);
+        actuatorMotor.stopMotor();
         break;
       
     }
