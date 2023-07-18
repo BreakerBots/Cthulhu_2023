@@ -153,6 +153,10 @@ public final class Constants {
         public static final double ARM_KP = 0.02;
         public static final double ARM_KI = 0.0;
         public static final double ARM_KD = 0.0;
+        public static final double ARM_KS = 0.0;
+        public static final double ARM_KG = 0.675;
+        public static final double ARM_KV = 0.0;
+        public static final double ARM_KA = 0.0;
     }
 
     public static final class FieldConstants {
