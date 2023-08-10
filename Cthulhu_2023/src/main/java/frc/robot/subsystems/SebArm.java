@@ -14,7 +14,6 @@ import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -60,7 +59,6 @@ public class SebArm extends SubsystemBase {
   private WPI_TalonFX motor0, motor1;
   private Rotation2d desiredRot;
   private WPI_CANCoder canCoder;
-  private ArmFeedforward armFF;
   private PIDController pid;
   private ProfiledPIDController profPID;
   private BreakerBezierCurve curve;
@@ -88,7 +86,7 @@ public class SebArm extends SubsystemBase {
     motor1.setNeutralMode(NeutralMode.Brake);
     // motor0.setNeutralMode(NeutralMode.Coast);
     // motor1.setNeutralMode(NeutralMode.Coast);
-    //motor1.setStatusFramePeriod(0, 0, 0);
+    motor1.setStatusFramePeriod(0, 0, 0);
     motor0.setInverted(TalonFXInvertType.CounterClockwise);
     motor1.setInverted(TalonFXInvertType.FollowMaster);
 
@@ -100,13 +98,12 @@ public class SebArm extends SubsystemBase {
     canCoder.configMagnetOffset(ARM_CANCODER_OFFSET);
     canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
     canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
-    armFF = new ArmFeedforward(ARM_KS, ARM_KG, ARM_KV, ARM_KA);
     // canCoder.setPosition(canCoder.getAbsolutePosition() +  (canCoder.getAbsolutePosition() <= -90 && canCoder.getAbsolutePosition() >= -180 ? 360 : 0));
     // if (canCoder.getPosition() >= 270 && canCoder.getPosition() <= 360 ) {
     //   canCoder.setPosition(canCoder.getPosition() - 360);
     // }
     
-    pid = new PIDController(0.0075, 0, 0.0); 
+    pid = new PIDController(0.016, 0, 0.0002); // TODO: Set actual PID values for this constructor.
 
     // profPID = new ProfiledPIDController(0.02, 0.0, 0.0, new TrapezoidProfile.Constraints(100.0,20.0));
 
@@ -207,25 +204,17 @@ public class SebArm extends SubsystemBase {
     SmartDashboard.putNumber("Arm Angle", getAngle().getDegrees());
    //double ctrlInput = controller.getRightTrigger().get() - controller.getLeftTrigger().get();
     // motor0.set(-curve.getSignRelativeValueAtX(ctrlInput));
-    Rotation2d pos = Rotation2d.fromRadians(MathUtil.angleModulus(getAngle().getRadians()));
-    Rotation2d tgt = Rotation2d.fromRadians(MathUtil.angleModulus(desiredRot.getRadians()));
+    double pos = getAngle().getDegrees();
     //double ctrlInput = profPID.calculate(pos, desiredRot.getDegrees());
-    double pidInpt = pid.calculate(pos.getDegrees(), tgt.getDegrees());
-    double ff = armFF.calculate(tgt.getRadians(), 0.0);
-    double ctrlInput = ff + pidInpt;
-    // if (!isAtTarget()) {
-    //   motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
-    // } else {
-    //    motor0.set(0);
-    // }
-    // if (desiredRot.getDegrees() < -65) {
-    //   ctrlInput *= -1;
-    // }
-    motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
+    double ctrlInput = pid.calculate(pos, desiredRot.getDegrees());
+    if (!isAtTarget()) {
+      motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
+    } else {
+       motor0.set(0);
+     }
+    // motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
     SmartDashboard.putNumber("Arm Tgt", desiredRot.getDegrees());
     SmartDashboard.putNumber("Arm motor", motor0.get());
-    SmartDashboard.putNumber("FF", ff);
-    SmartDashboard.putNumber("PID", pidInpt);
     
   }
 }
