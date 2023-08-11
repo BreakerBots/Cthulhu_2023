@@ -148,7 +148,7 @@ public final class Constants {
         public static final int MAIN_MOTOR_ID = 31;
         public static final int SUB_MOTOR_ID = 30;
         public static final int ARM_CANCODER_ID = 24;
-        public static final double ARM_CANCODER_OFFSET = 181.0;
+        public static final double ARM_CANCODER_OFFSET = -60.82;
 
         public static final double ARM_KP = 0.02;
         public static final double ARM_KI = 0.0;

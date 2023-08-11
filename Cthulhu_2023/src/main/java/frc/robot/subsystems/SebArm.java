@@ -207,11 +207,15 @@ public class SebArm extends SubsystemBase {
     double pos = getAngle().getDegrees();
     //double ctrlInput = profPID.calculate(pos, desiredRot.getDegrees());
     double ctrlInput = pid.calculate(pos, desiredRot.getDegrees());
+    // if (ctrlInput != 0) {
+    //   System.out.println("crtlInput: " + ctrlInput);
+    // }
     if (!isAtTarget()) {
       motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
     } else {
        motor0.set(0);
      }
+    //  System.out.println("motor: " + motor0.get());
     // motor0.set(-MathUtil.clamp(ctrlInput, -1.0, 1.0));
     SmartDashboard.putNumber("Arm Tgt", desiredRot.getDegrees());
     SmartDashboard.putNumber("Arm motor", motor0.get());
