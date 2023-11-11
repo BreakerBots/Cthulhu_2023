@@ -16,6 +16,7 @@ import frc.robot.BreakerLib.auto.waypoint.BreakerPoseWaypointPath;
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwervePoseWaypointPathFollower;
 import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollower;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
+import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerLegacyPigeon2;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerPigeon2;
 import frc.robot.commands.BalanceChargingStation;
 import frc.robot.commands.MoveArmToState;
@@ -28,7 +29,7 @@ import frc.robot.subsystems.SebArm;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SubPlaceLeaveThenBalance extends SequentialCommandGroup {
   /** Creates a new TestWaypointAutoPath. */
-  public SubPlaceLeaveThenBalance(Drive drive, BreakerPigeon2 imu, SebArm arm, RollerIntake intake) {
+  public SubPlaceLeaveThenBalance(Drive drive, BreakerLegacyPigeon2 imuSys, SebArm arm, RollerIntake intake) {
 
     BreakerPoseWaypointPath wpp = new BreakerPoseWaypointPath(
         1.5,
@@ -46,6 +47,6 @@ public class SubPlaceLeaveThenBalance extends SequentialCommandGroup {
       new SequentialCommandGroup(
           new MoveArmToState(arm, SebArm.State.STOW_CUBE),
           new BreakerSwervePoseWaypointPathFollower(drive.autoConfig, true, Drive.mirrorPathToAlliance(wpp))),
-        new BalanceChargingStation(drive, imu));
+        new BalanceChargingStation(drive, imuSys));
   }
 }
