@@ -32,10 +32,17 @@ import frc.robot.BreakerLib.util.robot.BreakerRobotConfig;
 import frc.robot.BreakerLib.util.robot.BreakerRobotManager;
 import frc.robot.BreakerLib.util.robot.BreakerRobotStartConfig;
 import frc.robot.commands.BalanceChargingStation;
+import frc.robot.commands.autos.LeaveOnly;
+import frc.robot.commands.autos.MidBalance;
 // import frc.robot.commands.autos.InNOut;
 // import frc.robot.commands.autos.LeaveOnly;
 // import frc.robot.commands.autos.MidBalance;
 import frc.robot.commands.autos.pathplanner.TestPath;
+import frc.robot.commands.autos.pose.GatePlace2;
+import frc.robot.commands.autos.pose.GatePlaceLeaveThenBalance;
+import frc.robot.commands.autos.pose.MidPlaceLeaveThenBalance;
+import frc.robot.commands.autos.pose.PlaceMidOnly;
+import frc.robot.commands.autos.pose.SubPlaceLeaveThenBalance;
 import frc.robot.subsystems.FalconArm;
 // import frc.robot.commands.autos.pose.GatePlaceLeaveThenBalance;
 // import frc.robot.commands.autos.pose.GatePlace2;
@@ -127,21 +134,21 @@ public class RobotContainer {
         "Cthulhu", 2023, "v1", "Yousif Alkhalaf, Roman Abrahamson, Sebastian Rueda"));
 
     robotConfig.setAutoPaths(
-        // new BreakerAutoPath("GatePlace2", new GatePlace2(drivetrainSys, imuSys,
-        // intakeSys, armSys)),
-        // new BreakerAutoPath("GatePlaceLeaveThenBalance", new
-        // GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
-        // new BreakerAutoPath("MidPlaceLeaveThenBalance", new
-        // MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
-        // new BreakerAutoPath("SubPlaceLeaveThenBalance", new
-        // SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
-        // new BreakerAutoPath("MidBalance", new MidBalance(drivetrainSys, imuSys,
-        // armSys, intakeSys)),
-        // new BreakerAutoPath("LeaveOnly", new LeaveOnly(drivetrainSys, imuSys)),
-        // new BreakerAutoPath("PlaceLow", new InstantCommand(intakeSys::eject)),
-        // new BreakerAutoPath("PlaceMidOnly", new PlaceMidOnly(drivetrainSys, armSys,
-        // intakeSys)),
-        new BreakerAutoPath("Pathplanner_Test", new TestPath(drivetrainSys)));
+        new BreakerAutoPath("GatePlace2", new GatePlace2(drivetrainSys, imuSys,
+        intakeSys, armSys)),
+        new BreakerAutoPath("GatePlaceLeaveThenBalance", new
+        GatePlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+        new BreakerAutoPath("MidPlaceLeaveThenBalance", new
+        MidPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+        new BreakerAutoPath("SubPlaceLeaveThenBalance", new
+        SubPlaceLeaveThenBalance(drivetrainSys, imuSys, armSys, intakeSys)),
+        new BreakerAutoPath("MidBalance", new MidBalance(drivetrainSys, imuSys,
+        armSys, intakeSys)),
+        new BreakerAutoPath("LeaveOnly", new LeaveOnly(drivetrainSys, imuSys)),
+        new BreakerAutoPath("PlaceLow", new InstantCommand(intakeSys::eject)),
+        new BreakerAutoPath("PlaceMidOnly", new PlaceMidOnly(drivetrainSys, armSys,
+        intakeSys)));
+        //new BreakerAutoPath("Pathplanner_Test", new TestPath(drivetrainSys)));
     BreakerRobotManager.setup(drivetrainSys, robotConfig);
   }
 

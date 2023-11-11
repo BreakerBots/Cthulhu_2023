@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.BreakerLib.auto.waypoint.BreakerPoseWaypointPath;
+import frc.robot.BreakerLib.auto.waypoint.BreakerSwerveWaypointFollowerConfig;
 import frc.robot.BreakerLib.auto.waypoint.BreakerWaypointPath;
 import frc.robot.BreakerLib.control.BreakerHolonomicDriveController;
 import frc.robot.BreakerLib.devices.sensors.imu.ctre.BreakerLegacyPigeon2;
@@ -41,7 +42,7 @@ public class Drive extends BreakerSwerveDriveBase {
                         new TrapezoidProfile.Constraints(3.0, 3.0));
         public static PIDController autoDrivePID = new PIDController(6.0, 0.0, 0.0);
         public static BreakerHolonomicDriveController autoDriveController = new BreakerHolonomicDriveController(autoDrivePID, autoAnglePID);
-        // public BreakerSwerveWaypointFollowerConfig autoConfig = new BreakerSwerveWaypointFollowerConfig(this, autoDriveController);
+        public BreakerSwerveWaypointFollowerConfig autoConfig = new BreakerSwerveWaypointFollowerConfig(this, autoDriveController);
 
         private static WPI_TalonFX driveFL = new WPI_TalonFX(FL_DRIVE_ID, CANIVORE_1);
         private static WPI_TalonFX turnFL = new WPI_TalonFX(FL_TURN_ID, CANIVORE_1);
